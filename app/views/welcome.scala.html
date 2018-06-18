@@ -1,4 +1,4 @@
-@(message: String, style: String = "java")
+@(message: String, style: String = "java")(content: Html)
 
 @defining(play.core.PlayVersion.current) { version =>
 
@@ -20,6 +20,11 @@
             <blockquote>
                 <p>
                     You’re using Play @version
+                </p>
+                <p>
+                    Your Content:
+
+                    @content
                 </p>
             </blockquote>
 
