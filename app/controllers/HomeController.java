@@ -15,6 +15,7 @@ import java.util.Map;
  */
 
 import scala.collection.JavaConverters;
+import views.html.Theme.base;
 
 import static scala.collection.JavaConverters.asScalaBuffer;
 
@@ -33,6 +34,10 @@ public class HomeController extends Controller {
     public Result viewJson() {
         List<String> list = Arrays.asList("See actor system", "home page", "login page");
         return ok(json.render("Welcome to play", 3, asScalaBuffer(list)));
+    }
+
+    public Result base(){
+        return ok(base.render());
     }
 
 }
