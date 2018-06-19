@@ -6,5 +6,14 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.15")
 // plugin if you prefer not to have this feature, or disable on a per project
 // basis using disablePlugins(PlayEnhancer) in your build.sbt
 addSbtPlugin("com.typesafe.sbt" % "sbt-play-enhancer" % "1.2.2")
+
+// Play EBean Plugin
 addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "4.1.3")
+
+// CoffeeScript Plugin
+// addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.2")
+
+// LESS Plugin
+// addSbtPlugin("com.typesafe.sbt" % "sbt-less" % "1.1.2")
+
 
