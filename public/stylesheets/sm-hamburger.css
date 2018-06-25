@@ -1,0 +1,413 @@
+/*
+---------------------------------------------------------------
+  Note that styles you apply to the main menu items are inherited by the sub menus items too.
+  If you'd like to avoid this, you could use child selectors (not supported by IE6) - for example:
+  .sm-clean > li > a { ... } instead of .sm-clean a { ... }
+---------------------------------------------------------------*/
+
+
+/* Menu box
+===================*/
+
+	.sm-hamburger {
+		padding:0 10px;
+		background:#eee;
+		-moz-border-radius:50px;
+		-webkit-border-radius:50px;
+		border-radius:50px;
+		z-index:20;
+	}
+	.sm-hamburger-vertical {
+		padding:10px 0;
+		-moz-border-radius:5px;
+		-webkit-border-radius:5px;
+		border-radius:5px;
+	}
+	.sm-hamburger ul {
+		border:1px solid #bbb;
+		padding:5px 0;
+		background:#fff;
+		-moz-border-radius:5px;
+		-webkit-border-radius:5px;
+		border-radius:5px;
+		-moz-box-shadow:0 5px 9px rgba(0,0,0,0.2);
+		-webkit-box-shadow:0 5px 9px rgba(0,0,0,0.2);
+		box-shadow:0 5px 9px rgba(0,0,0,0.2);
+	}
+	/* first sub level carets */
+	.sm-hamburger > li > ul:before {
+		content:'';
+		position:absolute;
+		top:-18px;
+		left:30px;
+		width:0;
+		height:0;
+		overflow:hidden;
+		border-width:9px; /* tweak size of the arrow */
+		border-style:dashed dashed solid dashed;
+		border-color:transparent transparent #bbb transparent;
+	}
+	.sm-hamburger > li > ul:after {
+		content:'';
+		position:absolute;
+		top:-16px;
+		left:31px;
+		width:0;
+		height:0;
+		overflow:hidden;
+		border-width:8px;
+		border-style:dashed dashed solid dashed;
+		border-color:transparent transparent #fff transparent;
+	}
+	/* no carets for vertical main */
+	.sm-hamburger-vertical > li > ul:before, .sm-hamburger-vertical > li > ul:after {
+		display:none;
+	}
+
+
+/* Menu items
+===================*/
+
+	.sm-hamburger a {
+		padding:12px;
+		color:#555;
+		font-size:18px;
+		line-height:17px;
+		font-family:'Lucida Sans Unicode','Lucida Sans','Lucida Grande',Arial,sans-serif;
+		text-decoration:none;
+	}
+	.sm-hamburger a:hover, .sm-hamburger a:focus, .sm-hamburger a:active,
+	.sm-hamburger a.highlighted {
+		color:#f9b42a;
+	}
+	.sm-hamburger-vertical a:hover, .sm-hamburger-vertical a:focus, .sm-hamburger-vertical a:active,
+	.sm-hamburger-vertical a.highlighted {
+		background:#fff;
+	}
+	.sm-hamburger a.has-submenu {
+		padding-right:25px;
+	}
+	.sm-hamburger-vertical a,
+ 	.sm-hamburger ul a {
+		padding:10px 20px;
+	}
+	.sm-hamburger-vertical a.has-submenu,
+ 	.sm-hamburger ul a.has-submenu {
+		padding-right:40px;
+	}
+	.sm-hamburger ul a {
+		font-size:16px;
+	}
+	.sm-hamburger ul a:hover, .sm-hamburger ul a:focus, .sm-hamburger ul a:active,
+	.sm-hamburger ul a.highlighted {
+		color:#f9b42a;
+		background:#eee;
+	}
+	/* current items - add the class manually to some item or check the "markCurrentItem" script option */
+	.sm-hamburger a.current, .sm-hamburger a.current:hover, .sm-hamburger a.current:focus, .sm-hamburger a.current:active {
+		color:#f9b42a;
+	}
+
+
+/* Sub menu indicators
+===================*/
+
+	.sm-hamburger a span.sub-arrow {
+		position:absolute;
+		right:12px;
+		top:50%;
+		margin-top:-3px;
+		/* we will use one-side border to create a triangle so that we don't use a real background image, of course, you can use a real image if you like too */
+		width:0;
+		height:0;
+		overflow:hidden;
+		border-width:4px; /* tweak size of the arrow */
+		border-style:solid dashed dashed dashed;
+		border-color:#555 transparent transparent transparent;
+	}
+	.sm-hamburger-vertical a span.sub-arrow,
+ 	.sm-hamburger ul a span.sub-arrow {
+		right:15px;
+		top:50%;
+		margin-top:-5px;
+		border-width:5px;
+		border-style:dashed dashed dashed solid;
+		border-color:transparent transparent transparent #555;
+	}
+
+
+/* Scrolling arrows containers for tall sub menus - test sub menu: "Sub test" -> "more..." -> "more..." in the default download package
+===================*/
+
+	.sm-hamburger span.scroll-up, .sm-hamburger span.scroll-down {
+		position:absolute;
+		display:none;
+		visibility:hidden;
+		overflow:hidden;
+		background:#fff;
+		height:20px;
+		/* width and position will be automatically set by the script */
+	}
+	.sm-hamburger span.scroll-up:hover, .sm-hamburger span.scroll-down:hover {
+		background:#eee;
+	}
+	.sm-hamburger span.scroll-up-arrow, .sm-hamburger span.scroll-down-arrow {
+		position:absolute;
+		top:0;
+		left:50%;
+		margin-left:-6px;
+		/* we will use one-side border to create a triangle so that we don't use a real background image, of course, you can use a real image if you like too */
+		width:0;
+		height:0;
+		overflow:hidden;
+		border-width:6px; /* tweak size of the arrow */
+		border-style:dashed dashed solid dashed;
+		border-color:transparent transparent #555 transparent;
+	}
+	.sm-hamburger span.scroll-up:hover span.scroll-up-arrow {
+		border-color:transparent transparent #f9b42a transparent;
+	}
+	.sm-hamburger span.scroll-down-arrow {
+		top:8px;
+		border-style:solid dashed dashed dashed;
+		border-color:#555 transparent transparent transparent;
+	}
+	.sm-hamburger span.scroll-down:hover span.scroll-down-arrow {
+		border-color:#f9b42a transparent transparent transparent;
+	}
+
+
+/*
+---------------------------------------------------------------
+  Responsiveness
+  These will make the sub menus collapsible when the screen width is too small.
+---------------------------------------------------------------*/
+
+
+/* decrease horizontal main menu items left/right padding to avoid wrapping */
+@media screen and (max-width: 850px) {
+	.sm-hamburger:not(.sm-hamburger-vertical) > li > a {
+		padding-left:8px;
+		padding-right:8px;
+	}
+	.sm-hamburger:not(.sm-hamburger-vertical) > li > a.has-submenu {
+		padding-right:25px;
+	}
+}
+@media screen and (max-width: 750px) {
+	.sm-hamburger:not(.sm-hamburger-vertical) > li > a {
+		padding-left:3px;
+		padding-right:3px;
+	}
+	.sm-hamburger:not(.sm-hamburger-vertical) > li > a.has-submenu {
+		padding-right:25px;
+	}
+}
+
+
+@media screen  {
+
+	/* The following will make the sub menus collapsible for small screen devices (it's not recommended editing these) */
+	ul.sm-hamburger{
+	    width:auto !important;
+	}
+	ul.sm-hamburger ul{
+	    display:none;
+	    /*position:static !important;  */
+	    top:auto !important;
+	    left:auto !important;
+	    margin-left:0 !important;
+	    margin-top:0 !important;
+	    /*width:auto !important;*/
+	    width:18em !important;
+	    min-width:0 !important;
+	    max-width:none !important;
+	}
+	ul.sm-hamburger>li{
+	    float:none;
+	}
+	ul.sm-hamburger>li>a,ul.sm-hamburger ul.sm-nowrap>li>a{
+	    white-space:normal;
+	 }
+	ul.sm-hamburger iframe{
+	    display:none;
+	 }
+
+	/* Uncomment this rule to disable completely the sub menus for small screen devices */
+	/*.sm-hamburger ul, .sm-hamburger span.sub-arrow, .sm-hamburger iframe {
+		display:none !important;
+	}*/
+
+
+/* Menu box
+===================*/
+
+	.sm-hamburger {
+		padding:0;
+		-moz-border-radius:5px;
+		-webkit-border-radius:5px;
+		border-radius:5px;
+	}
+	.sm-hamburger ul {
+		border:0;
+		padding:0;
+		/* darken the background of the sub menus */
+		background:rgba(130,130,130,0.1);
+		-moz-border-radius:0;
+		-webkit-border-radius:0;
+		border-radius:0;
+		-moz-box-shadow:none;
+		-webkit-box-shadow:none;
+		box-shadow:none;
+	}
+	/* no carets */
+	.sm-hamburger > li > ul:before, .sm-hamburger > li > ul:after {
+		display:none;
+	}
+
+
+/* Menu items
+===================*/
+
+	.sm-hamburger a {
+		padding:13px 5px 13px 28px !important;
+		color:#555 !important;
+		background:transparent !important;
+	}
+	.sm-hamburger a.current {
+		color:#f9b42a !important;
+	}
+	/* add some text indentation for the 2+ level sub menu items */
+	.sm-hamburger ul a {
+		border-left:8px solid transparent;
+	}
+	.sm-hamburger ul ul a {
+		border-left:16px solid transparent;
+	}
+	.sm-hamburger ul ul ul a {
+		border-left:24px solid transparent;
+	}
+	.sm-hamburger ul ul ul ul a {
+		border-left:32px solid transparent;
+	}
+	.sm-hamburger ul ul ul ul ul a {
+		border-left:40px solid transparent;
+	}
+
+
+/* Sub menu indicators
+===================*/
+
+	.sm-hamburger a span.sub-arrow {
+        top: 50%;
+        margin-top: -8px;
+        /*right: auto;
+        left: 75px;*/
+        margin-left: 0px;
+        width: 20px;
+        height: 20px;
+        font: 16px/16px monospace !important;
+        text-align: center;
+        border: 0px none;
+        text-shadow: none;
+        background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.6);
+        border-radius: 50px;
+}
+
+	.sm-hamburger ul a span.sub-arrow {
+        top: 50%;
+        margin-top: -8px;
+        right: auto;
+        left: 4px;
+        margin-left: 0px;
+        width: 16px;
+        height: 16px;
+        font: 16px/16px monospace !important;
+        text-align: center;
+        border: 0px none;
+        text-shadow: none;
+        background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.6);
+        border-radius: 50px;
+}
+
+	/* Hide sub indicator when item is expanded - we enable the item link when it's expanded */
+	.sm-hamburger a.highlighted span.sub-arrow {
+		display:none !important;
+	}
+
+
+/* Items separators
+===================*/
+
+	.sm-hamburger li {
+		border-top:1px solid rgba(0,0,0,0.05);
+	}
+	.sm-hamburger > li:first-child {
+		border-top:0;
+	}
+
+}
+
+
+.sm-hamburger ul li, .sm-hamburger-vertical li{
+    border-bottom: 0px ;
+	border-top: #ffffff thin dotted; 
+/*	padding: 5px 0px 5px 0px;*/
+}
+
+.sm-hamburger {
+	border-radius: 0px;
+	padding:0px;
+}
+
+.sm-hamburger ul {
+    border-radius: 0px;
+    box-shadow: none;
+    padding:0px;
+}
+
+.sm-hamburger > li > a > span.sub-arrow {
+    border:0px;
+	background: url(/assets/images/theme/hamburgermenu.png) no-repeat right;
+	font-size:0px !important;
+}
+
+.sm-hamburger a{
+	color: #ffffff !important;
+	font-family:NunitoSansRegular,Arial,sans-serif !important; 
+	text-align: left;
+	background-color: #363636 !important;
+}
+.sm-hamburger ul ul a{
+	background-color: #545454 !important;
+}
+.sm-hamburger ul ul ul a{
+	background-color: #727272 !important;
+}
+
+.sm-hamburger a:hover{
+	/*font-family:TilliumItalic,Verdana,Arial !important; */
+	background-color: #f9b42a !important;
+}
+
+.sm-hamburger a.has-submenu {
+    padding-left: 25px !important;
+    padding-right: 40px !important;
+}
+
+.sm-hamburger, .sm-hamburger ul {
+	border:none;
+}
+
+.sm-hamburger-vertical a span.sub-arrow, .sm-hamburger ul a span.sub-arrow{
+    border-color: transparent transparent transparent #ffffff !important;
+}
+    
+.sm-hamburger a:hover, .sm-hamburger a:focus, .sm-hamburger a:active, .sm-hamburger a.highlighted {
+    color: #f9b42a;
+}
+
+.sm-hamburger ul a:hover, .sm-hamburger ul a:focus, .sm-hamburger ul a:active, .sm-hamburger ul a.highlighted {
+    color: #f9b42a;
+    background: none repeat scroll 0% 0% #363636;
+}

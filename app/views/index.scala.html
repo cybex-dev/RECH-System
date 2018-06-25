@@ -30,62 +30,28 @@
         <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/font-awesome.min.css")">
         <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/mandela.css")">
 
-            <!--[if lt IE 9]>
+        <!--[if lt IE 9]>
 		<script src="javascripts/html5shiv.js"></script>
 		<script src="javascripts/respond.min.js"></script>
-	<![endif]-->
+	    <![endif]-->
 
         <style>
-
-
-
-                @@
-                media
-
-                (
-                min-width:
-
-                767
-                px
-
-                )
-                {
-                body {
-
-                    background: url(@routes.Assets.versioned("images/background.jpg")) no-repeat;
-                    background-position: top;
-                    background-attachment: fixed;
-                    background-size: 100% 100%;
-                    background-size: cover;
+                @@media (min-width: 767px) {
+                    body {
+                        background: url(@routes.Assets.versioned("images/background.jpg")) no-repeat;
+                        background-position: top;
+                        background-attachment: fixed;
+                        background-size: 100% 100%;
+                        background-size: cover;
+                    }
                 }
-
-                }
-
         </style>
         <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
         <link href="/favicon.ico" type="image/x-icon" rel="icon">
-
-
     </head>
-
-    @*
-    * Get an `Html` object by calling the built-in Play welcome
-    * template and passing a `String` message.
-    *@
     <body>
         @static_header.apply()
         @rech_header.apply()
 
-        <p>hi</p>
-
     </body>
-    @*<div style="margin-left: @{5*level}%">
-    @header
-    <ul id="list@level">
-    @items.map { item =>
-    <li>@item</li>
-    }
-    </ul>
-    @footer
-    </div>*@
 </html>
