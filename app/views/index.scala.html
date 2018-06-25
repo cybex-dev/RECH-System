@@ -1,26 +1,91 @@
 @*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(header: Html)(level: Int, items:Seq[String])(footer: Html)
+* This template takes a single argument, a String containing a
+* message to display.
+*@
+@import views.html.Theme.{rech_header, static_header}
 
+@()
 @*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
+* Call the `main` template with two arguments. The first
+* argument is a `String` with the title of the page, the second
+* argument is an `Html` object containing the body of the page.
+*@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head id="head">
+        <title>
+            Nelson Mandela University
+        </title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="@routes.Assets.versioned("images/favicon.ico")">
+            <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/bootstrap-cols.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/sm-core-css.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/sm-hamburger.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/jquery.smartmenus.bootstrap.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/royalslider.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/rs-default-new.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/font-awesome.min.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/mandela.css")">
 
+            <!--[if lt IE 9]>
+		<script src="javascripts/html5shiv.js"></script>
+		<script src="javascripts/respond.min.js"></script>
+	<![endif]-->
+
+        <style>
+
+
+
+                @@
+                media
+
+                (
+                min-width:
+
+                767
+                px
+
+                )
+                {
+                body {
+
+                    background: url(@routes.Assets.versioned("images/background.jpg")) no-repeat;
+                    background-position: top;
+                    background-attachment: fixed;
+                    background-size: 100% 100%;
+                    background-size: cover;
+                }
+
+                }
+
+        </style>
+        <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon">
+        <link href="/favicon.ico" type="image/x-icon" rel="icon">
+
+
+    </head>
 
     @*
     * Get an `Html` object by calling the built-in Play welcome
     * template and passing a `String` message.
     *@
-<div style="margin-left: @{5*level}%">
+    <body>
+        @static_header.apply()
+        @rech_header.apply()
+
+        <p>hi</p>
+
+    </body>
+    @*<div style="margin-left: @{5*level}%">
     @header
     <ul id="list@level">
     @items.map { item =>
-        <li>@item</li>
+    <li>@item</li>
     }
     </ul>
     @footer
-</div>
+    </div>*@
+</html>

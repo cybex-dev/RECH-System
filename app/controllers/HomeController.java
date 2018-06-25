@@ -15,7 +15,7 @@ import java.util.Map;
  */
 
 import scala.collection.JavaConverters;
-import views.html.Theme.base;
+import views.html.base;
 
 import static scala.collection.JavaConverters.asScalaBuffer;
 
@@ -28,7 +28,7 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok();
+        return ok(index.render());
     }
 
     public Result viewJson() {
