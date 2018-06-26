@@ -1,12 +1,12 @@
-@media (min-width: 767px) {
-    body {
-        background: url(/assets/images/theme/background.jpg) no-repeat;
-        background-position: top;
-        background-attachment: fixed;
-        background-size: 100% 100%;
-        background-size: cover;
-    }
-}
+/*@media (min-width: 767px) {*/
+    /*body {*/
+        /*background: url(/assets/images/theme/background.jpg) no-repeat;*/
+        /*background-position: top;*/
+        /*background-attachment: fixed;*/
+        /*background-size: 100% 100%;*/
+        /*background-size: cover;*/
+    /*}*/
+/*}*/
 
 #container-static-header {
     padding-left: 0px;

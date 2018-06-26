@@ -2,7 +2,7 @@
 * This template takes a single argument, a String containing a
 * message to display.
 *@
-@import views.html.Theme.{rech_header, static_header}
+@import views.html.Theme.{rech_header, static_header, rech_menu_bar}
 
 @()
 @*
@@ -28,7 +28,7 @@
         <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/royalslider.css")">
         <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/rs-default-new.css")">
         <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/font-awesome.min.css")">
-        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/mandela.css")">
+        <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/nmu.css")">
         <link rel="stylesheet" type="text/css"  href="@routes.Assets.versioned("stylesheets/csp_complient.css")">
 
         <!--[if lt IE 9]>
@@ -47,7 +47,12 @@
     </head>
     <body>
         @static_header.apply()
-        @rech_header.apply()
+        <div id="LogoBar" class="container-fluid transparentBackgroundBlue">
+            @rech_header.apply()
+            <div class="container MainContent">
+                @rech_menu_bar.apply()
+            </div>
+        </div>
 
 
 
