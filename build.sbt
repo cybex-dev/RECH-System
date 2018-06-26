@@ -38,5 +38,11 @@ libraryDependencies += "org.awaitility" % "awaitility" % "2.0.0" % Test
 
 libraryDependencies += "tyrex" % "tyrex" % "1.0.1"
 
+// Using webjars for Bootstrap 4.1.1
+libraryDependencies += "org.webjars" % "bootstrap" % "4.1.1"
+libraryDependencies += "org.webjars" %% "webjars-play" % "2.6.3"
+libraryDependencies += "org.webjars" % "requirejs" % "2.3.5"
+libraryDependencies += "org.webjars" % "popper.js" % "1.14.1"
+
 // Make verbose tests
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))

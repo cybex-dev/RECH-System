@@ -1,0 +1,67 @@
+@media (min-width: 767px) {
+    body {
+        background: url(/assets/images/theme/background.jpg) no-repeat;
+        background-position: top;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        background-size: cover;
+    }
+}
+
+#container-static-header {
+    padding-left: 0px;
+    height: 45px;
+}
+
+#navbar-static-header {
+    float: left;
+    padding-left: 10px;
+}
+
+#p_lt_zoneSearchBox_SearchBox_lblSearch {
+    display: none;
+}
+
+#img-static-header {
+    vertical-align: top;
+}
+
+#aLogo {
+    display: inline;
+}
+
+#StrapLine {
+    display: block;
+}
+
+#div-col-rech-header {
+    margin-top: 0px;
+}
+
+#ul-academic-rech-header {
+    position: fixed;
+}
+
+#LogoBar {
+    height: 165px;
+}
+
+#ul-apply-rech-header {
+    position: fixed;
+}
+
+#ul-oncampus-rech-header {
+    position: fixed;
+}
+
+#ul-about-rech-header {
+    position: fixed;
+}
+
+#ul-students-rech-header {
+    position: fixed;
+}
+
+#divSearchOnMobile {
+    display: block;
+}

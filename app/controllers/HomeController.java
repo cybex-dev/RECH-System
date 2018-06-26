@@ -15,7 +15,6 @@ import java.util.Map;
  */
 
 import scala.collection.JavaConverters;
-import views.html.base;
 
 import static scala.collection.JavaConverters.asScalaBuffer;
 
@@ -37,7 +36,7 @@ public class HomeController extends Controller {
     }
 
     public Result base(){
-        return ok(base.render());
+        return ok();
     }
 
 }
