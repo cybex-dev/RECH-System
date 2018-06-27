@@ -44,5 +44,13 @@ libraryDependencies += "org.webjars" %% "webjars-play" % "2.6.3"
 libraryDependencies += "org.webjars" % "requirejs" % "2.3.5"
 libraryDependencies += "org.webjars" % "popper.js" % "1.14.1"
 
+// See: https://adrianhurt.github.io/play-bootstrap#Installation
+// Resolver is needed only for SNAPSHOT versions
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+
+libraryDependencies ++= Seq(
+  "com.adrianhurt" %% "play-bootstrap" % "1.4-P26-B4-SNAPSHOT"
+)
+
 // Make verbose tests
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))

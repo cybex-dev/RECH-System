@@ -1,0 +1,41 @@
+@*
+* This template takes a single argument, a String containing a
+* message to display.
+*@
+@import views.html.Theme.{nmu_stylesheets, nmu_javascripts, static_header, rech_header, rech_menu_bar, nmu_footer}
+@import views.html.Global.Templates.{DefaultBody, DefaultHead, DefaultPage}
+
+@(pageTabTitle: String = "Nelson Mandela University")
+@*
+* Call the `main` template with two arguments. The first
+* argument is a `String` with the title of the page, the second
+* argument is an `Html` object containing the body of the page.
+*@
+
+@DefaultPage.apply{
+    @DefaultHead.apply(pageTabTitle){
+        @nmu_stylesheets.apply()
+        @nmu_javascripts.apply()
+    }
+} {
+    @DefaultBody.apply {
+        <form method="post" action="@routes.HomeController.postMandelaSecure()" id="form">
+            @helper.CSRF.formField
+            @static_header.apply()
+            <div id="LogoBar" class="container-fluid transparentBackgroundBlue">
+            @rech_header.apply()
+            </div>
+            <div class="container">
+                <div class="MainContent">
+                @rech_menu_bar.apply()
+                </div>
+            </div>
+        </form>
+    } {
+        <h1>Body content</h1>
+        <p>Some body content goes here</p>
+    } {
+        @nmu_footer.apply()
+    }
+}
+

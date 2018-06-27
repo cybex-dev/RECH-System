@@ -1,43 +1,43 @@
 @font-face {
     font-family: TitilliumExtraLight;
-    src: url(fonts/Titillium/titilliumweb-extralight-webfont.eot);
-    src: url(fonts/Titillium/titilliumweb-extralight-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/Titillium/TitilliumWeb-ExtraLight.ttf) format('truetype')
+    src: url(fonts/titillium/titilliumweb-extralight-webfont.eot);
+    src: url(fonts/titillium/titilliumweb-extralight-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/titillium/TitilliumWeb-ExtraLight.ttf) format('truetype')
 }
 
 @font-face {
     font-family: TitilliumRegular;
-    src: url(fonts/Titillium/titilliumweb-regular-webfont.eot);
-    src: url(fonts/Titillium/titilliumweb-regular-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/Titillium/TitilliumWeb-Regular.ttf) format('truetype')
+    src: url(fonts/titillium/titilliumweb-regular-webfont.eot);
+    src: url(fonts/titillium/titilliumweb-regular-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/titillium/TitilliumWeb-Regular.ttf) format('truetype')
 }
 
 @font-face {
     font-family: TitilliumBold;
-    src: url(fonts/Titillium/titilliumweb-bold-webfont.eot);
-    src: url(fonts/Titillium/titilliumweb-bold-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/Titillium/TitilliumWeb-Bold.ttf) format('truetype')
+    src: url(fonts/titillium/titilliumweb-bold-webfont.eot);
+    src: url(fonts/titillium/titilliumweb-bold-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/titillium/TitilliumWeb-Bold.ttf) format('truetype')
 }
 
 @font-face {
     font-family: TitilliumItalic;
-    src: url(fonts/Titillium/titilliumweb-italic-webfont.eot);
-    src: url(fonts/Titillium/titilliumweb-italic-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/Titillium/TitilliumWeb-Italic.ttf) format('truetype')
+    src: url(fonts/titillium/titilliumweb-italic-webfont.eot);
+    src: url(fonts/titillium/titilliumweb-italic-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/titillium/TitilliumWeb-Italic.ttf) format('truetype')
 }
 
 @font-face {
     font-family: TitilliumBoldItalic;
-    src: url(fonts/Titillium/titilliumweb-bolditalic-webfont.eot);
-    src: url(fonts/Titillium/titilliumweb-bolditalic-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/Titillium/TitilliumWeb-BoldItalic.ttf) format('truetype')
+    src: url(fonts/titillium/titilliumweb-bolditalic-webfont.eot);
+    src: url(fonts/titillium/titilliumweb-bolditalic-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/titillium/TitilliumWeb-BoldItalic.ttf) format('truetype')
 }
 
 @font-face {
     font-family: TitilliumBlack;
-    src: url(fonts/Titillium/titilliumweb-black-webfont.eot);
-    src: url(fonts/Titillium/titilliumweb-black-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/Titillium/TitilliumWeb-Black.ttf) format('truetype')
+    src: url(fonts/titillium/titilliumweb-black-webfont.eot);
+    src: url(fonts/titillium/titilliumweb-black-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/titillium/TitilliumWeb-Black.ttf) format('truetype')
 }
 
 @font-face {
     font-family: OpenSansRegular;
-    src: url(fonts/OpenSans/OpenSans-Regular-webfont.eot);
-    src: url(fonts/OpenSans/OpenSans-Regular-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/OpenSans/OpenSans-Regular.ttf) format('truetype')
+    src: url(fonts/opensans/OpenSans-Regular-webfont.eot);
+    src: url(fonts/opensans/OpenSans-Regular-webfont.eot?#iefix) format('embedded-opentype'), url(fonts/opensans/OpenSans-Regular.ttf) format('truetype')
 }
 
 @font-face {
@@ -69,7 +69,7 @@ main img {
 
 body {
     background-color: #061c2c;
-    font-family: OpenSansRegular, Verdana, Arial;
+    font-family: OpenSansRegular, Arial, sans-serif;
     font-size: 16px;
     color: #363636
 }
@@ -90,7 +90,6 @@ main a, main a:focus, main a:hover {
 main a:link {
     text-decoration: none;
     color: #363636;
-    font-weight: 700;
     border-bottom: 1px solid #363636
 }
 
@@ -183,6 +182,10 @@ main a:active {
     clear: both
 }
 
+.MediaGallery table, .mediaLibraryFileName, .mediaLibraryIcon {
+    border: 0 solid #000
+}
+
 .mediaLibraryListTable {
     font-size: 14px
 }
@@ -233,28 +236,32 @@ span.btn-MoreInfo {
     border-bottom: 0 solid #363636
 }
 
-.EventList li {
+.EventList li, .notice_front li {
     border: 1px solid;
     padding: 5px;
     margin-top: 5px
 }
 
-.TextBlack {
-    color: #000
+.TextBlack, .TextBlack a {
+    color: #000;
+    border: 0 solid #000
 }
 
-.TextLightGrey {
-    color: #727272
+.TextBlack a:active, .TextBlack a:focus, .TextBlack a:hover, .TextBlack a:link, .TextBlack a:visited {
+    color: #000;
+    border-bottom: 1px dashed #000
 }
 
 .TitleDarkBlue {
-    font-family: NunitoSansBold;
-    color: #061c2c
+    font-family: TitilliumBold;
+    color: #061c2c;
+    text-transform: uppercase
 }
 
 .TitleDarkGrey {
-    font-family: NunitoSansRegular;
-    color: #363636
+    font-family: TitilliumRegular;
+    color: #363636;
+    text-transform: uppercase
 }
 
 .ViewAll {
@@ -290,7 +297,7 @@ h2 a, h3 a, h4 a {
 }
 
 .tbsZindex {
-    z-index: 9000
+    z-index: 1100
 }
 
 .tbsRow {
@@ -376,11 +383,6 @@ h2 a, h3 a, h4 a {
     margin-right: -15px !important
 }
 
-.tbsMarginMinusV {
-    margin-top: -15px !important;
-    margin-bottom: -15px !important
-}
-
 @media (min-width: 767px) {
     .tbsStacked {
         padding-left: 0;
@@ -425,8 +427,7 @@ a .ctaButton:focus, a .ctaButton:hover {
 }
 
 .ctaSmall p {
-    font-size: 12px;
-    margin-top: 5px
+    font-size: 12px
 }
 
 .tbsImageURL {
@@ -462,10 +463,6 @@ a .ctaButton:focus, a .ctaButton:hover {
     }
 }
 
-.ImgLink400 .tbsImageURL, .ImgLink400 .tbsImageURLh {
-    min-height: 400px
-}
-
 .HeaderMargin {
     Margin-top: 40px
 }
@@ -480,6 +477,22 @@ a .ctaButton:focus, a .ctaButton:hover {
 
 .BoxLightBlue {
     background-color: rgba(16, 58, 92, .95)
+}
+
+.BoxPaleBlue {
+    background-color: rgba(27, 101, 155, .95)
+}
+
+.BoxDarkYellow {
+    background-color: rgba(249, 180, 42, .95)
+}
+
+.BoxLightYellow {
+    background-color: rgba(250, 190, 69, .95)
+}
+
+.BoxPaleYellow {
+    background-color: rgba(253, 219, 153, .95)
 }
 
 .BoxDarkRed {
@@ -714,7 +727,6 @@ input[type=submit] {
 }
 
 .GoogleSearch input[type=submit], .StaffSearch input[type=submit] {
-    width: 14%;
     float: right
 }
 
@@ -773,7 +785,9 @@ td.Name {
 }
 
 .PagerControl {
-    font-size: 10px
+    font-size: 12px;
+    color: #fff;
+    clear: both
 }
 
 .PagerNumberArea {
@@ -781,7 +795,6 @@ td.Name {
 }
 
 .Pager, .gsc-cursor, .gsc-cursor-box {
-    clear: both;
     padding: 15px !important;
     margin-top: 15px;
     vertical-align: middle
@@ -794,7 +807,7 @@ td.Name {
 
 .gsc-cursor-page {
     color: #fff !important;
-    Background-color: #727272 !important;
+    Background-color: #727272;
     text-decoration: none !important;
     display: inline-block;
     border: 1px solid #fff !important;
@@ -812,7 +825,7 @@ td.Name {
 .Pager a, .PagerControl a, .PagerCurrent, .SelectedPage, .gsc-cursor-current-page {
     color: #fff !important;
     display: inline-block;
-    background-color: #f9b42a !important;
+    background-color: #f9b42a;
     border: 1px solid #fff !important;
     font-size: 14px;
     padding: 2px 5px
@@ -830,12 +843,22 @@ td.Name {
 }
 
 .Pager a:hover, .PagerControl a:hover, .gsc-cursor-page:hover, .home-icon img:hover {
-    color: #fff !important;
-    background-color: #f9b42a !important
+    color: #fff;
+    background-color: #f9b42a
 }
 
 .FeedCaption {
     font-size: 24px
+}
+
+.Pager {
+    float: left;
+    padding: 0 !important
+}
+
+.PagerCurrent {
+    float: left;
+    margin-top: 15px
 }
 
 .EventDate {
@@ -864,10 +887,19 @@ td.Name {
     margin-bottom: 10px
 }
 
-.EventList {
+.EventList, .notice_front ul {
     list-style-type: none;
     padding-left: 0;
-    margin-top: 15px
+    margin-top: 15px;
+    font-size: 14px
+}
+
+.notice_front a:link {
+    border-bottom: 0
+}
+
+.notice_front a:hover {
+    border-bottom: 1px dotted
 }
 
 .BlogGlyph {
@@ -903,7 +935,7 @@ td.Name {
 }
 
 .fontItalic {
-    font-family: NunitoSansItalic, Verdana, Arial
+    font-family: TitilliumItalic, Verdana, Arial
 }
 
 .fontBoldItalic {
@@ -1137,19 +1169,20 @@ td.Name {
 }
 
 .StrapLine {
-    font-family: NunitoSansItalic, Verdana, Arial;
-    color: #fff;
+    font-family: NunitoSansItalic, Arial, sans-serif;
+    color: #f9b42a;
     float: right
 }
 
 @media (min-width: 992px) {
     .StrapLine {
-        font-size: 18px
+        font-size: 18px;
+        float: right
     }
 }
 
 .NMMUText {
-    font-family: NunitoSansItalic, Verdana, Arial;
+    font-family: TitilliumItalic, Verdana, Arial;
     color: #fff;
     float: right;
     padding-right: 15px;
@@ -1696,6 +1729,10 @@ p {
     font-size: 24px
 }
 
+#almanac {
+    font-size: 14px
+}
+
 .almanacmonths {
     background-color: rgba(54, 54, 54, .95);
     padding: 15px
@@ -1712,12 +1749,14 @@ p {
     border: 1px solid #fff !important
 }
 
-.transparentBackgroundBlack {
-    background-color: rgba(0, 0, 0, .95)
+.almanacheading {
+    font-weight: 700;
+    font-size: 14px;
+    color: #f9b42a
 }
 
-.transparentBackgroundDarkBlue {
-    background-color: rgba(6, 28, 44, .95)
+.transparentBackgroundBlack {
+    background-color: rgba(0, 0, 0, .95)
 }
 
 .transparentBackgroundWhite {
@@ -1888,8 +1927,6 @@ p {
 @media (max-width: 767px) {
     .imgLogoS {
         width: 100%;
-        max-width: 52px;
-        max-height: 45px;
         display: block !important;
         margin: 0 auto
     }
@@ -2015,7 +2052,7 @@ p {
     text-align: center;
     padding: 10px 0;
     color: #fff;
-    font-family: NunitoSansItalic, Verdana, Arial;
+    font-family: TitilliumItalic, Verdana, Arial;
     font-size: 16px;
     border: thin solid #fff
 }
@@ -2144,14 +2181,14 @@ p {
 }
 
 .NewsViewAll {
-    font-family: NunitoSansBoldItalic, Verdana, Arial;
+    font-family: TitilliumBoldItalic, Verdana, Arial;
     padding-bottom: 10px;
     padding-top: 15px
 }
 
 .AcademicEntitiesContentDetail {
     font-size: 12px;
-    font-family: NunitoSansBold, Verdana, Arial;
+    font-family: TitilliumBold, Verdana, Arial;
     color: #fff;
     white-space: normal;
     padding-left: 10px
@@ -2246,7 +2283,7 @@ p {
 }
 
 .MegaMenuHeaderRed {
-    font-family: NunitoSansBold, Verdana, Arial;
+    font-family: TitilliumBold, Verdana, Arial;
     padding-top: 10px;
     cursor: pointer;
     font-size: 13px
@@ -2326,7 +2363,7 @@ ul.mega-menu {
 
 .mega-menu .Level3 {
     padding-left: 15px;
-    background: url(../images/theme/menudot.jpg) 5px center no-repeat
+    background: url(images/menudot.jpg) 5px center no-repeat
 }
 
 .MegaDropDown li a {
@@ -2408,7 +2445,7 @@ ul.mega-menu {
 }
 
 .SocialIcons {
-    margin-top: 5px
+    margin-top: 10px
 }
 
 @media (max-width: 767px) {
@@ -2449,7 +2486,7 @@ ul.mega-menu {
 }
 
 .MegaDropDownDiv > ul > li a {
-    font-family: NunitoSansRegular, Arial, sans-serif !important;
+    font-family: TitilliumRegular, Verdana, Arial !important;
     font-size: 16px !important
 }
 
@@ -2477,7 +2514,7 @@ ul.mega-menu {
 }
 
 .MegaMenuHeader {
-    font-family: NunitoSansBold, Verdana, Arial;
+    font-family: TitilliumBold, Verdana, Arial;
     padding-top: 10px;
     cursor: pointer;
     font-size: 13px;
@@ -2508,7 +2545,7 @@ ul.mega-menu {
 
 #MailDropDown li a {
     background-color: #363636;
-    font-family: NunitoSansRegular, Verdana, Arial;
+    font-family: TitilliumRegular, Verdana, Arial;
     font-size: 16px;
     color: #fff;
     border-bottom: #fff 1px dotted
@@ -2519,7 +2556,7 @@ ul.mega-menu {
 }
 
 .navbar-nav > li > a {
-    font-family: NunitoSansRegular, Verdana, Arial;
+    font-family: TitilliumRegular, Verdana, Arial;
     color: #fff;
     font-size: 16px !important;
     padding: 5px
@@ -2566,7 +2603,7 @@ ul.mega-menu {
 }
 
 .textRegularItalic {
-    font-family: NunitoSansItalic, Verdana, Arial
+    font-family: TitilliumItalic, Verdana, Arial
 }
 
 .bodyMenuStyling {
@@ -2598,13 +2635,13 @@ ul.mega-menu {
 
 .sm-clean a {
     color: #fff !important;
-    font-family: NunitoSansRegular, Verdana, Arial;
+    font-family: TitilliumRegular, Verdana, Arial;
     text-align: left;
     background-color: #363636 !important
 }
 
 .sm-clean a:hover {
-    font-family: NunitoSansItalic, Verdana, Arial;
+    font-family: TitilliumItalic, Verdana, Arial;
     background-color: #f9b42a !important
 }
 
@@ -2633,7 +2670,7 @@ ul.mega-menu {
 #MenuOnBody {
     float: left;
     margin-top: 15px;
-    background: url(../images/theme/hamburgermenu.png) right no-repeat
+    background: url(/App_Themes/Default/images/hamburgermenu.png) right no-repeat
 }
 
 #MenuOnBody ul {
@@ -2652,7 +2689,7 @@ ul.mega-menu {
     margin-top: 15px;
     height: 40px;
     padding: 9px;
-    font-family: NunitoSansRegular, Verdana, Arial;
+    font-family: TitilliumRegular, Verdana, Arial;
     font-size: 14px
 }
 
@@ -2806,7 +2843,7 @@ a.ajax__tab_tab {
 
 .ItalicaJourneyDep {
     padding-top: 10px;
-    font-family: NunitoSansBoldItalic, Verdana, Arial
+    font-family: TitilliumBoldItalic, Verdana, Arial
 }
 
 @media (max-width: 767px) {
@@ -2825,7 +2862,7 @@ a.ajax__tab_tab {
 }
 
 .SubGalleryHeader {
-    font-family: NunitoSansBold, Verdana, Arial
+    font-family: TitilliumBold, Verdana, Arial
 }
 
 @media (min-width: 992px) {
@@ -2861,7 +2898,7 @@ a.ajax__tab_tab {
 }
 
 .SubGalleryDetail {
-    font-family: NunitoSansBold, Verdana, Arial;
+    font-family: TitilliumBold, Verdana, Arial;
     font-size: 12px;
     max-height: 270px
 }
@@ -2875,7 +2912,7 @@ a.ajax__tab_tab {
 }
 
 .GalleryHeader {
-    font-family: NunitoSansBold, Verdana, Arial;
+    font-family: TitilliumBold, Verdana, Arial;
     color: #000;
     padding-left: 50px
 }
@@ -2986,7 +3023,7 @@ a.ajax__tab_tab {
 }
 
 .depOurDepartmentsHeader {
-    font-family: NunitoSansBold;
+    font-family: TitilliumBold;
     padding: 5px;
     font-size: 18px
 }
@@ -3078,7 +3115,7 @@ a.ajax__tab_tab {
 
 .DepartmentStrapLine {
     letter-spacing: 3px;
-    font-family: NunitoSansBold;
+    font-family: TitilliumBoldItalic;
     text-align: right;
     padding-bottom: 10px
 }
@@ -3102,7 +3139,7 @@ a.ajax__tab_tab {
 }
 
 .DepartmentBlueDetail {
-    font-family: NunitoSansBold;
+    font-family: TitilliumBold;
     text-align: right
 }
 
@@ -3147,9 +3184,9 @@ a.ajax__tab_tab {
 }
 
 .EntityHeader {
-    font-family: NunitoSansBold;
+    font-family: NunitoSansBold, Arial, sans-serif;
     text-align: right;
-    color: #fff
+    color: #f9b42a
 }
 
 @media (max-width: 767px) {
@@ -3160,14 +3197,14 @@ a.ajax__tab_tab {
 
 @media (min-width: 767px) and (max-width: 992px) {
     .EntityHeader {
-        font-size: 18px
+        font-size: 24px
     }
 }
 
 @media (min-width: 992px) {
     .EntityHeader {
         margin-bottom: -7px;
-        font-size: 30px
+        font-size: 36px
     }
 }
 
@@ -3186,12 +3223,12 @@ a.ajax__tab_tab {
 @media (min-width: 992px) {
     .ResizeEntityHeader {
         margin-bottom: -7px;
-        font-size: 24px
+        font-size: 26px
     }
 }
 
 .DepartmentBlackHeader {
-    font-family: NunitoSansBold;
+    font-family: TitilliumBold;
     text-align: right
 }
 
@@ -3323,6 +3360,41 @@ a.ajax__tab_tab {
     padding-right: 0
 }
 
+.diy-slideshow {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding-left: 10px
+}
+
+figure {
+    position: absolute;
+    opacity: 0;
+    transition: 1s opacity
+}
+
+figcaption {
+    position: absolute;
+    font-family: sans-serif;
+    font-size: .8em;
+    top: 3.95em;
+    right: .35em;
+    padding: .25em;
+    color: #fff;
+    background: rgba(0, 0, 0, .25);
+    border-radius: 2px
+}
+
+figcaption a {
+    color: #fff
+}
+
+figure.show {
+    opacity: 1;
+    position: static;
+    transition: 1s opacity
+}
+
 .galleryBackground {
     text-align: center;
     padding-top: 20px
@@ -3396,18 +3468,12 @@ a.ajax__tab_tab {
 }
 
 .videoGallery .rsThumb:hover {
-    background-color: #fabe45;
-    color: #000
+    background: #dc4844
 }
 
 .videoGallery .rsThumb.rsNavSelected {
-    background-color: #fabe45;
-    border-bottom: -color #02874a;
-    color: #000
-}
-
-.rsDefault .rsTmb span {
-    color: grey
+    background-color: #dc4844;
+    border-bottom: -color #02874a
 }
 
 .sampleBlock {
@@ -3773,23 +3839,22 @@ a.ajax__tab_tab {
     margin-top: 15px
 }
 
-.sp-tab-panel a:link {
+#adsWebpart .nav-tabs a:link, #noticesWebpart .nav-tabs a:link, .sp-tab-panel a:link {
     border-bottom: 0;
     font-weight: 400
 }
 
-.sp-tab-panel ul.nav.nav-tabs a:link {
+#adsWebpart ul.nav.nav-tabs a:link, #noticesWebpart ul.nav.nav-tabs a:link, .sp-tab-panel ul.nav.nav-tabs a:link {
     border-bottom: 0;
-    font-family: NunitoSansBold, Verdana, Arial;
-    text-transform: uppercase
+    font-family: NunitoSansBold, Arial, sans-serifl
 }
 
-.sp-tab-panel a:focus, .sp-tab-panel a:hover {
+#adsWebpart a:focus, #adsWebpart a:hover, #noticesWebpart a:focus, #noticesWebpart a:hover, .sp-tab-panel a:focus, .sp-tab-panel a:hover {
     border-bottom: 1px dashed
 }
 
 .portal-icon a:hover {
-    color: #fabe45
+    color: #f9b42a
 }
 
 div.aw-widget-current-inner div.aw-widget-content a.aw-current-weather h3 {
@@ -3814,6 +3879,29 @@ div.aw-widget-current-inner div.aw-widget-content a.aw-current-weather p span.aw
 
 .sp-icon-panel .panel, .sp-icon-panel .panel-heading {
     background-color: #363636
+}
+
+#adsWebpart a:link, #noticesWebpart a:link {
+    border-bottom: 0;
+    font-weight: 400
+}
+
+#adsWebpart a:hover, #noticesWebpart a:hover {
+    border-bottom: 1px dashed
+}
+
+#adsWebpart .list-group-item, #noticesWebpart .list-group-item {
+    border: none
+}
+
+#adsWebpart .panel, #noticesWebpart .panel {
+    border-radius: 0;
+    border-top: none
+}
+
+#adsWebpart .nav > li > a:focus, #adssWebpart .nav > li > a:hover, #noticesWebpart .nav > li > a:focus, #noticesWebpart .nav > li > a:hover {
+    text-decoration: none;
+    background-color: #fff
 }
 
 .sp-icon-panel {
@@ -3882,7 +3970,8 @@ div.aw-widget-current-inner div.aw-widget-content a.aw-current-weather p span.aw
 
 .std_module .panel {
     border: 0;
-    background-color: transparent
+    background-color: transparent;
+    box-shadow: none
 }
 
 .std_module .panel-heading {
@@ -3906,15 +3995,15 @@ div.aw-widget-current-inner div.aw-widget-content a.aw-current-weather p span.aw
 }
 
 .modal {
-    z-index: 9130
+    z-index: 1130
 }
 
-#myModal-label.modal-title, #timetableModal .modal-title {
+#Notices .modal-title, #timetableModal .modal-title {
     color: #000;
     text-align: center
 }
 
-#myModal-label a, #myModal-label p, #timetableModal a, #timetableModal p {
+#Notices .modal-body, #timetableModal a, #timetableModal p {
     color: #000
 }
 
@@ -3932,62 +4021,135 @@ div.aw-widget-current-inner div.aw-widget-content a.aw-current-weather p span.aw
     padding: 1px
 }
 
-.CountdownCss {
-    font-weight: 700;
-    color: #006b34;
-    font-size: large;
-    text-align: center;
-    padding-bottom: 15px;
-    padding-top: 25px
+.PollAnswerRadio label {
+    color: #fff
+}
+
+.PollAnswers {
+    margin-top: 5px
+}
+
+.PollAnswer {
+    padding-top: 10px
+}
+
+.PollAnswerCheck label {
+    color: #fff;
+    margin-left: 10px
+}
+
+.PollAnswerText {
+    color: #fff
+}
+
+.PollGraph {
+    background-color: #061c2c
+}
+
+.PollGraph > div:first-child {
+    background-color: #f9b42a
+}
+
+.PollFooter {
+    margin: 10 0
+}
+
+.PollVoteButton {
+    margin-top: 10px
+}
+
+.PollCount {
+    color: #fff;
+    padding-left: 5px
+}
+
+.PollResult {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: absolute
+}
+
+.PollInfo {
+    display: block;
+    margin-top: 10px
+}
+
+.modal-content a:active, .modal-content a:link, .modal-content a:visited {
+    color: #000
+}
+
+.modal-content a:hover {
+    color: #000;
+    border-bottom-color: #000
+}
+
+.NewsPreviewTitle a:hover, .NewsPreviewTitle a:link {
+    font-weight: 700
 }
 
 .NoContactHeader #contactsTitle {
     display: none
 }
 
-.MegaBus .mega-menu {
-    display: none !important
+.customisable, .customisable-highlight, .customisable:link, .customisable:visited {
+    color: initial !important
 }
 
-.MegaBus .navbar-default .navbar-nav > .open > a {
-    background-color: transparent !important
+.nav-tabs {
+    border-bottom: 1px solid #aaa
 }
 
-.MegaBus .navbar-default .navbar-nav > .open > a:hover {
-    background-color: #f9b42a !important
+.ContributionPanel, .ContributionsList {
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #d3d3d3
 }
 
-#menuElem {
-    display: block;
-    list-style: none;
-    background-color: #103a5c;
-    margin-left: -15px;
-    margin-right: -15px;
-    padding: 15px;
-    margin-top: 15px
+.EditForm .Pageheader {
+    padding: 0
 }
 
-#menuElem a {
-    color: #fff;
-    border: 0
+.ContributionsEdit {
+    background-color: #fff
 }
 
-#menuElem li {
-    color: #fff;
-    margin-bottom: 5px;
-    padding: 5px;
-    border: 0
+.ContributionPanel, .NewItemLink {
+    font-size: 20px
 }
 
-#menuElem li.HighLighted, #menuElem li:hover {
-    background-color: #f9b42a
+.EditContributionEdit {
+    margin-right: 30px
 }
 
-.BSaccreditation {
-    margin: 0 auto 20px;
-    background-color: #DFDFDF;
-    background-image: url(/businessschool/media/store/images/home/accreditation_bg.png);
-    background-position: left;
-    background-repeat: repeat-y;
-    clear: both
+.NewAttachment {
+    padding-top: 10px;
+    padding-bottom: 10px
+}
+
+.UniGridActions, .UniGridGrid, .UniGridGrid td, .UnigridActionButton {
+    padding: 5px
+}
+
+.HiddenButton {
+    visibility: hidden
+}
+
+.ItemsLink {
+    padding: 15px
+}
+
+.EditForm .Pageheader {
+    background-color: #fff
+}
+
+.ContentEditMenu {
+    padding: 15px
+}
+
+#Module_display .panel-body .list-group a {
+    color: #fff
+}
+
+#Module_display .panel-body .list-group a:focus, #Module_display .panel-body .list-group a:hover {
+    border-bottom: 1px dashed #fff
 }
