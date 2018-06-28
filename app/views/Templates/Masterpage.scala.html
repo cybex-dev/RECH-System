@@ -3,9 +3,9 @@
 * message to display.
 *@
 @import views.html.Theme.{nmu_stylesheets, nmu_javascripts, static_header, rech_header, rech_menu_bar, nmu_footer}
-@import views.html.Global.Templates.{DefaultBody, DefaultHead, DefaultPage}
+@import views.html.Templates.{DefaultBody, DefaultHead, DefaultPage, BodyComponent}
 
-@(pageTabTitle: String = "Nelson Mandela University")
+@(pageTabTitle: String)(bodyContent: Html)
 @*
 * Call the `main` template with two arguments. The first
 * argument is a `String` with the title of the page, the second
@@ -13,13 +13,13 @@
 *@
 
 @DefaultPage.apply{
-    @DefaultHead.apply(pageTabTitle){
+    @DefaultHead.apply("Nelson Mandela University" + pageTabTitle){
         @nmu_stylesheets.apply()
         @nmu_javascripts.apply()
     }
 } {
     @DefaultBody.apply {
-        <form method="post" action="@routes.HomeController.postMandelaSecure()" id="form">
+        <form method="post" action="@routes.HomeController.postNMUSearch()" id="form">
             @helper.CSRF.formField
             @static_header.apply()
             <div id="LogoBar" class="container-fluid transparentBackgroundBlue">
@@ -32,8 +32,9 @@
             </div>
         </form>
     } {
-        <h1>Body content</h1>
-        <p>Some body content goes here</p>
+        @BodyComponent.apply{
+            @bodyContent
+        }
     } {
         @nmu_footer.apply()
     }

@@ -5,7 +5,7 @@ import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.*;
 
-import views.html.nmu_homepage;
+import views.html.Templates.Masterpage;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,10 +32,7 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(nmu_homepage.render(null));
-    }
-    public Result base(){
-        return ok();
+        return ok(Masterpage.render(null,null));
     }
 
     /**
@@ -76,22 +73,11 @@ public class HomeController extends Controller {
      * Posts to mandela.ac.za via HTTPS secure
      * @return
      */
-    public Result postMandelaSecure() {
+    public Result postNMUSearch() {
         DynamicForm nmu_form = formFactory.form().bindFromRequest();
         String searchPhrase = nmu_form.get("p$lt$zoneSearchBox$SearchBox$txtWord");
         if (searchPhrase == null)
             searchPhrase = "";
         return redirectMandelaSecure("Search.aspx?searchtext=" + searchPhrase  + "&searchmode=anyword");
     }
-
-    /**
-     * Posts to mandela.ac.za via HTTP insecure
-     * @return
-     */
-    public Result postMandela() {
-        Http.Request request = request();
-        Http.Session session = session();
-        return ok();
-    }
-
 }

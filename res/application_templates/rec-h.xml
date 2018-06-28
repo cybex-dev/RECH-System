@@ -1,0 +1,49 @@
+<?xml version="1.0."?>
+<application type="human" version="1">
+    <section name="General Particulars">
+        <group name="Title Of Study">
+            <component id="title" type="text">
+                <question hint="The title should explain what your study is about, but keep it short.">Concise descriptive title of study (must contain keywords that best describe the study)</question>
+                <value></value>
+            </component>
+        </group>
+        <group name="Primary Responsible Person">
+            <component id="prp" type="">
+                <question></question>
+                <value></value>
+            </component>
+        </group>
+    </section>
+    <section id="">
+        <group name="">
+            <component id="" type="">
+                <question></question>
+                <value></value>
+            </component>
+        </group>
+    </section>
+    <section id="">
+        <group name="">
+            <component id="" type="">
+                <question></question>
+                <value></value>
+            </component>
+        </group>
+    </section>
+    <section id="">
+        <group name="">
+            <component id="" type="">
+                <question></question>
+                <value></value>
+            </component>
+        </group>
+    </section>
+    <section id="">
+        <group name="">
+            <component id="" type="">
+                <question></question>
+                <value></value>
+            </component>
+        </group>
+    </section>
+</application>

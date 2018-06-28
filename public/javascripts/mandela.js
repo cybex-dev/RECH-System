@@ -10,9 +10,9 @@ $(document).ready(function () {
 
 					
 
-    $('#GalleryCarousel').carousel({
-        interval: 0
-    })
+    // $('#GalleryCarousel').carousel({
+    //     interval: 0
+    // })
 
     $('#MenuMobileMega').click(function () { $('#MegaMenuContainerMobile').toggle(); });
 
