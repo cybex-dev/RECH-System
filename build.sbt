@@ -9,7 +9,7 @@ version := "1.0"
 // Plugin Version : 4.1.3
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayJava, PlayEbean)
+  .enablePlugins(PlayJava, PlayEbean, ScalaJSPlugin, ScalaJSWeb)
 
 scalaVersion := "2.12.6"
 
@@ -48,9 +48,7 @@ libraryDependencies += "org.webjars" % "popper.js" % "1.14.1"
 // Resolver is needed only for SNAPSHOT versions
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-libraryDependencies ++= Seq(
-  "com.adrianhurt" %% "play-bootstrap" % "1.4-P26-B4-SNAPSHOT"
-)
+libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.4-P26-B4-SNAPSHOT"
 
 // Make verbose tests
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))

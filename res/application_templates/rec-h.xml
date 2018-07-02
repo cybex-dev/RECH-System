@@ -1,46 +1,85 @@
 <?xml version="1.0."?>
 <application type="human" version="1">
-    <section name="General Particulars">
-        <group name="Title Of Study">
+    <section id="sct_general_particulars" name="General Particulars" hint="Basic information about your study">
+        <group id="grp_title_of_study" name="Title Of Study" hint="Title of your study">
             <component id="title" type="text">
                 <question hint="The title should explain what your study is about, but keep it short.">Concise descriptive title of study (must contain keywords that best describe the study)</question>
                 <value></value>
             </component>
         </group>
-        <group name="Primary Responsible Person">
-            <component id="prp" type="">
+        <group id="grp_prp" name="Primary Responsible Person" hint="The PRP must be a permanent Nelson Mandela University staff member.">
+            <component name="" id="prp_firstname" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_lastname" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_campus" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_building" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_floor" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_room" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_contact_telephone" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_contact_mobile" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_faculty" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+            <component name="" id="prp_department" type="text" hint="">
+                <question></question>
+                <value></value>
+            </component>
+        </group>
+        <group id="grp_pi" name="" hint="">
+
+        </group>
+    </section>
+    <section id="" name="" hint="">
+        <group id="" name="" hint="">
+            <component id="" name="" type="" hint="">
                 <question></question>
                 <value></value>
             </component>
         </group>
     </section>
-    <section id="">
-        <group name="">
-            <component id="" type="">
+    <section id="" name="" hint="">
+        <group id="" name="" hint="">
+            <component id="" name="" type="" hint="">
                 <question></question>
                 <value></value>
             </component>
         </group>
     </section>
-    <section id="">
-        <group name="">
-            <component id="" type="">
+    <section id="" name="" hint="">
+        <group id="" name="" hint="">
+            <component id="" name="" type="" hint="">
                 <question></question>
                 <value></value>
             </component>
         </group>
     </section>
-    <section id="">
-        <group name="">
-            <component id="" type="">
-                <question></question>
-                <value></value>
-            </component>
-        </group>
-    </section>
-    <section id="">
-        <group name="">
-            <component id="" type="">
+    <section id="" name="" hint="">
+        <group id="" name="" hint="">
+            <component id="" name="" type="" hint="">
                 <question></question>
                 <value></value>
             </component>
