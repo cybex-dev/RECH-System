@@ -144,7 +144,67 @@
             </component>
         </group>
     </section>
-    <section id="" name="" hint="">
+    <section id="sct_risks_benefits" name="Risks and Benefits of this Study" hint="Highlights the need for the study and benefits obtained from results.">
+        <extension orientation="vertical">
+            <component id="has_risk" name="" type="boolean" hint="Risk refers to harm, embarresment or offence, even in the slightest form or temporary to the participant, third parties or to a community.">
+                <question>Any risk involved</question>
+                <value></value>
+            </component>
+            <list id="list_risks" hint="List all risks resulting from study">
+                <component id="risk_desc" name="" type="text" hint="Description of risk">
+                    <question>Risk Description</question>
+                    <value></value>
+                </component>
+                <component id="risk_reversible" name="" type="boolean" hint="Is the effect of the risk reversible">
+                    <question>IS risk effect reversible</question>
+                    <value></value>
+                </component>
+                <component id="risk_alternative_procedures" name="" type="boolean" hint="Are their alternative procedures available to cater for risk?">
+                    <question>Alternative Procedures Available</question>
+                    <value></value>
+                </component>
+                <component id="risk_remedial_measures" name="" type="boolean" hint="Are there remedial measures available catering for risk effects">
+                    <question>Remedial Measures avaialable</question>
+                    <value></value>
+                </component>
+                <component id="risk_pi_previous_experience" name="" type="boolean" hint="Have you had any previous experience administering the associated risk?">
+                    <question>Previous Experience</question>
+                    <value></value>
+                </component>
+            </list>
+        </extension>
+        <extension orientation="vertical">
+            <component id="has_benefits" name="" type="boolean" hint="Are there any benefits for the participants participating in the study e.g. Improved mental or financial state">
+                <question>Any benefits</question>
+                <value></value>
+            </component>
+            <component id="benefits_desc" name="" type="text" hint="Briefly specify the expected benefits">
+                <question>List expected benefits of the study</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="has_equipment" name="" type="boolean" hint="Does the study require any equipment in order to be conducted">
+                <question>Uses equipment</question>
+                <value></value>
+            </component>
+            <component id="equipment_desc" name="" type="text" hint="Specify equipment to be used, and the purpose of it.">
+                <question>Describe equipment and its uses.</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="has_collections" name="" type="boolean" hint="Will any article of property or culture be collected and studied, needed to complete study">
+                <question>Will be collecting items</question>
+                <value></value>
+            </component>
+            <component id="collections_desc" name="" type="text" hint="Specify any article(s) that will be collected during the study">
+                <question>Describe articles that will be collected</question>
+                <value></value>
+            </component>
+        </extension>
+    </section>
+    <section id="sct_target_participant_group" name="Target Participant Group" hint="">
         <group id="" name="" hint="">
             <component id="" name="" type="" hint="">
                 <question></question>
@@ -152,7 +212,7 @@
             </component>
         </group>
     </section>
-    <section id="" name="" hint="">
+    <section id="sct_participant_consent" name="Consent of Particpants" hint="">
         <group id="" name="" hint="">
             <component id="" name="" type="" hint="">
                 <question></question>
@@ -160,7 +220,7 @@
             </component>
         </group>
     </section>
-    <section id="" name="" hint="">
+    <section id="sct_participant_info" name="Information to Participants" hint="">
         <group id="" name="" hint="">
             <component id="" name="" type="" hint="">
                 <question></question>
@@ -168,7 +228,63 @@
             </component>
         </group>
     </section>
-    <section id="" name="" hint="">
+    <section id="sct_priv_anon_conf" name="Privacy, Anonymity and Confidentiality of Data" hint="">
+        <group id="" name="" hint="">
+            <component id="" name="" type="" hint="">
+                <question></question>
+                <value></value>
+            </component>
+        </group>
+    </section>
+    <section id="sct_feedback" name="Feedback" hint="">
+        <extension orientation="vertical">
+            <component id="is_feedback_given" name="" type="boolean" hint="Will feedback be given to the participants involved in the study">
+                <question>Will feedback be given</question>
+                <value></value>
+            </component>
+            <component id="feedback_method" name=""  dropdown="true" text-enabled="true" type="text" hint="Method of giving feedback e.g. Oral, Written">
+                <question>Method of conveying feedback</question>
+                <value></value>
+            </component>
+            <component id="feedback_time" name=""  dropdown="true" text-enabled="true" type="text" hint="When feedback is given e.g. end of project, during project">
+                <question>When feedback is given</question>
+                <value></value>
+            </component>
+            <component id="feedback_manner" name=""  dropdown="true" text-enabled="true" type="text" hint="How feedback is given e.g. individual or group setting">
+                <question>How feedback is given</question>
+                <value></value>
+            </component>
+            <component id="feedback_details" name=""  dropdown="true" required="false" text-enabled="true" type="text" hint="Additional information when giving feedback">
+                <question>Additional details</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="is_school_institution" name="" type="boolean" hint="Is the study conducted within a school or any form of institution">
+                <question>School/Institution</question>
+                <value></value>
+            </component>
+            <extension orientation="vertical">
+                <component id="feedback_school_institution" name="" type="text" hint="Will feedback be given to school authorities, teachers or institution leaders">
+                    <question>Feedback given to institution leaders</question>
+                    <value></value>
+                </component>
+                <component id="feedback_school_institution_desc" name="" type="text" alternative_hint="Briefly specify why feedback will not be given" hint="Specify what feedback will be given to institution leaders/ school authorities">
+                    <question alternative="Motivate why feedback will not be given">Describe feedback given</question>
+                    <value></value>
+                </component>
+            </extension>
+        </extension>
+    </section>
+    <section id="sct_ethics_legal" name="Ethical and Legal Aspects" hint="">
+        <group id="" name="" hint="">
+            <component id="" name="" type="" hint="">
+                <question></question>
+                <value></value>
+            </component>
+        </group>
+    </section>
+    <section id="sct_declaration" name="Declaration" hint="">
         <group id="" name="" hint="">
             <component id="" name="" type="" hint="">
                 <question></question>
