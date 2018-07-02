@@ -20,3 +20,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "4.1.3")
 // Scala.JS
 addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.8")
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "1.0.0-M3")
+
+// For packaging system
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.5")

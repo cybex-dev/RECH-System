@@ -2,55 +2,146 @@
 <application type="human" version="1">
     <section id="sct_general_particulars" name="General Particulars" hint="Basic information about your study">
         <group id="grp_title_of_study" name="Title Of Study" hint="Title of your study">
-            <component id="title" type="text">
-                <question hint="The title should explain what your study is about, but keep it short.">Concise descriptive title of study (must contain keywords that best describe the study)</question>
+            <component id="title" type="text" hint="The title should explain what your study is about, but keep it short.">
+                <question>Concise descriptive title of study (must contain keywords that best describe the study)</question>
                 <value></value>
             </component>
         </group>
-        <group id="grp_prp" name="Primary Responsible Person" hint="The PRP must be a permanent Nelson Mandela University staff member.">
-            <component name="" id="prp_firstname" type="text" hint="">
-                <question></question>
+        <group id="grp_prp" name="Primary Responsible Person" hint="The PRP must be a permanent Nelson Mandela University staff member." autofill_id="">
+            <component name="" id="prp_firstname" type="text" hint="Firstname of PRP">
+                <question>Firstname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_lastname" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_lastname" type="text" hint="lastname of PRP">
+                <question>Lastname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_campus" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found">
+                <question>Campus</question>
                 <value></value>
             </component>
-            <component name="" id="prp_building" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_building" dropdown="true" type="text" hint="Building where PRP is found">
+                <question>Building</question>
                 <value></value>
             </component>
-            <component name="" id="prp_floor" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_floor" dropdown="true" type="number" hint="Floor where PRP is found">
+                <question>Floor</question>
                 <value></value>
             </component>
-            <component name="" id="prp_room" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_room" dropdown="true" type="number" hint="Room where PRP is found">
+                <question>Office</question>
                 <value></value>
             </component>
-            <component name="" id="prp_contact_telephone" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_contact_telephone" type="text" hint="Office Telephone number of PRP">
+                <question>Office Telephone</question>
                 <value></value>
             </component>
-            <component name="" id="prp_contact_mobile" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_contact_mobile" type="text" hint="Mobile number of PRP">
+                <question>Mobile Number</question>
                 <value></value>
             </component>
-            <component name="" id="prp_faculty" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_faculty" dropdown="true"  type="text" hint="Faculty of PRP">
+                <question>Faculty</question>
                 <value></value>
             </component>
-            <component name="" id="prp_department" type="text" hint="">
-                <question></question>
+            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP">
+                <question>Department</question>
                 <value></value>
             </component>
         </group>
-        <group id="grp_pi" name="" hint="">
-
+        <group id="grp_pi" name="Principle Investigators and Co-workers" hint="Your details as the researcher" autofill_id="" is_prp="">
+            <component name="" id="pi_firstname" type="text" hint="Your firstname">
+                <question>Firstname</question>
+                <value></value>
+            </component>
+            <component name="" id="pi_lastname" type="text" hint="Your lastname">
+                <question>Lastname</question>
+                <value></value>
+            </component>
+            <component name="" id="pi_gender" dropdown="true" type="boolean" hint="Your biological gender assigned at birth">
+                <question>Gender</question>
+                <value></value>
+            </component>
+            <list id="list_coworkers" hint="Co workers on research study" affiliation_group="">
+                <component name="" id="cw_firstname" type="text" hint="Coworker's firstname">
+                    <question>Firstname</question>
+                    <value></value>
+                </component>
+                <component name="" id="cw_lastname" type="text" hint="Coworker's lastname">
+                    <question>Lastname</question>
+                    <value></value>
+                </component>
+                <component name="" id="cw_affiliation" type="text" dropdown="true" text-enabled="true" hint="Affiliation of coworker to study">
+                    <question>Affiliation</question>
+                    <value></value>
+                </component>
+            </list>
+        </group>
+        <group id="grp_study_details" name="Study Details" hint="Information about the study">
+            <component id="study_scope" type="text" dropdown="true" hint="The scope in which the study will be performed, the geographical reaches">
+                <question>Study Scope</question>
+                <value></value>
+            </component>
+            <component id="purpose" type="text" dropdown="true" hint="Your current degree for which you are performing the study (if applicable)">
+                <question>Purpose</question>
+                <value></value>
+            </component>
+            <component id="funding_type" type="text" dropdown="true" hint="Is your research study funded?">
+                <question>Has funding</question>
+                <value></value>
+            </component>
+            <component id="funding_desc" type="text" hint="Give details of funding">
+                <question>Funding details</question>
+                <value></value>
+            </component>
+            <extension orientation="vertical">
+                <component id="has_restrictions" type="boolean" hint="Are there publication restrictions associated with study results">
+                    <question>Publication Restrictions</question>
+                    <value></value>
+                </component>
+                <component id="restrictions_desc" type="text" hidden="false" hint="The scope in which the study will be performed, the geographical reaches">
+                    <question>Study Scope</question>
+                    <value></value>
+                </component>
+                <component id="doc_restrictions" type="document" required="false" hint="Document which provides details of restrictions">
+                    <question>Restriction Supporting Documents</question>
+                    <value></value>
+                </component>
+            </extension>
+            <component id="date_start" type="date" hint="Date when data collection is expected to start.">
+                <question>Start Date</question>
+                <value></value>
+            </component>
+            <component id="date_end" type="date" hint="Date when study is expected to end.">
+                <question>End Date</question>
+                <value></value>
+            </component>
+            <component id="objectives" type="text" hint="The main study objectives (Grand Tour Questions) of the study are to be clearly stated.">
+                <question>Objectives of Study</question>
+                <value></value>
+            </component>
+            <component id="rationale" type="text" max-words="300" hint="State the background and reason for performing this research, supporting references may be included.">
+                <question>Rationale of Study</question>
+                <value></value>
+            </component>
+        </group>
+        <group id="grp_methodology" name="Methodology" hint="Information about your research methodology">
+            <component id="methodology_text" type="text" hint="A brief description of your methodology (max 300 words)" max-words="300">
+                <question>Methodology</question>
+                <value></value>
+            </component>
+            <component id="doc_methodology" type="document" required="true" hint="A fully detailed document containing research methodology protocol and information - previously known as Appendix 1">
+                <question>Methodology Document</question>
+                <value></value>
+            </component>
+            <component id="max_participants" type="number" hint="Minimum number of people required to make study viable">
+                <question>Min Participants</question>
+                <value></value>
+            </component>
+            <component id="max_participants" type="number" hint="Maximum expected individuals">
+                <question>Max Participants</question>
+                <value></value>
+            </component>
         </group>
     </section>
     <section id="" name="" hint="">
