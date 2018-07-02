@@ -205,36 +205,190 @@
         </extension>
     </section>
     <section id="sct_target_participant_group" name="Target Participant Group" hint="">
-        <group id="" name="" hint="">
-            <component id="" name="" type="" hint="">
+        <extension orientation="vertical">
+            <component id="requires_characteristics" name="" type="boolean" hint="Does the target group require a specific (set of) characteristic(s) e.g. age, cultural derivation, background">
+                <question>Requires particular characteristic</question>
+                <value></value>
+            </component>
+            <component id="characteristics_desc" name="" type="" hint="Describe required characteristics of participant group">
+                <question>Describe characteristics</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="uses_nmu_persons" name="" type="boolean" hint="Does the study include individuals from Nelson Mandela University">
+                <question>Includes NMU Staff/Students</question>
+                <value></value>
+            </component>
+            <component id="nmu_persons_description" name="" type="text" hint="Describe specific groups of NMU staff/students participating in study">
+                <question>Describe NMU participant groups</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="uses_scholars" name="" type="boolean" hint="Does the study include students at school">
+                <question>Includes school students</question>
+                <value></value>
+            </component>
+            <component id="scholars_desc" name="" type="" hint="Describe the group(s) of scholars expected to participate in the study">
+                <question>Describe scholar groups</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="uses_institutional_pop" name="" type="boolean" hint="Does the study include participants from institutions">
+                <question>Includes institutional persons</question>
+                <value></value>
+            </component>
+            <component id="institutional_persons_desc" name="" type="text" hint="Describe the expected institution participants who will participate in the study">
+                <question>Describe instuitutional participants</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="uses_records" name="" type="boolean" hint="Does the study make use of records for information">
+                <question>Consult records for information</question>
+                <value></value>
+            </component>
+            <component id="records_desc" name="" type="text" hint="Describe the records to be viewed and what information will be extracted from the records">
+                <question>Describe records and information to be extracted</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="individuals_records_access" name="" type="boolean" hint="Will the participants be aware of their records being accessed">
+                <question>Individual Information Record Access</question>
+                <value></value>
+            </component>
+            <component id="individualts_records_access_desc" name="" type="text" hint="Describe how the records will be obtained to extract information.">
                 <question></question>
                 <value></value>
             </component>
-        </group>
+        </extension>
+        <extension orientation="vertical">
+            <component id="are_participants_adults" name="" type="boolean" hint="Are all participants in the study 18 years and older">
+                <question>Are participants all adults</question>
+                <value></value>
+            </component>
+            <component id="include_minors_desc" name="" type="text" hint="Describe why it is required for you study to include minors, particularly those younger than 18 years of age.">
+                <question>Describe the necessity of minors in study.</question>
+                <value></value>
+            </component>
+        </extension>
     </section>
     <section id="sct_participant_consent" name="Consent of Particpants" hint="">
-        <group id="" name="" hint="">
-            <component id="" name="" type="" hint="">
+        <extension orientation="vertical">
+            <component id="written_consent" name="" type="boolean" hint="Is participant consent given in writing">
                 <question></question>
                 <value></value>
             </component>
-        </group>
+            <extension orientation="vertical">
+                <component id="doc_consent" name="" required="false" type="document" hint="Provide the consent for document which participants will recieve">
+                    <question>Consent Form Document</question>
+                    <value></value>
+                </component>
+                <component id="written_consent_desc" name="" type="text" hint="Motivate why no consent will be necessary.">
+                    <question>Motivate</question>
+                    <value></value>
+                </component>
+            </extension>
+        </extension>
+        <extension orientation="vertical">
+            <component id="participant_legal_restrictions" name="" type="boolean" hint="Are there any legal restrictions why prevent the participant from giving effective informed consent to participate in the study">
+                <question>Legal restrictions on participant preventing informed consent</question>
+                <value></value>
+            </component>
+            <component id="legal_restrications_desc" name="" type="text" hint="Describe the legal restrictions which the participant is under.">
+                <question>Describe legal restrictions</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="operate_in_institution" name="" type="boolean" hint="Do any participants operate in an institutional environment - this may affect voluntary consent">
+                <question>Legal restrictions on participant preventing informed consent</question>
+                <value></value>
+            </component>
+            <component id="legal_consent_obtained_desc" name="" type="text" hint="Describe the measures you have taken to ensure legal effective informed consent has been obtained.">
+                <question>Describe legal restrictions</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="participant_renumeration" name="" type="boolean" hint="Will participants receive renumeration for perticipating in study">
+                <question>Participant Renumeration</question>
+                <value></value>
+            </component>
+            <component id="participant_renumeration_desc" name="" type="text" hint="Justify and describe in detail how renumeration is calculated, and how the accuracy of the gathered information is guarenteed.">
+                <question>Describe renumeration calculationg and data accuracy</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="has_gatekeeper" name="" type="boolean" hint="An individual who initially gives permission for the study to be conducted">
+                <question>Has gatekeeper</question>
+                <value></value>
+            </component>
+            <component id="gatekeepr_desc" name="" type="text" hint="Describe the gatekeeper e.g. principal, nursing manager, chairperson.">
+                <question>Describe gatekeeper individual(s)</question>
+                <value></value>
+            </component>
+        </extension>
+        <extension orientation="vertical">
+            <component id="require_institutional_consent" name="" type="boolean" hint="Does the study require consent given from a government department e.g. Department of Health">
+                <question>Requires intitutional consent</question>
+                <value></value>
+            </component>
+            <component id="institutional_consent_desc" name="" type="text" hint="Describe the consent required from the relevant department needed for you study.">
+                <question>Describe institutional consent required</question>
+                <value></value>
+            </component>
+        </extension>
     </section>
     <section id="sct_participant_info" name="Information to Participants" hint="">
-        <group id="" name="" hint="">
-            <component id="" name="" type="" hint="">
-                <question></question>
+        <component id="prior_consent_information_written" name="document" type="" hint="Written information presented to participants prior to their consent given">
+            <question>Written information provided</question>
+            <value></value>
+        </component>
+        <component id="prior_consent_information_oral" name="document" type="" hint="Oral/Verbal information presented to participants prior to their consent given">
+            <question>Oral/Verbal information provided</question>
+            <value></value>
+        </component>
+        <group name="Information Provider" id="grp_information_provider" hint="The individual who will provide the prior consent information to participants">
+            <component id="info_prov_firstname" name="" type="text" hint="Information Provider firstname">
+                <question>firstname</question>
+                <value></value>
+            </component>
+            <component id="info_prov_lastname" name="" type="text" hint="Information Provider lastname">
+                <question>Lastname</question>
+                <value></value>
+            </component>
+            <component id="info_prov_role" name="" type="text" hint="Information Provider role/purpose in study">
+                <question>Role</question>
                 <value></value>
             </component>
         </group>
+        <extension orientation="vertical">
+            <component id="complete_information" name="" type="text" hint="Will all information be given to participant which is complete and accurate">
+                <question>Will incomplete/inaccurate information provided</question>
+                <value></value>
+            </component>
+            <component id="no_complete_information_desc" name="" type="text" hint="Describe the nature and extent of deception involved in hiding all information, and the rationale of the deception.">
+                <question>Motivate</question>
+                <value></value>
+            </component>
+        </extension>
     </section>
     <section id="sct_priv_anon_conf" name="Privacy, Anonymity and Confidentiality of Data" hint="">
-        <group id="" name="" hint="">
+        <extension orientation="vertical">
             <component id="" name="" type="" hint="">
                 <question></question>
                 <value></value>
             </component>
-        </group>
+            <component id="" name="" type="" hint="">
+                <question></question>
+                <value></value>
+            </component>
+        </extension>
     </section>
     <section id="sct_feedback" name="Feedback" hint="">
         <extension orientation="vertical">
@@ -277,6 +431,20 @@
         </extension>
     </section>
     <section id="sct_ethics_legal" name="Ethical and Legal Aspects" hint="">
+        <component id="belmont_helsinki_decl_excluded" name="" type="boolean" hint="Are you excluding the Belmont Report or Declaration of Helsinki(2000) in your references" link="http://rcd.mandela.ac.za/rcd/media/Store/documents/Research%20Ethics/Research%20Ethics%20Committee%20Human/The-Belmont-Report.pdf">
+            <question>Not including Declation of Helsinki/Belmont Report</question>
+            <value></value>
+        </component>
+        <component id="belmont_helsinki_decl_excluded_desc" name="" type="text" hint="Motivate why this report / declaration is not included">
+            <question>Motivate</question>
+            <value></value>
+        </component>
+        <component id="additional_notes" name="" type="text" hint="Any additinoal information which you would like to make known to REC-H relating to your study.">
+            <question>Additional Information</question>
+            <value></value>
+        </component>
+    </section>
+    <section id="sct_declaration" name="Declaration" hint="">
         <group id="" name="" hint="">
             <component id="" name="" type="" hint="">
                 <question></question>
@@ -284,7 +452,7 @@
             </component>
         </group>
     </section>
-    <section id="sct_declaration" name="Declaration" hint="">
+    <section id="sct_scrutiny" name="Scrutiny" hint="">
         <group id="" name="" hint="">
             <component id="" name="" type="" hint="">
                 <question></question>
