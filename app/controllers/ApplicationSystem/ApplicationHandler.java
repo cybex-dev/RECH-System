@@ -35,7 +35,9 @@ public class ApplicationHandler extends Controller {
         loadApplicationFromResource();
     }
 
-    public Result createApplicationForm(String type){
+    public Result newApplication(){
+        //TODO
+        String type = "";
         switch (type.toLowerCase()) {
             case "human" : {
                 return null;
@@ -74,5 +76,13 @@ public class ApplicationHandler extends Controller {
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Post application form to server
+     */
+    //TODO
+    public Result submitApplication() {
+        return ok();
     }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0."?>
+<?xml version="1.0"?>
 <application type="human" version="1">
     <section id="sct_general_particulars" name="General Particulars" hint="Basic information about your study">
         <group id="grp_title_of_study" name="Title Of Study" hint="Title of your study">
@@ -350,7 +350,7 @@
             <component id="operate_in_institution" name="" type="boolean"
                        hint="Do any participants operate in an institutional environment - this may affect voluntary consent">
                 <question>Legal restrictions on participant preventing informed consent</question>
-                <value></value>
+                <value></value>e
             </component>
             <component id="legal_consent_obtained_desc" name="" type="text"
                        hint="Describe the measures you have taken to ensure legal effective informed consent has been obtained.">
@@ -394,7 +394,7 @@
                 <value></value>
             </component>
             <list id="list_permission_documents" hint="Any additional permission documents provided by Department of Education as permission to conduct the study">
-                <component id="doc_permission_name" type="text" required="false" hint="An well-identifying name">
+                <component id="doc_permission_name" type="text" required="false" hint="A well-identifying name">
                     <question>Document Name</question>
                     <value></value>
                 </component>
@@ -500,8 +500,7 @@
                 <question>Collected data stored</question>
                 <value></value>
             </component>
-            <list id="list_collected_data_holders"
-                  hint="Describe who will be storing the collected data with additional details" affiliation_group="">
+            <list id="list_collected_data_holders" hint="Describe who will be storing the collected data with additional details" affiliation_group="">
                 <component name="" id="dh_first_name" type="text" hint="Data holder firstname">
                     <question>Firstname</question>
                     <value></value>
@@ -515,14 +514,9 @@
                     <question>Number of copies</question>
                     <value></value>
                 </component>
-                <component name="" id="dh_duration_value" type="number"
-                           hint="Duration value for which data is kept by data holder">
-                    <question>Duration Value</question>
-                    <value></value>
-                </component>
-                <component name="" id="dh_duration_unit" dropdown="true" type="text"
-                           hint="Duration unit for which data is kept">
-                    <question>Duration unit</question>
+                <component name="" id="dh_duration" type="date"
+                           hint="Date up until when stored data will be destroyed by data holder as the data is no longer needed">
+                    <question>Date when data is destroyed</question>
                     <value></value>
                 </component>
                 <component name="" id="dh_desc" type="text"
