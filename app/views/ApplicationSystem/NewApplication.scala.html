@@ -18,10 +18,7 @@
 
             </div>
             <div id="wizard-body">
-                @b4.vertical.form(controllers.ApplicationSystem.routes.ApplicationHandler.submitApplication) { implicit vfc =>
-                    @b4.text(form("title") , '_label -> "Title of Study", 'placeholder -> "Title")
-                    @b4.submit('id -> "btnSubmit"){Submit Form}
-                }
+                @*for(value <- document.)*@
             </div>
         </div>
     </div>

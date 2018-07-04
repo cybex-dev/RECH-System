@@ -9,7 +9,7 @@ version := "1.0"
 // Plugin Version : 4.1.3
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayJava, PlayEbean, ScalaJSPlugin, ScalaJSWeb, JavaAppPackaging, JavaServerAppPackaging, LauncherJarPlugin)
+  .enablePlugins(PlayJava, PlayScala, PlayEbean, ScalaJSPlugin, JavaAppPackaging, JavaServerAppPackaging, LauncherJarPlugin)
 
 scalaVersion := "2.12.6"
 

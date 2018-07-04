@@ -1,6 +1,7 @@
 package controllers.ApplicationSystem;
 
 import akka.stream.javadsl.FileIO;
+import models.ApplicationSystem.EthicsApplication;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import play.data.FormFactory;
@@ -21,7 +22,7 @@ import java.util.Set;
 
 public class ApplicationHandler extends Controller {
 
-    static private Set<ApplicationForm> applicationFormSet = new HashSet<>();
+    static private Set<EthicsApplication> ethicsApplications = new HashSet<>();
 
     @Inject
     HttpExecutionContext executionContext;
@@ -32,7 +33,7 @@ public class ApplicationHandler extends Controller {
 
     // Uses XML document to create form, based in as Scala Squence type and processed in view
     public ApplicationHandler() {
-        loadApplicationFromResource();
+
     }
 
     public Result newApplication(){
@@ -71,8 +72,8 @@ public class ApplicationHandler extends Controller {
         try {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(applicationXML);
             String sType = document.getDocumentElement().getAttribute("type");
-            ApplicationForm.ApplicationType type = ApplicationForm.ApplicationType.valueOf(sType);
-            applicationFormSet.add(new ApplicationForm(type, document));
+            EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.valueOf(sType);
+            ethicsApplications.add(new EthicsApplication(type, document));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
