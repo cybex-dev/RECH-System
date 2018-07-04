@@ -15,8 +15,4 @@ object XMLParser {
     dom2sax.parse()
     adapter.rootElem
   }
-
-  def parser(root: Node): List[Node] = {
-    //TODO
-  }
 }

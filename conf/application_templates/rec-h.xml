@@ -6,7 +6,7 @@
                        hint="The title should explain what your study is about, but keep it short.">
                 <question>Concise descriptive title of study (must contain keywords that best describe the study)
                 </question>
-                <value></value>
+                <value></value>e
             </component>
         </group>
         <group id="grp_prp" name="Primary Responsible Person"
@@ -160,8 +160,7 @@
             </component>
         </group>
     </section>
-    <section id="sct_risks_benefits" name="Risks and Benefits of this Study"
-             hint="Highlights the need for the study and benefits obtained from results.">
+    <section id="sct_risks_benefits" name="Risks and Benefits of this Study" hint="Highlights the need for the study and benefits obtained from results.">
         <extension orientation="vertical">
             <component id="has_risk" name="" type="boolean"
                        hint="Risk refers to harm, embarresment or offence, even in the slightest form or temporary to the participant, third parties or to a community.">

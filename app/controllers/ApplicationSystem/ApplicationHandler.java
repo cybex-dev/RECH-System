@@ -47,7 +47,7 @@ public class ApplicationHandler extends Controller {
         EthicsApplication application = ethicsApplications.stream().filter(ethicsApplication -> ethicsApplication.getType() == type).findFirst().orElse(new EthicsApplication());
         Document document = application.getApplicationDocument();
         DynamicForm form = formFactory.form();
-        return ok(views.html.ApplicationSystem.NewApplication.render(type.toString(), document, form));
+        return ok(views.html.ApplicationSystem.ApplicationContiainer.render(" :: New Application", type.toString(), document.getDocumentElement(), form));
     }
 
     /**
