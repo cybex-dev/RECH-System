@@ -1,10 +1,11 @@
 @import views.html.Templates.Masterpage
 @import org.w3c.dom.Document
+@import controllers.ApplicationSystem.XMLParser
 @import b4._
 @import models.ApplicationSystem.EthicsApplication
 @import play.data.Form
 
-@(applicationType: String)(document: Document)(form: Form[Null])skeleton: Document)
+@(applicationType: String)(document: Document)(form: DynamicForm)skeleton: Document)
 
 @Masterpage.apply(" :: New Application"){
     <h1>Create Ethics Application for @applicationType Research</h1>
@@ -18,7 +19,11 @@
 
             </div>
             <div id="wizard-body">
-                @*for(value <- document.)*@
+                <p>
+                @{
+
+                }
+                </p>
             </div>
         </div>
     </div>
