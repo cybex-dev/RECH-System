@@ -1,0 +1,38 @@
+@import views.html.Templates.Masterpage
+@import org.w3c.dom.Document
+@import views.html.b4
+@import play.data.DynamicForm
+
+@import play.api.data.Field
+@import play.twirl.api.Html
+@import views.html.b4.vertical
+@import scala.xml.Node
+
+@import controllers.ApplicationSystem.DocumentParser
+
+@import controllers.ApplicationSystem.DOMParser
+@(pageTitle: String)(applicationType: String)(document: Document)(form: DynamicForm)
+
+@contentBlock = {
+    <h1>Create Ethics Application for @applicationType Research</h1>
+    <br>
+    <div id="wizard-container">
+        <div id="wizard-header">
+
+        </div>
+        <div id="wizard-body-container">
+            <div id="wizard-progress-container">
+
+            </div>
+            <div id="wizard-body">
+                <p>
+                @{
+//                    DOMParser.check(form)(DocumentParser.asXmlNode(document))
+                }
+                </p>
+            </div>
+        </div>
+    </div>
+}
+
+@Masterpage.apply(pageTitle)(contentBlock)

@@ -10,6 +10,9 @@ import play.data.FormFactory;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.*;
+import scala.xml.Elem;
+import scala.xml.Node;
+import scala.xml.NodeSeq;
 
 import javax.inject.Inject;
 import javax.print.Doc;
@@ -47,7 +50,11 @@ public class ApplicationHandler extends Controller {
         EthicsApplication application = ethicsApplications.stream().filter(ethicsApplication -> ethicsApplication.getType() == type).findFirst().orElse(new EthicsApplication());
         Document document = application.getApplicationDocument();
         DynamicForm form = formFactory.form();
-        return ok(views.html.ApplicationSystem.ApplicationContiainer.render(" :: New Application", type.toString(), document.getDocumentElement(), form));
+        Node node = DocumentParser.asXmlNode(document);
+        String check = "";
+//        check = DOMParser.check(form, node);
+        check.isEmpty();
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), document, form));
     }
 
     /**
@@ -70,12 +77,12 @@ public class ApplicationHandler extends Controller {
      */
     private void parseToDocument(File applicationXML) {
         try {
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(applicationXML);
-            String sType = document.getDocumentElement().getAttribute("type");
+            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder();
+            Document doc = dBuilder.parse(applicationXML);
+            String sType = doc.getDocumentElement().getAttribute("type");
             ApplicationType type = ApplicationType.valueOf(sType);
-            ethicsApplications.add(new EthicsApplication(type, document));
+            ethicsApplications.add(new EthicsApplication(type, doc));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }

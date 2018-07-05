@@ -493,7 +493,7 @@
                 <value></value>
             </component>
         </extension>
-        <extension orientation="vertical">
+        <extensione orientation="vertical">
             <component id="data_stored" name="" type="boolean"
                        hint="Will the collected data be stored in any form after the study has been completed">
                 <question>Collected data stored</question>
@@ -529,7 +529,7 @@
                     <value></value>
                 </component>
             </list>
-        </extension>
+        </extensione>
         <extension orientation="vertical">
             <component id="reusing_stored_data" name="" type="boolean"
                        hint="Will stored data be made available for reuse">
