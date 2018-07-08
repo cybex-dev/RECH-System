@@ -1,8 +1,8 @@
 package controllers.ApplicationSystem;
 
-import akka.stream.javadsl.FileIO;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
+import net.ddns.cyberstudios.Element;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import play.data.DynamicForm;
@@ -10,12 +10,8 @@ import play.data.FormFactory;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.*;
-import scala.xml.Elem;
-import scala.xml.Node;
-import scala.xml.NodeSeq;
 
 import javax.inject.Inject;
-import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -48,13 +44,9 @@ public class ApplicationHandler extends Controller {
         loadApplicationFromResource();
         ApplicationType type = ApplicationType.valueOf("human");
         EthicsApplication application = ethicsApplications.stream().filter(ethicsApplication -> ethicsApplication.getType() == type).findFirst().orElse(new EthicsApplication());
-        Document document = application.getApplicationDocument();
+        Element rootElement = application.getRootElement();
         DynamicForm form = formFactory.form();
-        Node node = DocumentParser.asXmlNode(document);
-        String check = "";
-//        check = DOMParser.check(form, node);
-        check.isEmpty();
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), document, form));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form));
     }
 
     /**
@@ -77,12 +69,15 @@ public class ApplicationHandler extends Controller {
      */
     private void parseToDocument(File applicationXML) {
         try {
-            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder();
-            Document doc = dBuilder.parse(applicationXML);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(applicationXML);
+            doc.normalize();
             String sType = doc.getDocumentElement().getAttribute("type");
             ApplicationType type = ApplicationType.valueOf(sType);
-            ethicsApplications.add(new EthicsApplication(type, doc));
+            EthicsApplication ethicsApplication = new EthicsApplication(type, doc);
+            ethicsApplication.parseDocumentToElement();
+            ethicsApplications.add(ethicsApplication);
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }

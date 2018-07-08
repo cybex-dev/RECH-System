@@ -1,8 +1,14 @@
 package models.ApplicationSystem;
 
 import org.w3c.dom.Document;
+import net.ddns.cyberstudios.Element;
+import net.ddns.cyberstudios.XMLTools;
 
 public class EthicsApplication {
+
+    private ApplicationType type;
+    private Document applicationDocumentDOM;
+    private Element root;
 
     public enum ApplicationType{
         human,
@@ -12,13 +18,10 @@ public class EthicsApplication {
     public EthicsApplication() {
     }
 
-    public EthicsApplication(ApplicationType type, Document applicationDocument) {
+    public EthicsApplication(ApplicationType type, Document applicationDocumentDOM) {
         this.type = type;
-        this.applicationDocument = applicationDocument;
+        this.applicationDocumentDOM = applicationDocumentDOM;
     }
-
-    private ApplicationType type;
-    private Document applicationDocument;
 
     public ApplicationType getType() {
         return type;
@@ -28,11 +31,19 @@ public class EthicsApplication {
         this.type = type;
     }
 
-    public Document getApplicationDocument() {
-        return applicationDocument;
+    public Document getApplicationDocumentDOM() {
+        return applicationDocumentDOM;
     }
 
-    public void setApplicationDocument(Document applicationDocument) {
-        this.applicationDocument = applicationDocument;
+    public void parseDocumentToElement(){
+        root = XMLTools.parseDocument(applicationDocumentDOM);
+    }
+
+    public Element getRootElement() {
+        return root;
+    }
+
+    public void setApplicationDocumentDOM(Document applicationDocumentDOM) {
+        this.applicationDocumentDOM = applicationDocumentDOM;
     }
 }
