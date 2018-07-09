@@ -9,6 +9,6 @@ public class JDBCExecutor extends CustomExecutionContext {
     @Inject
     public JDBCExecutor(ActorSystem actorSystem) {
         // uses a custom thread pool defined in application.conf
-        super(actorSystem, "my.dispatcher");
+        super(actorSystem, "akka.actor.jdbc-dispatcher");
     }
 }

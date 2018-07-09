@@ -1,10 +1,12 @@
 package controllers.ApplicationSystem;
 
+import DAO.ApplicationSystem.EntityEthicsApplication;
 import helpers.JDBCExecutor;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
 import net.ddns.cyberstudios.Element;
 import org.w3c.dom.Document;
+import org.w3c.dom.Entity;
 import org.xml.sax.SAXException;
 import play.data.DynamicForm;
 import play.data.FormFactory;
@@ -47,7 +49,7 @@ public class ApplicationHandler extends Controller {
     //TODO complete all applications
     public Result allApplications() {
         String user_email = session().get("user_email");
-//        EthicsApplicationEntity
+        EntityEthicsApplication.
         return TODO;
     }
 
