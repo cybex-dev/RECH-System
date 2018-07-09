@@ -1,5 +1,7 @@
 package DAO.ApplicationSystem;
 
+import io.ebean.Model;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -7,43 +9,48 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "componentversion", schema = "rech_system", catalog = "")
-@IdClass(ComponentversionEntityPK.class)
-public class ComponentversionEntity {
-    private byte version;
-    private Byte isSubmitted;
+@IdClass(EntityComponentversionPK.class)
+public class EntityComponentversion extends Model {
+    private Integer version;
+    private Short componentId;
+    private Boolean isSubmitted;
     private Timestamp dateSubmitted;
     private Timestamp dateLastEdited;
     private String responseType;
     private String textValue;
-    private Byte boolValue;
+    private Boolean boolValue;
     private String documentName;
     private String documentDescription;
     private byte[] documentBlob;
-    private short sectionId;
-    private short componentId;
-    private String applicationType;
-    private int applicationYear;
-    private String applicationDepartment;
-    private short applicationNumber;
 
     @Id
     @Column(name = "version")
-    public byte getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(byte version) {
+    public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    @Id
+    @Column(name = "component_id")
+    public Short getComponentId() {
+        return componentId;
+    }
+
+    public void setComponentId(Short componentId) {
+        this.componentId = componentId;
     }
 
     @Basic
     @Column(name = "is_submitted")
-    public Byte getIsSubmitted() {
+    public Boolean getSubmitted() {
         return isSubmitted;
     }
 
-    public void setIsSubmitted(Byte isSubmitted) {
-        this.isSubmitted = isSubmitted;
+    public void setSubmitted(Boolean submitted) {
+        isSubmitted = submitted;
     }
 
     @Basic
@@ -88,11 +95,11 @@ public class ComponentversionEntity {
 
     @Basic
     @Column(name = "bool_value")
-    public Byte getBoolValue() {
+    public Boolean getBoolValue() {
         return boolValue;
     }
 
-    public void setBoolValue(Byte boolValue) {
+    public void setBoolValue(Boolean boolValue) {
         this.boolValue = boolValue;
     }
 
@@ -126,76 +133,13 @@ public class ComponentversionEntity {
         this.documentBlob = documentBlob;
     }
 
-    @Id
-    @Column(name = "section_id")
-    public short getSectionId() {
-        return sectionId;
-    }
-
-    public void setSectionId(short sectionId) {
-        this.sectionId = sectionId;
-    }
-
-    @Id
-    @Column(name = "component_id")
-    public short getComponentId() {
-        return componentId;
-    }
-
-    public void setComponentId(short componentId) {
-        this.componentId = componentId;
-    }
-
-    @Id
-    @Column(name = "application_type")
-    public String getApplicationType() {
-        return applicationType;
-    }
-
-    public void setApplicationType(String applicationType) {
-        this.applicationType = applicationType;
-    }
-
-    @Id
-    @Column(name = "application_year")
-    public int getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(int applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Id
-    @Column(name = "application_department")
-    public String getApplicationDepartment() {
-        return applicationDepartment;
-    }
-
-    public void setApplicationDepartment(String applicationDepartment) {
-        this.applicationDepartment = applicationDepartment;
-    }
-
-    @Id
-    @Column(name = "application_number")
-    public short getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(short applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ComponentversionEntity that = (ComponentversionEntity) o;
-        return version == that.version &&
-                sectionId == that.sectionId &&
-                componentId == that.componentId &&
-                applicationYear == that.applicationYear &&
-                applicationNumber == that.applicationNumber &&
+        EntityComponentversion that = (EntityComponentversion) o;
+        return Objects.equals(version, that.version) &&
+                Objects.equals(componentId, that.componentId) &&
                 Objects.equals(isSubmitted, that.isSubmitted) &&
                 Objects.equals(dateSubmitted, that.dateSubmitted) &&
                 Objects.equals(dateLastEdited, that.dateLastEdited) &&
@@ -204,15 +148,13 @@ public class ComponentversionEntity {
                 Objects.equals(boolValue, that.boolValue) &&
                 Objects.equals(documentName, that.documentName) &&
                 Objects.equals(documentDescription, that.documentDescription) &&
-                Arrays.equals(documentBlob, that.documentBlob) &&
-                Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationDepartment, that.applicationDepartment);
+                Arrays.equals(documentBlob, that.documentBlob);
     }
 
     @Override
     public int hashCode() {
 
-        int result = Objects.hash(version, isSubmitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription, sectionId, componentId, applicationType, applicationYear, applicationDepartment, applicationNumber);
+        int result = Objects.hash(version, componentId, isSubmitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription);
         result = 31 * result + Arrays.hashCode(documentBlob);
         return result;
     }

@@ -1,5 +1,6 @@
 package controllers.ApplicationSystem;
 
+import helpers.JDBCExecutor;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
 import net.ddns.cyberstudios.Element;
@@ -28,15 +29,26 @@ public class ApplicationHandler extends Controller {
     static private Set<EthicsApplication> ethicsApplications = new HashSet<>();
 
     @Inject
-    HttpExecutionContext executionContext;
-
-    @Inject
     FormFactory formFactory;
 
+    @Inject
+    private JDBCExecutor jdbcExecutor;
+
+    @Inject
+    public ApplicationHandler(JDBCExecutor jdbcExecutor) {
+        this.jdbcExecutor = jdbcExecutor;
+    }
 
     // Uses XML document to create form, based in as Scala Squence type and processed in view
     public ApplicationHandler() {
 
+    }
+
+    //TODO complete all applications
+    public Result allApplications() {
+        String user_email = session().get("user_email");
+//        EthicsApplicationEntity
+        return TODO;
     }
 
     public Result newApplication(){

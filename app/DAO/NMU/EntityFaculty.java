@@ -1,11 +1,13 @@
 package DAO.NMU;
 
+import io.ebean.Model;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "faculty", schema = "rech_system", catalog = "")
-public class FacultyEntity {
+public class EntityFaculty extends Model {
     private String facultyName;
     private String facultyInfo;
 
@@ -33,7 +35,7 @@ public class FacultyEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FacultyEntity that = (FacultyEntity) o;
+        EntityFaculty that = (EntityFaculty) o;
         return Objects.equals(facultyName, that.facultyName) &&
                 Objects.equals(facultyInfo, that.facultyInfo);
     }

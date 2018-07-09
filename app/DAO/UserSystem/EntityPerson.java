@@ -1,12 +1,18 @@
 package DAO.UserSystem;
 
+import DAO.ApplicationSystem.EntityEthicsApplication;
+import io.ebean.Finder;
+import io.ebean.Model;
+import models.UserSystem.PersonType;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "person", schema = "rech_system", catalog = "")
-@IdClass(PersonEntityPK.class)
-public class PersonEntity {
+public class EntityPerson extends Model {
     private String userEmail;
     private String userPasswordHash;
     private String userFirstname;
@@ -17,11 +23,10 @@ public class PersonEntity {
     private String personType;
     private String contactOfficeTelephone;
     private String officeAddress;
-    private String facultyName;
     private String departmentName;
-    private String facultyFacultyName;
-    private String departmentDepartmentName;
-    private String departmentFacultyName;
+    private String facultyName;
+
+    public static Finder<String, EntityEthicsApplication> find = new Finder<>(EntityEthicsApplication.class);
 
     @Id
     @Column(name = "user_email")
@@ -124,16 +129,6 @@ public class PersonEntity {
     }
 
     @Basic
-    @Column(name = "faculty_name")
-    public String getFacultyName() {
-        return facultyName;
-    }
-
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
-    }
-
-    @Basic
     @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
@@ -143,41 +138,21 @@ public class PersonEntity {
         this.departmentName = departmentName;
     }
 
-    @Id
-    @Column(name = "Faculty_faculty_name")
-    public String getFacultyFacultyName() {
-        return facultyFacultyName;
+    @Basic
+    @Column(name = "faculty_name")
+    public String getFacultyName() {
+        return facultyName;
     }
 
-    public void setFacultyFacultyName(String facultyFacultyName) {
-        this.facultyFacultyName = facultyFacultyName;
-    }
-
-    @Id
-    @Column(name = "Department_department_name")
-    public String getDepartmentDepartmentName() {
-        return departmentDepartmentName;
-    }
-
-    public void setDepartmentDepartmentName(String departmentDepartmentName) {
-        this.departmentDepartmentName = departmentDepartmentName;
-    }
-
-    @Id
-    @Column(name = "Department_faculty_name")
-    public String getDepartmentFacultyName() {
-        return departmentFacultyName;
-    }
-
-    public void setDepartmentFacultyName(String departmentFacultyName) {
-        this.departmentFacultyName = departmentFacultyName;
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PersonEntity that = (PersonEntity) o;
+        EntityPerson that = (EntityPerson) o;
         return Objects.equals(userEmail, that.userEmail) &&
                 Objects.equals(userPasswordHash, that.userPasswordHash) &&
                 Objects.equals(userFirstname, that.userFirstname) &&
@@ -188,16 +163,36 @@ public class PersonEntity {
                 Objects.equals(personType, that.personType) &&
                 Objects.equals(contactOfficeTelephone, that.contactOfficeTelephone) &&
                 Objects.equals(officeAddress, that.officeAddress) &&
-                Objects.equals(facultyName, that.facultyName) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyFacultyName, that.facultyFacultyName) &&
-                Objects.equals(departmentDepartmentName, that.departmentDepartmentName) &&
-                Objects.equals(departmentFacultyName, that.departmentFacultyName);
+                Objects.equals(facultyName, that.facultyName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, facultyName, departmentName, facultyFacultyName, departmentDepartmentName, departmentFacultyName);
+        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
+    }
+
+
+
+    // TODO check if Person should replace pi_id, etc or remain with String
+    public List<EntityEthicsApplication> findApplicationsByPerson(EntityPerson user, PersonType type) {
+        return find.all()
+                .stream()
+                .filter(ethicsApplicationEntity -> {
+                    switch (type) {
+                        case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(user.getUserEmail());
+                        case PrimaryResponsiblePerson: return ethicsApplicationEntity.getPrpId().equals(user.getUserEmail());
+                        case Liaison: return ethicsApplicationEntity.getLiaisonId().equals(user.getUserEmail());
+                        case Reviewer: {
+                            //TODO
+                        }
+                        case FacultyRTI: return ethicsApplicationEntity.getRtiId().equals(user.getUserEmail());
+                        case DepartmentHead: return ethicsApplicationEntity.getHodId().equals(user.getUserEmail());
+                        case RCD: return true;
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
     }
 }

@@ -1,17 +1,20 @@
 package DAO.ApplicationSystem;
 
+import io.ebean.Model;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "ethics_application", schema = "rech_system", catalog = "")
-@IdClass(EthicsApplicationEntityPK.class)
-public class EthicsApplicationEntity {
+public class EntityEthicsApplication extends Model {
+    private Integer applicationId;
+    private Integer applicationNumber;
     private String applicationType;
-    private int applicationYear;
-    private String applicationDepartment;
-    private short applicationNumber;
-    private Byte isSubmitted;
+    private Integer applicationYear;
+    private String departmentName;
+    private String facultyName;
+    private Boolean isSubmitted;
     private String dateSubmitted;
     private String dateApproved;
     private String piId;
@@ -25,6 +28,26 @@ public class EthicsApplicationEntity {
     private String liaisonId;
 
     @Id
+    @Column(name = "application_id")
+    public Integer getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(Integer applicationId) {
+        this.applicationId = applicationId;
+    }
+
+    @Basic
+    @Column(name = "application_number")
+    public Integer getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(Integer applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Basic
     @Column(name = "application_type")
     public String getApplicationType() {
         return applicationType;
@@ -34,44 +57,44 @@ public class EthicsApplicationEntity {
         this.applicationType = applicationType;
     }
 
-    @Id
+    @Basic
     @Column(name = "application_year")
-    public int getApplicationYear() {
+    public Integer getApplicationYear() {
         return applicationYear;
     }
 
-    public void setApplicationYear(int applicationYear) {
+    public void setApplicationYear(Integer applicationYear) {
         this.applicationYear = applicationYear;
     }
 
-    @Id
-    @Column(name = "application_department")
-    public String getApplicationDepartment() {
-        return applicationDepartment;
+    @Basic
+    @Column(name = "department_name")
+    public String getDepartmentName() {
+        return departmentName;
     }
 
-    public void setApplicationDepartment(String applicationDepartment) {
-        this.applicationDepartment = applicationDepartment;
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
-    @Id
-    @Column(name = "application_number")
-    public short getApplicationNumber() {
-        return applicationNumber;
+    @Basic
+    @Column(name = "faculty_name")
+    public String getFacultyName() {
+        return facultyName;
     }
 
-    public void setApplicationNumber(short applicationNumber) {
-        this.applicationNumber = applicationNumber;
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     @Basic
     @Column(name = "is_submitted")
-    public Byte getIsSubmitted() {
+    public Boolean getSubmitted() {
         return isSubmitted;
     }
 
-    public void setIsSubmitted(Byte isSubmitted) {
-        this.isSubmitted = isSubmitted;
+    public void setSubmitted(Boolean submitted) {
+        isSubmitted = submitted;
     }
 
     @Basic
@@ -188,11 +211,13 @@ public class EthicsApplicationEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EthicsApplicationEntity that = (EthicsApplicationEntity) o;
-        return applicationYear == that.applicationYear &&
-                applicationNumber == that.applicationNumber &&
+        EntityEthicsApplication that = (EntityEthicsApplication) o;
+        return Objects.equals(applicationId, that.applicationId) &&
+                Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationDepartment, that.applicationDepartment) &&
+                Objects.equals(applicationYear, that.applicationYear) &&
+                Objects.equals(departmentName, that.departmentName) &&
+                Objects.equals(facultyName, that.facultyName) &&
                 Objects.equals(isSubmitted, that.isSubmitted) &&
                 Objects.equals(dateSubmitted, that.dateSubmitted) &&
                 Objects.equals(dateApproved, that.dateApproved) &&
@@ -210,6 +235,6 @@ public class EthicsApplicationEntity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationDepartment, applicationNumber, isSubmitted, dateSubmitted, dateApproved, piId, piApprovedDate, prpId, prpApprovedDate, hodId, hodApproved, rtiId, rtiApproved, liaisonId);
+        return Objects.hash(applicationId, applicationNumber, applicationType, applicationYear, departmentName, facultyName, isSubmitted, dateSubmitted, dateApproved, piId, piApprovedDate, prpId, prpApprovedDate, hodId, hodApproved, rtiId, rtiApproved, liaisonId);
     }
 }
