@@ -1,14 +1,11 @@
 package DAO.UserSystem;
 
-import DAO.ApplicationSystem.EntityEthicsApplication;
 import io.ebean.Finder;
 import io.ebean.Model;
-import models.UserSystem.PersonType;
+import models.UserSystem.UserType;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "person", schema = "rech_system", catalog = "")
@@ -26,7 +23,7 @@ public class EntityPerson extends Model {
     private String departmentName;
     private String facultyName;
 
-    public static Finder<String, EntityEthicsApplication> find = new Finder<>(EntityEthicsApplication.class);
+    public static Finder<String, EntityPerson> find = new Finder<>(EntityPerson.class);
 
     @Id
     @Column(name = "user_email")
@@ -173,26 +170,17 @@ public class EntityPerson extends Model {
         return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
     }
 
+    public static EntityPerson getPersonById(String userEmail){
+        return find.byId(userEmail);
+    }
+
+    public UserType userType(){
+        return UserType.valueOf(personType);
+    }
+
 
 
     // TODO check if Person should replace pi_id, etc or remain with String
-    public List<EntityEthicsApplication> findApplicationsByPerson(EntityPerson user, PersonType type) {
-        return find.all()
-                .stream()
-                .filter(ethicsApplicationEntity -> {
-                    switch (type) {
-                        case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(user.getUserEmail());
-                        case PrimaryResponsiblePerson: return ethicsApplicationEntity.getPrpId().equals(user.getUserEmail());
-                        case Liaison: return ethicsApplicationEntity.getLiaisonId().equals(user.getUserEmail());
-                        case Reviewer: {
-                            //TODO
-                        }
-                        case FacultyRTI: return ethicsApplicationEntity.getRtiId().equals(user.getUserEmail());
-                        case DepartmentHead: return ethicsApplicationEntity.getHodId().equals(user.getUserEmail());
-                        case RCD: return true;
-                    }
-                    return false;
-                })
-                .collect(Collectors.toList());
-    }
+
+
 }

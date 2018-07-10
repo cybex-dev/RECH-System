@@ -1,9 +1,18 @@
 package DAO.ApplicationSystem;
 
+import DAO.Meeting.EntityAgendaitem;
+import DAO.ReviewSystem.EntityReviewerfeedback;
+import DAO.UserSystem.EntityPerson;
+import io.ebean.Finder;
 import io.ebean.Model;
+import models.ApplicationSystem.ApplicationStatus;
+import models.ApplicationSystem.EthicsApplication;
+import models.UserSystem.UserType;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "ethics_application", schema = "rech_system", catalog = "")
@@ -26,6 +35,8 @@ public class EntityEthicsApplication extends Model {
     private String rtiId;
     private String rtiApproved;
     private String liaisonId;
+
+    public static Finder<Integer, EntityEthicsApplication> find = new Finder<>(EntityEthicsApplication.class);
 
     @Id
     @Column(name = "application_id")
@@ -236,5 +247,45 @@ public class EntityEthicsApplication extends Model {
     public int hashCode() {
 
         return Objects.hash(applicationId, applicationNumber, applicationType, applicationYear, departmentName, facultyName, isSubmitted, dateSubmitted, dateApproved, piId, piApprovedDate, prpId, prpApprovedDate, hodId, hodApproved, rtiId, rtiApproved, liaisonId);
+    }
+
+    public EntityEthicsApplication findApplicationById(Integer applicationId) {
+        return find.byId(applicationId);
+    }
+
+    public static List<EntityEthicsApplication> findApplicationsByPerson(EntityPerson person) {
+        return findApplicationsByPerson(person.getUserEmail(), person.userType());
+    }
+
+    public static List<EntityEthicsApplication> findApplicationsByPerson(String personEmail, UserType userType) {
+        return find.all()
+                .stream()
+                .filter(ethicsApplicationEntity -> {
+                    switch (userType) {
+                        case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(personEmail);
+                        case PrimaryResponsiblePerson: return ethicsApplicationEntity.getPrpId().equals(personEmail);
+                        case Liaison: return ethicsApplicationEntity.getLiaisonId().equals(personEmail);
+                        case Reviewer: return EntityReviewerfeedback.find.all().stream().anyMatch(entityReviewerfeedback -> entityReviewerfeedback.getReviewerEmail().equals(personEmail) && entityReviewerfeedback.getApplicationId().equals(ethicsApplicationEntity.applicationId));
+                        case FacultyRTI: return ethicsApplicationEntity.getRtiId().equals(personEmail);
+                        case DepartmentHead: return ethicsApplicationEntity.getHodId().equals(personEmail);
+                        case RCD: return true;
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public static ApplicationStatus findApplicationStatus(EntityEthicsApplication entityEthicsApplication) {
+        return findApplicationStatus(entityEthicsApplication.applicationId);
+    }
+
+    public static ApplicationStatus findApplicationStatus(Integer applicationId) {
+            EntityAgendaitem latestStatus = EntityAgendaitem.getAllApplicationStatuses(applicationId)
+                    .stream()
+                    .reduce((entityAgendaitem, entityAgendaitem2) -> entityAgendaitem.getMeetingDate().after(entityAgendaitem2.getMeetingDate())
+                            ? entityAgendaitem : entityAgendaitem2).orElse(null);
+            return (latestStatus != null)
+                    ? latestStatus.status()
+                    : ApplicationStatus.UNKNOWN;
     }
 }

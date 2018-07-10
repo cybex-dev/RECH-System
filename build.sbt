@@ -44,6 +44,9 @@ libraryDependencies += "org.webjars" %% "webjars-play" % "2.6.3"
 libraryDependencies += "org.webjars" % "requirejs" % "2.3.5"
 libraryDependencies += "org.webjars" % "popper.js" % "1.14.1"
 
+//AngularJS
+libraryDependencies += "org.webjars" % "angularjs" % "1.7.2"
+
 // See: https://adrianhurt.github.io/play-bootstrap#Installation
 // Resolver is needed only for SNAPSHOT versions
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"

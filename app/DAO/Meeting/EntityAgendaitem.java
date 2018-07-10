@@ -1,10 +1,15 @@
 package DAO.Meeting;
 
+import DAO.ApplicationSystem.EntityEthicsApplication;
+import io.ebean.Finder;
 import io.ebean.Model;
+import models.ApplicationSystem.ApplicationStatus;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "agendaitem", schema = "rech_system", catalog = "")
@@ -14,6 +19,8 @@ public class EntityAgendaitem extends Model {
     private Short applicationStatus;
     private Timestamp meetingDate;
     private Integer applicationId;
+
+    public static Finder<EntityAgendaitemPK, EntityAgendaitem> find = new Finder<>(EntityAgendaitem.class);
 
     @Basic
     @Column(name = "resolution")
@@ -33,6 +40,10 @@ public class EntityAgendaitem extends Model {
 
     public void setApplicationStatus(Short applicationStatus) {
         this.applicationStatus = applicationStatus;
+    }
+
+    public void setNewStatus(ApplicationStatus applicationStatus) {
+        this.applicationStatus = applicationStatus.getStatus();
     }
 
     @Id
@@ -70,5 +81,17 @@ public class EntityAgendaitem extends Model {
     public int hashCode() {
 
         return Objects.hash(resolution, applicationStatus, meetingDate, applicationId);
+    }
+
+    public ApplicationStatus status(){
+        return ApplicationStatus.parse(applicationStatus);
+    }
+
+    public static List<EntityAgendaitem> getAllApplicationStatuses(EntityEthicsApplication entityEthicsApplication) {
+        return getAllApplicationStatuses(entityEthicsApplication.getApplicationId());
+    }
+
+    public static List<EntityAgendaitem> getAllApplicationStatuses(int applicationId) {
+        return find.all().stream().filter(entityAgendaitem -> entityAgendaitem.applicationId.equals(applicationId)).collect(Collectors.toList());
     }
 }

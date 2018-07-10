@@ -1,6 +1,7 @@
 package controllers.ApplicationSystem;
 
 import DAO.ApplicationSystem.EntityEthicsApplication;
+import DAO.UserSystem.EntityPerson;
 import helpers.JDBCExecutor;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
@@ -24,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ApplicationHandler extends Controller {
@@ -48,8 +50,9 @@ public class ApplicationHandler extends Controller {
 
     //TODO complete all applications
     public Result allApplications() {
-        String user_email = session().get("user_email");
-        EntityEthicsApplication.
+        EntityPerson person = EntityPerson.getPersonById(session().get("user_email"));
+        List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person);
+
         return TODO;
     }
 

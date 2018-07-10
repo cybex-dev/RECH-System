@@ -1,6 +1,6 @@
 package models.UserSystem;
 
-public enum PersonType {
+public enum UserType {
     PrimaryInvestigator(1, "PI"),
     PrimaryResponsiblePerson(2, "PRP"),
     Liaison(4, "Liaison"),
@@ -12,7 +12,7 @@ public enum PersonType {
     private int privilege = 1;
     private String type = "PI";
 
-    PersonType(int privilege, String type) {
+    UserType(int privilege, String type) {
         this.privilege = privilege;
         this.type = type;
     }
@@ -23,5 +23,9 @@ public enum PersonType {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getPrivilege() {
+        return privilege;
     }
 }

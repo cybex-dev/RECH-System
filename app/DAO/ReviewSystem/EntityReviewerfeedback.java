@@ -1,10 +1,14 @@
 package DAO.ReviewSystem;
 
+import DAO.ApplicationSystem.EntityEthicsApplication;
+import io.ebean.Finder;
 import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "reviewerfeedback", schema = "rech_system", catalog = "")
@@ -14,6 +18,8 @@ public class EntityReviewerfeedback extends Model {
     private Timestamp applicationAssignedDate;
     private String reviewerEmail;
     private Integer applicationId;
+
+    public static Finder<Integer, EntityReviewerfeedback> find = new Finder<>(EntityReviewerfeedback.class);
 
     @Id
     @Column(name = "reviewer_feedback_id")
@@ -82,4 +88,13 @@ public class EntityReviewerfeedback extends Model {
 
         return Objects.hash(reviewerFeedbackId, feedbackDate, applicationAssignedDate, reviewerEmail, applicationId);
     }
+
+    public static List<EntityEthicsApplication> getApplicationsByReviewer(String reviewerEmail){
+        return find.all()
+                .stream()
+                .filter(entityReviewerfeedback -> entityReviewerfeedback.getReviewerEmail().equals(reviewerEmail))
+                .map(entityReviewerfeedback -> EntityEthicsApplication.find.byId(entityReviewerfeedback.applicationId))
+                .collect(Collectors.toList());
+    }
+
 }
