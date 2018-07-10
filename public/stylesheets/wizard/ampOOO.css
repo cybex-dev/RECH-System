@@ -1,0 +1,70 @@
+body {
+  background: #EC407A;
+  color: #fff;
+  padding: 30px 0;
+}
+body .heading {
+  text-align: center;
+}
+body .heading h1 {
+  font-size: 100px;
+}
+body .content {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.stepper {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.stepper .step {
+  position: relative;
+  min-height: 32px;
+}
+.stepper .step > div:last-child {
+  margin-left: 32px;
+  padding-left: 16px;
+}
+.stepper .step .step-heading {
+  position: static;
+  height: 33px;
+  color: #fff;
+  padding-bottom: 50px;
+  cursor: pointer;
+}
+.stepper .step .step-heading.active .circle {
+  background: #E91E63;
+}
+.stepper .step .step-heading .circle {
+  background: #F48FB1;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: 16px;
+  position: relative;
+  color: #fff;
+  text-align: center;
+  float: left;
+}
+.stepper .step .step-heading .title {
+  line-height: 32px;
+  padding-left: 15px;
+  float: left;
+}
+.stepper .step .body {
+  padding-bottom: 30px;
+}
+.stepper .step .line {
+  position: absolute;
+  border-left: 1px solid #fff;
+  left: 16px;
+  bottom: 0px;
+  top: 32px;
+}
+.stepper .step .btn {
+  color: #fff !important;
+}
+.stepper .step .btn.btn-bg {
+  background: #F48FB1;
+}

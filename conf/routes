@@ -5,6 +5,9 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
+# Test
+GET     /ampOOO                     controllers.Index.ampOOO
+
 GET     /application/new            controllers.ApplicationSystem.ApplicationHandler.newApplication
 POST    /application/new/submit     controllers.ApplicationSystem.ApplicationHandler.submitApplication
 
@@ -17,6 +20,8 @@ GET     /:link                      controllers.HomeController.redirectMandela(l
 GET     /secure/:link               controllers.HomeController.redirectMandelaSecure(link: String)
 
 POST    /secure                     controllers.HomeController.postNMUSearch
+
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

@@ -1,0 +1,44 @@
+@import scala.math.BigDecimal
+
+@import
+
+@()
+
+<html>
+<head>
+
+  <script type="application/javascript" src=""
+
+  <script type="text/javascript" src="@routes.Assets.versioned("javascripts/wizard/ampOOO.js")"></script>
+  <script type="text/javascript" src="@routes.Assets.versioned("javascripts/wizard/angular.min.js")"></script>
+  <script type="text/javascript" src="@routes.Assets.versioned("javascripts/wizard/angular-animate.js")"></script>
+  <script type="text/javascript" src="@routes.Assets.versioned("javascripts/wizard/ui-bootstrap-tpls.js")"></script>
+  <link type="text/css" charset="UTF-8" rel="stylesheet" href="@routes.Assets.versioned("stylesheets/wizard/ampOOO.css")"></link>
+  <link type="text/css" charset="UTF-8" rel="stylesheet" href="@routes.Assets.versioned("stylesheets/wizard/bootstrap.min.css")"></link>
+  <link type="text/css" charset="UTF-8" rel="stylesheet" href="@routes.Assets.versioned("stylesheets/wizard/bootstrap-material-design.css")"></link>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <div ng-app="appModule">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-12 heading">
+          <h1>Stepper</h1>
+          <small>A ready to use AngularJS Directive</small>
+        </div>
+
+        <div class="col-md-6 col-md-offset-3 content">
+          <stepper-directive></stepper-directive>
+        </div>
+
+        <div class="col-md-6 col-md-offset-3">
+          <small>* Bootstrap and Material Design for Bootstrap are not required</small><br>
+          <small>** UI Bootstrap is being used only for the collapse animation. Can be easily replaced by some piece of css</small>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
