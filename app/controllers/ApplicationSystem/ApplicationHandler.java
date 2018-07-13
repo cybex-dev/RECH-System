@@ -1,5 +1,6 @@
 package controllers.ApplicationSystem;
 
+import DAO.ApplicationSystem.EntityComponent;
 import DAO.ApplicationSystem.EntityEthicsApplication;
 import DAO.UserSystem.EntityPerson;
 import helpers.JDBCExecutor;
@@ -14,6 +15,7 @@ import play.data.FormFactory;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.*;
+import scala.App;
 
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
@@ -26,6 +28,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ApplicationHandler extends Controller {
@@ -52,18 +55,19 @@ public class ApplicationHandler extends Controller {
     public Result allApplications() {
         EntityPerson person = EntityPerson.getPersonById(session().get("user_email"));
         List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person);
-
-        return TODO;
+        return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
     }
 
-    public Result newApplication(){
+    public Result newApplication(String type){
         //TODO
         loadApplicationFromResource();
-        ApplicationType type = ApplicationType.valueOf("human");
-        EthicsApplication application = ethicsApplications.stream().filter(ethicsApplication -> ethicsApplication.getType() == type).findFirst().orElse(new EthicsApplication());
-        Element rootElement = application.getRootElement();
+        ApplicationType applicationType = ApplicationType.valueOf(type);
+        EthicsApplication application = ethicsApplications.stream()
+                .filter(ethicsApplication -> ethicsApplication.getType() == applicationType)
+                .findFirst()
+                .orElse(new EthicsApplication());
         DynamicForm form = formFactory.form();
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), application.getRootElement(), form));
     }
 
     /**
@@ -105,6 +109,28 @@ public class ApplicationHandler extends Controller {
      */
     //TODO
     public Result submitApplication() {
+        DynamicForm newApplication = formFactory.form().bindFromRequest();
+        if (newApplication.hasErrors()) {
+            try {
+                String application_type = newApplication.get("application_type");
+                ApplicationType type = ApplicationType.valueOf(application_type);
+                EthicsApplication application = ethicsApplications.stream()
+                        .filter(ethicsApplication -> ethicsApplication.getType() == type)
+                        .findFirst()
+                        .orElse(new EthicsApplication());
+                DynamicForm form = formFactory.form();
+                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), application.getRootElement(), form));
+            } catch (Exception x) {
+                return internalServerError();
+            }
+        }
+
+        Map<String, Object> data = newApplication.get().getData();
+        data.forEach((key, value) -> {
+            EntityComponent component = new EntityComponent();
+            component.s
+        });
+
         return ok();
     }
 }

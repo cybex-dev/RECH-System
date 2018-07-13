@@ -2,23 +2,59 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# An example controller showing a sample home page
+# Home
 GET     /                           controllers.HomeController.index
 
-# Test
-GET     /ampOOO                     controllers.Index.ampOOO
+### ### Application System ###
 
-GET     /application/new            controllers.ApplicationSystem.ApplicationHandler.newApplication
+GET     /user/register              controllers.ApplicationSystem.register
+POST    /user/register/submit       controllers.ApplicationSystem.submitRegistration
+
+GET     /user/login                 controllers.ApplicationSystem.login
+POST    /user/login                 controllers.ApplicationSystem.doLogin
+
+GET     /user/overview              controllers.ApplicationSystem.getOverview
+
+GET     /user/profile               controllers.ApplicationSystem.settings
+
+### ### Application System ###
+
+# View all applications & statuses
+GET     /application                controllers.ApplicationSystem.ApplicationHandler.allApplications
+
+# New Application (application type passed as parameter)
+GET     /application/new/:type      controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
 POST    /application/new/submit     controllers.ApplicationSystem.ApplicationHandler.submitApplication
 
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
-# An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+### ### Review System ###
 
+GET     /application/review         controllers.ReviewSystem.ApplicationReviewer.reviewApplication
+POST    /application/review         controllers.ReviewSystem.ApplicationReviewer.submitReview
+
+### ### Message System ###
+
+GET     /messages                   controllers.MessageSystem.allMessages
+# Application ID passed as parameter
+GET     /message/:appId             controllers.MessageSystem.applicationMessages(appId: Integer)
+
+### ### Meeting System ###
+
+GET     /meeting/applications       controllers.Meeting.allApplications
+
+GET     /meeting/application/:appId controllers.Meeting.getApplication(appId: Integer)
+POST    /meeting/application/submit controllers.Meeting.submitResolution
+
+
+# An example controller showing how to use dependency injection
+# GET     /count                      controllers.CountController.count
+# An example controller showing how to write asynchronous code
+# GET     /message                    controllers.AsyncController.message
+
+# Redirect to NMU via Logo click
 GET     /:link                      controllers.HomeController.redirectMandela(link: String)
 GET     /secure/:link               controllers.HomeController.redirectMandelaSecure(link: String)
 
+# Redirects for NMU search
 POST    /secure                     controllers.HomeController.postNMUSearch
 
 
