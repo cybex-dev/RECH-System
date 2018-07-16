@@ -42,20 +42,20 @@
 
 @font-face {
     font-family: NunitoSansRegular;
-    src: url(fonts/NunitoSans/Nunito-Sans-Regular.eot);
-    src: url(fonts/NunitoSans/Nunito-Sans-Regular.eot?#iefix) format('embedded-opentype'), url(fonts/NunitoSans/Nunito-Sans-Regular.woff2) format('woff2'), url(fonts/NunitoSans/Nunito-Sans-Regular.woff) format('woff'), url(fonts/NunitoSans/Nunito-Sans-Regular.ttf) format('truetype'), url(fonts/NunitoSans/Nunito-Sans-Regular.svg#svgFontName) format('svg')
+    src: url(../fonts/NunitoSans/Nunito-Sans-Regular.eot);
+    src: url(../fonts/NunitoSans/Nunito-Sans-Regular.eot?#iefix) format('embedded-opentype'), url(../fonts/NunitoSans/Nunito-Sans-Regular.woff2) format('woff2'), url(../fonts/NunitoSans/Nunito-Sans-Regular.woff) format('woff'), url(../fonts/NunitoSans/Nunito-Sans-Regular.ttf) format('truetype'), url(../fonts/NunitoSans/Nunito-Sans-Regular.svg#svgFontName) format('svg')
 }
 
 @font-face {
     font-family: NunitoSansBold;
-    src: url(fonts/NunitoSans/Nunito-Sans-Bold.eot);
-    src: url(fonts/NunitoSans/Nunito-Sans-Bold.eot?#iefix) format('embedded-opentype'), url(fonts/NunitoSans/Nunito-Sans-Bold.woff2) format('woff2'), url(fonts/NunitoSans/Nunito-Sans-Bold.woff) format('woff'), url(fonts/NunitoSans/Nunito-Sans-Bold.ttf) format('truetype'), url(fonts/NunitoSans/Nunito-Sans-Bold.svg#svgFontName) format('svg')
+    src: url(../fonts/NunitoSans/Nunito-Sans-Bold.eot);
+    src: url(../fonts/NunitoSans/Nunito-Sans-Bold.eot?#iefix) format('embedded-opentype'), url(../fonts/NunitoSans/Nunito-Sans-Bold.woff2) format('woff2'), url(../fonts/NunitoSans/Nunito-Sans-Bold.woff) format('woff'), url(../fonts/NunitoSans/Nunito-Sans-Bold.ttf) format('truetype'), url(../fonts/NunitoSans/Nunito-Sans-Bold.svg#svgFontName) format('svg')
 }
 
 @font-face {
     font-family: NunitoSansItalic;
-    src: url(fonts/NunitoSans/Nunito-Sans-Italic.eot);
-    src: url(fonts/NunitoSans/Nunito-Sans-Italic.eot?#iefix) format('embedded-opentype'), url(fonts/NunitoSans/Nunito-Sans-Italic.woff2) format('woff2'), url(fonts/NunitoSans/Nunito-Sans-Italic.woff) format('woff'), url(fonts/NunitoSans/Nunito-Sans-Italic.ttf) format('truetype'), url(fonts/NunitoSans/Nunito-Sans-Italic.svg#svgFontName) format('svg')
+    src: url(../fonts/NunitoSans/Nunito-Sans-Italic.eot);
+    src: url(../fonts/NunitoSans/Nunito-Sans-Italic.eot?#iefix) format('embedded-opentype'), url(../fonts/NunitoSans/Nunito-Sans-Italic.woff2) format('woff2'), url(../fonts/NunitoSans/Nunito-Sans-Italic.woff) format('woff'), url(../fonts/NunitoSans/Nunito-Sans-Italic.ttf) format('truetype'), url(../fonts/NunitoSans/Nunito-Sans-Italic.svg#svgFontName) format('svg')
 }
 
 main {

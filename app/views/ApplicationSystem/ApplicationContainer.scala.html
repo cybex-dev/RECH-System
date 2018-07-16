@@ -3,6 +3,17 @@
 @import views.html.b4
 @import play.data.DynamicForm
 
+@import scala.xml.Elem
+
+@import net.ddns.cyberstudios.Element
+@import scala.xml.NodeSeq
+
+@import java.util
+@import scala.xml.MetaData
+@import scala.collection.mutable.StringBuilder
+
+@import java.lang.String
+
 @import play.api.data.Field
 @import play.twirl.api.Html
 @import views.html.b4.vertical
@@ -11,28 +22,86 @@
 @import controllers.ApplicationSystem.DocumentParser
 
 @import controllers.ApplicationSystem.DOMParser
-@(pageTitle: String)(applicationType: String)(document: Document)(form: DynamicForm)
+@(pageTitle: String)(applicationType: String)(element: Element)(form: DynamicForm)
 
-@contentBlock = {
-    <h1>Create Ethics Application for @applicationType Research</h1>
-    <br>
-    <div id="wizard-container">
-        <div id="wizard-header">
-
-        </div>
-        <div id="wizard-body-container">
-            <div id="wizard-progress-container">
+    @contentBlock = {
+        <h1>Create Ethics Application for @applicationType Research</h1>
+        <br>
+        <div id="wizard-container">
+            <div id="wizard-header">
 
             </div>
-            <div id="wizard-body">
-                <p>
-                @{
-//                    DOMParser.check(form)(DocumentParser.asXmlNode(document))
-                }
-                </p>
+            <div id="wizard-body-container">
+                <div id="wizard-progress-container">
+
+                </div>
+                <div id="wizard-body">
+                    <p>
+                    @{
+                        def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
+                            val elementType = element.getType.toLowerCase
+                            elementType match {
+                                case "boolean" => {
+                                    /*creates checkbox*/
+                                    b4.checkbox(form(element.getId), '_label -> element.getValue).toString()
+                                }
+
+                                case "number" => {
+                                    b4.number(form(element.getId), '_label -> element.getValue).toString()
+                                    /*creates text field with number specific*/
+                                }
+
+                                case "long_text" => {
+                                    /*creates a multiline text field*/
+                                    b4.text(form(element.getId), '_label -> element.getValue).toString()
+                                }
+
+                                case "text" => {
+                                    /*creates text field*/
+                                    b4.text(form(element.getId), '_label -> element.getValue).toString()
+                                }
+
+                                case "date" => {
+                                    /*creates text field*/
+                                    b4.date(form(element.getId), '_label -> element.getValue).toString()
+                                }
+
+                                case "document" => {
+                                    /*creates text field*/
+                                    b4.file(form(element.getId), '_label -> element.getValue).toString()
+                                }
+
+                                case _ => {
+                                    "<p>Unhandled Tag : " + element.getType.toLowerCase() + "</p>"
+                                }
+                            }
+                        }
+
+                        def parseElement(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
+                            val innerText = for(elem <- element.getChildren) yield {
+                                if(!elem.isLeaf) {
+                                    /*this creates a container element which consumes some html type text*/
+                                    val inner = parseElement(elem)
+                                    elem.toHtml("div").inner(inner)
+                                } else {
+                                    /*this creates a component of type a specific type*/
+                                    createComponent(elem)
+                                }
+                            }
+                            innerText.mkString("")
+                        }
+
+                        b4.vertical.formCSRF(controllers.ApplicationSystem.routes.ApplicationHandler.submitApplication()) { implicit vfc =>
+                            val v = parseElement(root)(vfc)
+                            Html(v)
+                        }
+
+                    }
+
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-}
+    }
 
-@Masterpage.apply(pageTitle)(contentBlock)
+    @Masterpage.apply(pageTitle)(contentBlock)
