@@ -1,39 +1,23 @@
 package controllers.ApplicationSystem;
 
-import DAO.ApplicationSystem.EntityComponent;
 import DAO.ApplicationSystem.EntityEthicsApplication;
 import DAO.UserSystem.EntityPerson;
 import helpers.JDBCExecutor;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
 import net.ddns.cyberstudios.Element;
-import org.w3c.dom.Document;
-import org.w3c.dom.Entity;
-import org.xml.sax.SAXException;
+import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
 import play.data.FormFactory;
-import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.*;
-import scala.App;
 
 import javax.inject.Inject;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class ApplicationHandler extends Controller {
-
-    static private Set<EthicsApplication> ethicsApplications = new HashSet<>();
 
     @Inject
     FormFactory formFactory;
@@ -58,79 +42,100 @@ public class ApplicationHandler extends Controller {
         return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
     }
 
-    public Result newApplication(String type){
-        //TODO
-        loadApplicationFromResource();
+    public Result newApplication(String type) {
         ApplicationType applicationType = ApplicationType.valueOf(type);
-        EthicsApplication application = ethicsApplications.stream()
-                .filter(ethicsApplication -> ethicsApplication.getType() == applicationType)
-                .findFirst()
-                .orElse(new EthicsApplication());
         DynamicForm form = formFactory.form();
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), application.getRootElement(), form));
+        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), ethicsApplication.getRootElement(), form));
     }
 
-    /**
-     * Reads in application forms from resource root and passes them to be parsed and inserted into available application forms.
-     */
-    private void loadApplicationFromResource(){
-        URL resource = getClass().getResource("/application_templates/rec-h.xml");
-        try {
-            URI rech_uri = resource.toURI();
-            File rech_file = new File(rech_uri);
-            parseToDocument(rech_file);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Receives a file object pointing to an XML application form file and adds the parsed document to a static container
-     * @param applicationXML
-     */
-    private void parseToDocument(File applicationXML) {
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(applicationXML);
-            doc.normalize();
-            String sType = doc.getDocumentElement().getAttribute("type");
-            ApplicationType type = ApplicationType.valueOf(sType);
-            EthicsApplication ethicsApplication = new EthicsApplication(type, doc);
-            ethicsApplication.parseDocumentToElement();
-            ethicsApplications.add(ethicsApplication);
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Post application form to server
      */
     //TODO
-    public Result submitApplication() {
-        DynamicForm newApplication = formFactory.form().bindFromRequest();
-        if (newApplication.hasErrors()) {
+    public CompletionStage<Result> submitApplication() {
+        return CompletableFuture.supplyAsync(() -> {
+            DynamicForm formApplication = formFactory.form().bindFromRequest();
+            ApplicationType application_type;
+
+            // Get application type as raw field
             try {
-                String application_type = newApplication.get("application_type");
-                ApplicationType type = ApplicationType.valueOf(application_type);
-                EthicsApplication application = ethicsApplications.stream()
-                        .filter(ethicsApplication -> ethicsApplication.getType() == type)
-                        .findFirst()
-                        .orElse(new EthicsApplication());
-                DynamicForm form = formFactory.form();
-                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), application.getRootElement(), form));
+                String type = formApplication.get("application_type");
+                application_type = ApplicationType.valueOf(type);
             } catch (Exception x) {
-                return internalServerError();
+                x.printStackTrace();
+                return badRequest(x.toString());
             }
-        }
 
-        Map<String, Object> data = newApplication.get().getData();
-        data.forEach((key, value) -> {
-            EntityComponent component = new EntityComponent();
-            component.s
-        });
+            // Get copy of application form
+            EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
 
-        return ok();
+            // Handle form errors
+            if (formApplication.hasErrors()) {
+                try {
+                    // TODO check if data is mapped
+                    DynamicForm form = formFactory.form();
+                    form.bind(formApplication.rawData());
+                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), form));
+                } catch (Exception x) {
+                    return internalServerError();
+                }
+            }
+
+            // Create basic Ethics Application
+            EntityEthicsApplication application = new EntityEthicsApplication();
+            application.setApplicationType(application_type.name().toLowerCase());
+            application.setApplicationYear(Calendar.getInstance().get(Calendar.YEAR));
+            application.insert();
+
+            // Get root element to add values to
+            Element rootElement = application_template.getRootElement();
+
+            // Get form data and add to root element
+            Map<String, Object> data = formApplication.get().getData();
+            data.forEach((key, value) -> {
+
+                int index = -1;
+
+                // Check if key is in form 'some_name[_$index]'
+                if (key.matches("^(.)+([_](\\d)+)$")){
+                    // implies a list item
+                    int last = key.lastIndexOf("_");
+                    index = Integer.parseInt(key.substring(last) + 1);
+                    key = key.substring(0, key.length() - (last-1));
+                }
+
+                // Get element by id
+                Element element = XMLTools.lookup(rootElement, key);
+
+                //if Element found, then
+                if (element != null) {
+
+                    if (element.getParent().getTag().equals("list")){
+
+                        // If element is a list, requiring special processing, create list if list not made, then add values to list
+                        ArrayList<Object> list;
+                        Object o = element.getValue();
+                        if (o instanceof ArrayList) {
+                            //TODO fix this ???
+                            list = (ArrayList<Object>) o;
+                        } else {
+                            list = new ArrayList<>();
+                        }
+                        list.add(index, value);
+                        element.setValue(list);
+                    } else {
+                        //else assign the value
+                        element.setValue(value);
+                    }
+                }
+            });
+
+            // Create Entities from Root Element
+            //TODO implement this
+
+            return ok();
+        }, jdbcExecutor);
     }
 }

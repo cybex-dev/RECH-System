@@ -71,6 +71,10 @@
                                     b4.file(form(element.getId), '_label -> element.getValue).toString()
                                 }
 
+                                case "list" => {
+                                    "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
+                                }
+
                                 case _ => {
                                     "<p>Unhandled Tag : " + element.getType.toLowerCase() + "</p>"
                                 }
@@ -78,7 +82,7 @@
                         }
 
                         def parseElement(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
-                            val innerText = for(elem <- element.getChildren) yield {
+                            val innerText = for(elem:Element <- element.getChildren.toArray()) yield {
                                 if(!elem.isLeaf) {
                                     /*this creates a container element which consumes some html type text*/
                                     val inner = parseElement(elem)
