@@ -113,11 +113,23 @@
                     <question>Study Scope</question>
                     <value></value>
                 </component>
-                <component id="doc_restrictions" type="document" required="false"
-                           hint="Document which provides details of restrictions">
-                    <question>Restriction Supporting Documents</question>
-                    <value></value>
-                </component>
+                <group id="grp_doc_restrictions" type="document" popup="true" name="Restrictions Document" hint="">
+                    <component id="doc_restrictions_title" type="text"
+                               hint="Document which provides details of restrictions">
+                        <question>Restriction Supporting Documents Title</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_restrictions_desc" type="text"
+                               hint="Document which provides details of restrictions">
+                        <question>Restriction Supporting Documents Description</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_restrictions_title" type="document"
+                               hint="Document which provides details of restrictions">
+                        <question>Restriction Supporting Documents File</question>
+                        <value></value>
+                    </component>
+                </group>
             </extension>
             <component id="date_start" type="date" hint="Date when data collection is expected to start.">
                 <question>Start Date</question>
@@ -144,11 +156,23 @@
                 <question>Methodology</question>
                 <value></value>
             </component>
-            <component id="doc_methodology" type="document" required="true"
-                       hint="A fully detailed document containing research methodology protocol and information - previously known as Appendix 1">
-                <question>Methodology Document</question>
-                <value></value>
-            </component>
+
+
+            <group id="grp_doc_methodology" type="document" popup="true" name="Methodology Document" hint="A fully detailed document containing research methodology protocol and information - previously known as Appendix 1">
+                <component id="doc_methodology_title" type="text" required="true">
+                    <question>Methodology Document Title</question>
+                    <value></value>
+                </component>
+                <component id="doc_methodology_desc" type="text" required="true">
+                    <question>Methodology Document Description</question>
+                    <value></value>
+                </component>
+                <component id="doc_methodology_document" type="document" required="true">
+                    <question>Methodology Document File</question>
+                    <value></value>
+                </component>
+            </group>
+
             <component id="max_participants" type="number"
                        hint="Minimum number of people required to make study viable">
                 <question>Min Participants</question>
@@ -321,11 +345,20 @@
                 <value></value>
             </component>
             <extension orientation="vertical">
-                <component id="doc_consent" name="" required="false" type="document"
-                           hint="Provide the consent for document which participants will recieve">
-                    <question>Consent Form Document</question>
-                    <value></value>
-                </component>
+                <group id="grp_doc_consent" type="document" popup="true" name="Methodology Document" hint="Provide the consent for document which participants will recieve">
+                    <component id="doc_consent_title" name="" required="false" type="text">
+                        <question>Consent Form Title</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_consent_desc" type="text" required="true">
+                        <question>Consent Form Description</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_consent_file" type="document" required="true">
+                        <question>Consent Form File</question>
+                        <value></value>
+                    </component>
+                </group>
                 <component id="written_consent_desc" name="" type="text"
                            hint="Motivate why no consent will be necessary.">
                     <question>Motivate</question>
@@ -405,24 +438,58 @@
                     <question>Document Category</question>
                     <value></value>
                 </component>
-                <component id="doc_permission_file" type="document" required="false" hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
-                    <question>Document File</question>
-                    <value></value>
-                </component>
+                <group id="grp_doc_methodology" type="document" popup="true" name="Methodology Document" hint="Provide the consent for document which participants will recieve">
+                    <component id="doc_permission_title" type="text" required="false" hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
+                        <question>Document File</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_permission_desc" type="text" required="false" hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
+                        <question>Document File</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_permission_file" type="document" required="false" hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
+                        <question>Document File</question>
+                        <value></value>
+                    </component>
+                </group>
             </list>
         </extension>
     </section>
     <section id="sct_participant_info" name="Information to Participants" hint="">
-        <component id="prior_consent_information_written" name="document" type=""
-                   hint="Written information presented to participants prior to their consent given">
-            <question>Written information provided</question>
-            <value></value>
-        </component>
-        <component id="prior_consent_information_oral" name="document" type=""
-                   hint="Oral/Verbal information presented to participants prior to their consent given">
-            <question>Oral/Verbal information provided</question>
-            <value></value>
-        </component>
+        <group id="grp_doc_prior_consent_written" type="document" popup="true" name="Methodology Document" hint="A fully detailed document containing research methodology protocol and information - previously known as Appendix 1">
+            <component id="doc_prior_consent_written_title" name="" type="text"
+                       hint="Written information presented to participants prior to their consent given">
+                <question>Written information provided Title</question>
+                <value></value>
+            </component>
+            <component id="doc_prior_consent_written_desc" name="" type="text"
+                       hint="Written information presented to participants prior to their consent given">
+                <question>Written information provided Description</question>
+                <value></value>
+            </component>
+            <component id="doc_prior_consent_written_file" name="" type="document"
+                       hint="Written information presented to participants prior to their consent given">
+                <question>Written information provided file</question>
+                <value></value>
+            </component>
+        </group>
+        <group id="grp_doc_methodology" type="document" popup="true" name="Methodology Document" hint="A fully detailed document containing research methodology protocol and information - previously known as Appendix 1">
+            <component id="doc_prior_consent_oral_title" name="" type="text"
+                       hint="Oral information presented to participants prior to their consent given">
+                <question>Oral information provided Title</question>
+                <value></value>
+            </component>
+            <component id="doc_prior_consent_oral_desc" name="" type="text"
+                       hint="Oral information presented to participants prior to their consent given">
+                <question>Oral information provided Description</question>
+                <value></value>
+            </component>
+            <component id="doc_prior_consent_oral_file" name="" type="document"
+                       hint="Oral information presented to participants prior to their consent given">
+                <question>Oral information provided file</question>
+                <value></value>
+            </component>
+        </group>
         <group name="Information Provider" id="grp_information_provider"
                hint="The individual who will provide the prior consent information to participants">
             <component id="info_prov_firstname" name="" type="text" hint="Information Provider firstname">
