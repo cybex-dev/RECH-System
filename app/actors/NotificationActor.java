@@ -1,7 +1,6 @@
 package actors;
 
 import akka.actor.AbstractActor;
-import akka.actor.AbstractLoggingActor;
 
 public class NotificationActor extends AbstractActor {
     @Override

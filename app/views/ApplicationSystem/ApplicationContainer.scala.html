@@ -1,28 +1,10 @@
-@import views.html.Templates.Masterpage
-@import org.w3c.dom.Document
-@import views.html.b4
+@@import net.ddns.cyberstudios.Element
 @import play.data.DynamicForm
-
-@import scala.xml.Elem
-
-@import net.ddns.cyberstudios.Element
-@import scala.xml.NodeSeq
-
-@import java.util
-@import scala.xml.MetaData
-@import scala.collection.mutable.StringBuilder
-
-@import java.lang.String
-
-@import play.api.data.Field
 @import play.twirl.api.Html
+@import views.html.Templates.Masterpage
+@import views.html.b4
 @import views.html.b4.vertical
-@import scala.xml.Node
-
-@import controllers.ApplicationSystem.DocumentParser
-
-@import controllers.ApplicationSystem.DOMParser
-@(pageTitle: String)(applicationType: String)(element: Element)(form: DynamicForm)
+@(pageTitle: String)(applicationType: String)(root: Element)(form: DynamicForm)
 
     @contentBlock = {
         <h1>Create Ethics Application for @applicationType Research</h1>
@@ -41,43 +23,35 @@
                         def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
                             val elementType = element.getType.toLowerCase
                             elementType match {
-                                case "boolean" => {
+                                case "boolean" =>
                                     /*creates checkbox*/
                                     b4.checkbox(form(element.getId), '_label -> element.getValue).toString()
-                                }
 
-                                case "number" => {
+                                case "number" =>
                                     b4.number(form(element.getId), '_label -> element.getValue).toString()
                                     /*creates text field with number specific*/
-                                }
 
-                                case "long_text" => {
+                                case "long_text" =>
                                     /*creates a multiline text field*/
                                     b4.text(form(element.getId), '_label -> element.getValue).toString()
-                                }
 
-                                case "text" => {
+                                case "text" =>
                                     /*creates text field*/
                                     b4.text(form(element.getId), '_label -> element.getValue).toString()
-                                }
 
-                                case "date" => {
+                                case "date" =>
                                     /*creates text field*/
                                     b4.date(form(element.getId), '_label -> element.getValue).toString()
-                                }
 
-                                case "document" => {
+                                case "document" =>
                                     /*creates text field*/
                                     b4.file(form(element.getId), '_label -> element.getValue).toString()
-                                }
 
-                                case "list" => {
+                                case "list" =>
                                     "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
-                                }
 
-                                case _ => {
+                                case _ =>
                                     "<p>Unhandled Tag : " + element.getType.toLowerCase() + "</p>"
-                                }
                             }
                         }
 

@@ -1,9 +1,9 @@
 package helpers;
 
-import javax.inject.Inject;
-
 import akka.actor.ActorSystem;
 import play.libs.concurrent.CustomExecutionContext;
+
+import javax.inject.Inject;
 
 public class JDBCExecutor extends CustomExecutionContext {
     @Inject

@@ -1,25 +1,17 @@
 package controllers;
 
 import play.data.DynamicForm;
-import play.data.Form;
 import play.data.FormFactory;
-import play.mvc.*;
-
+import play.mvc.Controller;
+import play.mvc.Result;
 import views.html.Templates.Masterpage;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.inject.Inject;
 
 /**
  * This controller contains an action to handle HTTP requests
  * to the application's home page.
  */
-
-import scala.collection.JavaConverters;
-
-import javax.inject.Inject;
 
 public class HomeController extends Controller {
 

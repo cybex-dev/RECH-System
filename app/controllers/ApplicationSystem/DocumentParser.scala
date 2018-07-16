@@ -1,11 +1,9 @@
 package controllers.ApplicationSystem
 
-import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.sax.SAXResult
-import play.twirl.api.Html
 
-import scala.xml.{Node, NodeSeq}
+import scala.xml.Node
 import scala.xml.parsing.NoBindingFactoryAdapter
 
 object DocumentParser {

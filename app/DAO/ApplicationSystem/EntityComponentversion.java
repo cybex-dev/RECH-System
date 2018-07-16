@@ -1,5 +1,7 @@
 package DAO.ApplicationSystem;
 
+import io.ebean.Model;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -8,7 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "componentversion", schema = "rech_system", catalog = "")
 @IdClass(EntityComponentversionPK.class)
-public class EntityComponentversion {
+public class EntityComponentversion extends Model {
     private Short version;
     private Integer componentId;
     private Boolean isSubmitted;

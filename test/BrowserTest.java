@@ -5,7 +5,8 @@ import play.test.TestBrowser;
 import play.test.WithBrowser;
 
 import static org.junit.Assert.assertTrue;
-import static play.test.Helpers.*;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.inMemoryDatabase;
 
 public class BrowserTest extends WithBrowser {
 

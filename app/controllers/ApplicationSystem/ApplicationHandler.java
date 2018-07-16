@@ -1,7 +1,10 @@
 package controllers.ApplicationSystem;
 
+import DAO.ApplicationSystem.EntityComponent;
+import DAO.ApplicationSystem.EntityComponentversion;
 import DAO.ApplicationSystem.EntityEthicsApplication;
 import DAO.UserSystem.EntityPerson;
+import exceptions.UnhandledElementException;
 import helpers.JDBCExecutor;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
@@ -10,12 +13,14 @@ import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
-import play.mvc.*;
+import play.mvc.Result;
 
 import javax.inject.Inject;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 
 public class ApplicationHandler extends Controller {
 
@@ -134,8 +139,105 @@ public class ApplicationHandler extends Controller {
 
             // Create Entities from Root Element
             //TODO implement this
+            try {
+                createEntities(application.getApplicationId(), rootElement);
+            } catch (UnhandledElementException e) {
+                e.printStackTrace();
+            }
 
             return ok();
+
         }, jdbcExecutor);
+    }
+
+    private void createEntities(Integer applicationId, Element<Object> rootElement) throws UnhandledElementException {
+        if (rootElement != null) {
+            switch (rootElement.getType()) {
+                case "value":
+                case "question":
+                case "list":
+                case "section":
+                case "application": {
+                    //do nothing
+                    break;
+                }
+
+                case "group": {
+                    //creates new group, do something only if group type = document
+
+
+                    break;
+                }
+
+                case "extension": {
+                    //creates new component combination, depending on boolean value, adds a new component
+                    break;
+                }
+                case "component": {
+                    //creates new basic component from children: question and value
+
+                    if (rootElement.getValue() instanceof ArrayList) {
+                        ArrayList list = (ArrayList) rootElement.getValue();
+                        int size = list.size();
+
+                        // loop through all children $size amount of times
+                        for (int i = 0; i < size; i++) {
+                            // Create version storing data
+                            EntityComponentversion componentversion = new EntityComponentversion();
+
+                            // Get value from list
+                            Object v = list.get(i);
+
+                            // Switch statement early in processing to handle exceptions early before transactions have been done
+                            switch (rootElement.getType().toLowerCase()) {
+                                case "boolean": {
+                                    componentversion.setBoolValue(Boolean.parseBoolean(v.toString()));
+                                    break;
+                                }
+
+                                case "text":
+                                case "date":
+                                case "number":
+                                case "long_text": {
+                                    componentversion.setTextValue(v.toString());
+                                    break;
+                                }
+
+                                case "document": {
+                                    // This should never be triggered
+                                    throw new UnhandledElementException("Document " + rootElement.getId() + "(i=" + String.valueOf(i) + ") processed in case \"Document\" statement");
+                                }
+
+                                default:{
+                                    throw new UnhandledElementException(rootElement.toString());
+                                }
+                            }
+                            componentversion.setResponseType(rootElement.getType().toLowerCase());
+                            componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
+                            componentversion.setIsSubmitted(false);
+
+                            // Create component entity
+                            EntityComponent component = new EntityComponent();
+                            component.setApplicationId(applicationId);
+                            component.setQuestionId(rootElement.getId());
+                            component.insert();
+
+                            // Set component Id in component version and add to database
+                            componentversion.setComponentId(component.getComponentId());
+                            componentversion.insert();
+                        }
+
+                    } else {
+                        // not a list or an empty list, do nothing
+                        return;
+                    }
+                    break;
+                }
+
+                default:{
+                    throw new UnhandledElementException(rootElement.toString());
+                }
+            }
+        }
     }
 }

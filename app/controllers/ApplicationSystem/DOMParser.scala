@@ -1,13 +1,9 @@
 package controllers.ApplicationSystem
 
-import play.api.data.Field
-import play.api.i18n.MessagesProvider
 import play.data.DynamicForm
 import play.twirl.api.Html
-import views.html.b4
-import views.html.b4.vertical
 
-import scala.xml.{Elem, Node}
+import scala.xml.Node
 
 object DOMParser {
   def toHtml(form: DynamicForm)(node: Node): Html = {
