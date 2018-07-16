@@ -1,12 +1,14 @@
 package DAO.UserSystem;
 
+import io.ebean.Finder;
+import models.UserSystem.UserType;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "person", schema = "rech_system", catalog = "")
-@IdClass(PersonEntityPK.class)
-public class PersonEntity {
+public class EntityPerson {
     private String userEmail;
     private String userPasswordHash;
     private String userFirstname;
@@ -17,11 +19,10 @@ public class PersonEntity {
     private String personType;
     private String contactOfficeTelephone;
     private String officeAddress;
-    private String facultyName;
     private String departmentName;
-    private String facultyFacultyName;
-    private String departmentDepartmentName;
-    private String departmentFacultyName;
+    private String facultyName;
+
+    public static Finder<String, EntityPerson> find = new Finder<>(EntityPerson.class);
 
     @Id
     @Column(name = "user_email")
@@ -124,16 +125,6 @@ public class PersonEntity {
     }
 
     @Basic
-    @Column(name = "faculty_name")
-    public String getFacultyName() {
-        return facultyName;
-    }
-
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
-    }
-
-    @Basic
     @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
@@ -143,41 +134,21 @@ public class PersonEntity {
         this.departmentName = departmentName;
     }
 
-    @Id
-    @Column(name = "Faculty_faculty_name")
-    public String getFacultyFacultyName() {
-        return facultyFacultyName;
+    @Basic
+    @Column(name = "faculty_name")
+    public String getFacultyName() {
+        return facultyName;
     }
 
-    public void setFacultyFacultyName(String facultyFacultyName) {
-        this.facultyFacultyName = facultyFacultyName;
-    }
-
-    @Id
-    @Column(name = "Department_department_name")
-    public String getDepartmentDepartmentName() {
-        return departmentDepartmentName;
-    }
-
-    public void setDepartmentDepartmentName(String departmentDepartmentName) {
-        this.departmentDepartmentName = departmentDepartmentName;
-    }
-
-    @Id
-    @Column(name = "Department_faculty_name")
-    public String getDepartmentFacultyName() {
-        return departmentFacultyName;
-    }
-
-    public void setDepartmentFacultyName(String departmentFacultyName) {
-        this.departmentFacultyName = departmentFacultyName;
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PersonEntity that = (PersonEntity) o;
+        EntityPerson that = (EntityPerson) o;
         return Objects.equals(userEmail, that.userEmail) &&
                 Objects.equals(userPasswordHash, that.userPasswordHash) &&
                 Objects.equals(userFirstname, that.userFirstname) &&
@@ -188,16 +159,21 @@ public class PersonEntity {
                 Objects.equals(personType, that.personType) &&
                 Objects.equals(contactOfficeTelephone, that.contactOfficeTelephone) &&
                 Objects.equals(officeAddress, that.officeAddress) &&
-                Objects.equals(facultyName, that.facultyName) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyFacultyName, that.facultyFacultyName) &&
-                Objects.equals(departmentDepartmentName, that.departmentDepartmentName) &&
-                Objects.equals(departmentFacultyName, that.departmentFacultyName);
+                Objects.equals(facultyName, that.facultyName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, facultyName, departmentName, facultyFacultyName, departmentDepartmentName, departmentFacultyName);
+        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
+    }
+
+    public static EntityPerson getPersonById(String userEmail){
+        return find.byId(userEmail);
+    }
+
+    public UserType userType(){
+        return UserType.valueOf(personType);
     }
 }

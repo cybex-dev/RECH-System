@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class DepartmentEntityPK implements Serializable {
+public class EntityDepartmentPK implements Serializable {
     private String departmentName;
     private String facultyName;
 
@@ -33,7 +33,7 @@ public class DepartmentEntityPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DepartmentEntityPK that = (DepartmentEntityPK) o;
+        EntityDepartmentPK that = (EntityDepartmentPK) o;
         return Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName);
     }

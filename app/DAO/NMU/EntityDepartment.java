@@ -5,8 +5,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "department", schema = "rech_system", catalog = "")
-@IdClass(DepartmentEntityPK.class)
-public class DepartmentEntity {
+@IdClass(EntityDepartmentPK.class)
+public class EntityDepartment {
     private String departmentName;
     private String facultyName;
 
@@ -34,7 +34,7 @@ public class DepartmentEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DepartmentEntity that = (DepartmentEntity) o;
+        EntityDepartment that = (EntityDepartment) o;
         return Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName);
     }
