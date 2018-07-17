@@ -9,6 +9,7 @@ import models.ApplicationSystem.ApplicationStatus;
 import models.UserSystem.UserType;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class EntityEthicsApplication extends Model {
     private String departmentName;
     private String facultyName;
     private Boolean isSubmitted;
-    private String dateSubmitted;
+    private Timestamp dateSubmitted;
     private String dateApproved;
     private String piId;
     private String piApprovedDate;
@@ -110,11 +111,11 @@ public class EntityEthicsApplication extends Model {
 
     @Basic
     @Column(name = "date_submitted")
-    public String getDateSubmitted() {
+    public Timestamp getDateSubmitted() {
         return dateSubmitted;
     }
 
-    public void setDateSubmitted(String dateSubmitted) {
+    public void setDateSubmitted(Timestamp dateSubmitted) {
         this.dateSubmitted = dateSubmitted;
     }
 
@@ -288,6 +289,20 @@ public class EntityEthicsApplication extends Model {
         return (latestStatus != null)
                 ? latestStatus.status()
                 : ApplicationStatus.UNKNOWN;
+    }
+
+    public static String getTitle(int applicationId) {
+        Integer componentId = EntityComponent.getAllApplicationCompontents(applicationId)
+                .stream()
+                .filter(entityComponent -> entityComponent.getQuestionId().equals("title"))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find any application with ID: " + String.valueOf(applicationId)))
+                .getComponentId();
+
+        return EntityComponentversion
+                .getLatestComponent(componentId)
+                .getTextValue();
+
     }
 }
 

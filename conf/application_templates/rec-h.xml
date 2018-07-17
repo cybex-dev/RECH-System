@@ -8,6 +8,12 @@
                 </question>
                 <value></value>e
             </component>
+            <component id="app_department" type="text"
+                       hint="The university department associated with the research">
+                <question>University department associated with application.
+                </question>
+                <value></value>e
+            </component>
         </group>
         <group id="grp_prp" name="Primary Responsible Person"
                hint="The PRP must be a permanent Nelson Mandela University staff member." autofill_id="">
@@ -33,6 +39,10 @@
             </component>
             <component name="" id="prp_room" dropdown="true" type="number" hint="Room where PRP is found">
                 <question>Office</question>
+                <value></value>
+            </component>
+            <component name="" id="prp_contact_email" type="text" hint="Email address of PRP">
+                <question>Official Email Address</question>
                 <value></value>
             </component>
             <component name="" id="prp_contact_telephone" type="text" hint="Office Telephone number of PRP">

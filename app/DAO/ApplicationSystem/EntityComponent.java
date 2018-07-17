@@ -4,7 +4,9 @@ import io.ebean.Finder;
 import io.ebean.Model;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "component", schema = "rech_system", catalog = "")
@@ -60,4 +62,15 @@ public class EntityComponent extends Model {
 
         return Objects.hash(componentId, questionId, applicationId);
     }
+
+    public static List<EntityComponent> getAllApplicationCompontents(int applicationId) {
+        return find.all()
+                .stream()
+                .filter(entityComponent -> entityComponent.applicationId.equals(applicationId))
+                .collect(Collectors.toList());
+    }
+
+
+
+
 }

@@ -1,5 +1,6 @@
 package DAO.ApplicationSystem;
 
+import io.ebean.Finder;
 import io.ebean.Model;
 
 import javax.persistence.*;
@@ -22,6 +23,8 @@ public class EntityComponentversion extends Model {
     private String documentName;
     private String documentDescription;
     private byte[] documentBlob;
+
+    public static Finder<EntityComponentversionPK, EntityComponentversion> find = new Finder<>(EntityComponentversion.class);
 
     @Id
     @Column(name = "version")
@@ -157,5 +160,13 @@ public class EntityComponentversion extends Model {
         int result = Objects.hash(version, componentId, isSubmitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription);
         result = 31 * result + Arrays.hashCode(documentBlob);
         return result;
+    }
+
+    public static EntityComponentversion getLatestComponent(Integer componentId) {
+        return find.all()
+                .stream()
+                .filter(entityComponentversion -> entityComponentversion.componentId.equals(componentId))
+                .max((o1, o2) -> o1.version > o2.version ? -1 : (o1.version < o2.version ? 1 : 0))
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find any value for componentId: " + String.valueOf(componentId)));
     }
 }

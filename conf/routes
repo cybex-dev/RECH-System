@@ -24,7 +24,8 @@ GET     /application                controllers.ApplicationSystem.ApplicationHan
 
 # New Application (application type passed as parameter)
 GET     /application/new/:type      controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
-POST    /application/new/submit     controllers.ApplicationSystem.ApplicationHandler.submitApplication
+POST    /application/new/create     controllers.ApplicationSystem.ApplicationHandler.createApplication
+POST    /application/new/submit/:id controllers.ApplicationSystem.ApplicationHandler.submitApplication(id: Integer)
 
 ### ### Review System ###
 
