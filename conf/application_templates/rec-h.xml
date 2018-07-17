@@ -426,19 +426,7 @@
                 <value></value>
             </component>
             <list id="list_permission_documents" hint="Any additional permission documents provided by Department of Education as permission to conduct the study">
-                <component id="doc_permission_name" type="text" required="false" hint="A well-identifying name">
-                    <question>Document Name</question>
-                    <value></value>
-                </component>
-                <component id="doc_permission_description" type="text" required="false" hint="The description or relevant to the application form">
-                    <question>Document Description/Relevance</question>
-                    <value></value>
-                </component>
-                <component id="doc_permission_type" type="text" dropdown="true" required="false" hint="The category of the document, to which area of the application form is its relevance">
-                    <question>Document Category</question>
-                    <value></value>
-                </component>
-                <group id="grp_doc_methodology" type="document" popup="true" name="Methodology Document" hint="Provide the consent for document which participants will recieve">
+                <group id="grp_doc_permission" type="document" popup="true" name="Permissions Document" hint="Provide the document given by the Dept. of Education or other giving permission for this research (if available)">
                     <component id="doc_permission_title" type="text" required="false" hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
                         <question>Document File</question>
                         <value></value>
