@@ -7,11 +7,13 @@ import io.ebean.Finder;
 import io.ebean.Model;
 import models.ApplicationSystem.ApplicationStatus;
 import models.UserSystem.UserType;
+import scala.App;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Entity
@@ -303,6 +305,32 @@ public class EntityEthicsApplication extends Model {
                 .getLatestComponent(componentId)
                 .getTextValue();
 
+    }
+
+    public static List<ApplicationStatus> getAllApplicationStatuses(Integer applicationId){
+        return EntityAgendaitem
+                .getAllApplicationStatuses(applicationId)
+                .stream()
+                .map(EntityAgendaitem::status)
+                .collect(Collectors.toList());
+    }
+
+    public static ApplicationStatus getApplicationStatus(Integer applicationId){
+        EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
+        if (entityEthicsApplication == null)
+            throw new EntityNotFoundException("Cannot find an application with ID: " + String.valueOf(applicationId));
+        else {
+            if (entityEthicsApplication.isSubmitted) {
+                return EntityAgendaitem
+                        .getAllApplicationStatuses(applicationId)
+                        .stream()
+                        .max((o1, o2) -> o1.getMeetingDate().after(o2.getMeetingDate()) ? -1 : (o1.getMeetingDate().before(o2.getMeetingDate()) ? 1 : 0))
+                        .orElseThrow(() -> new EntityNotFoundException("Cannot find an application with ID: " + String.valueOf(applicationId)))
+                        .status();
+            } else {
+                return ApplicationStatus.DRAFT;
+            }
+        }
     }
 }
 

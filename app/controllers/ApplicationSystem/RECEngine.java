@@ -8,12 +8,13 @@ import models.ApplicationSystem.ApplicationStatus;
 import javax.persistence.EntityNotFoundException;
 
 public class RECEngine {
-    private static void submitApplication(int applicationId){
+    public static void SubmitApplication(int applicationId){
         EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
-
         if (entityEthicsApplication == null) {
             throw new EntityNotFoundException("Cannot find application with ID: " + String.valueOf(applicationId));
         }
+
+        ApplicationStatus previousApplicationStatus = EntityEthicsApplication.getApplicationStatus(applicationId);
 
         EntityPerson pi_id = EntityPerson.getPersonById(entityEthicsApplication.getPiId());
         EntityPerson prp_id = EntityPerson.getPersonById(entityEthicsApplication.getPiId());
@@ -69,7 +70,5 @@ public class RECEngine {
             case UNKNOWN:
                 break;
         }
-
-        Mailer.NotifyApplicationStatusChange(applicationId)
     }
 }

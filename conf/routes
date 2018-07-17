@@ -3,47 +3,51 @@
 # ~~~~
 
 # Home
-GET     /                           controllers.HomeController.index
+GET     /                               controllers.HomeController.index
 
 ### ### Application System ###
 
-GET     /user/register              controllers.ApplicationSystem.register
-POST    /user/register/submit       controllers.ApplicationSystem.submitRegistration
+GET     /user/register                  controllers.UserSystem.RegistrationController.register
+POST    /user/register/submit           controllers.UserSystem.RegistrationController.submitRegistration
 
-GET     /user/login                 controllers.ApplicationSystem.login
-POST    /user/login                 controllers.ApplicationSystem.doLogin
+GET     /user/login                     controllers.UserSystem.LoginController.login
+POST    /user/login                     controllers.UserSystem.LoginController.doLogin
 
-GET     /user/overview              controllers.ApplicationSystem.getOverview
+GET     /user/overview                  controllers.UserSystem.ProfileHandler.overview
 
-GET     /user/profile               controllers.ApplicationSystem.settings
+GET     /user/profile                   controllers.UserSystem.ProfileHandler.settings
+POST    /user/profile                   controllers.UserSystem.ProfileHandler.modifySettings
 
 ### ### Application System ###
 
 # View all applications & statuses
-GET     /application                controllers.ApplicationSystem.ApplicationHandler.allApplications
+GET     /application                    controllers.ApplicationSystem.ApplicationHandler.allApplications
 
 # New Application (application type passed as parameter)
-GET     /application/new/:type      controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
-POST    /application/new/create     controllers.ApplicationSystem.ApplicationHandler.createApplication
-POST    /application/new/submit/:id controllers.ApplicationSystem.ApplicationHandler.submitApplication(id: Integer)
+GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
+POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
+POST    /application/new/save           controllers.ApplicationSystem.ApplicationHandler.saveApplication
+
+GET     /application/review/:id         controllers.ApplicationSystem.ApplicationHandler.reviewApplication(id: Integer)
+POST    /application/new/submit/:id     controllers.ApplicationSystem.ApplicationHandler.submitApplication(id: Integer)
 
 ### ### Review System ###
 
-GET     /application/review         controllers.ReviewSystem.ApplicationReviewer.reviewApplication
-POST    /application/review         controllers.ReviewSystem.ApplicationReviewer.submitReview
+GET     /review/application/:id         controllers.ReviewSystem.ApplicationReviewer.reviewApplication(id: Integer)
+POST    /review/application/submit      controllers.ReviewSystem.ApplicationReviewer.submitReview
 
 ### ### Message System ###
 
-GET     /messages                   controllers.MessageSystem.allMessages
+GET     /messages                       controllers.MessageSystem.MessageController.allMessages
 # Application ID passed as parameter
-GET     /message/:appId             controllers.MessageSystem.applicationMessages(appId: Integer)
+GET     /messages/:appId                controllers.MessageSystem.MessageController.applicationMessages(appId: Integer)
 
 ### ### Meeting System ###
 
-GET     /meeting/applications       controllers.Meeting.allApplications
+GET     /meeting/applications           controllers.Meeting.MeetingController.allApplications
 
-GET     /meeting/application/:appId controllers.Meeting.getApplication(appId: Integer)
-POST    /meeting/application/submit controllers.Meeting.submitResolution
+GET     /meeting/application/:appId     controllers.Meeting.MeetingController.getApplication(appId: Integer)
+POST    /meeting/application/submit     controllers.Meeting.MeetingController.submitResolution
 
 
 # An example controller showing how to use dependency injection
@@ -52,15 +56,15 @@ POST    /meeting/application/submit controllers.Meeting.submitResolution
 # GET     /message                    controllers.AsyncController.message
 
 # Redirect to NMU via Logo click
-GET     /:link                      controllers.HomeController.redirectMandela(link: String)
-GET     /secure/:link               controllers.HomeController.redirectMandelaSecure(link: String)
+GET     /:link                          controllers.HomeController.redirectMandela(link: String)
+GET     /secure/:link                   controllers.HomeController.redirectMandelaSecure(link: String)
 
 # Redirects for NMU search
-POST    /secure                     controllers.HomeController.postNMUSearch
+POST    /secure                         controllers.HomeController.postNMUSearch
 
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
 
 

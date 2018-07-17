@@ -226,7 +226,7 @@ public class ApplicationHandler extends Controller {
             entityEthicsApplication.setDateSubmitted(ts);
             entityEthicsApplication.update();
 
-            RECEngine.ChangeApplicationStatus(applicationId);
+            RECEngine.SubmitApplication(applicationId);
 
             return ok();
         }, jdbcExecutor);
