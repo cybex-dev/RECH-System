@@ -1,4 +1,4 @@
-package controllers.ApplicationSystem;
+package Engine;
 
 import DAO.ApplicationSystem.EntityEthicsApplication;
 import DAO.UserSystem.EntityPerson;
@@ -27,7 +27,6 @@ public class RECEngine {
     public static void ChangeApplicationStatus(int applicationId, ApplicationStatus status){
         switch (status) {
             case NOT_SUBMITTED:
-
                 break;
             case APPROVED:
                 break;
@@ -64,6 +63,8 @@ public class RECEngine {
             case AWAITING_RTI_APPROVAL:
                 break;
             case AWAITING_PRP_APPROVAL:
+                break;
+            case FACULTY_REVIEW:
                 break;
             case DRAFT:
                 break;

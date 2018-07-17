@@ -33,8 +33,8 @@ POST    /application/new/submit/:id     controllers.ApplicationSystem.Applicatio
 
 ### ### Review System ###
 
-GET     /review/application/:id         controllers.ReviewSystem.ApplicationReviewer.reviewApplication(id: Integer)
-POST    /review/application/submit      controllers.ReviewSystem.ApplicationReviewer.submitReview
+GET     /review/application/:id         controllers.ReviewSystem.ReviewerHandler.reviewApplication(id: Integer)
+POST    /review/application/submit      controllers.ReviewSystem.ReviewerHandler.submitReview
 
 ### ### Message System ###
 

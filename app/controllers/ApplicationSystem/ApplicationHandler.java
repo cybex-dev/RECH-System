@@ -5,6 +5,7 @@ import DAO.ApplicationSystem.EntityComponentversion;
 import DAO.ApplicationSystem.EntityEthicsApplication;
 import DAO.NMU.EntityDepartment;
 import DAO.UserSystem.EntityPerson;
+import Engine.RECEngine;
 import exceptions.InvalidFieldException;
 import exceptions.UnhandledElementException;
 import helpers.CookieTags;

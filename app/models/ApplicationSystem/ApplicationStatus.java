@@ -25,6 +25,8 @@ public enum ApplicationStatus {
     AWAITING_RTI_APPROVAL(42),
     AWAITING_PRP_APPROVAL(43),
 
+    FACULTY_REVIEW(50),
+
     DRAFT(98),
     UNKNOWN(99);
 
