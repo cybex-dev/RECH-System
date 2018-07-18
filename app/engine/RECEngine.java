@@ -12,11 +12,25 @@ import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 public class RECEngine {
 
     @Inject
     private static MessageProvider messageProvider;
+
+    List<Filter> applicationFilters;
+
+    public RECEngine() {
+        loadFilters();
+    }
+
+    /**
+     * Loads application filters into engine
+     */
+    private void loadFilters() {
+
+    }
 
     /**
      * Assumes
@@ -89,35 +103,21 @@ public class RECEngine {
         Mailer.NotifyApplicationSubmitted(prp_id.getUserFirstname(), prp_id.getUserEmail(), title);
     }
 
-    public static void ChangeApplicationStatus(int applicationId, ApplicationStatus status){
+    private static void ChangeApplicationStatus(int applicationId, ApplicationStatus status){
         switch (status) {
             case NOT_SUBMITTED:
                 break;
             case APPROVED:
                 break;
-            case APPROVED_EDITS:
-                break;
-            case TEMPORARILY_APPROVED:
-                break;
             case TEMPORARILY_APPROVED_EDITS:
                 break;
             case REJECTED:
-                break;
-            case REJECTED_EDITS:
-                break;
-            case RESUBMITTED:
-                break;
-            case RESUBMITTED_APPROVAL:
-                break;
-            case RESUBMITTED_REVIEW:
                 break;
             case PENDING_REVIEW_REVIEWER:
                 break;
             case PENDING_REVIEW_MEETING:
                 break;
             case PENDING_REVIEW_LIAISON:
-                break;
-            case FEEDBACK_GIVEN_REVIEWER:
                 break;
             case FEEDBACK_GIVEN_LIAISON:
                 break;
@@ -129,12 +129,18 @@ public class RECEngine {
                 break;
             case AWAITING_PRP_APPROVAL:
                 break;
-            case FACULTY_REVIEW:
-                break;
             case DRAFT:
                 break;
             case UNKNOWN:
                 break;
         }
+    }
+
+    public static void nextStep(Integer applicationId) {
+
+    }
+
+    public void filterApplication(){
+
     }
 }

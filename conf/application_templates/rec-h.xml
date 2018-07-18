@@ -266,7 +266,7 @@
     <section id="sct_target_participant_group" name="Target Participant Group" hint="">
         <extension orientation="vertical">
             <component id="requires_characteristics" name="" type="boolean"
-                       hint="Does the target group require a specific (set of) characteristic(s) e.g. age, cultural derivation, background">
+                       hint="Does the target group require a specific (set of) characteristic(s) e.g. age, cultural derivation, background, or disability">
                 <question>Requires particular characteristic</question>
                 <value></value>
             </component>
@@ -336,9 +336,9 @@
             </component>
         </extension>
         <extension orientation="vertical">
-            <component id="are_participants_adults" name="" type="boolean"
+            <component id="are_participants_minors" name="" type="boolean"
                        hint="Are all participants in the study 18 years and older">
-                <question>Are participants all adults</question>
+                <question>Are any participants minors</question>
                 <value></value>
             </component>
             <component id="include_minors_desc" name="" type="text"

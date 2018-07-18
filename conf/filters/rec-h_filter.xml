@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<filter type="human">
-    <constraint risk="">
-
-    </constraint>
-</filter>
+<filters type="human">
+    <filter risk="committee">
+        <condition id="uses_nmu_persons">
+            <value>true</value>
+        </condition>
+        <condition id="are_participants_minors">
+            <value>true</value>
+        </condition>
+        <condition id="uses_institutional_pop">
+            <value>true</value>
+        </condition>
+        <condition id="requires_characteristics">
+            <value>true</value>
+        </condition>
+        <condition id="operate_in_institution">
+            <value>true</value>
+        </condition>
+        <condition id="has_collections">
+            <value>true</value>
+        </condition>
+        <condition id="has_equipment">
+            <value>true</value>
+        </condition>
+        <condition id="uses_mechanical_methods">
+            <value>true</value>
+        </condition>
+        <condition id="identify_participants">
+            <value>true</value>
+        </condition>
+        <condition id="privacy_anon_provisions">
+            <value>true</value>
+        </condition>
+        <condition id="uses_records">
+            <value>true</value>
+        </condition>
+        <condition id="study_scope">
+            <values>
+                <value>Regional</value>
+                <value>International</value>
+            </values>
+        </condition>
+    </filter>
+    <filter risk="faculty">
+        <condition id="uses_records">
+            <value>true</value>
+        </condition>
+    </filter>
+    <filter risk="none">
+        <condition id="study_scope">
+            <value>Local</value>
+        </condition>
+    </filter>
+</filters>
