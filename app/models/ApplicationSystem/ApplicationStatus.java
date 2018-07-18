@@ -1,31 +1,26 @@
 package models.ApplicationSystem;
 
 public enum ApplicationStatus {
-    NOT_SUBMITTED(0),
-    APPROVED(1),
-    APPROVED_EDITS(2),
-    TEMPORARILY_APPROVED(3),
-    TEMPORARILY_APPROVED_EDITS(4),
-    REJECTED(5),
-    REJECTED_EDITS(6),
+    NOT_SUBMITTED(0),                   //
+    APPROVED(1),                        //
+    TEMPORARILY_APPROVED_EDITS(2),      //
+    REJECTED(3),                        //
 
-    RESUBMITTED(10),
-    RESUBMITTED_APPROVAL(11),
-    RESUBMITTED_REVIEW(12),
+    READY_FOR_SUBMISSION(10),           //
 
-    PENDING_REVIEW_REVIEWER(20),
-    PENDING_REVIEW_MEETING(21),
-    PENDING_REVIEW_LIAISON(23),
+    PENDING_REVIEW_REVIEWER(20),        //
+    PENDING_REVIEW_MEETING(21),         //
+    PENDING_REVIEW_LIAISON(22),         //
 
-    FEEDBACK_GIVEN_REVIEWER(30),
-    FEEDBACK_GIVEN_LIAISON(31),
+    FEEDBACK_GIVEN_MEETING(30),         //
+    FEEDBACK_GIVEN_LIAISON(31),         //
 
     AWAITING_HOD_RTI_APPROVAL(40),
     AWAITING_HOD_APPROVAL(41),
     AWAITING_RTI_APPROVAL(42),
-    AWAITING_PRP_APPROVAL(43),
+    AWAITING_PRP_APPROVAL(43),          //
 
-    FACULTY_REVIEW(50),
+    FACULTY_REVIEW(50),                 //
 
     DRAFT(98),
     UNKNOWN(99);

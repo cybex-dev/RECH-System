@@ -5,7 +5,7 @@ import DAO.ApplicationSystem.EntityComponentversion;
 import DAO.ApplicationSystem.EntityEthicsApplication;
 import DAO.NMU.EntityDepartment;
 import DAO.UserSystem.EntityPerson;
-import Engine.RECEngine;
+import engine.RECEngine;
 import exceptions.InvalidFieldException;
 import exceptions.UnhandledElementException;
 import helpers.CookieTags;
@@ -199,33 +199,7 @@ public class ApplicationHandler extends Controller {
      */
     public CompletableFuture<Result> submitApplication(int applicationId) {
         return CompletableFuture.supplyAsync(() -> {
-            // Get ethics application entity
-            EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
-            if (entityEthicsApplication == null){
-                return internalServerError();
-            }
 
-            // Save current timestamp
-            Timestamp ts = Timestamp.from(new Date().toInstant());
-            EntityComponent
-                    // Get all application components
-                    .getAllApplicationCompontents(applicationId)
-                    .forEach(entityComponent -> {
-                        //Get latest component
-                        EntityComponentversion latestComponent = EntityComponentversion.getLatestComponent(entityComponent.getComponentId());
-
-                        // Set submitted state
-                        latestComponent.setIsSubmitted(true);
-                        latestComponent.setDateSubmitted(ts);
-
-                        // Save changes
-                        latestComponent.update();
-                    });
-
-            // Update Ethics application entity
-            entityEthicsApplication.setSubmitted(true);
-            entityEthicsApplication.setDateSubmitted(ts);
-            entityEthicsApplication.update();
 
             RECEngine.SubmitApplication(applicationId);
 
