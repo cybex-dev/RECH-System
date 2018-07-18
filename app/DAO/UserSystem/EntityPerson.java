@@ -21,11 +21,11 @@ public class EntityPerson {
     private String officeAddress;
     private String departmentName;
     private String facultyName;
-
+    
     public static Finder<String, EntityPerson> find = new Finder<>(EntityPerson.class);
 
     @Id
-    @Column(name = "user_email")
+    @Column(name = "user_email", nullable = false, length = 100)
     public String getUserEmail() {
         return userEmail;
     }
@@ -35,7 +35,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "user_password_hash")
+    @Column(name = "user_password_hash", nullable = false, length = 50)
     public String getUserPasswordHash() {
         return userPasswordHash;
     }
@@ -45,7 +45,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "user_firstname")
+    @Column(name = "user_firstname", nullable = true, length = 50)
     public String getUserFirstname() {
         return userFirstname;
     }
@@ -55,7 +55,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "user_lastname")
+    @Column(name = "user_lastname", nullable = true, length = 50)
     public String getUserLastname() {
         return userLastname;
     }
@@ -65,7 +65,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "user_gender")
+    @Column(name = "user_gender", nullable = true, length = 1)
     public String getUserGender() {
         return userGender;
     }
@@ -75,7 +75,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "current_degree_level")
+    @Column(name = "current_degree_level", nullable = true, length = 20)
     public String getCurrentDegreeLevel() {
         return currentDegreeLevel;
     }
@@ -85,7 +85,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "contact_number_mobile")
+    @Column(name = "contact_number_mobile", nullable = true, length = 15)
     public String getContactNumberMobile() {
         return contactNumberMobile;
     }
@@ -95,7 +95,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "person_type")
+    @Column(name = "person_type", nullable = true, length = 10)
     public String getPersonType() {
         return personType;
     }
@@ -105,7 +105,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "contact_office_telephone")
+    @Column(name = "contact_office_telephone", nullable = true, length = 15)
     public String getContactOfficeTelephone() {
         return contactOfficeTelephone;
     }
@@ -115,7 +115,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "office_address")
+    @Column(name = "office_address", nullable = true, length = 40)
     public String getOfficeAddress() {
         return officeAddress;
     }
@@ -125,7 +125,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "department_name")
+    @Column(name = "department_name", nullable = false, length = 50)
     public String getDepartmentName() {
         return departmentName;
     }
@@ -135,7 +135,7 @@ public class EntityPerson {
     }
 
     @Basic
-    @Column(name = "faculty_name")
+    @Column(name = "faculty_name", nullable = false, length = 50)
     public String getFacultyName() {
         return facultyName;
     }
@@ -169,7 +169,7 @@ public class EntityPerson {
         return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
     }
 
-    public static EntityPerson getPersonById(String userEmail){
+    public static DAO.UserSystem.EntityPerson getPersonById(String userEmail){
         return find.byId(userEmail);
     }
 

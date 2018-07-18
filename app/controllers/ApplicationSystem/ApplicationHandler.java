@@ -297,7 +297,7 @@ public class ApplicationHandler extends Controller {
                         EntityComponentversion componentversion = new EntityComponentversion();
                         componentversion.setResponseType(rootElement.getType().toLowerCase());
                         componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                        componentversion.setIsSubmitted(false);
+                        componentversion.setSubmitted(false);
                         componentversion.setResponseType(rootElement.getType());
 
                         // Set document details
@@ -335,7 +335,7 @@ public class ApplicationHandler extends Controller {
                         EntityComponentversion componentversion = new EntityComponentversion();
                         componentversion.setResponseType(childElement.getType().toLowerCase());
                         componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                        componentversion.setIsSubmitted(false);
+                        componentversion.setSubmitted(false);
                         componentversion.setResponseType(childElement.getType());
                         Boolean b = (Boolean) childElement.getValue();
                         componentversion.setBoolValue(b);
@@ -399,7 +399,7 @@ public class ApplicationHandler extends Controller {
                             }
                             componentversion.setResponseType(rootElement.getType().toLowerCase());
                             componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                            componentversion.setIsSubmitted(false);
+                            componentversion.setSubmitted(false);
 
                             // Create component entity
                             EntityComponent component = new EntityComponent();

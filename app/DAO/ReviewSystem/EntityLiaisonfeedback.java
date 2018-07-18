@@ -12,9 +12,10 @@ public class EntityLiaisonfeedback {
     private Timestamp applicationAssignedDate;
     private String liaisonEmail;
     private Integer applicationId;
+    private Boolean requiresEdits;
 
     @Id
-    @Column(name = "liaison_feedback_id")
+    @Column(name = "liaison_feedback_id", nullable = false)
     public Integer getLiaisonFeedbackId() {
         return liaisonFeedbackId;
     }
@@ -24,7 +25,7 @@ public class EntityLiaisonfeedback {
     }
 
     @Basic
-    @Column(name = "feedback_date")
+    @Column(name = "feedback_date", nullable = false)
     public Timestamp getFeedbackDate() {
         return feedbackDate;
     }
@@ -34,7 +35,7 @@ public class EntityLiaisonfeedback {
     }
 
     @Basic
-    @Column(name = "application_assigned_date")
+    @Column(name = "application_assigned_date", nullable = true)
     public Timestamp getApplicationAssignedDate() {
         return applicationAssignedDate;
     }
@@ -44,7 +45,7 @@ public class EntityLiaisonfeedback {
     }
 
     @Basic
-    @Column(name = "liaison_email")
+    @Column(name = "liaison_email", nullable = false, length = 100)
     public String getLiaisonEmail() {
         return liaisonEmail;
     }
@@ -54,13 +55,23 @@ public class EntityLiaisonfeedback {
     }
 
     @Basic
-    @Column(name = "application_id")
+    @Column(name = "application_id", nullable = false)
     public Integer getApplicationId() {
         return applicationId;
     }
 
     public void setApplicationId(Integer applicationId) {
         this.applicationId = applicationId;
+    }
+
+    @Basic
+    @Column(name = "requires_edits", nullable = true, length = 45)
+    public Boolean getRequiresEdits() {
+        return requiresEdits;
+    }
+
+    public void setRequiresEdits(Boolean requiresEdits) {
+        this.requiresEdits = requiresEdits;
     }
 
     @Override
@@ -72,12 +83,13 @@ public class EntityLiaisonfeedback {
                 Objects.equals(feedbackDate, that.feedbackDate) &&
                 Objects.equals(applicationAssignedDate, that.applicationAssignedDate) &&
                 Objects.equals(liaisonEmail, that.liaisonEmail) &&
-                Objects.equals(applicationId, that.applicationId);
+                Objects.equals(applicationId, that.applicationId) &&
+                Objects.equals(requiresEdits, that.requiresEdits);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(liaisonFeedbackId, feedbackDate, applicationAssignedDate, liaisonEmail, applicationId);
+        return Objects.hash(liaisonFeedbackId, feedbackDate, applicationAssignedDate, liaisonEmail, applicationId, requiresEdits);
     }
 }

@@ -4,6 +4,8 @@
 
 # Home
 GET     /                               controllers.HomeController.index
+GET     /about                          controllers.HomeController.about
+GET     /help_support                   controllers.HomeController.helpSupport
 
 ### ### Application System ###
 
@@ -12,6 +14,7 @@ POST    /user/register/submit           controllers.UserSystem.RegistrationContr
 
 GET     /user/login                     controllers.UserSystem.LoginController.login
 POST    /user/login                     controllers.UserSystem.LoginController.doLogin
+POST    /user/logout                    controllers.UserSystem.LoginController.logout
 
 GET     /user/overview                  controllers.UserSystem.ProfileHandler.overview
 

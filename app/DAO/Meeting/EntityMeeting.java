@@ -11,7 +11,7 @@ public class EntityMeeting {
     private String announcements;
 
     @Id
-    @Column(name = "meeting_date")
+    @Column(name = "meeting_date", nullable = false)
     public Timestamp getMeetingDate() {
         return meetingDate;
     }
@@ -21,7 +21,7 @@ public class EntityMeeting {
     }
 
     @Basic
-    @Column(name = "announcements")
+    @Column(name = "announcements", nullable = true, length = 255)
     public String getAnnouncements() {
         return announcements;
     }

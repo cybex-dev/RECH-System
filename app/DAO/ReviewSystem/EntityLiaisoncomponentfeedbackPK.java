@@ -1,17 +1,21 @@
 package DAO.ReviewSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     private Integer liaisonFeedbackId;
-    private Integer componentVersion;
+    private Short componentVersion;
     private Integer componentId;
 
-    @Column(name = "liaison_feedback_id")
-    @Id
+    public EntityLiaisoncomponentfeedbackPK() {
+    }
+
+    @Column(name = "liaison_feedback_id", nullable = false)
     public Integer getLiaisonFeedbackId() {
         return liaisonFeedbackId;
     }
@@ -20,18 +24,16 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
         this.liaisonFeedbackId = liaisonFeedbackId;
     }
 
-    @Column(name = "component_version")
-    @Id
-    public Integer getComponentVersion() {
+    @Column(name = "component_version", nullable = false)
+    public Short getComponentVersion() {
         return componentVersion;
     }
 
-    public void setComponentVersion(Integer componentVersion) {
+    public void setComponentVersion(Short componentVersion) {
         this.componentVersion = componentVersion;
     }
 
-    @Column(name = "component_id")
-    @Id
+    @Column(name = "component_id", nullable = false)
     public Integer getComponentId() {
         return componentId;
     }

@@ -13,7 +13,7 @@ public class EntityReviewercomponentfeedback {
     private String componentFeedback;
 
     @Id
-    @Column(name = "reviewer_feedback_id")
+    @Column(name = "reviewer_feedback_id", nullable = false)
     public Integer getReviewerFeedbackId() {
         return reviewerFeedbackId;
     }
@@ -23,7 +23,7 @@ public class EntityReviewercomponentfeedback {
     }
 
     @Id
-    @Column(name = "component_version")
+    @Column(name = "component_version", nullable = false)
     public Short getComponentVersion() {
         return componentVersion;
     }
@@ -33,7 +33,7 @@ public class EntityReviewercomponentfeedback {
     }
 
     @Id
-    @Column(name = "component_id")
+    @Column(name = "component_id", nullable = false)
     public Integer getComponentId() {
         return componentId;
     }
@@ -43,7 +43,7 @@ public class EntityReviewercomponentfeedback {
     }
 
     @Basic
-    @Column(name = "component_feedback")
+    @Column(name = "component_feedback", nullable = true, length = 255)
     public String getComponentFeedback() {
         return componentFeedback;
     }

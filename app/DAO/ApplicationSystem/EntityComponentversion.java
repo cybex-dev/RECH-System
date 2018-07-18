@@ -24,10 +24,10 @@ public class EntityComponentversion extends Model {
     private String documentDescription;
     private byte[] documentBlob;
 
-    public static Finder<EntityComponentversionPK, EntityComponentversion> find = new Finder<>(EntityComponentversion.class);
+    public static Finder<EntityComponentversionPK, DAO.ApplicationSystem.EntityComponentversion> find = new Finder<>(DAO.ApplicationSystem.EntityComponentversion.class);
 
     @Id
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     public Short getVersion() {
         return version;
     }
@@ -37,7 +37,7 @@ public class EntityComponentversion extends Model {
     }
 
     @Id
-    @Column(name = "component_id")
+    @Column(name = "component_id", nullable = false)
     public Integer getComponentId() {
         return componentId;
     }
@@ -47,17 +47,17 @@ public class EntityComponentversion extends Model {
     }
 
     @Basic
-    @Column(name = "is_submitted")
-    public Boolean getIsSubmitted() {
+    @Column(name = "is_submitted", nullable = true)
+    public Boolean getSubmitted() {
         return isSubmitted;
     }
 
-    public void setIsSubmitted(Boolean isSubmitted) {
-        this.isSubmitted = isSubmitted;
+    public void setSubmitted(Boolean submitted) {
+        isSubmitted = submitted;
     }
 
     @Basic
-    @Column(name = "date_submitted")
+    @Column(name = "date_submitted", nullable = true)
     public Timestamp getDateSubmitted() {
         return dateSubmitted;
     }
@@ -67,7 +67,7 @@ public class EntityComponentversion extends Model {
     }
 
     @Basic
-    @Column(name = "date_last_edited")
+    @Column(name = "date_last_edited", nullable = true)
     public Timestamp getDateLastEdited() {
         return dateLastEdited;
     }
@@ -77,7 +77,7 @@ public class EntityComponentversion extends Model {
     }
 
     @Basic
-    @Column(name = "response_type")
+    @Column(name = "response_type", nullable = true, length = 8)
     public String getResponseType() {
         return responseType;
     }
@@ -87,7 +87,7 @@ public class EntityComponentversion extends Model {
     }
 
     @Basic
-    @Column(name = "text_value")
+    @Column(name = "text_value", nullable = true, length = -1)
     public String getTextValue() {
         return textValue;
     }
@@ -97,7 +97,7 @@ public class EntityComponentversion extends Model {
     }
 
     @Basic
-    @Column(name = "bool_value")
+    @Column(name = "bool_value", nullable = true)
     public Boolean getBoolValue() {
         return boolValue;
     }
@@ -107,7 +107,7 @@ public class EntityComponentversion extends Model {
     }
 
     @Basic
-    @Column(name = "document_name")
+    @Column(name = "document_name", nullable = true, length = 100)
     public String getDocumentName() {
         return documentName;
     }
@@ -117,7 +117,7 @@ public class EntityComponentversion extends Model {
     }
 
     @Basic
-    @Column(name = "document_description")
+    @Column(name = "document_description", nullable = true, length = 255)
     public String getDocumentDescription() {
         return documentDescription;
     }
@@ -127,7 +127,7 @@ public class EntityComponentversion extends Model {
     }
 
     @Basic
-    @Column(name = "document_blob")
+    @Column(name = "document_blob", nullable = true)
     public byte[] getDocumentBlob() {
         return documentBlob;
     }
@@ -162,7 +162,7 @@ public class EntityComponentversion extends Model {
         return result;
     }
 
-    public static EntityComponentversion getLatestComponent(Integer componentId) {
+    public static DAO.ApplicationSystem.EntityComponentversion getLatestComponent(Integer componentId) {
         return find.all()
                 .stream()
                 .filter(entityComponentversion -> entityComponentversion.componentId.equals(componentId))

@@ -2,7 +2,8 @@
 * This template takes a single argument, a String containing a
 * message to display.
 *@
-@import views.html.Theme.{nmu_footer, nmu_javascripts, nmu_stylesheets, rech_header, rech_menu_bar, static_header}
+@import views.html.Theme.{nmu_footer, nmu_javascripts, nmu_stylesheets, rec_header, rec_menu_bar, static_header}
+@import views.html.Templates._
 
 @(pageTabTitle: String)(bodyContent: Html)
 @*
@@ -14,7 +15,6 @@
 @DefaultPage.apply{
     @DefaultHead.apply("Nelson Mandela University" + pageTabTitle){
         @nmu_stylesheets.apply()
-        @nmu_javascripts.apply()
     }
 } {
     @DefaultBody.apply {
@@ -22,11 +22,11 @@
             @helper.CSRF.formField
             @static_header.apply()
             <div id="LogoBar" class="container-fluid transparentBackgroundBlue">
-            @rech_header.apply()
+            @rec_header.apply()
             </div>
             <div class="container">
                 <div class="MainContent">
-                @rech_menu_bar.apply()
+                @rec_menu_bar.apply()
                 </div>
             </div>
         </form>
@@ -37,5 +37,8 @@
     } {
         @nmu_footer.apply()
     }
+
+
+    @nmu_javascripts.apply()
 }
 

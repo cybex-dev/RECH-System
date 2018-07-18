@@ -10,7 +10,7 @@ public class EntityFaculty {
     private String facultyInfo;
 
     @Id
-    @Column(name = "faculty_name")
+    @Column(name = "faculty_name", nullable = false, length = 50)
     public String getFacultyName() {
         return facultyName;
     }
@@ -20,7 +20,7 @@ public class EntityFaculty {
     }
 
     @Basic
-    @Column(name = "faculty_info")
+    @Column(name = "faculty_info", nullable = true, length = -1)
     public String getFacultyInfo() {
         return facultyInfo;
     }

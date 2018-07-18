@@ -21,9 +21,8 @@ public class EntityAgendaitem {
 
     public static Finder<EntityAgendaitemPK, EntityAgendaitem> find = new Finder<>(EntityAgendaitem.class);
 
-
     @Basic
-    @Column(name = "resolution")
+    @Column(name = "resolution", nullable = true, length = -1)
     public String getResolution() {
         return resolution;
     }
@@ -33,7 +32,7 @@ public class EntityAgendaitem {
     }
 
     @Basic
-    @Column(name = "application_status")
+    @Column(name = "application_status", nullable = true)
     public Short getApplicationStatus() {
         return applicationStatus;
     }
@@ -43,7 +42,7 @@ public class EntityAgendaitem {
     }
 
     @Id
-    @Column(name = "meeting_date")
+    @Column(name = "meeting_date", nullable = false)
     public Timestamp getMeetingDate() {
         return meetingDate;
     }
@@ -53,17 +52,13 @@ public class EntityAgendaitem {
     }
 
     @Id
-    @Column(name = "application_id")
+    @Column(name = "application_id", nullable = false)
     public Integer getApplicationId() {
         return applicationId;
     }
 
     public void setApplicationId(Integer applicationId) {
         this.applicationId = applicationId;
-    }
-
-    public void setNewStatus(ApplicationStatus applicationStatus) {
-        this.applicationStatus = applicationStatus.getStatus();
     }
 
     @Override
@@ -87,11 +82,11 @@ public class EntityAgendaitem {
         return ApplicationStatus.parse(applicationStatus);
     }
 
-    public static List<EntityAgendaitem> getAllApplicationStatuses(EntityEthicsApplication entityEthicsApplication) {
+    public static List<DAO.Meeting.EntityAgendaitem> getAllApplicationStatuses(EntityEthicsApplication entityEthicsApplication) {
         return getAllApplicationStatuses(entityEthicsApplication.getApplicationId());
     }
 
-    public static List<EntityAgendaitem> getAllApplicationStatuses(int applicationId) {
+    public static List<DAO.Meeting.EntityAgendaitem> getAllApplicationStatuses(int applicationId) {
         return find.all().stream().filter(entityAgendaitem -> entityAgendaitem.applicationId.equals(applicationId)).collect(Collectors.toList());
     }
 }

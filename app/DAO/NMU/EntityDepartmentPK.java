@@ -1,16 +1,20 @@
 package DAO.NMU;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class EntityDepartmentPK implements Serializable {
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "department_name")
-    @Id
+    public EntityDepartmentPK() {
+    }
+
+    @Column(name = "department_name", nullable = false, length = 50)
     public String getDepartmentName() {
         return departmentName;
     }
@@ -19,8 +23,7 @@ public class EntityDepartmentPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "faculty_name")
-    @Id
+    @Column(name = "faculty_name", nullable = false, length = 50)
     public String getFacultyName() {
         return facultyName;
     }

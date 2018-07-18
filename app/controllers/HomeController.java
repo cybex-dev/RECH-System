@@ -24,7 +24,7 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(Masterpage.render(null,null));
+        return ok(views.html.Templates.Masterpage.render(null,null));
     }
 
     /**
@@ -71,5 +71,21 @@ public class HomeController extends Controller {
         if (searchPhrase == null)
             searchPhrase = "";
         return redirectMandelaSecure("Search.aspx?searchtext=" + searchPhrase  + "&searchmode=anyword");
+    }
+
+    /**
+     * Shows the about committee page
+     * @return
+     */
+    public Result about(){
+        return ok(views.html.General.About.render());
+    }
+
+    /**
+     * Shows the help and support page
+     * @return
+     */
+    public Result helpSupport(){
+        return ok(views.html.General.HelpSupport.render());
     }
 }

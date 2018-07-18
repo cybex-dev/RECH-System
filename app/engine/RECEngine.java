@@ -6,7 +6,6 @@ import DAO.ApplicationSystem.EntityEthicsApplication;
 import DAO.UserSystem.EntityPerson;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
-import play.i18n.MessagesApi;
 
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
@@ -74,7 +73,7 @@ public class RECEngine {
                     EntityComponentversion latestComponent = EntityComponentversion.getLatestComponent(entityComponent.getComponentId());
 
                     // Set submitted state
-                    latestComponent.setIsSubmitted(true);
+                    latestComponent.setSubmitted(true);
                     latestComponent.setDateSubmitted(ts);
 
                     // Save changes

@@ -17,12 +17,13 @@ public class EntityReviewerfeedback {
     private Timestamp applicationAssignedDate;
     private String reviewerEmail;
     private Integer applicationId;
+    private Boolean requiresEdits;
+    private Boolean satisfactory;
 
-    public static Finder<Integer, EntityReviewerfeedback> find = new Finder<>(EntityReviewerfeedback.class);
-
+    public static Finder<Integer, DAO.ReviewSystem.EntityReviewerfeedback> find = new Finder<>(DAO.ReviewSystem.EntityReviewerfeedback.class);
 
     @Id
-    @Column(name = "reviewer_feedback_id")
+    @Column(name = "reviewer_feedback_id", nullable = false)
     public Integer getReviewerFeedbackId() {
         return reviewerFeedbackId;
     }
@@ -32,7 +33,7 @@ public class EntityReviewerfeedback {
     }
 
     @Basic
-    @Column(name = "feedback_date")
+    @Column(name = "feedback_date", nullable = true)
     public Timestamp getFeedbackDate() {
         return feedbackDate;
     }
@@ -42,7 +43,7 @@ public class EntityReviewerfeedback {
     }
 
     @Basic
-    @Column(name = "application_assigned_date")
+    @Column(name = "application_assigned_date", nullable = true)
     public Timestamp getApplicationAssignedDate() {
         return applicationAssignedDate;
     }
@@ -52,7 +53,7 @@ public class EntityReviewerfeedback {
     }
 
     @Basic
-    @Column(name = "reviewer_email")
+    @Column(name = "reviewer_email", nullable = false, length = 100)
     public String getReviewerEmail() {
         return reviewerEmail;
     }
@@ -62,13 +63,33 @@ public class EntityReviewerfeedback {
     }
 
     @Basic
-    @Column(name = "application_id")
+    @Column(name = "application_id", nullable = false)
     public Integer getApplicationId() {
         return applicationId;
     }
 
     public void setApplicationId(Integer applicationId) {
         this.applicationId = applicationId;
+    }
+
+    @Basic
+    @Column(name = "requires_edits", nullable = true)
+    public Boolean getRequiresEdits() {
+        return requiresEdits;
+    }
+
+    public void setRequiresEdits(Boolean requiresEdits) {
+        this.requiresEdits = requiresEdits;
+    }
+
+    @Basic
+    @Column(name = "satisfactory", nullable = true)
+    public Boolean getSatisfactory() {
+        return satisfactory;
+    }
+
+    public void setSatisfactory(Boolean satisfactory) {
+        this.satisfactory = satisfactory;
     }
 
     @Override
@@ -80,13 +101,15 @@ public class EntityReviewerfeedback {
                 Objects.equals(feedbackDate, that.feedbackDate) &&
                 Objects.equals(applicationAssignedDate, that.applicationAssignedDate) &&
                 Objects.equals(reviewerEmail, that.reviewerEmail) &&
-                Objects.equals(applicationId, that.applicationId);
+                Objects.equals(applicationId, that.applicationId) &&
+                Objects.equals(requiresEdits, that.requiresEdits) &&
+                Objects.equals(satisfactory, that.satisfactory);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(reviewerFeedbackId, feedbackDate, applicationAssignedDate, reviewerEmail, applicationId);
+        return Objects.hash(reviewerFeedbackId, feedbackDate, applicationAssignedDate, reviewerEmail, applicationId, requiresEdits, satisfactory);
     }
 
     public static List<EntityEthicsApplication> getApplicationsByReviewer(String reviewerEmail){
@@ -96,5 +119,4 @@ public class EntityReviewerfeedback {
                 .map(entityReviewerfeedback -> EntityEthicsApplication.find.byId(entityReviewerfeedback.applicationId))
                 .collect(Collectors.toList());
     }
-
 }

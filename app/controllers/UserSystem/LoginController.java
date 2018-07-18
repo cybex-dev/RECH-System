@@ -20,4 +20,12 @@ public class LoginController extends Controller {
     public Result doLogin(){
         return TODO;
     }
+
+    /**
+     * Deletes session and clears cookies, which logs out the user
+     * @return
+     */
+    public Result logout(){
+        return ok(views.html.General.About.render());
+    }
 }

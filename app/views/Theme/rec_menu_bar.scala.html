@@ -1,0 +1,59 @@
+@import helpers.CookieTags
+@()
+
+@getName = @{
+    val v = session().get(CookieTags.fullname)
+    if (v == null || v.isEmpty) {
+        "Unknown User"
+    } else {
+        v
+    }
+}
+
+<div class="row tbsRow">
+    <div class="col-sm-12 tbsHnopad">
+        <div class="col-sm-12 BoxMediumBlue TextWhite tbsVpad">
+            <div class="portal-icon portal-icon-extend-margin">
+                <a href="@controllers.UserSystem.routes.ProfileHandler.overview()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-reorder drop-bottom-5"></ic><br>
+                    <span>Overview</span></a></div>
+            <div class="portal-icon portal-icon-extend-margin">
+                <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()" id="IconMenuBarApplications"><ic class="fa fa-3x fa-book drop-bottom-5"></ic><br>
+                    <span>Applications</span></a>
+                <ul id="main-menu" class="sm">
+                    <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()">Create Application</a></li>
+                    <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">View Applications</a></li>
+                </ul>
+                <script>
+                        $(function() {
+                            $('#main-menu').smartmenus({
+                                subMenusSubOffsetX: 1,
+                                subMenusSubOffsetY: -8
+                            });
+                        });
+                </script>
+            </div>
+            <div class="portal-icon portal-icon-extend-margin">
+                <a href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
+                    <span>Message</span></a></div>
+            <div class="portal-icon portal-icon-extend-margin">
+                <a href="@routes.HomeController.about()" id="IconMenuBarAbout"><ic class="fa fa-3x fa-users drop-bottom-5"></ic><br>
+                    <span>About the Committee</span></a></div>
+            <div class="portal-icon portal-icon-extend-margin">
+                <a href="@routes.HomeController.helpSupport()" id="IconMenuBarHelpSupport"><ic class="fa fa-3x fa-question-circle-o drop-bottom-5"></ic><br>
+                    <span>Help & Support</span></a></div>
+
+            @*TODO fix the drop down feature*@
+            <div class="pull-right portal-icon larger-width">
+                <ic class="fa fa-3x fa-user-circle-o drop-bottom-5"></ic><br>
+                <ul id="profile-menu" class="sm sm-clean-vertical">
+                    <li><a href="#" id="IconMenuBarProfile">@getName<span class="caret"></span> </a>
+                        <ul class="dropdown-menu">
+                            <li><a style="background-color: red;" href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
+                            <li><a style="background-color: red;" href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

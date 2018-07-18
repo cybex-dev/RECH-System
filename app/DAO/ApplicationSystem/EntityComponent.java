@@ -15,10 +15,10 @@ public class EntityComponent extends Model {
     private String questionId;
     private Integer applicationId;
 
-    public static Finder<Integer, EntityComponent> find = new Finder<>(EntityComponent.class);
+    public static Finder<Integer, DAO.ApplicationSystem.EntityComponent> find = new Finder<>(DAO.ApplicationSystem.EntityComponent.class);
 
     @Id
-    @Column(name = "component_id")
+    @Column(name = "component_id", nullable = false)
     public Integer getComponentId() {
         return componentId;
     }
@@ -28,7 +28,7 @@ public class EntityComponent extends Model {
     }
 
     @Basic
-    @Column(name = "question_id")
+    @Column(name = "question_id", nullable = true, length = 255)
     public String getQuestionId() {
         return questionId;
     }
@@ -38,7 +38,7 @@ public class EntityComponent extends Model {
     }
 
     @Basic
-    @Column(name = "application_id")
+    @Column(name = "application_id", nullable = false)
     public Integer getApplicationId() {
         return applicationId;
     }
@@ -63,14 +63,12 @@ public class EntityComponent extends Model {
         return Objects.hash(componentId, questionId, applicationId);
     }
 
-    public static List<EntityComponent> getAllApplicationCompontents(int applicationId) {
+
+    public static List<DAO.ApplicationSystem.EntityComponent> getAllApplicationCompontents(int applicationId) {
         return find.all()
                 .stream()
                 .filter(entityComponent -> entityComponent.applicationId.equals(applicationId))
                 .collect(Collectors.toList());
     }
-
-
-
 
 }

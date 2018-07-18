@@ -16,7 +16,7 @@ public class EntityDepartment {
     public static Finder<EntityDepartmentPK, EntityDepartment> find = new Finder<>(EntityDepartment.class);
 
     @Id
-    @Column(name = "department_name")
+    @Column(name = "department_name", nullable = false, length = 50)
     public String getDepartmentName() {
         return departmentName;
     }
@@ -26,7 +26,7 @@ public class EntityDepartment {
     }
 
     @Id
-    @Column(name = "faculty_name")
+    @Column(name = "faculty_name", nullable = false, length = 50)
     public String getFacultyName() {
         return facultyName;
     }
@@ -58,6 +58,4 @@ public class EntityDepartment {
                 .orElseThrow(() -> new InvalidFieldException("Department has no associated faculty"))
                 .facultyName;
     }
-
-
 }

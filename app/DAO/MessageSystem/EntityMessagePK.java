@@ -1,28 +1,32 @@
 package DAO.MessageSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
+@Embeddable
 public class EntityMessagePK implements Serializable {
-    private String messageDate;
+    private Timestamp messageDate;
     private String userEmailSender;
     private String userEmailReceiver;
     private Integer applicationId;
 
-    @Column(name = "message_date")
-    @Id
-    public String getMessageDate() {
+    public EntityMessagePK() {
+    }
+
+    @Column(name = "message_date", nullable = false, length = 45)
+    public Timestamp getMessageDate() {
         return messageDate;
     }
 
-    public void setMessageDate(String messageDate) {
+    public void setMessageDate(Timestamp messageDate) {
         this.messageDate = messageDate;
     }
 
-    @Column(name = "user_email_sender")
-    @Id
+    @Column(name = "user_email_sender", nullable = false, length = 100)
     public String getUserEmailSender() {
         return userEmailSender;
     }
@@ -31,8 +35,7 @@ public class EntityMessagePK implements Serializable {
         this.userEmailSender = userEmailSender;
     }
 
-    @Column(name = "user_email_receiver")
-    @Id
+    @Column(name = "user_email_receiver", nullable = false, length = 100)
     public String getUserEmailReceiver() {
         return userEmailReceiver;
     }
@@ -41,8 +44,7 @@ public class EntityMessagePK implements Serializable {
         this.userEmailReceiver = userEmailReceiver;
     }
 
-    @Column(name = "application_id")
-    @Id
+    @Column(name = "application_id", nullable = false)
     public Integer getApplicationId() {
         return applicationId;
     }

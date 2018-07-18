@@ -8,12 +8,12 @@ import java.util.Objects;
 @IdClass(EntityLiaisoncomponentfeedbackPK.class)
 public class EntityLiaisoncomponentfeedback {
     private Integer liaisonFeedbackId;
-    private Integer componentVersion;
+    private Short componentVersion;
     private Integer componentId;
     private String componentFeedback;
 
     @Id
-    @Column(name = "liaison_feedback_id")
+    @Column(name = "liaison_feedback_id", nullable = false)
     public Integer getLiaisonFeedbackId() {
         return liaisonFeedbackId;
     }
@@ -23,17 +23,17 @@ public class EntityLiaisoncomponentfeedback {
     }
 
     @Id
-    @Column(name = "component_version")
-    public Integer getComponentVersion() {
+    @Column(name = "component_version", nullable = false)
+    public Short getComponentVersion() {
         return componentVersion;
     }
 
-    public void setComponentVersion(Integer componentVersion) {
+    public void setComponentVersion(Short componentVersion) {
         this.componentVersion = componentVersion;
     }
 
     @Id
-    @Column(name = "component_id")
+    @Column(name = "component_id", nullable = false)
     public Integer getComponentId() {
         return componentId;
     }
@@ -43,7 +43,7 @@ public class EntityLiaisoncomponentfeedback {
     }
 
     @Basic
-    @Column(name = "component_feedback")
+    @Column(name = "component_feedback", nullable = true, length = 255)
     public String getComponentFeedback() {
         return componentFeedback;
     }

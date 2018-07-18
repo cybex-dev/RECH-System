@@ -179,7 +179,7 @@ $(document).ready(function () {
         showCurrent();
     });
 
-    $('#main-menu').smartmenus({ subIndicators: false, subIndicatorsText: 'test', keepHighlighted:false });
+    $('#main-menu').smartmenus({ subIndicators: false, subIndicatorsText: 'test', keepHighlighted:false});
 
 });
 
