@@ -1,4 +1,3 @@
-@@import net.ddns.cyberstudios.Element
 @import play.data.DynamicForm
 @import play.twirl.api.Html
 @import views.html.Templates.Masterpage
@@ -6,8 +5,9 @@
 @import views.html.b4.vertical
 @import net.ddns.cyberstudios.Element
 @import net.ddns.cyberstudios.XMLTools
+@import models.ApplicationSystem.ApplicationStatus
 
-@(pageTitle: String)(applicationType: String)(root: Element)(form: DynamicForm)
+@(pageTitle: String)(applicationType: String)(root: Element)(form: DynamicForm)(status: ApplicationStatus)
 
     @contentBlock = {
         <h1>Create Ethics Application for @applicationType Research</h1>
@@ -25,30 +25,32 @@
                     @{
                         def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
                             val elementType = element.getType.toLowerCase
+                            val q = element.getChildren.getFirst.getValue
+                            val a = element.getChildren.getLast.getValue
                             elementType match {
                                 case "boolean" =>
                                     /*creates checkbox*/
-                                    b4.checkbox(form(element.getId), '_label -> element.getValue).toString()
+                                    b4.checkbox(form(element.getId), '_label -> q, 'value -> a).toString()
 
                                 case "number" =>
-                                    b4.number(form(element.getId), '_label -> element.getValue).toString()
+                                    b4.number(form(element.getId), '_label -> q, 'value -> a).toString()
                                     /*creates text field with number specific*/
 
                                 case "long_text" =>
                                     /*creates a multiline text field*/
-                                    b4.text(form(element.getId), '_label -> element.getValue).toString()
+                                    b4.text(form(element.getId), '_label -> q, 'value -> a).toString()
 
                                 case "text" =>
                                     /*creates text field*/
-                                    b4.text(form(element.getId), '_label -> element.getValue).toString()
+                                    b4.text(form(element.getId), '_label -> q, 'value -> a).toString()
 
                                 case "date" =>
                                     /*creates text field*/
-                                    b4.date(form(element.getId), '_label -> element.getValue).toString()
+                                    b4.date(form(element.getId), '_label -> q, 'value -> a).toString()
 
                                 case "document" =>
                                     /*creates text field*/
-                                    b4.file(form(element.getId), '_label -> element.getValue).toString()
+                                    b4.file(form(element.getId), '_label -> q, 'value -> a).toString()
 
                                 case "list" =>
                                     "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
@@ -59,8 +61,8 @@
                         }
 
                         def parseElement(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
-                            val innerText = for(elem:Element <- element.getChildren.toArray()) yield {
-                                if(!elem.isLeaf) {
+                            val innerText = for(elem <- element.getChildren) yield {
+                                if(!elem.isComponent) {
                                     /*this creates a container element which consumes some html type text*/
                                     val inner = parseElement(elem)
                                     elem.toHtml("div").inner(inner)
@@ -72,7 +74,7 @@
                             innerText.mkString("")
                         }
 
-                        b4.vertical.formCSRF(controllers.ApplicationSystem.routes.ApplicationHandler.submitApplication()) { implicit vfc =>
+                        b4.vertical.formCSRF(controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()) { implicit vfc =>
                             val v = parseElement(root)(vfc)
                             Html(v)
                         }

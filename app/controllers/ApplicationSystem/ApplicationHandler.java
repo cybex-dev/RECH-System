@@ -49,23 +49,68 @@ public class ApplicationHandler extends Controller {
 
     }
 
+    /**
+     * Allows to edit and application, by loading all data of the latest application.
+     *
+     * Should only be avialble if the is submitted property is true or {@link RECEngine} allows this.
+     * @return
+     */
+    public Result editApplication(Integer applicationID) {
+        return TODO;
+    }
+
+    /**
+     * Provides the latest application version.
+     * Dependant of {@link RECEngine}, the form will be altered by showing either
+     * <ul>
+     *      <li>The next step: Request PRP approval / Submit Application</li>
+     *      <li>Latest feedback and allowing edits (if an unsubmitted review) dependant on {@link RECEngine}.</li>
+     *      <li>Latest application as readonly (if accepted)</li>
+     * </ul>
+     * @param applicationID
+     * @return
+     */
+    public Result reviewApplication(Integer applicationID) {
+        return TODO;
+    }
+
+    /**
+     * Submit revised application and component data only if {@link RECEngine} allows it
+     * @return
+     */
+    public Result submitRevision() {
+        return TODO;
+    }
+
     //TODO complete all applications
+
+    /**
+     * Gets all applications associated with the user in a view
+     * @return
+     */
     public Result allApplications() {
         EntityPerson person = EntityPerson.getPersonById(session().get("user_email"));
         List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person);
         return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
     }
 
+    /**
+     * Provides a form to complete a new application depending on type
+     * @param type
+     * @return
+     */
     public Result newApplication(String type) {
         ApplicationType applicationType = ApplicationType.valueOf(type);
         DynamicForm form = formFactory.form();
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), ethicsApplication.getRootElement(), form));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), ethicsApplication.getRootElement(), form, ApplicationStatus.DRAFT));
     }
 
 
     /**
-     * Post application form to server
+     * Creates a NEW application in the server database
+     *
+     * If Application for is complete (determined by engine, the PI should be notified of this application on the overview screen and once per week
      */
     //TODO implement draft save and RECEngine association
     public CompletionStage<Result> createApplication() {
@@ -90,7 +135,7 @@ public class ApplicationHandler extends Controller {
                     EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
                     DynamicForm form = formFactory.form();
                     form.bind(formApplication.rawData());
-                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), form));
+                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), form, ApplicationStatus.DRAFT));
                 } catch (Exception x) {
                     return internalServerError();
                 }
@@ -187,7 +232,8 @@ public class ApplicationHandler extends Controller {
                 return internalServerError();
             }
 
-            RECEngine.ChangeApplicationStatus(application.getApplicationId(), ApplicationStatus.NOT_SUBMITTED);
+            // TODO fix
+//            RECEngine.ChangeApplicationStatus(application.getApplicationId(), ApplicationStatus.NOT_SUBMITTED);
 
             return ok();
 
@@ -195,16 +241,27 @@ public class ApplicationHandler extends Controller {
     }
 
     /**
-     * Sets the application status to submitted and all latest components relating to this particlar application are set to submitted in addition to the date of submission being set
+     * Query the engine for the next step in the application flow.
      */
-    public CompletableFuture<Result> submitApplication(int applicationId) {
+    public CompletableFuture<Result> processApplication(int applicationId) {
         return CompletableFuture.supplyAsync(() -> {
 
 
-            RECEngine.SubmitApplication(applicationId);
+            //TODO fix
+//            RECEngine.SubmitApplication(applicationId);
 
             return ok();
         }, jdbcExecutor);
+    }
+
+    /**
+     * Duplicates a given application for a user.
+     * This creates a new application, with all components having version 1 with the latest value associated with the original document
+     * @param applicationId
+     * @return
+     */
+    public Result duplicateApplication(Integer applicationId){
+        return TODO;
     }
 
     /**

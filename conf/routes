@@ -25,16 +25,17 @@ GET     /application                    controllers.ApplicationSystem.Applicatio
 
 # New Application (application type passed as parameter)
 GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
+GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: Integer)
 POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
-POST    /application/new/save           controllers.ApplicationSystem.ApplicationHandler.saveApplication
+POST    /application/process            controllers.ApplicationSystem.ApplicationHandler.processApplication(id: Integer)
 
 GET     /application/review/:id         controllers.ApplicationSystem.ApplicationHandler.reviewApplication(id: Integer)
-POST    /application/new/submit/:id     controllers.ApplicationSystem.ApplicationHandler.submitApplication(id: Integer)
+POST    /application/review/submit      controllers.ApplicationSystem.ApplicationHandler.submitRevision
 
 ### ### Review System ###
 
-GET     /review/application/:id         controllers.ReviewSystem.ReviewerHandler.reviewApplication(id: Integer)
-POST    /review/application/submit      controllers.ReviewSystem.ReviewerHandler.submitReview
+GET     /review/application/:id         controllers.ReviewSystem.ReviewHandler.reviewApplication(id: Integer)
+POST    /review/application/submit      controllers.ReviewSystem.ReviewHandler.submitReview
 
 ### ### Message System ###
 
@@ -44,10 +45,10 @@ GET     /messages/:appId                controllers.MessageSystem.MessageControl
 
 ### ### Meeting System ###
 
-GET     /meeting/applications           controllers.Meeting.MeetingController.allApplications
+GET     /meeting/applications           controllers.MeetingSystem.MeetingController.allApplications
 
-GET     /meeting/application/:appId     controllers.Meeting.MeetingController.getApplication(appId: Integer)
-POST    /meeting/application/submit     controllers.Meeting.MeetingController.submitResolution
+GET     /meeting/application/:appId     controllers.MeetingSystem.MeetingController.getApplication(appId: Integer)
+POST    /meeting/application/submit     controllers.MeetingSystem.MeetingController.submitResolution
 
 
 # An example controller showing how to use dependency injection

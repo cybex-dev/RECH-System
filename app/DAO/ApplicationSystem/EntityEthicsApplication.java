@@ -37,6 +37,7 @@ public class EntityEthicsApplication extends Model {
     private String rtiId;
     private String rtiApproved;
     private String liaisonId;
+    private Short internal_status;
 
     public static Finder<Integer, EntityEthicsApplication> find = new Finder<>(EntityEthicsApplication.class);
 
@@ -279,20 +280,6 @@ public class EntityEthicsApplication extends Model {
                 .collect(Collectors.toList());
     }
 
-    public static ApplicationStatus findApplicationStatus(EntityEthicsApplication entityEthicsApplication) {
-        return findApplicationStatus(entityEthicsApplication.applicationId);
-    }
-
-    public static ApplicationStatus findApplicationStatus(Integer applicationId) {
-        EntityAgendaitem latestStatus = EntityAgendaitem.getAllApplicationStatuses(applicationId)
-                .stream()
-                .reduce((entityAgendaitem, entityAgendaitem2) -> entityAgendaitem.getMeetingDate().after(entityAgendaitem2.getMeetingDate())
-                        ? entityAgendaitem : entityAgendaitem2).orElse(null);
-        return (latestStatus != null)
-                ? latestStatus.status()
-                : ApplicationStatus.UNKNOWN;
-    }
-
     public static String getTitle(int applicationId) {
         Integer componentId = EntityComponent.getAllApplicationCompontents(applicationId)
                 .stream()
@@ -307,30 +294,61 @@ public class EntityEthicsApplication extends Model {
 
     }
 
-    public static List<ApplicationStatus> getAllApplicationStatuses(Integer applicationId){
-        return EntityAgendaitem
-                .getAllApplicationStatuses(applicationId)
+    // Deprecated since internal status is stored in this table
+
+//    public static ApplicationStatus findApplicationStatus(EntityEthicsApplication entityEthicsApplication) {
+//        return findApplicationStatus(entityEthicsApplication.applicationId);
+//    }
+//
+//    public static ApplicationStatus findApplicationStatus(Integer applicationId) {
+//        EntityAgendaitem latestStatus = EntityAgendaitem.getAllApplicationStatuses(applicationId)
+//                .stream()
+//                .reduce((entityAgendaitem, entityAgendaitem2) -> entityAgendaitem.getMeetingDate().after(entityAgendaitem2.getMeetingDate())
+//                        ? entityAgendaitem : entityAgendaitem2).orElse(null);
+//        return (latestStatus != null)
+//                ? latestStatus.status()
+//                : ApplicationStatus.UNKNOWN;
+//    }
+//
+//
+//    public static List<ApplicationStatus> getAllApplicationStatuses(Integer applicationId){
+//        return EntityAgendaitem
+//                .getAllApplicationStatuses(applicationId)
+//                .stream()
+//                .map(EntityAgendaitem::status)
+//                .collect(Collectors.toList());
+//    }
+//
+//    public static ApplicationStatus getApplicationStatus(Integer applicationId){
+//        EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
+//        if (entityEthicsApplication == null)
+//            throw new EntityNotFoundException("Cannot find an application with ID: " + String.valueOf(applicationId));
+//        else {
+//            if (entityEthicsApplication.isSubmitted) {
+//                return EntityAgendaitem
+//                        .getAllApplicationStatuses(applicationId)
+//                        .stream()
+//                        .max((o1, o2) -> o1.getMeetingDate().after(o2.getMeetingDate()) ? -1 : (o1.getMeetingDate().before(o2.getMeetingDate()) ? 1 : 0))
+//                        .orElseThrow(() -> new EntityNotFoundException("Cannot find an application with ID: " + String.valueOf(applicationId)))
+//                        .status();
+//            } else {
+//                return ApplicationStatus.DRAFT;
+//            }
+//        }
+//    }
+
+    /**
+     * Gets the latest {@link EntityComponentversion} for an {@link EntityEthicsApplication} given the application ID
+     * @param applicationId application ID
+     * @return
+     */
+    public static List<EntityComponentversion> getLatestComponents(Integer applicationId){
+        return EntityComponent
+                .getAllApplicationCompontents(applicationId)
                 .stream()
-                .map(EntityAgendaitem::status)
+                .map(entityComponent -> EntityComponentversion.getLatestComponent(entityComponent.getComponentId()))
                 .collect(Collectors.toList());
     }
 
-    public static ApplicationStatus getApplicationStatus(Integer applicationId){
-        EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
-        if (entityEthicsApplication == null)
-            throw new EntityNotFoundException("Cannot find an application with ID: " + String.valueOf(applicationId));
-        else {
-            if (entityEthicsApplication.isSubmitted) {
-                return EntityAgendaitem
-                        .getAllApplicationStatuses(applicationId)
-                        .stream()
-                        .max((o1, o2) -> o1.getMeetingDate().after(o2.getMeetingDate()) ? -1 : (o1.getMeetingDate().before(o2.getMeetingDate()) ? 1 : 0))
-                        .orElseThrow(() -> new EntityNotFoundException("Cannot find an application with ID: " + String.valueOf(applicationId)))
-                        .status();
-            } else {
-                return ApplicationStatus.DRAFT;
-            }
-        }
-    }
 }
 

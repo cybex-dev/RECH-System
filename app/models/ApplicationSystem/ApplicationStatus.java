@@ -1,5 +1,7 @@
 package models.ApplicationSystem;
 
+import scala.App;
+
 public enum ApplicationStatus {
     NOT_SUBMITTED(0),                   //
     APPROVED(1),                        //
@@ -12,21 +14,20 @@ public enum ApplicationStatus {
     PENDING_REVIEW_MEETING(21),         //
     PENDING_REVIEW_LIAISON(22),         //
 
-    FEEDBACK_GIVEN_MEETING(30),         //
-    FEEDBACK_GIVEN_LIAISON(31),         //
+    FEEDBACK_GIVEN_LIAISON(30),         //
 
-    AWAITING_HOD_RTI_APPROVAL(40),
-    AWAITING_HOD_APPROVAL(41),
-    AWAITING_RTI_APPROVAL(42),
+    AWAITING_HOD_RTI_APPROVAL(40),      //
+    AWAITING_HOD_APPROVAL(41),          //
+    AWAITING_RTI_APPROVAL(42),          //
     AWAITING_PRP_APPROVAL(43),          //
 
     FACULTY_REVIEW(50),                 //
 
-    DRAFT(98),
+    DRAFT(98),                          //
     UNKNOWN(99);
 
 
-    private int status = 0;
+    private int status = 98;
 
     ApplicationStatus(int status) {
         this.status = status;
@@ -41,28 +42,13 @@ public enum ApplicationStatus {
                 return ApplicationStatus.APPROVED;
 
             case 2:
-                return ApplicationStatus.APPROVED_EDITS;
-
-            case 3:
-                return ApplicationStatus.TEMPORARILY_APPROVED;
-
-            case 4:
                 return ApplicationStatus.TEMPORARILY_APPROVED_EDITS;
 
-            case 5:
+            case 3:
                 return ApplicationStatus.REJECTED;
 
-            case 6:
-                return ApplicationStatus.REJECTED_EDITS;
-
             case 10:
-                return ApplicationStatus.RESUBMITTED;
-
-            case 11:
-                return ApplicationStatus.RESUBMITTED_APPROVAL;
-
-            case 12:
-                return ApplicationStatus.RESUBMITTED_REVIEW;
+                return ApplicationStatus.READY_FOR_SUBMISSION;
 
             case 20:
                 return ApplicationStatus.PENDING_REVIEW_REVIEWER;
@@ -74,9 +60,6 @@ public enum ApplicationStatus {
                 return ApplicationStatus.PENDING_REVIEW_LIAISON;
 
             case 30:
-                return ApplicationStatus.FEEDBACK_GIVEN_REVIEWER;
-
-            case 31:
                 return ApplicationStatus.FEEDBACK_GIVEN_LIAISON;
 
             case 40:
@@ -90,6 +73,9 @@ public enum ApplicationStatus {
 
             case 43:
                 return ApplicationStatus.AWAITING_PRP_APPROVAL;
+
+            case 50:
+                return ApplicationStatus.FACULTY_REVIEW;
 
             case 98:
                 return ApplicationStatus.DRAFT;
