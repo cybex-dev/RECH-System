@@ -63,7 +63,7 @@
                         def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
                             val elementType = element.getType.toLowerCase
                             val q = element.getChildren.getFirst.getValue
-                            val a = element.getChildren.getLast.getValue
+                            val a = ""
                             elementType match {
                                 case "boolean" =>
                                     /*creates checkbox*/
