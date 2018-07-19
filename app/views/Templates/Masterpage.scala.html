@@ -13,14 +13,15 @@
 *@
 
 @DefaultPage.apply{
-    @DefaultHead.apply("Nelson Mandela University" + pageTabTitle){
+    @DefaultHead.apply("NMU" + pageTabTitle){
         @nmu_stylesheets.apply()
     }
 } {
     @DefaultBody.apply {
-        <form method="post" action="@routes.HomeController.postNMUSearch()" id="form">
-            @helper.CSRF.formField
-            @static_header.apply()
+            <form method="post" action="@routes.HomeController.postNMUSearch()" id="form">
+                @helper.CSRF.formField
+                @static_header.apply()
+            </form>
             <div id="LogoBar" class="container-fluid transparentBackgroundBlue">
             @rec_header.apply()
             </div>
@@ -29,7 +30,6 @@
                 @rec_menu_bar.apply()
                 </div>
             </div>
-        </form>
     } {
         @BodyContainer.apply{
             @bodyContent

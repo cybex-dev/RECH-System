@@ -1,5 +1,6 @@
 package models.ApplicationSystem;
 
+import helpers.FileScanner;
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
 import org.w3c.dom.Document;
@@ -14,6 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class EthicsApplication {
@@ -25,18 +27,40 @@ public class EthicsApplication {
     private Element root;
 
     public enum ApplicationType {
-        Human, Animal
+        Human, Animal;
+
+        public static ApplicationType parse(String type) {
+            switch (type.toLowerCase()) {
+
+                case "animal": {
+                    return Human;
+                }
+
+                case "human":
+                default: {
+                    return Human;
+                }
+            }
+        }
     }
 
     public EthicsApplication() {
         loadApplications();
     }
 
-    private void loadApplications() {
-
+    private static void loadApplications() {
+        List<File> applications;
+        try {
+            applications = new FileScanner().getResourceFiles("/application_templates/");
+            applications.forEach(EthicsApplication::parseToDocument);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static EthicsApplication lookupApplication(ApplicationType type) {
+        if (ethicsApplications.isEmpty())
+            loadApplications();
         return ethicsApplications.stream()
                 .filter(ethicsApplication -> ethicsApplication.getType() == type)
                 .findFirst()
@@ -78,32 +102,18 @@ public class EthicsApplication {
     }
 
     /**
-     * Reads in application forms from resource root and passes them to be parsed and inserted into available application forms.
-     */
-    private void loadApplicationFromResource() {
-        URL resource = getClass().getResource("/application_templates/rec-h.xml");
-        try {
-            URI rech_uri = resource.toURI();
-            File rech_file = new File(rech_uri);
-            parseToDocument(rech_file);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Receives a file object pointing to an XML application form file and adds the parsed document to a static container
      *
      * @param applicationXML
      */
-    private void parseToDocument(File applicationXML) {
+    private static void parseToDocument(File applicationXML) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(applicationXML);
             doc.normalize();
             String sType = doc.getDocumentElement().getAttribute("type");
-            ApplicationType type = ApplicationType.valueOf(sType);
+            ApplicationType type = ApplicationType.parse(sType);
             EthicsApplication ethicsApplication = new EthicsApplication(type, doc);
             ethicsApplication.parseDocumentToElement();
             ethicsApplications.add(ethicsApplication);

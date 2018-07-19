@@ -24,7 +24,7 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(views.html.Templates.Masterpage.render(null,null));
+        return ok(views.html.Templates.Masterpage.render(" :: Research & Ethics Committee",null));
     }
 
     /**

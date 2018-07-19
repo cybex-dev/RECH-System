@@ -19,18 +19,10 @@
             <div class="portal-icon portal-icon-extend-margin">
                 <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()" id="IconMenuBarApplications"><ic class="fa fa-3x fa-book drop-bottom-5"></ic><br>
                     <span>Applications</span></a>
-                <ul id="main-menu" class="sm">
-                    <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()">Create Application</a></li>
+                <ul id="application_dropdown-menu" class="sm">
+                    <li><a href="#" onclick="openApplicationTypePopup();">Create New Application</a></li>
                     <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">View Applications</a></li>
                 </ul>
-                <script>
-                        $(function() {
-                            $('#main-menu').smartmenus({
-                                subMenusSubOffsetX: 1,
-                                subMenusSubOffsetY: -8
-                            });
-                        });
-                </script>
             </div>
             <div class="portal-icon portal-icon-extend-margin">
                 <a href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
@@ -57,3 +49,20 @@
         </div>
     </div>
 </div>
+
+    <div id="modal-wrapper" class="modal">
+        <div class="modal-content animate">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('modal-wrapper').style.display='none'" class="close" title="Close PopUp">&times;</span>
+                <h1 style="text-align:center">Choose application type</h1>
+            </div>
+
+            <form action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")" method="get">
+                <button type="submit">Human Research</button>
+            </form>
+            <br/>
+            <form action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")" method="get">
+                <button type="submit">Animal Research</button>
+            </form>
+        </div>
+    </div>

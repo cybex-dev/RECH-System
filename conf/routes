@@ -34,6 +34,7 @@ POST    /application/process            controllers.ApplicationSystem.Applicatio
 
 GET     /application/review/:id         controllers.ApplicationSystem.ApplicationHandler.reviewApplication(id: Integer)
 POST    /application/review/submit      controllers.ApplicationSystem.ApplicationHandler.submitRevision
+GET     /application/jsRoutes           controllers.ApplicationSystem.ApplicationHandler.javascriptRoutes
 
 ### ### Review System ###
 

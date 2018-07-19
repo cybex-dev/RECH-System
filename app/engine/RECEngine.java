@@ -4,8 +4,10 @@ import DAO.ApplicationSystem.EntityComponent;
 import DAO.ApplicationSystem.EntityComponentversion;
 import DAO.ApplicationSystem.EntityEthicsApplication;
 import DAO.UserSystem.EntityPerson;
+import controllers.NotificationSystem.Notifier;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
+import net.sf.ehcache.constructs.readthrough.ReadThroughCache;
 
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
@@ -16,7 +18,7 @@ import java.util.List;
 public class RECEngine {
 
     @Inject
-    private static MessageProvider messageProvider;
+    private MessageProvider messageProvider;
 
     List<Filter> applicationFilters;
 
@@ -55,7 +57,7 @@ public class RECEngine {
      *
      * @param applicationId
      */
-    public static void SubmitApplicationForReview(int applicationId){
+    public void SubmitApplicationForReview(int applicationId){
 
         // Get ethics application entity
         EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
@@ -96,7 +98,7 @@ public class RECEngine {
         Mailer.NotifyApplicationSubmitted(prp_id.getUserFirstname(), prp_id.getUserEmail(), title);
     }
 
-    private static void ChangeApplicationStatus(int applicationId) {
+    private void ChangeApplicationStatus(int applicationId) {
 
         EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
 
@@ -108,6 +110,12 @@ public class RECEngine {
                 // Process:
                 // Get all latest component data
                 List<EntityComponentversion> latestComponents = EntityEthicsApplication.getLatestComponents(applicationId);
+
+                // Check if application is ready to be submitted
+                if (checkComplete()) {
+                    entityEthicsApplication.setInternalStatus(ApplicationStatus.NOT_SUBMITTED.getStatus());
+                    Notifier.notifyStatus(currentStatus, ApplicationStatus.NOT_SUBMITTED, entityEthicsApplication.getPiId());
+                }
                 // Fill into element
                 // Create form and fill in elements
                 // Receive element data from request
@@ -242,11 +250,15 @@ public class RECEngine {
         }
     }
 
-    public static void nextStep(Integer applicationId) {
-
+    public void nextStep(Integer applicationId) {
+        ChangeApplicationStatus(applicationId);
     }
 
     public void filterApplication(){
 
+    }
+
+    public boolean checkComplete(){
+        return true;
     }
 }

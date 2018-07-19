@@ -10,7 +10,7 @@ public class LoginController extends Controller {
      * @return
      */
     public Result login(){
-        return TODO;
+        return ok(views.html.UserSystem.Login.render());
     }
 
     /**
