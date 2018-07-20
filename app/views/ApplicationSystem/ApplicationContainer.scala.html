@@ -9,6 +9,43 @@
 
 @(pageTitle: String)(applicationType: String)(root: Element)(form: DynamicForm)(status: ApplicationStatus)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @contentBlock = {
         <h1>Create Ethics Application for @applicationType Research</h1>
         <br>
@@ -26,7 +63,7 @@
                         def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
                             val elementType = element.getType.toLowerCase
                             val q = element.getChildren.getFirst.getValue
-                            val a = element.getChildren.getLast.getValue
+                            val a = ""
                             elementType match {
                                 case "boolean" =>
                                     /*creates checkbox*/

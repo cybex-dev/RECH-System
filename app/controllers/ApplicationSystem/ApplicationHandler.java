@@ -16,6 +16,7 @@ import models.ApplicationSystem.EthicsApplication.ApplicationType;
 
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
+import play.api.routing.JavaScriptReverseRoute;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -30,11 +31,16 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import play.routing.JavaScriptReverseRouter;
 
 public class ApplicationHandler extends Controller {
 
     @Inject
-    FormFactory formFactory;
+    private FormFactory formFactory;
+
+    public ApplicationHandler(FormFactory formFactory) {
+        this.formFactory = formFactory;
+    }
 
     @Inject
     private JDBCExecutor jdbcExecutor;
@@ -100,10 +106,11 @@ public class ApplicationHandler extends Controller {
      * @return
      */
     public Result newApplication(String type) {
-        ApplicationType applicationType = ApplicationType.valueOf(type);
+        ApplicationType applicationType = ApplicationType.parse(type);
         DynamicForm form = formFactory.form();
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), ethicsApplication.getRootElement(), form, ApplicationStatus.DRAFT));
+        Element rootElement = ethicsApplication.getRootElement();
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form, ApplicationStatus.DRAFT));
     }
 
 
@@ -424,5 +431,17 @@ public class ApplicationHandler extends Controller {
                 }
             }
         }
+    }
+
+    /**
+     * Generates controller javascript routes
+     * @return
+     */
+    public Result javascriptRoutes(){
+        return ok(
+                JavaScriptReverseRouter.create("applicationRoutes",
+                        routes.javascript.ApplicationHandler.createApplication()
+                )
+        ).as("text/javascript");
     }
 }
