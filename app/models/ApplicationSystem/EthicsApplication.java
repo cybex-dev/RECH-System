@@ -11,12 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class EthicsApplication {
 
@@ -25,6 +20,7 @@ public class EthicsApplication {
     private ApplicationType type;
     private Document applicationDocumentDOM;
     private Element root;
+    private List<Question> questionList;
 
     public enum ApplicationType {
         Human, Animal;
@@ -46,18 +42,99 @@ public class EthicsApplication {
 
     public EthicsApplication() {
         loadApplications();
+        loadQuestionnaires();
     }
 
+    /**
+     * Reads and parses eqch questionnaire from conf/application_templates/ directory
+     */
     private static void loadApplications() {
         List<File> applications;
         try {
             applications = new FileScanner().getResourceFiles("/application_templates/");
-            applications.forEach(EthicsApplication::parseToDocument);
+            applications.forEach(file -> createApplication(EthicsApplication.parseToDocument(file)));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Reads and parses eqch questionnaire from conf/filters/ directory
+     */
+    private static void loadQuestionnaires() {
+        List<File> questions;
+        try {
+            questions = new FileScanner().getResourceFiles("/filters/");
+            questions.forEach(file -> createQuestionnaire(EthicsApplication.parseToDocument(file)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates an {@link EthicsApplication} object from a {@link Document} and adds it to the local static set of ethics applications
+     * @param doc
+     */
+    private static void createApplication(Document doc){
+        if (doc == null)
+            return;
+        String sType = doc.getDocumentElement().getAttribute("type");
+        ApplicationType type = ApplicationType.parse(sType);
+        EthicsApplication ethicsApplication = new EthicsApplication(type, doc);
+        ethicsApplication.parseDocumentToElement();
+        ethicsApplications.add(ethicsApplication);
+    }
+
+
+    /**
+     * Creates a questionnaire {@link Element} from a {@link Document}
+     * @param doc
+     */
+    private static void createQuestionnaire(Document doc){
+        if (doc == null)
+            return;
+        String sType = doc.getDocumentElement().getAttribute("type");
+        ApplicationType type = ApplicationType.parse(sType);
+        EthicsApplication ethicsApplication = lookupApplication(type);
+        if (ethicsApplication == null) {
+            System.out.printf("EthicsApplication resource not found:\nNo EthicsApplication found for questionnaire for [%s]\n", type.name());
+            return;
+        }
+
+        ethicsApplication.setQuestionList(createQuestionList(XMLTools.parseDocument(doc)));
+    }
+
+    /**
+     * Reads a manageable Element generated from an XML Filter file.
+     *
+     * Parses the element into {@link Question} and {@link Condition} objects
+     * @param element
+     * @return
+     */
+    private static List<Question> createQuestionList(Element element) {
+        List<Question> questions = new ArrayList<>();
+        LinkedList<Element> question_filters = element.getChildren();
+
+        question_filters.forEach(q -> {
+            Question question = new Question();
+            question.setTitle(q.getAttributes().get("title"));
+            q.getChildren().forEach(cond -> {
+                Condition.Level level = Condition.Level.valueOf(cond.getAttributes().get("level"));
+                Condition.Risk risk = Condition.Risk.valueOf(cond.getAttributes().get("risk"));
+                Condition condition = new Condition(cond.getValue().toString(), risk, level);
+                question.getConditionsList().add(condition);
+            });
+            questions.add(question);
+        });
+
+        return questions;
+    }
+
+    /**
+     * Searches the local static set of {@link EthicsApplication}s and attempts to find the {@link ApplicationType} given
+     * @param type
+     * @return
+     */
     public static EthicsApplication lookupApplication(ApplicationType type) {
         if (ethicsApplications.isEmpty())
             loadApplications();
@@ -106,19 +183,16 @@ public class EthicsApplication {
      *
      * @param applicationXML
      */
-    private static void parseToDocument(File applicationXML) {
+    private static Document parseToDocument(File applicationXML) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(applicationXML);
             doc.normalize();
-            String sType = doc.getDocumentElement().getAttribute("type");
-            ApplicationType type = ApplicationType.parse(sType);
-            EthicsApplication ethicsApplication = new EthicsApplication(type, doc);
-            ethicsApplication.parseDocumentToElement();
-            ethicsApplications.add(ethicsApplication);
+            return doc;
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -126,5 +200,14 @@ public class EthicsApplication {
         EthicsApplication application = new EthicsApplication(type, null);
         application.root = root.clone(null);
         return application;
+    }
+
+
+    public List<Question> getQuestionList() {
+        return questionList;
+    }
+
+    public void setQuestionList(List<Question> questionList) {
+        this.questionList = questionList;
     }
 }

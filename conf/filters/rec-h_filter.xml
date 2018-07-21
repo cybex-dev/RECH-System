@@ -1,54 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <filters type="human">
-    <filter risk="committee">
-        <condition id="uses_nmu_persons">
-            <value>true</value>
-        </condition>
-        <condition id="are_participants_minors">
-            <value>true</value>
-        </condition>
-        <condition id="uses_institutional_pop">
-            <value>true</value>
-        </condition>
-        <condition id="requires_characteristics">
-            <value>true</value>
-        </condition>
-        <condition id="operate_in_institution">
-            <value>true</value>
-        </condition>
-        <condition id="has_collections">
-            <value>true</value>
-        </condition>
-        <condition id="has_equipment">
-            <value>true</value>
-        </condition>
-        <condition id="uses_mechanical_methods">
-            <value>true</value>
-        </condition>
-        <condition id="identify_participants">
-            <value>true</value>
-        </condition>
-        <condition id="privacy_anon_provisions">
-            <value>true</value>
-        </condition>
-        <condition id="uses_records">
-            <value>true</value>
-        </condition>
-        <condition id="study_scope">
-            <values>
-                <value>Regional</value>
-                <value>International</value>
-            </values>
-        </condition>
+    <filter title="Are the subjects/participants of your study:">
+        <condition risk="medium" level="committee">Mandela university staff/students?</condition>
+        <condition risk="medium" level="committee">in a dependency relationship with the PI and/or PRP?</condition>
+        <condition risk="high" level="committee">children under the age of 18?</condition>
+        <condition risk="high" level="committee">a sample from an institution (eg hospital)?</condition>
+        <condition risk="high" level="committee">handicapped (eg mentally or physically) persons?</condition>
+        <condition risk="high" level="committee">socially and/or economically disadvantaged persons?</condition>
+        <condition risk="high" level="committee">persons of diminished physical and/or mental and/or educational capacity (eg traumatised)?</condition>
+        <condition risk="high" level="committee">elderly?</condition>
+        <condition risk="high" level="committee">persons who are not competent to give participation consent (eg due to language challenges)?</condition>
     </filter>
-    <filter risk="faculty">
-        <condition id="uses_records">
-            <value>true</value>
-        </condition>
+    <filter title="Are you administering any process and/or treatment that:">
+        <condition risk="medium" level="committee">may result in the disclosure of sensitive and/or embarrassing information about the participants and/or researcher?</condition>
+        <condition risk="medium" level="committee">involves covert observation of behaviour that is not normally in the public domain?</condition>
+        <condition risk="medium" level="committee">could result in the participants feeling humilated, manipulated and/or in other ways treated disrespectfully and/or unjustly?</condition>
+        <condition risk="medium" level="committee">uses specialised equipment on the participants?</condition>
+        <condition risk="medium" level="committee">could result in discomfort associated to the physical health (eg the act of measuring blood pressure, minor side effects of taking medication) of the participants and/or researcher?</condition>
+        <condition risk="medium" level="committee">could result in discomfort associated with the psychological well-being (eg feelings of anxiety due to being interviewed) of the participants and/or researcher?</condition>
+        <condition risk="medium" level="committee">could result in discomfort associated with the legal well-being of the participants and/or researcher?</condition>
+        <condition risk="medium" level="committee">could result in the identification and/or re-identification of a participant from a resulting report?</condition>
+        <condition risk="medium" level="committee">could result in risks to non-participants (eg distress to relatives upon discovering that a participant suffers from a serious genetic disorder, infectious disease risks to a community, social/economic discrimination of subgroup populations)?</condition>
+        <condition risk="high" level="committee">involves participants undergoing psychological, physiological or medical testing or treatment?</condition>
+        <condition risk="high" level="committee">involves the collection and use of human biological samples (e.g. skin, blood, urine, saliva, hair, bones, tumour and other biopsy specimens) or their exhaled breath?</condition>
+        <condition risk="high" level="committee">could be hazardous to the physical health (eg possibly results in illness, injury, pain)  of the participants and/or researcher?</condition>
+        <condition risk="high" level="committee">could be hazardous to the psychological well-being (eg possibly results in feelings of worthlessness, guilt, anger, fear) of the participants and/or researcher?</condition>
+        <condition risk="high" level="committee">could be hazardous to the legal well-being (eg possibly results in the discovery and prosecution of criminal activity) of the participants and/or researcher?</condition>
+        <condition risk="high" level="committee">could result in the participant learning about a genetic possibility of developing an untreatable disease?</condition>
     </filter>
-    <filter risk="none">
-        <condition id="study_scope">
-            <value>Local</value>
-        </condition>
+    <filter title="Are you administering a questionnaire/survey/interview/focus group that:">
+        <condition risk="medium" level="committee">collects sensitive data from the participants (eg personal data that is not normally in the public domain)?</condition>
+        <condition risk="medium" level="committee">does not guarantee the anonymity of the participant?</condition>
+        <condition risk="medium" level="committee">does not guarantee the confidentiality of data collected from the participants?</condition>
+    </filter>
+    <filter title="Are you intending to access participant data from an existing stored repository (eg school, institutional or university records) that:">
+        <condition risk="low" level="faculty">requires access to participant information (in non-identifiable form, eg summarised form) as part of an existing published or unpublished source or database?</condition>
+        <condition risk="medium" level="committee"> requires access to participant information (in individually identifiable or re-identifiable form) as part of an existing published or unpublished source or database?</condition>
+    </filter>
+    <filter title="Do you intend publishing the findings of your study in a publication that:">
+        <condition risk="low" level="committee">requires evidence of human ethics approval/acknowledgement?</condition>
+    </filter>
+    <filter title="Is this study:">
+        <condition risk="medium" level="committee">an international/cross border study?</condition>
     </filter>
 </filters>

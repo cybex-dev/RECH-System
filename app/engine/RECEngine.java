@@ -20,17 +20,7 @@ public class RECEngine {
     @Inject
     private MessageProvider messageProvider;
 
-    List<Filter> applicationFilters;
-
     public RECEngine() {
-        loadFilters();
-    }
-
-    /**
-     * Loads application filters into engine
-     */
-    private void loadFilters() {
-
     }
 
     /**
@@ -123,9 +113,9 @@ public class RECEngine {
                 // Check if application is complete - compare XML with component values
 
                 // Verify Application data
-                // STEP -> Not Submitted (Filter -> Committee)
-                // STEP -> FACULTY_REVIEW (Filter -> Faculty)
-                // STEP -> APPROVED (Filter -> None)
+                // STEP -> Not Submitted (Question -> Committee)
+                // STEP -> FACULTY_REVIEW (Question -> Faculty)
+                // STEP -> APPROVED (Question -> None)
 
                 break;
             case NOT_SUBMITTED:
