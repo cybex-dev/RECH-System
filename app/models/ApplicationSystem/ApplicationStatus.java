@@ -2,7 +2,9 @@ package models.ApplicationSystem;
 
 import scala.App;
 
-public enum ApplicationStatus {
+import java.io.Serializable;
+
+public enum ApplicationStatus implements Serializable {
     NOT_SUBMITTED(0),                   //
     APPROVED(1),                        //
     TEMPORARILY_APPROVED(2),            //

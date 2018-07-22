@@ -11,9 +11,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
-public class EthicsApplication {
+public class EthicsApplication implements Serializable {
 
     static private Set<EthicsApplication> ethicsApplications = new HashSet<>();
 
