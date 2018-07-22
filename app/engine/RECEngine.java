@@ -87,8 +87,13 @@ public class RECEngine {
         Mailer.NotifyApplicationSubmitted(prp_id.getUserFirstname(), prp_id.getUserEmail(), title);
     }
 
-    private void ChangeApplicationStatus(int applicationId) {
+    public void nextStep(Integer applicationId) {
+        Actionable nextAction = nextAction(applicationId);
+        nextAction.doAction();
+        nextAction.doNotify();
+    }
 
+    private Actionable nextAction(Integer applicationId) {
         EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
 
         ApplicationStatus currentStatus = null;
@@ -122,7 +127,7 @@ public class RECEngine {
                 // Action: Applicant clicks next step: Request PRP Approval
 
 
-            break;
+                break;
 
             // Submission Phase
             case FACULTY_REVIEW:
@@ -137,7 +142,7 @@ public class RECEngine {
                 // STEP -> AWAITING_PRP_APPROVAL (PRP Approves)
                 // STEP -> NOT_SUBMITTED (PRP Reject)
 
-            break;
+                break;
 
             case AWAITING_PRE_HOD_RTI_APPROVAL:
                 // Assume application is complete and reviewed and approved by PI & PRP
@@ -171,7 +176,7 @@ public class RECEngine {
                 // Action: PI submits application
                 // STEP -> PENDING_REVIEW_REVIEWER
 
-            break;
+                break;
 
 
             // Reviewer review
@@ -275,10 +280,6 @@ public class RECEngine {
 
             }
         }
-    }
-
-    public void nextStep(Integer applicationId) {
-        ChangeApplicationStatus(applicationId);
     }
 
     public void filterApplication(){
