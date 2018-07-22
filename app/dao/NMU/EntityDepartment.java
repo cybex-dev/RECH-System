@@ -10,7 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "department", schema = "rech_system")
 @IdClass(EntityDepartmentPK.class)
-public class EntityDepartment  extends Model {
+public class EntityDepartment extends Model {
     private String departmentName;
     private String facultyFacultyName;
 
@@ -57,6 +57,6 @@ public class EntityDepartment  extends Model {
                 .filter(entityDepartment -> entityDepartment.departmentName.equals(dept))
                 .findFirst()
                 .orElseThrow(() -> new InvalidFieldException("Department has no associated faculty"))
-                .facultyName;
+                .getFacultyFacultyName();
     }
 }

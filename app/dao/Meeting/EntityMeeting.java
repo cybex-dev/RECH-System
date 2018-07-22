@@ -1,20 +1,18 @@
 package dao.Meeting;
 
-import dao.MessageSystem.EntityMessage;
 import io.ebean.Finder;
-import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "meeting", schema = "rech_system")
-public class EntityMeeting  extends Model {
+@Table(name = "meeting", schema = "rech_system", catalog = "")
+public class EntityMeeting {
     private Timestamp meetingDate;
     private String announcements;
 
-    public static Finder<Timestamp, EntityMeeting> find = new Finder<>(EntityMeeting.class);
+    public static Finder<Timestamp, dao.Meeting.EntityMeeting> find = new Finder<>(dao.Meeting.EntityMeeting.class);
 
     @Id
     @Column(name = "meeting_date", nullable = false)

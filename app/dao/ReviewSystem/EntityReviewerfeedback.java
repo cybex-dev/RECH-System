@@ -1,25 +1,22 @@
 package dao.ReviewSystem;
 
-import dao.ApplicationSystem.EntityEthicsApplication;
 import io.ebean.Finder;
 import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "reviewerfeedback", schema = "rech_system")
 @IdClass(EntityReviewerfeedbackPK.class)
-public class EntityReviewerfeedback  extends Model {
+public class EntityReviewerfeedback extends Model {
     private Timestamp applicationAssignedDate;
     private String reviewerEmail;
     private Timestamp feedbackDate;
-    private Boolean requiresEdits;
+    private Byte requiresEdits;
 
-    public static Finder<EntityReviewerfeedbackPK, EntityReviewerfeedback> find = new Finder<>(EntityReviewerfeedback.class);
+    public static Finder<EntityReviewerfeedbackPK, dao.ReviewSystem.EntityReviewerfeedback> find = new Finder<>(dao.ReviewSystem.EntityReviewerfeedback.class);
 
     @Id
     @Column(name = "application_assigned_date", nullable = false)
@@ -32,13 +29,13 @@ public class EntityReviewerfeedback  extends Model {
     }
 
     @Id
-    @Column(name = "user_email", nullable = false, length = 100)
+    @Column(name = "reviewer_email", nullable = false, length = 100)
     public String getReviewerEmail() {
         return reviewerEmail;
     }
 
-    public void setReviewerEmail(String userEmail) {
-        this.reviewerEmail = userEmail;
+    public void setReviewerEmail(String reviewerEmail) {
+        this.reviewerEmail = reviewerEmail;
     }
 
     @Basic
@@ -53,11 +50,11 @@ public class EntityReviewerfeedback  extends Model {
 
     @Basic
     @Column(name = "requires_edits", nullable = true)
-    public Boolean getRequiresEdits() {
+    public Byte getRequiresEdits() {
         return requiresEdits;
     }
 
-    public void setRequiresEdits(Boolean requiresEdits) {
+    public void setRequiresEdits(Byte requiresEdits) {
         this.requiresEdits = requiresEdits;
     }
 
@@ -76,13 +73,5 @@ public class EntityReviewerfeedback  extends Model {
     public int hashCode() {
 
         return Objects.hash(applicationAssignedDate, reviewerEmail, feedbackDate, requiresEdits);
-    }
-
-    public static List<EntityEthicsApplication> getApplicationsByReviewer(String reviewerEmail){
-        return find.all()
-                .stream()
-                .filter(entityReviewerfeedback -> entityReviewerfeedback.getReviewerEmail().equals(reviewerEmail))
-                .map(entityReviewerfeedback -> EntityEthicsApplication.find.byId(entityReviewerfeedback.applicationId))
-                .collect(Collectors.toList());
     }
 }

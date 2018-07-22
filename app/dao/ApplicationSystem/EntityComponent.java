@@ -20,7 +20,8 @@ public class EntityComponent extends Model {
     private String facultyName;
     private String question;
 
-    public static Finder<EntityComponentPK, EntityComponent> find = new Finder<>(EntityComponent.class);
+
+    public static Finder<dao.ApplicationSystem.EntityComponentPK, dao.ApplicationSystem.EntityComponent> find = new Finder<>(dao.ApplicationSystem.EntityComponent.class);
 
     @Id
     @Column(name = "component_id", nullable = false, length = 50)
@@ -112,10 +113,27 @@ public class EntityComponent extends Model {
         return Objects.hash(componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, question);
     }
 
-    public static List<EntityComponent> getAllApplicationCompontents(int applicationId) {
+
+    public static List<dao.ApplicationSystem.EntityComponent> getAllApplicationCompontents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
         return find.all()
                 .stream()
-                .filter(entityComponent -> entityComponent.applicationId.equals(applicationId))
+                .filter(entityComponent -> entityComponent.isComponent(applicationId))
                 .collect(Collectors.toList());
+    }
+
+    public boolean isComponent(EntityEthicsApplicationPK id){
+        return this.applicationNumber.equals(id.getApplicationNumber()) &&
+                this.applicationType.equals(id.getApplicationType()) &&
+                this.applicationYear.equals(id.getApplicationYear()) &&
+                this.facultyName.equals(id.getFacultyName()) &&
+                this.departmentName.equals(id.getDepartmentName());
+    }
+
+    public void setApplicationId(EntityEthicsApplicationPK applicationId) {
+        this.applicationYear = applicationId.getApplicationYear();
+        this.applicationType = applicationId.getApplicationType();
+        this.departmentName = applicationId.getDepartmentName();
+        this.facultyName = applicationId.getFacultyName();
+        this.applicationNumber = applicationId.getApplicationNumber();
     }
 }

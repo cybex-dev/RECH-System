@@ -1,11 +1,13 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Embeddable
 public class EntityReviewercomponentfeedbackPK implements Serializable {
     private Timestamp applicationAssignedDate;
     private String reviewerEmail;
@@ -17,8 +19,9 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "application_assigned_date", nullable = false)
-    @Id
+    public EntityReviewercomponentfeedbackPK() {
+    }
+
     public Timestamp getApplicationAssignedDate() {
         return applicationAssignedDate;
     }
@@ -27,8 +30,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.applicationAssignedDate = applicationAssignedDate;
     }
 
-    @Column(name = "reviewer_email", nullable = false, length = 100)
-    @Id
     public String getReviewerEmail() {
         return reviewerEmail;
     }
@@ -37,8 +38,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.reviewerEmail = reviewerEmail;
     }
 
-    @Column(name = "version", nullable = false)
-    @Id
     public Short getVersion() {
         return version;
     }
@@ -47,8 +46,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.version = version;
     }
 
-    @Column(name = "component_id", nullable = false, length = 50)
-    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -57,8 +54,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.componentId = componentId;
     }
 
-    @Column(name = "application_type", nullable = false, length = 1)
-    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -67,8 +62,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.applicationType = applicationType;
     }
 
-    @Column(name = "application_year", nullable = false)
-    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -77,8 +70,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.applicationYear = applicationYear;
     }
 
-    @Column(name = "application_number", nullable = false)
-    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -87,8 +78,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.applicationNumber = applicationNumber;
     }
 
-    @Column(name = "department_name", nullable = false, length = 50)
-    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -97,8 +86,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "faculty_name", nullable = false, length = 50)
-    @Id
     public String getFacultyName() {
         return facultyName;
     }

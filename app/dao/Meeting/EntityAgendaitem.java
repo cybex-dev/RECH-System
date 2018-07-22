@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "agendaitem", schema = "rech_system")
 @IdClass(EntityAgendaitemPK.class)
-public class EntityAgendaitem  extends Model {
+public class EntityAgendaitem extends Model {
     private Timestamp meetingDate;
     private String applicationType;
     private Integer applicationYear;
@@ -24,7 +24,7 @@ public class EntityAgendaitem  extends Model {
     private String resolution;
     private Short applicationStatus;
 
-    public static Finder<EntityAgendaitemPK, EntityAgendaitem> find = new Finder<>(EntityAgendaitem.class);
+    public static Finder<dao.Meeting.EntityAgendaitemPK, dao.Meeting.EntityAgendaitem> find = new Finder<>(dao.Meeting.EntityAgendaitem.class);
 
     @Id
     @Column(name = "meeting_date", nullable = false)
@@ -125,17 +125,5 @@ public class EntityAgendaitem  extends Model {
     public int hashCode() {
 
         return Objects.hash(meetingDate, applicationType, applicationYear, applicationNumber, departmentName, facultyName, resolution, applicationStatus);
-    }
-
-    public ApplicationStatus status(){
-        return ApplicationStatus.parse(applicationStatus);
-    }
-
-    public static List<EntityAgendaitem> getAllApplicationStatuses(EntityEthicsApplication entityEthicsApplication) {
-        return getAllApplicationStatuses(entityEthicsApplication.getApplicationId());
-    }
-
-    public static List<EntityAgendaitem> getAllApplicationStatuses(int applicationId) {
-        return find.all().stream().filter(entityAgendaitem -> entityAgendaitem.applicationId.equals(applicationId)).collect(Collectors.toList());
     }
 }

@@ -3,6 +3,7 @@ package controllers.ApplicationSystem;
 import dao.ApplicationSystem.EntityComponent;
 import dao.ApplicationSystem.EntityComponentversion;
 import dao.ApplicationSystem.EntityEthicsApplication;
+import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.NMU.EntityDepartment;
 import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
@@ -19,6 +20,7 @@ import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
@@ -229,7 +231,7 @@ public class ApplicationHandler extends Controller {
 
             try {
                 // Create entities from Root Element
-                createEntities(application.getApplicationId(), rootElement);
+                createEntities(application.applicationPrimaryKey(), rootElement);
             } catch (UnhandledElementException e) {
                 e.printStackTrace();
                 return badRequest();
@@ -277,7 +279,7 @@ public class ApplicationHandler extends Controller {
      * @throws UnhandledElementException
      * @throws IOException
      */
-    private void createEntities(Integer applicationId, Element rootElement) throws UnhandledElementException, IOException {
+    private void createEntities(EntityEthicsApplicationPK applicationId, Element rootElement) throws UnhandledElementException, IOException {
         if (rootElement != null) {
             switch (rootElement.getTag()) {
                 case "value":
@@ -310,19 +312,21 @@ public class ApplicationHandler extends Controller {
                         componentversion.setDocumentName(title.getValue().toString());
                         componentversion.setDocumentDescription(desc.getValue().toString());
                         File doc = (File) file.getValue();
-                        Path p = Paths.get(doc.getPath());
-                        byte[] bytes = Files.readAllBytes(p);
-                        componentversion.setDocumentBlob(bytes);
+                        String hashCode = String.valueOf(doc.hashCode());
+                        componentversion.setDocumentLocationHash(hashCode);
 
                         // Create component entity
                         EntityComponent component = new EntityComponent();
                         component.setApplicationId(applicationId);
-                        component.setQuestionId(rootElement.getId());
+                        component.setComponentId(rootElement.getId());
                         component.insert();
 
                         // Set component Id in component version and add to database
                         componentversion.setComponentId(component.getComponentId());
                         componentversion.insert();
+
+                        //TODO upload file
+//                        saveDocumentToDirectory(rootElement.getId(), doc);
                     } else {
                         for (Element e : rootElement.getChildren()) {
                             createEntities(applicationId, e);
@@ -349,7 +353,7 @@ public class ApplicationHandler extends Controller {
                         // Create component entity
                         EntityComponent component = new EntityComponent();
                         component.setApplicationId(applicationId);
-                        component.setQuestionId(childElement.getId());
+                        component.setComponentId(childElement.getId());
                         component.insert();
 
                         // Set component Id in component version and add to database
@@ -410,7 +414,7 @@ public class ApplicationHandler extends Controller {
                             // Create component entity
                             EntityComponent component = new EntityComponent();
                             component.setApplicationId(applicationId);
-                            component.setQuestionId(rootElement.getId());
+                            component.setQuestion(rootElement.getId());
                             component.insert();
 
                             // Set component Id in component version and add to database
@@ -430,6 +434,12 @@ public class ApplicationHandler extends Controller {
                 }
             }
         }
+    }
+
+    public Result upload(String id) {
+        File file = request().body().asRaw().asFile();
+        String hashcode = String.valueOf(file.hashCode());
+        return ok();
     }
 
     /**

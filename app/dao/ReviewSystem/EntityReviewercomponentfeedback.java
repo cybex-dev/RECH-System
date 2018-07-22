@@ -1,5 +1,7 @@
 package dao.ReviewSystem;
 
+import dao.ApplicationSystem.EntityEthicsApplication;
+import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import io.ebean.Finder;
 import io.ebean.Model;
 
@@ -10,7 +12,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "reviewercomponentfeedback", schema = "rech_system")
 @IdClass(EntityReviewercomponentfeedbackPK.class)
-public class EntityReviewercomponentfeedback  extends Model {
+public class EntityReviewercomponentfeedback extends Model {
     private Timestamp applicationAssignedDate;
     private String reviewerEmail;
     private Short version;
@@ -20,9 +22,8 @@ public class EntityReviewercomponentfeedback  extends Model {
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
-    private String componentFeedback;
 
-    public static Finder<EntityReviewercomponentfeedbackPK, EntityReviewercomponentfeedback> find = new Finder<>(EntityReviewercomponentfeedback.class);
+    private String componentFeedback;public static Finder<EntityReviewercomponentfeedbackPK, dao.ReviewSystem.EntityReviewercomponentfeedback> find = new Finder<>(dao.ReviewSystem.EntityReviewercomponentfeedback.class);
 
     @Id
     @Column(name = "application_assigned_date", nullable = false)
@@ -145,5 +146,15 @@ public class EntityReviewercomponentfeedback  extends Model {
     public int hashCode() {
 
         return Objects.hash(applicationAssignedDate, reviewerEmail, version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, componentFeedback);
+    }
+
+    public EntityEthicsApplicationPK applicationPrimaryKey() {
+        EntityEthicsApplicationPK pk = new EntityEthicsApplicationPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        return pk;
     }
 }

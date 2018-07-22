@@ -9,16 +9,30 @@ import java.util.Objects;
 @Entity
 @Table(name = "faculty", schema = "rech_system")
 public class EntityFaculty extends Model {
+    private String facultyName;
+    private String facultyInfo;
+
+    public static Finder<String, dao.NMU.EntityFaculty> find = new Finder<>(dao.NMU.EntityFaculty.class);
 
     @Id
     @Column(name = "faculty_name", nullable = false, length = 50)
-    private String facultyName;
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
+    }
 
     @Basic
     @Column(name = "faculty_info", nullable = true, length = -1)
-    private String facultyInfo;
+    public String getFacultyInfo() {
+        return facultyInfo;
+    }
 
-    public static Finder<String, EntityFaculty> find = new Finder<>(EntityFaculty.class);
+    public void setFacultyInfo(String facultyInfo) {
+        this.facultyInfo = facultyInfo;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -34,6 +48,7 @@ public class EntityFaculty extends Model {
 
         return Objects.hash(facultyName, facultyInfo);
     }
+
     public static EntityFaculty getFacultyByName(String facultyName){
         return find.byId(facultyName);
     }

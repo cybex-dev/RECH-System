@@ -1,10 +1,12 @@
 package dao.ApplicationSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class EntityEthicsApplicationPK implements Serializable {
     private String applicationType;
     private Integer applicationYear;
@@ -12,8 +14,9 @@ public class EntityEthicsApplicationPK implements Serializable {
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "application_type", nullable = false, length = 1)
-    @Id
+    public EntityEthicsApplicationPK() {
+    }
+
     public String getApplicationType() {
         return applicationType;
     }
@@ -22,8 +25,6 @@ public class EntityEthicsApplicationPK implements Serializable {
         this.applicationType = applicationType;
     }
 
-    @Column(name = "application_year", nullable = false)
-    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -32,8 +33,6 @@ public class EntityEthicsApplicationPK implements Serializable {
         this.applicationYear = applicationYear;
     }
 
-    @Column(name = "application_number", nullable = false)
-    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -42,8 +41,6 @@ public class EntityEthicsApplicationPK implements Serializable {
         this.applicationNumber = applicationNumber;
     }
 
-    @Column(name = "department_name", nullable = false, length = 50)
-    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -52,8 +49,6 @@ public class EntityEthicsApplicationPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "faculty_name", nullable = false, length = 50)
-    @Id
     public String getFacultyName() {
         return facultyName;
     }

@@ -1,6 +1,5 @@
 package dao.UserSystem;
 
-import dao.NMU.EntityDepartment;
 import io.ebean.Finder;
 import io.ebean.Model;
 import models.UserSystem.UserType;
@@ -24,7 +23,7 @@ public class EntityPerson extends Model {
     private String departmentName;
     private String facultyName;
 
-    public static Finder<String, EntityPerson> find = new Finder<>(EntityPerson.class);
+    public static Finder<String, dao.UserSystem.EntityPerson> find = new Finder<>(dao.UserSystem.EntityPerson.class);
 
     @Id
     @Column(name = "user_email", nullable = false, length = 100)
@@ -171,7 +170,7 @@ public class EntityPerson extends Model {
         return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
     }
 
-    public static EntityPerson getPersonById(String userEmail){
+    public static dao.UserSystem.EntityPerson getPersonById(String userEmail){
         return find.byId(userEmail);
     }
 

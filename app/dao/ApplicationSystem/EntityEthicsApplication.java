@@ -1,8 +1,9 @@
 package dao.ApplicationSystem;
 
-import dao.ReviewSystem.EntityReviewerfeedback;
+import dao.ReviewSystem.EntityReviewercomponentfeedback;
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
+import io.ebean.Model;
 import models.UserSystem.UserType;
 
 import javax.persistence.*;
@@ -12,9 +13,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "ethics_application", schema = "rech_system", catalog = "")
+@Table(name = "ethics_application", schema = "rech_system")
 @IdClass(EntityEthicsApplicationPK.class)
-public class EntityEthicsApplication {
+public class EntityEthicsApplication extends Model {
     private String applicationType;
     private Integer applicationYear;
     private Integer applicationNumber;
@@ -25,16 +26,22 @@ public class EntityEthicsApplication {
     private String piId;
     private Timestamp piApprovedDate;
     private String prpId;
-    private Timestamp prpApprovedDate;
+    private Timestamp prpReviewDate;
     private String hodId;
-    private Timestamp hodPreApprovedDate;
-    private Timestamp hodPostApprovedDate;
+    private Timestamp hodReviewDate;
+    private Timestamp hodFinalReviewDate;
+    private Boolean hodApplicationReviewApproved;
+    private Boolean hodFinalApplicationApproval;
     private String rtiId;
-    private Timestamp rtiPreApprovedDate;
-    private Timestamp rtiPostApprovedDate;
+    private Timestamp rtiReviewDate;
+    private Timestamp rtiFinalReviewDate;
+    private Boolean rtiApplicationReviewApproved;
+    private Boolean rtiFinalApplicationApproval;
     private Short internalStatus;
+    private String liaisonId;
+    private Timestamp liaisonAssignedDate;
 
-    public static Finder<dao.ApplicationSystem.EntityEthicsApplicationPK, dao.ApplicationSystem.EntityEthicsApplication> find = new Finder<>(dao.ApplicationSystem.EntityEthicsApplication.class);
+    public static Finder<dao.ApplicationSystem.EntityEthicsApplicationPK, EntityEthicsApplication> find = new Finder<>(EntityEthicsApplication.class);
 
     @Id
     @Column(name = "application_type", nullable = false, length = 1)
@@ -138,12 +145,12 @@ public class EntityEthicsApplication {
 
     @Basic
     @Column(name = "prp_approved_date", nullable = true)
-    public Timestamp getPrpApprovedDate() {
-        return prpApprovedDate;
+    public Timestamp getPrpReviewDate() {
+        return prpReviewDate;
     }
 
-    public void setPrpApprovedDate(Timestamp prpApprovedDate) {
-        this.prpApprovedDate = prpApprovedDate;
+    public void setPrpReviewDate(Timestamp prpApprovedDate) {
+        this.prpReviewDate = prpApprovedDate;
     }
 
     @Basic
@@ -158,22 +165,42 @@ public class EntityEthicsApplication {
 
     @Basic
     @Column(name = "hod_pre_approved_date", nullable = true)
-    public Timestamp getHodPreApprovedDate() {
-        return hodPreApprovedDate;
+    public Timestamp getHodReviewDate() {
+        return hodReviewDate;
     }
 
-    public void setHodPreApprovedDate(Timestamp hodPreApprovedDate) {
-        this.hodPreApprovedDate = hodPreApprovedDate;
+    public void setHodReviewDate(Timestamp hodPreApprovedDate) {
+        this.hodReviewDate = hodPreApprovedDate;
     }
 
     @Basic
     @Column(name = "hod_post_approved_date", nullable = true)
-    public Timestamp getHodPostApprovedDate() {
-        return hodPostApprovedDate;
+    public Timestamp getHodFinalReviewDate() {
+        return hodFinalReviewDate;
     }
 
-    public void setHodPostApprovedDate(Timestamp hodPostApprovedDate) {
-        this.hodPostApprovedDate = hodPostApprovedDate;
+    public void setHodFinalReviewDate(Timestamp hodPostApprovedDate) {
+        this.hodFinalReviewDate = hodPostApprovedDate;
+    }
+
+    @Basic
+    @Column(name = "hod_application_review_approved", nullable = true)
+    public Boolean getHodApplicationReviewApproved() {
+        return hodApplicationReviewApproved;
+    }
+
+    public void setHodApplicationReviewApproved(Boolean hodApplicationReviewApproved) {
+        this.hodApplicationReviewApproved = hodApplicationReviewApproved;
+    }
+
+    @Basic
+    @Column(name = "hod_final_application_approval", nullable = true)
+    public Boolean getHodFinalApplicationApproval() {
+        return hodFinalApplicationApproval;
+    }
+
+    public void setHodFinalApplicationApproval(Boolean hodFinalApplicationApproval) {
+        this.hodFinalApplicationApproval = hodFinalApplicationApproval;
     }
 
     @Basic
@@ -188,22 +215,42 @@ public class EntityEthicsApplication {
 
     @Basic
     @Column(name = "rti_pre_approved_date", nullable = true)
-    public Timestamp getRtiPreApprovedDate() {
-        return rtiPreApprovedDate;
+    public Timestamp getRtiReviewDate() {
+        return rtiReviewDate;
     }
 
-    public void setRtiPreApprovedDate(Timestamp rtiPreApprovedDate) {
-        this.rtiPreApprovedDate = rtiPreApprovedDate;
+    public void setRtiReviewDate(Timestamp rtiPreApprovedDate) {
+        this.rtiReviewDate = rtiPreApprovedDate;
     }
 
     @Basic
     @Column(name = "rti_post_approved_date", nullable = true)
-    public Timestamp getRtiPostApprovedDate() {
-        return rtiPostApprovedDate;
+    public Timestamp getRtiFinalReviewDate() {
+        return rtiFinalReviewDate;
     }
 
-    public void setRtiPostApprovedDate(Timestamp rtiPostApprovedDate) {
-        this.rtiPostApprovedDate = rtiPostApprovedDate;
+    public void setRtiFinalReviewDate(Timestamp rtiPostApprovedDate) {
+        this.rtiFinalReviewDate = rtiPostApprovedDate;
+    }
+
+    @Basic
+    @Column(name = "rti_application_review_approved", nullable = true)
+    public Boolean getRtiApplicationReviewApproved() {
+        return rtiApplicationReviewApproved;
+    }
+
+    public void setRtiApplicationReviewApproved(Boolean rtiApplicationReviewApproved) {
+        this.rtiApplicationReviewApproved = rtiApplicationReviewApproved;
+    }
+
+    @Basic
+    @Column(name = "rti_final_application_approval", nullable = true)
+    public Boolean getRtiFinalApplicationApproval() {
+        return rtiFinalApplicationApproval;
+    }
+
+    public void setRtiFinalApplicationApproval(Boolean rtiFinalApplicationApproval) {
+        this.rtiFinalApplicationApproval = rtiFinalApplicationApproval;
     }
 
     @Basic
@@ -214,6 +261,26 @@ public class EntityEthicsApplication {
 
     public void setInternalStatus(Short internalStatus) {
         this.internalStatus = internalStatus;
+    }
+
+    @Basic
+    @Column(name = "liaison_id", nullable = true, length = 100)
+    public String getLiaisonId() {
+        return liaisonId;
+    }
+
+    public void setLiaisonId(String liaisonId) {
+        this.liaisonId = liaisonId;
+    }
+
+    @Basic
+    @Column(name = "liaison_assigned_date", nullable = true)
+    public Timestamp getLiaisonAssignedDate() {
+        return liaisonAssignedDate;
+    }
+
+    public void setLiaisonAssignedDate(Timestamp liaisonAssignedDate) {
+        this.liaisonAssignedDate = liaisonAssignedDate;
     }
 
     @Override
@@ -231,31 +298,33 @@ public class EntityEthicsApplication {
                 Objects.equals(piId, that.piId) &&
                 Objects.equals(piApprovedDate, that.piApprovedDate) &&
                 Objects.equals(prpId, that.prpId) &&
-                Objects.equals(prpApprovedDate, that.prpApprovedDate) &&
+                Objects.equals(prpReviewDate, that.prpReviewDate) &&
                 Objects.equals(hodId, that.hodId) &&
-                Objects.equals(hodPreApprovedDate, that.hodPreApprovedDate) &&
-                Objects.equals(hodPostApprovedDate, that.hodPostApprovedDate) &&
+                Objects.equals(hodReviewDate, that.hodReviewDate) &&
+                Objects.equals(hodFinalReviewDate, that.hodFinalReviewDate) &&
                 Objects.equals(rtiId, that.rtiId) &&
-                Objects.equals(rtiPreApprovedDate, that.rtiPreApprovedDate) &&
-                Objects.equals(rtiPostApprovedDate, that.rtiPostApprovedDate) &&
-                Objects.equals(internalStatus, that.internalStatus);
+                Objects.equals(rtiReviewDate, that.rtiReviewDate) &&
+                Objects.equals(rtiFinalReviewDate, that.rtiFinalReviewDate) &&
+                Objects.equals(internalStatus, that.internalStatus) &&
+                Objects.equals(liaisonId, that.liaisonId) &&
+                Objects.equals(liaisonAssignedDate, that.liaisonAssignedDate);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName, dateSubmitted, dateApproved, piId, piApprovedDate, prpId, prpApprovedDate, hodId, hodPreApprovedDate, hodPostApprovedDate, rtiId, rtiPreApprovedDate, rtiPostApprovedDate, internalStatus);
+        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName, dateSubmitted, dateApproved, piId, piApprovedDate, prpId, prpReviewDate, hodId, hodReviewDate, hodFinalReviewDate, rtiId, rtiReviewDate, rtiFinalReviewDate, internalStatus, liaisonId, liaisonAssignedDate);
     }
 
-    public dao.ApplicationSystem.EntityEthicsApplication findApplicationById(Integer applicationId) {
+    public EntityEthicsApplication findApplicationById(EntityEthicsApplicationPK applicationId) {
         return find.byId(applicationId);
     }
 
-    public static List<dao.ApplicationSystem.EntityEthicsApplication> findApplicationsByPerson(EntityPerson person) {
+    public static List<EntityEthicsApplication> findApplicationsByPerson(EntityPerson person) {
         return findApplicationsByPerson(person.getUserEmail(), person.userType());
     }
 
-    public static List<dao.ApplicationSystem.EntityEthicsApplication> findApplicationsByPerson(String personEmail, UserType userType) {
+    public static List<EntityEthicsApplication> findApplicationsByPerson(String personEmail, UserType userType) {
         return find.all()
                 .stream()
                 .filter(ethicsApplicationEntity -> {
@@ -263,7 +332,8 @@ public class EntityEthicsApplication {
                         case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(personEmail);
                         case PrimaryResponsiblePerson: return ethicsApplicationEntity.getPrpId().equals(personEmail);
                         case Liaison: return ethicsApplicationEntity.getLiaisonId().equals(personEmail);
-                        case Reviewer: return EntityReviewerfeedback.find.all().stream().anyMatch(entityReviewerfeedback -> entityReviewerfeedback.getReviewerEmail().equals(personEmail) && entityReviewerfeedback.getApplicationId().equals(ethicsApplicationEntity.applicationId));
+                        case Reviewer: return EntityReviewercomponentfeedback.find.all().stream()
+                                    .anyMatch(entityReviewercomponentfeedback -> entityReviewercomponentfeedback.applicationPrimaryKey().equals(ethicsApplicationEntity.applicationPrimaryKey()) && entityReviewercomponentfeedback.getReviewerEmail().equals(personEmail));
                         case FacultyRTI: return ethicsApplicationEntity.getRtiId().equals(personEmail);
                         case DepartmentHead: return ethicsApplicationEntity.getHodId().equals(personEmail);
                         case RCD: return true;
@@ -273,10 +343,14 @@ public class EntityEthicsApplication {
                 .collect(Collectors.toList());
     }
 
-    public static String getTitle(int applicationId) {
-        Integer componentId = EntityComponent.getAllApplicationCompontents(applicationId)
+    public String title() {
+        return GetTitle(applicationPrimaryKey());
+    }
+
+    public static String GetTitle(EntityEthicsApplicationPK applicationId) {
+        String componentId = EntityComponent.getAllApplicationCompontents(applicationId)
                 .stream()
-                .filter(entityComponent -> entityComponent.getQuestionId().equals("title"))
+                .filter(entityComponent -> entityComponent.getQuestion().equals("title"))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find any application with ID: " + String.valueOf(applicationId)))
                 .getComponentId();
@@ -291,15 +365,25 @@ public class EntityEthicsApplication {
 
 
     /**
-     * Gets the latest {@link EntityComponentversion} for an {@link dao.ApplicationSystem.EntityEthicsApplication} given the application ID
+     * Gets the latest {@link EntityComponentversion} for an {@link EntityEthicsApplication} given the application ID
      * @param applicationId application ID
      * @return
      */
-    public static List<EntityComponentversion> getLatestComponents(Integer applicationId){
+    public static List<EntityComponentversion> getLatestComponents(EntityEthicsApplicationPK applicationId){
         return EntityComponent
                 .getAllApplicationCompontents(applicationId)
                 .stream()
                 .map(entityComponent -> EntityComponentversion.getLatestComponent(entityComponent.getComponentId()))
                 .collect(Collectors.toList());
+    }
+
+    public EntityEthicsApplicationPK applicationPrimaryKey() {
+        EntityEthicsApplicationPK pk = new EntityEthicsApplicationPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        return pk;
     }
 }

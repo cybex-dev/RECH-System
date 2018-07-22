@@ -1,15 +1,14 @@
 package dao.MessageSystem;
 
 import io.ebean.Finder;
-import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "message", schema = "rech_system")
-public class EntityMessage  extends Model {
+@Table(name = "message", schema = "rech_system", catalog = "")
+public class EntityMessage {
     private Timestamp messageDate;
     private String recieverEmail;
     private String senderEmail;

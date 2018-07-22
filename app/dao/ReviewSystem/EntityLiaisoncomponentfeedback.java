@@ -10,10 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "liaisoncomponentfeedback", schema = "rech_system")
 @IdClass(EntityLiaisoncomponentfeedbackPK.class)
-public class EntityLiaisoncomponentfeedback  extends Model {
-    private Timestamp feedbackDate;
-    private Timestamp applicationAssignedDate;
-    private String liaisonEmail;
+public class EntityLiaisoncomponentfeedback extends Model {
     private Short version;
     private String componentId;
     private String applicationType;
@@ -21,39 +18,11 @@ public class EntityLiaisoncomponentfeedback  extends Model {
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
+    private Timestamp feedbackDate;
+    private String liaisonEmail;
     private String componentFeedback;
 
-    public static Finder<EntityLiaisoncomponentfeedbackPK, EntityLiaisoncomponentfeedback> find = new Finder<>(EntityLiaisoncomponentfeedback.class);
-
-    @Id
-    @Column(name = "feedback_date", nullable = false)
-    public Timestamp getFeedbackDate() {
-        return feedbackDate;
-    }
-
-    public void setFeedbackDate(Timestamp feedbackDate) {
-        this.feedbackDate = feedbackDate;
-    }
-
-    @Id
-    @Column(name = "application_assigned_date", nullable = false)
-    public Timestamp getApplicationAssignedDate() {
-        return applicationAssignedDate;
-    }
-
-    public void setApplicationAssignedDate(Timestamp applicationAssignedDate) {
-        this.applicationAssignedDate = applicationAssignedDate;
-    }
-
-    @Id
-    @Column(name = "liaison_email", nullable = false, length = 100)
-    public String getLiaisonEmail() {
-        return liaisonEmail;
-    }
-
-    public void setLiaisonEmail(String liaisonEmail) {
-        this.liaisonEmail = liaisonEmail;
-    }
+    public static Finder<EntityLiaisoncomponentfeedbackPK, dao.ReviewSystem.EntityLiaisoncomponentfeedback> find = new Finder<>(dao.ReviewSystem.EntityLiaisoncomponentfeedback.class);
 
     @Id
     @Column(name = "version", nullable = false)
@@ -125,6 +94,26 @@ public class EntityLiaisoncomponentfeedback  extends Model {
         this.facultyName = facultyName;
     }
 
+    @Id
+    @Column(name = "feedback_date", nullable = false)
+    public Timestamp getFeedbackDate() {
+        return feedbackDate;
+    }
+
+    public void setFeedbackDate(Timestamp feedbackDate) {
+        this.feedbackDate = feedbackDate;
+    }
+
+    @Id
+    @Column(name = "liaison_email", nullable = false, length = 100)
+    public String getLiaisonEmail() {
+        return liaisonEmail;
+    }
+
+    public void setLiaisonEmail(String liaisonEmail) {
+        this.liaisonEmail = liaisonEmail;
+    }
+
     @Basic
     @Column(name = "component_feedback", nullable = true, length = 255)
     public String getComponentFeedback() {
@@ -140,22 +129,21 @@ public class EntityLiaisoncomponentfeedback  extends Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityLiaisoncomponentfeedback that = (EntityLiaisoncomponentfeedback) o;
-        return Objects.equals(feedbackDate, that.feedbackDate) &&
-                Objects.equals(applicationAssignedDate, that.applicationAssignedDate) &&
-                Objects.equals(liaisonEmail, that.liaisonEmail) &&
-                Objects.equals(version, that.version) &&
+        return Objects.equals(version, that.version) &&
                 Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(feedbackDate, that.feedbackDate) &&
+                Objects.equals(liaisonEmail, that.liaisonEmail) &&
                 Objects.equals(componentFeedback, that.componentFeedback);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(feedbackDate, applicationAssignedDate, liaisonEmail, version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, componentFeedback);
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, feedbackDate, liaisonEmail, componentFeedback);
     }
 }

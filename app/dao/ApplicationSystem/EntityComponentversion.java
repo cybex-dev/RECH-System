@@ -1,5 +1,6 @@
 package dao.ApplicationSystem;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.ebean.Finder;
 import io.ebean.Model;
 
@@ -18,12 +19,12 @@ public class EntityComponentversion extends Model {
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
-    private Byte isSubmitted;
+    private Boolean submitted;
     private Timestamp dateSubmitted;
     private Timestamp dateLastEdited;
     private String responseType;
     private String textValue;
-    private Byte boolValue;
+    private Boolean boolValue;
     private String documentName;
     private String documentDescription;
     private String documentLocationHash;
@@ -102,12 +103,12 @@ public class EntityComponentversion extends Model {
 
     @Basic
     @Column(name = "is_submitted", nullable = true)
-    public Byte getIsSubmitted() {
-        return isSubmitted;
+    public Boolean getSubmitted() {
+        return submitted;
     }
 
-    public void setIsSubmitted(Byte isSubmitted) {
-        this.isSubmitted = isSubmitted;
+    public void setSubmitted(Boolean isSubmitted) {
+        this.submitted = isSubmitted;
     }
 
     @Basic
@@ -152,11 +153,11 @@ public class EntityComponentversion extends Model {
 
     @Basic
     @Column(name = "bool_value", nullable = true)
-    public Byte getBoolValue() {
+    public Boolean getBoolValue() {
         return boolValue;
     }
 
-    public void setBoolValue(Byte boolValue) {
+    public void setBoolValue(Boolean boolValue) {
         this.boolValue = boolValue;
     }
 
@@ -202,7 +203,7 @@ public class EntityComponentversion extends Model {
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName) &&
-                Objects.equals(isSubmitted, that.isSubmitted) &&
+                Objects.equals(submitted, that.submitted) &&
                 Objects.equals(dateSubmitted, that.dateSubmitted) &&
                 Objects.equals(dateLastEdited, that.dateLastEdited) &&
                 Objects.equals(responseType, that.responseType) &&
@@ -216,14 +217,15 @@ public class EntityComponentversion extends Model {
     @Override
     public int hashCode() {
 
-        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, isSubmitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription, documentLocationHash);
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, submitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription, documentLocationHash);
     }
 
-    public static EntityComponentversion getLatestComponent(Integer componentId) {
+    public static dao.ApplicationSystem.EntityComponentversion getLatestComponent(String componentId) {
         return find.all()
                 .stream()
                 .filter(entityComponentversion -> entityComponentversion.componentId.equals(componentId))
                 .max((o1, o2) -> o1.version > o2.version ? -1 : (o1.version < o2.version ? 1 : 0))
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find any value for componentId: " + String.valueOf(componentId)));
+
     }
 }

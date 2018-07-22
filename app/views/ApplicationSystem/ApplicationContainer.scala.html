@@ -97,12 +97,24 @@
                             }
                         }
 
+                        def getHeading(tag: String, title: String): String = {
+                            tag match {
+                                case "section" => "<h2>" + title + "</h2>"
+                                case "group" => "<h3>" + title + "</h3>"
+                                case "list" => "<h4>" + title + "</h4>"
+                                case _ => ""
+                            }
+                        }
+
                         def parseElement(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
                             val innerText = for(elem <- element.getChildren) yield {
                                 if(!elem.isComponent) {
                                     /*this creates a container element which consumes some html type text*/
-                                    val inner = parseElement(elem)
-                                    elem.toHtml("div").inner(inner)
+                                    val innerText = parseElement(elem)
+                                    val pre = elem.getPreTag("div")
+                                    val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
+                                    val post = elem.getPreTag("div")
+                                    pre + heading + innerText + post
                                 } else {
                                     /*this creates a component of type a specific type*/
                                     createComponent(elem)

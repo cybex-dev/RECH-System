@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <application type="human" version="1">
     <section id="sct_general_particulars" name="General Particulars" hint="Basic information about your study">
-        <group id="grp_title_of_study" name="Title Of Study" hint="Title of your study">
+        <group id="grp_title_of_study" name="Study Details" hint="Title of your study">
             <component id="title" type="text"
                        hint="The title should explain what your study is about, but keep it short.">
                 <question>Concise descriptive title of study (must contain keywords that best describe the study)
