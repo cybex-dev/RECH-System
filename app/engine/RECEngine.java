@@ -1,13 +1,12 @@
 package engine;
 
-import DAO.ApplicationSystem.EntityComponent;
-import DAO.ApplicationSystem.EntityComponentversion;
-import DAO.ApplicationSystem.EntityEthicsApplication;
-import DAO.UserSystem.EntityPerson;
+import dao.ApplicationSystem.EntityComponent;
+import dao.ApplicationSystem.EntityComponentversion;
+import dao.ApplicationSystem.EntityEthicsApplication;
+import dao.UserSystem.EntityPerson;
 import controllers.NotificationSystem.Notifier;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
-import net.sf.ehcache.constructs.readthrough.ReadThroughCache;
 
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
@@ -92,7 +91,8 @@ public class RECEngine {
 
         EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
 
-        ApplicationStatus currentStatus = ApplicationStatus.UNKNOWN;
+        ApplicationStatus currentStatus = null;
+        assert false;
 
         switch (currentStatus) {
             // Pre-submission phase
@@ -139,6 +139,32 @@ public class RECEngine {
 
             break;
 
+            case AWAITING_PRE_HOD_RTI_APPROVAL:
+                // Assume application is complete and reviewed and approved by PI & PRP
+                // HOD/RTI notified
+                // Action : HOD/RTI pre-approves application before submission to committee / faculty
+                //
+                // STEP -> READY_FOR_SUBMISSION (Both approved)
+                // STEP -> AWAITING_PRE_HOD_APPROVAL (RTI approved)
+                // STEP -> AWAITING_PRE_RTI_APPROVAL (HOD approved)
+                // PI/PRP notified
+
+                break;
+
+            case AWAITING_PRE_HOD_APPROVAL:
+                // PI/PRP notified of this
+                // STEP -> AWAITING_PRE_HOD_APPROVAL (RTI approved)
+                // STEP -> READY_FOR_SUBMISSION (Both approved)
+
+
+                break;
+            case AWAITING_PRE_RTI_APPROVAL:
+                // PI/PRP notified of this
+                // STEP -> AWAITING_PRE_RTI_APPROVAL (HOD approved)
+                // STEP -> READY_FOR_SUBMISSION (Both approved)
+
+                break;
+
             case READY_FOR_SUBMISSION:
                 // PI is notified of this
                 // Assume: Application has PI, PRP approval and is complete
@@ -164,8 +190,8 @@ public class RECEngine {
                 //
                 // Status outcome
                 // STEP -> REJECTED
-                // STEP -> AWAITING_HOD_RTI_APPROVAL (Implies temporary approval)
-                // STEP -> TEMPORARILY_APPROVED_EDITS
+                // STEP -> TEMPORARILY_APPROVED (no edits required)
+                // STEP -> TEMPORARILY_APPROVED_EDITS (edits required)
 
                 break;
 
@@ -173,6 +199,17 @@ public class RECEngine {
             case REJECTED:
                 // PI/PRP notified of this
                 // Action: Application submitted status = false
+
+                break;
+
+            case TEMPORARILY_APPROVED :
+                // PI/PRP notified of this
+                // Action: Assign Liaison to application
+                // Liaison is notified
+
+                // STEP -> (Optional Liaison review / feedback)
+                // STEP -> AWAITING_HOD_RTI_APPROVAL (liaison approved - application is satisfactory)
+
 
                 break;
 
@@ -201,7 +238,7 @@ public class RECEngine {
                 break;
 
             // Final Stage - RTI / HOD approval
-            case AWAITING_HOD_RTI_APPROVAL:
+            case AWAITING_POST_HOD_RTI_APPROVAL:
                 // Assume application is complete and of satisfactory quality and standard as reviewed by committee
                 // HOD/RTI notified
                 // Action : HOD/RTI approves application
@@ -213,14 +250,14 @@ public class RECEngine {
 
                 break;
 
-            case AWAITING_HOD_APPROVAL:
+            case AWAITING_POST_HOD_APPROVAL:
                 // PI/PRP notified of this
                 // STEP -> AWAITING_HOD_APPROVAL (RTI approved)
                 // STEP -> APPROVED (Both approved)
 
 
                 break;
-            case AWAITING_RTI_APPROVAL:
+            case AWAITING_POST_RTI_APPROVAL:
                 // PI/PRP notified of this
                 // STEP -> AWAITING_RTI_APPROVAL (HOD approved)
                 // STEP -> APPROVED (Both approved)

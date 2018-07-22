@@ -5,8 +5,9 @@ import scala.App;
 public enum ApplicationStatus {
     NOT_SUBMITTED(0),                   //
     APPROVED(1),                        //
-    TEMPORARILY_APPROVED_EDITS(2),      //
-    REJECTED(3),                        //
+    TEMPORARILY_APPROVED(2),            //
+    TEMPORARILY_APPROVED_EDITS(3),      //
+    REJECTED(4),                        //
 
     READY_FOR_SUBMISSION(10),           //
 
@@ -16,10 +17,14 @@ public enum ApplicationStatus {
 
     FEEDBACK_GIVEN_LIAISON(30),         //
 
-    AWAITING_HOD_RTI_APPROVAL(40),      //
-    AWAITING_HOD_APPROVAL(41),          //
-    AWAITING_RTI_APPROVAL(42),          //
-    AWAITING_PRP_APPROVAL(43),          //
+    AWAITING_PRP_APPROVAL(40),          //
+    AWAITING_PRE_HOD_RTI_APPROVAL(41),  //
+    AWAITING_PRE_HOD_APPROVAL(42),      //
+    AWAITING_PRE_RTI_APPROVAL(43),      //
+    AWAITING_POST_HOD_RTI_APPROVAL(44), //
+    AWAITING_POST_HOD_APPROVAL(45),     //
+    AWAITING_POST_RTI_APPROVAL(46),     //
+
 
     FACULTY_REVIEW(50),                 //
 
@@ -42,9 +47,12 @@ public enum ApplicationStatus {
                 return ApplicationStatus.APPROVED;
 
             case 2:
-                return ApplicationStatus.TEMPORARILY_APPROVED_EDITS;
+                return ApplicationStatus.TEMPORARILY_APPROVED;
 
             case 3:
+                return ApplicationStatus.TEMPORARILY_APPROVED_EDITS;
+
+            case 4:
                 return ApplicationStatus.REJECTED;
 
             case 10:
@@ -63,16 +71,25 @@ public enum ApplicationStatus {
                 return ApplicationStatus.FEEDBACK_GIVEN_LIAISON;
 
             case 40:
-                return ApplicationStatus.AWAITING_HOD_RTI_APPROVAL;
+                return ApplicationStatus.AWAITING_PRP_APPROVAL;
 
             case 41:
-                return ApplicationStatus.AWAITING_HOD_APPROVAL;
+                return ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL;
 
             case 42:
-                return ApplicationStatus.AWAITING_RTI_APPROVAL;
+                return ApplicationStatus.AWAITING_PRE_HOD_APPROVAL;
 
             case 43:
-                return ApplicationStatus.AWAITING_PRP_APPROVAL;
+                return ApplicationStatus.AWAITING_PRE_RTI_APPROVAL;
+
+            case 44:
+                return ApplicationStatus.AWAITING_POST_HOD_RTI_APPROVAL;
+
+            case 45:
+                return ApplicationStatus.AWAITING_POST_HOD_APPROVAL;
+
+            case 46:
+                return ApplicationStatus.AWAITING_POST_RTI_APPROVAL;
 
             case 50:
                 return ApplicationStatus.FACULTY_REVIEW;

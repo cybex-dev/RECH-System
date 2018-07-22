@@ -1,10 +1,10 @@
 package controllers.ApplicationSystem;
 
-import DAO.ApplicationSystem.EntityComponent;
-import DAO.ApplicationSystem.EntityComponentversion;
-import DAO.ApplicationSystem.EntityEthicsApplication;
-import DAO.NMU.EntityDepartment;
-import DAO.UserSystem.EntityPerson;
+import dao.ApplicationSystem.EntityComponent;
+import dao.ApplicationSystem.EntityComponentversion;
+import dao.ApplicationSystem.EntityEthicsApplication;
+import dao.NMU.EntityDepartment;
+import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
 import exceptions.InvalidFieldException;
 import exceptions.UnhandledElementException;
@@ -16,7 +16,6 @@ import models.ApplicationSystem.EthicsApplication.ApplicationType;
 
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
-import play.api.routing.JavaScriptReverseRoute;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
