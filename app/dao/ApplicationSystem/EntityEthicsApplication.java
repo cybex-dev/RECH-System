@@ -1,6 +1,7 @@
 package dao.ApplicationSystem;
 
 import dao.ReviewSystem.EntityReviewercomponentfeedback;
+import dao.ReviewSystem.EntityReviewerfeedback;
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
 import io.ebean.Model;
@@ -40,6 +41,7 @@ public class EntityEthicsApplication extends Model {
     private Short internalStatus;
     private String liaisonId;
     private Timestamp liaisonAssignedDate;
+    private Short applicationLevel;
 
     public static Finder<dao.ApplicationSystem.EntityEthicsApplicationPK, EntityEthicsApplication> find = new Finder<>(EntityEthicsApplication.class);
 
@@ -283,6 +285,16 @@ public class EntityEthicsApplication extends Model {
         this.liaisonAssignedDate = liaisonAssignedDate;
     }
 
+    @Basic
+    @Column(name = "application_level", nullable = true)
+    public Short getApplicationLevel() {
+        return applicationLevel;
+    }
+
+    public void setApplicationLevel(Short applicationLevel) {
+        this.applicationLevel = applicationLevel;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -307,13 +319,14 @@ public class EntityEthicsApplication extends Model {
                 Objects.equals(rtiFinalReviewDate, that.rtiFinalReviewDate) &&
                 Objects.equals(internalStatus, that.internalStatus) &&
                 Objects.equals(liaisonId, that.liaisonId) &&
-                Objects.equals(liaisonAssignedDate, that.liaisonAssignedDate);
+                Objects.equals(liaisonAssignedDate, that.liaisonAssignedDate) &&
+                Objects.equals(applicationLevel, that.applicationLevel);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName, dateSubmitted, dateApproved, piId, piApprovedDate, prpId, prpReviewDate, hodId, hodReviewDate, hodFinalReviewDate, rtiId, rtiReviewDate, rtiFinalReviewDate, internalStatus, liaisonId, liaisonAssignedDate);
+        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName, dateSubmitted, dateApproved, piId, piApprovedDate, prpId, prpReviewDate, hodId, hodReviewDate, hodFinalReviewDate, rtiId, rtiReviewDate, rtiFinalReviewDate, internalStatus, liaisonId, liaisonAssignedDate, applicationLevel);
     }
 
     public EntityEthicsApplication findApplicationById(EntityEthicsApplicationPK applicationId) {
@@ -332,7 +345,7 @@ public class EntityEthicsApplication extends Model {
                         case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(personEmail);
                         case PrimaryResponsiblePerson: return ethicsApplicationEntity.getPrpId().equals(personEmail);
                         case Liaison: return ethicsApplicationEntity.getLiaisonId().equals(personEmail);
-                        case Reviewer: return EntityReviewercomponentfeedback.find.all().stream()
+                        case Reviewer: return EntityReviewerfeedback.find.all().stream()
                                     .anyMatch(entityReviewercomponentfeedback -> entityReviewercomponentfeedback.applicationPrimaryKey().equals(ethicsApplicationEntity.applicationPrimaryKey()) && entityReviewercomponentfeedback.getReviewerEmail().equals(personEmail));
                         case FacultyRTI: return ethicsApplicationEntity.getRtiId().equals(personEmail);
                         case DepartmentHead: return ethicsApplicationEntity.getHodId().equals(personEmail);

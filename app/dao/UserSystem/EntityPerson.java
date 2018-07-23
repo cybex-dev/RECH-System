@@ -25,6 +25,26 @@ public class EntityPerson extends Model {
 
     public static Finder<String, dao.UserSystem.EntityPerson> find = new Finder<>(dao.UserSystem.EntityPerson.class);
 
+    public static String getRTI(String facultyName) {
+        return find.all().stream()
+                .filter(entityPerson -> entityPerson.facultyName.equals(facultyName) && entityPerson.userType().equals(UserType.FacultyRTI))
+                .map(EntityPerson::getUserEmail)
+                .findFirst()
+                .orElse("");
+    }
+
+    public static String getHod(String departmentName) {
+        return find.all().stream()
+                .filter(entityPerson -> entityPerson.departmentName.equals(departmentName) && entityPerson.userType().equals(UserType.DepartmentHead))
+                .map(EntityPerson::getUserEmail)
+                .findFirst()
+                .orElse("");
+    }
+
+    public static String getRCD() {
+        return find.all().stream().filter(entityPerson -> entityPerson.userType().equals(UserType.RCD)).map(EntityPerson::getUserEmail).findFirst().orElse("");
+    }
+
     @Id
     @Column(name = "user_email", nullable = false, length = 100)
     public String getUserEmail() {

@@ -1,6 +1,7 @@
 package dao.Meeting;
 
 import dao.ApplicationSystem.EntityEthicsApplication;
+import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import io.ebean.Finder;
 import io.ebean.Model;
 import models.ApplicationSystem.ApplicationStatus;
@@ -125,5 +126,15 @@ public class EntityAgendaitem extends Model {
     public int hashCode() {
 
         return Objects.hash(meetingDate, applicationType, applicationYear, applicationNumber, departmentName, facultyName, resolution, applicationStatus);
+    }
+
+    public EntityEthicsApplicationPK applicationPrimaryKey() {
+        EntityEthicsApplicationPK pk = new EntityEthicsApplicationPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        return pk;
     }
 }

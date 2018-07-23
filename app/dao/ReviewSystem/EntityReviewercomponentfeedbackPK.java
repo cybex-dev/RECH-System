@@ -1,16 +1,12 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
-@Embeddable
 public class EntityReviewercomponentfeedbackPK implements Serializable {
-    private Timestamp applicationAssignedDate;
-    private String reviewerEmail;
     private Short version;
     private String componentId;
     private String applicationType;
@@ -18,26 +14,15 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
+    private Timestamp reviewerFeedbackApplicationAssignedDate;
+    private String reviewerFeedbackEthicsApplicationApplicationType;
+    private Integer reviewerFeedbackEthicsApplicationApplicationYear;
+    private Integer reviewerFeedbackEthicsApplicationApplicationNumber;
+    private String reviewerFeedbackEthicsApplicationDepartmentName;
+    private String reviewerFeedbackEthicsApplicationFacultyName;
 
-    public EntityReviewercomponentfeedbackPK() {
-    }
-
-    public Timestamp getApplicationAssignedDate() {
-        return applicationAssignedDate;
-    }
-
-    public void setApplicationAssignedDate(Timestamp applicationAssignedDate) {
-        this.applicationAssignedDate = applicationAssignedDate;
-    }
-
-    public String getReviewerEmail() {
-        return reviewerEmail;
-    }
-
-    public void setReviewerEmail(String reviewerEmail) {
-        this.reviewerEmail = reviewerEmail;
-    }
-
+    @Column(name = "version", nullable = false)
+    @Id
     public Short getVersion() {
         return version;
     }
@@ -46,6 +31,8 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.version = version;
     }
 
+    @Column(name = "component_id", nullable = false, length = 50)
+    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -54,6 +41,8 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.componentId = componentId;
     }
 
+    @Column(name = "application_type", nullable = false, length = 1)
+    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -62,6 +51,8 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.applicationType = applicationType;
     }
 
+    @Column(name = "application_year", nullable = false)
+    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -70,6 +61,8 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.applicationYear = applicationYear;
     }
 
+    @Column(name = "application_number", nullable = false)
+    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -78,6 +71,8 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.applicationNumber = applicationNumber;
     }
 
+    @Column(name = "department_name", nullable = false, length = 50)
+    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -86,6 +81,8 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.departmentName = departmentName;
     }
 
+    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Id
     public String getFacultyName() {
         return facultyName;
     }
@@ -94,25 +91,89 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
         this.facultyName = facultyName;
     }
 
+    @Column(name = "ReviewerFeedback_application_assigned_date", nullable = false)
+    @Id
+    public Timestamp getReviewerFeedbackApplicationAssignedDate() {
+        return reviewerFeedbackApplicationAssignedDate;
+    }
+
+    public void setReviewerFeedbackApplicationAssignedDate(Timestamp reviewerFeedbackApplicationAssignedDate) {
+        this.reviewerFeedbackApplicationAssignedDate = reviewerFeedbackApplicationAssignedDate;
+    }
+
+    @Column(name = "ReviewerFeedback_Ethics_Application_application_type", nullable = false, length = 1)
+    @Id
+    public String getReviewerFeedbackEthicsApplicationApplicationType() {
+        return reviewerFeedbackEthicsApplicationApplicationType;
+    }
+
+    public void setReviewerFeedbackEthicsApplicationApplicationType(String reviewerFeedbackEthicsApplicationApplicationType) {
+        this.reviewerFeedbackEthicsApplicationApplicationType = reviewerFeedbackEthicsApplicationApplicationType;
+    }
+
+    @Column(name = "ReviewerFeedback_Ethics_Application_application_year", nullable = false)
+    @Id
+    public Integer getReviewerFeedbackEthicsApplicationApplicationYear() {
+        return reviewerFeedbackEthicsApplicationApplicationYear;
+    }
+
+    public void setReviewerFeedbackEthicsApplicationApplicationYear(Integer reviewerFeedbackEthicsApplicationApplicationYear) {
+        this.reviewerFeedbackEthicsApplicationApplicationYear = reviewerFeedbackEthicsApplicationApplicationYear;
+    }
+
+    @Column(name = "ReviewerFeedback_Ethics_Application_application_number", nullable = false)
+    @Id
+    public Integer getReviewerFeedbackEthicsApplicationApplicationNumber() {
+        return reviewerFeedbackEthicsApplicationApplicationNumber;
+    }
+
+    public void setReviewerFeedbackEthicsApplicationApplicationNumber(Integer reviewerFeedbackEthicsApplicationApplicationNumber) {
+        this.reviewerFeedbackEthicsApplicationApplicationNumber = reviewerFeedbackEthicsApplicationApplicationNumber;
+    }
+
+    @Column(name = "ReviewerFeedback_Ethics_Application_department_name", nullable = false, length = 50)
+    @Id
+    public String getReviewerFeedbackEthicsApplicationDepartmentName() {
+        return reviewerFeedbackEthicsApplicationDepartmentName;
+    }
+
+    public void setReviewerFeedbackEthicsApplicationDepartmentName(String reviewerFeedbackEthicsApplicationDepartmentName) {
+        this.reviewerFeedbackEthicsApplicationDepartmentName = reviewerFeedbackEthicsApplicationDepartmentName;
+    }
+
+    @Column(name = "ReviewerFeedback_Ethics_Application_faculty_name", nullable = false, length = 50)
+    @Id
+    public String getReviewerFeedbackEthicsApplicationFacultyName() {
+        return reviewerFeedbackEthicsApplicationFacultyName;
+    }
+
+    public void setReviewerFeedbackEthicsApplicationFacultyName(String reviewerFeedbackEthicsApplicationFacultyName) {
+        this.reviewerFeedbackEthicsApplicationFacultyName = reviewerFeedbackEthicsApplicationFacultyName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityReviewercomponentfeedbackPK that = (EntityReviewercomponentfeedbackPK) o;
-        return Objects.equals(applicationAssignedDate, that.applicationAssignedDate) &&
-                Objects.equals(reviewerEmail, that.reviewerEmail) &&
-                Objects.equals(version, that.version) &&
+        return Objects.equals(version, that.version) &&
                 Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName);
+                Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(reviewerFeedbackApplicationAssignedDate, that.reviewerFeedbackApplicationAssignedDate) &&
+                Objects.equals(reviewerFeedbackEthicsApplicationApplicationType, that.reviewerFeedbackEthicsApplicationApplicationType) &&
+                Objects.equals(reviewerFeedbackEthicsApplicationApplicationYear, that.reviewerFeedbackEthicsApplicationApplicationYear) &&
+                Objects.equals(reviewerFeedbackEthicsApplicationApplicationNumber, that.reviewerFeedbackEthicsApplicationApplicationNumber) &&
+                Objects.equals(reviewerFeedbackEthicsApplicationDepartmentName, that.reviewerFeedbackEthicsApplicationDepartmentName) &&
+                Objects.equals(reviewerFeedbackEthicsApplicationFacultyName, that.reviewerFeedbackEthicsApplicationFacultyName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationAssignedDate, reviewerEmail, version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, reviewerFeedbackApplicationAssignedDate, reviewerFeedbackEthicsApplicationApplicationType, reviewerFeedbackEthicsApplicationApplicationYear, reviewerFeedbackEthicsApplicationApplicationNumber, reviewerFeedbackEthicsApplicationDepartmentName, reviewerFeedbackEthicsApplicationFacultyName);
     }
 }

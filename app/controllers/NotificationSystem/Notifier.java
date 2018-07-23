@@ -1,6 +1,7 @@
 package controllers.NotificationSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
+import engine.SystemNotification;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
 
@@ -42,4 +43,7 @@ public class Notifier {
 
     }
 
+    public static void systemNotification(EntityEthicsApplicationPK applicationId, ApplicationStatus status, String title, SystemNotification notification, String...emails) {
+
+    }
 }

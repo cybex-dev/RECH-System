@@ -165,6 +165,11 @@ public class ApplicationHandler extends Controller {
             Map<String, Object> data = formApplication.get().getData();
 
             data.forEach((key, value) -> {
+
+                // Gets the application level -> committee or facutly level
+                if (key.equals("application_level"))
+                    return;
+
                 int index = -1;
 
                 // Check if key is in form 'some_name[_$index]'
@@ -239,26 +244,10 @@ public class ApplicationHandler extends Controller {
                 e.printStackTrace();
                 return internalServerError();
             }
-
-            // TODO fix
-//            RECEngine.ChangeApplicationStatus(application.getApplicationId(), ApplicationStatus.NOT_SUBMITTED);
+            application.setApplicationLevel(Short.parseShort(formApplication.get("application_level")));
 
             return ok();
 
-        }, jdbcExecutor);
-    }
-
-    /**
-     * Query the engine for the next step in the application flow.
-     */
-    public CompletableFuture<Result> processApplication(int applicationId) {
-        return CompletableFuture.supplyAsync(() -> {
-
-
-            //TODO fix
-//            RECEngine.SubmitApplication(applicationId);
-
-            return ok();
         }, jdbcExecutor);
     }
 

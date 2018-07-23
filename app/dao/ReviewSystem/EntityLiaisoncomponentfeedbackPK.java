@@ -1,13 +1,11 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
-@Embeddable
 public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     private Short version;
     private String componentId;
@@ -16,12 +14,15 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
-    private Timestamp feedbackDate;
-    private String liaisonEmail;
+    private Timestamp liaisonFeedbackFeedbackDate;
+    private String liaisonFeedbackEthicsApplicationApplicationType;
+    private Integer liaisonFeedbackEthicsApplicationApplicationYear;
+    private Integer liaisonFeedbackEthicsApplicationApplicationNumber;
+    private String liaisonFeedbackEthicsApplicationDepartmentName;
+    private String liaisonFeedbackEthicsApplicationFacultyName;
 
-    public EntityLiaisoncomponentfeedbackPK() {
-    }
-
+    @Column(name = "version", nullable = false)
+    @Id
     public Short getVersion() {
         return version;
     }
@@ -30,6 +31,8 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
         this.version = version;
     }
 
+    @Column(name = "component_id", nullable = false, length = 50)
+    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -38,6 +41,8 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
         this.componentId = componentId;
     }
 
+    @Column(name = "application_type", nullable = false, length = 1)
+    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -46,6 +51,8 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
         this.applicationType = applicationType;
     }
 
+    @Column(name = "application_year", nullable = false)
+    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -54,6 +61,8 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
         this.applicationYear = applicationYear;
     }
 
+    @Column(name = "application_number", nullable = false)
+    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -62,6 +71,8 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
         this.applicationNumber = applicationNumber;
     }
 
+    @Column(name = "department_name", nullable = false, length = 50)
+    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -70,6 +81,8 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
         this.departmentName = departmentName;
     }
 
+    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Id
     public String getFacultyName() {
         return facultyName;
     }
@@ -78,20 +91,64 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
         this.facultyName = facultyName;
     }
 
-    public Timestamp getFeedbackDate() {
-        return feedbackDate;
+    @Column(name = "LiaisonFeedback_feedback_date", nullable = false)
+    @Id
+    public Timestamp getLiaisonFeedbackFeedbackDate() {
+        return liaisonFeedbackFeedbackDate;
     }
 
-    public void setFeedbackDate(Timestamp feedbackDate) {
-        this.feedbackDate = feedbackDate;
+    public void setLiaisonFeedbackFeedbackDate(Timestamp liaisonFeedbackFeedbackDate) {
+        this.liaisonFeedbackFeedbackDate = liaisonFeedbackFeedbackDate;
     }
 
-    public String getLiaisonEmail() {
-        return liaisonEmail;
+    @Column(name = "LiaisonFeedback_Ethics_Application_application_type", nullable = false, length = 1)
+    @Id
+    public String getLiaisonFeedbackEthicsApplicationApplicationType() {
+        return liaisonFeedbackEthicsApplicationApplicationType;
     }
 
-    public void setLiaisonEmail(String liaisonEmail) {
-        this.liaisonEmail = liaisonEmail;
+    public void setLiaisonFeedbackEthicsApplicationApplicationType(String liaisonFeedbackEthicsApplicationApplicationType) {
+        this.liaisonFeedbackEthicsApplicationApplicationType = liaisonFeedbackEthicsApplicationApplicationType;
+    }
+
+    @Column(name = "LiaisonFeedback_Ethics_Application_application_year", nullable = false)
+    @Id
+    public Integer getLiaisonFeedbackEthicsApplicationApplicationYear() {
+        return liaisonFeedbackEthicsApplicationApplicationYear;
+    }
+
+    public void setLiaisonFeedbackEthicsApplicationApplicationYear(Integer liaisonFeedbackEthicsApplicationApplicationYear) {
+        this.liaisonFeedbackEthicsApplicationApplicationYear = liaisonFeedbackEthicsApplicationApplicationYear;
+    }
+
+    @Column(name = "LiaisonFeedback_Ethics_Application_application_number", nullable = false)
+    @Id
+    public Integer getLiaisonFeedbackEthicsApplicationApplicationNumber() {
+        return liaisonFeedbackEthicsApplicationApplicationNumber;
+    }
+
+    public void setLiaisonFeedbackEthicsApplicationApplicationNumber(Integer liaisonFeedbackEthicsApplicationApplicationNumber) {
+        this.liaisonFeedbackEthicsApplicationApplicationNumber = liaisonFeedbackEthicsApplicationApplicationNumber;
+    }
+
+    @Column(name = "LiaisonFeedback_Ethics_Application_department_name", nullable = false, length = 50)
+    @Id
+    public String getLiaisonFeedbackEthicsApplicationDepartmentName() {
+        return liaisonFeedbackEthicsApplicationDepartmentName;
+    }
+
+    public void setLiaisonFeedbackEthicsApplicationDepartmentName(String liaisonFeedbackEthicsApplicationDepartmentName) {
+        this.liaisonFeedbackEthicsApplicationDepartmentName = liaisonFeedbackEthicsApplicationDepartmentName;
+    }
+
+    @Column(name = "LiaisonFeedback_Ethics_Application_faculty_name", nullable = false, length = 50)
+    @Id
+    public String getLiaisonFeedbackEthicsApplicationFacultyName() {
+        return liaisonFeedbackEthicsApplicationFacultyName;
+    }
+
+    public void setLiaisonFeedbackEthicsApplicationFacultyName(String liaisonFeedbackEthicsApplicationFacultyName) {
+        this.liaisonFeedbackEthicsApplicationFacultyName = liaisonFeedbackEthicsApplicationFacultyName;
     }
 
     @Override
@@ -106,13 +163,17 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName) &&
-                Objects.equals(feedbackDate, that.feedbackDate) &&
-                Objects.equals(liaisonEmail, that.liaisonEmail);
+                Objects.equals(liaisonFeedbackFeedbackDate, that.liaisonFeedbackFeedbackDate) &&
+                Objects.equals(liaisonFeedbackEthicsApplicationApplicationType, that.liaisonFeedbackEthicsApplicationApplicationType) &&
+                Objects.equals(liaisonFeedbackEthicsApplicationApplicationYear, that.liaisonFeedbackEthicsApplicationApplicationYear) &&
+                Objects.equals(liaisonFeedbackEthicsApplicationApplicationNumber, that.liaisonFeedbackEthicsApplicationApplicationNumber) &&
+                Objects.equals(liaisonFeedbackEthicsApplicationDepartmentName, that.liaisonFeedbackEthicsApplicationDepartmentName) &&
+                Objects.equals(liaisonFeedbackEthicsApplicationFacultyName, that.liaisonFeedbackEthicsApplicationFacultyName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, feedbackDate, liaisonEmail);
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, liaisonFeedbackFeedbackDate, liaisonFeedbackEthicsApplicationApplicationType, liaisonFeedbackEthicsApplicationApplicationYear, liaisonFeedbackEthicsApplicationApplicationNumber, liaisonFeedbackEthicsApplicationDepartmentName, liaisonFeedbackEthicsApplicationFacultyName);
     }
 }
