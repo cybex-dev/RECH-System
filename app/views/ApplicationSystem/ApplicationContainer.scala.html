@@ -1,15 +1,14 @@
+@import java.util
+
+@import models.ApplicationSystem.{ApplicationStatus, Question}
+@import net.ddns.cyberstudios.Element
 @import play.data.DynamicForm
 @import play.twirl.api.Html
 @import views.html.Templates.Masterpage
 @import views.html.b4
 @import views.html.b4.vertical
-@import net.ddns.cyberstudios.Element
-@import net.ddns.cyberstudios.XMLTools
-@import models.ApplicationSystem.ApplicationStatus
 @import views.html.ApplicationSystem.fragmentFilterQuestions
-
-@(pageTitle: String)(applicationType: String)(root: Element)(form: DynamicForm)(status: ApplicationStatus)
-
+@(pageTitle: String)(applicationType: String)(root: Element)(form: DynamicForm)(status: ApplicationStatus)(questionList: util.List[Question])
 
 
 
@@ -47,97 +46,98 @@
 
 
 
-    @contentBlock = {
-        <h1>Create Ethics Application for @applicationType Research</h1>
-        <br>
-        <div id="wizard-container">
-            <div id="wizard-header">
+
+@bodyBlock = {
+    <h1>Create Ethics Application for @applicationType Research</h1>
+    <br>
+    <div id="wizard-container">
+        <div id="wizard-header">
+
+        </div>
+        <div id="wizard-body-container">
+            <div id="wizard-progress-container">
 
             </div>
-            <div id="wizard-body-container">
-                <div id="wizard-progress-container">
+            <div id="wizard-body">
+                <p>
+                @{
+                    def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
+                        val elementType = element.getType.toLowerCase
+                        val q = element.getChildren.getFirst.getValue
+                        val a = ""
+                        elementType match {
+                            case "boolean" =>
+                                /*creates checkbox*/
+                                b4.checkbox(form(element.getId), '_label -> q, 'value -> a).toString()
 
-                </div>
-                <div id="wizard-body">
-                    <p>
-                    @{
-                        def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
-                            val elementType = element.getType.toLowerCase
-                            val q = element.getChildren.getFirst.getValue
-                            val a = ""
-                            elementType match {
-                                case "boolean" =>
-                                    /*creates checkbox*/
-                                    b4.checkbox(form(element.getId), '_label -> q, 'value -> a).toString()
+                            case "number" =>
+                                b4.number(form(element.getId), '_label -> q, 'value -> a).toString()
+                            /*creates text field with number specific*/
 
-                                case "number" =>
-                                    b4.number(form(element.getId), '_label -> q, 'value -> a).toString()
-                                    /*creates text field with number specific*/
+                            case "long_text" =>
+                                /*creates a multiline text field*/
+                                b4.text(form(element.getId), '_label -> q, 'value -> a).toString()
 
-                                case "long_text" =>
-                                    /*creates a multiline text field*/
-                                    b4.text(form(element.getId), '_label -> q, 'value -> a).toString()
+                            case "text" =>
+                                /*creates text field*/
+                                b4.text(form(element.getId), '_label -> q, 'value -> a).toString()
 
-                                case "text" =>
-                                    /*creates text field*/
-                                    b4.text(form(element.getId), '_label -> q, 'value -> a).toString()
+                            case "date" =>
+                                /*creates text field*/
+                                b4.date(form(element.getId), '_label -> q, 'value -> a).toString()
 
-                                case "date" =>
-                                    /*creates text field*/
-                                    b4.date(form(element.getId), '_label -> q, 'value -> a).toString()
+                            case "document" =>
+                                /*creates text field*/
+                                b4.file(form(element.getId), '_label -> q, 'value -> a).toString()
 
-                                case "document" =>
-                                    /*creates text field*/
-                                    b4.file(form(element.getId), '_label -> q, 'value -> a).toString()
+                            case "list" =>
+                                "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
 
-                                case "list" =>
-                                    "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
-
-                                case _ =>
-                                    "<p>Unhandled Tag : " + element.getType.toLowerCase() + "</p>"
-                            }
+                            case _ =>
+                                "<p>Unhandled Tag : " + element.getType.toLowerCase() + "</p>"
                         }
-
-                        def getHeading(tag: String, title: String): String = {
-                            tag match {
-                                case "section" => "<h2>" + title + "</h2>"
-                                case "group" => "<h3>" + title + "</h3>"
-                                case "list" => "<h4>" + title + "</h4>"
-                                case _ => ""
-                            }
-                        }
-
-                        def parseElement(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
-                            val innerText = for(elem <- element.getChildren) yield {
-                                if(!elem.isComponent) {
-                                    /*this creates a container element which consumes some html type text*/
-                                    val innerText = parseElement(elem)
-                                    val pre = elem.getPreTag("div")
-                                    val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
-                                    val post = elem.getPreTag("div")
-                                    pre + heading + innerText + post
-                                } else {
-                                    /*this creates a component of type a specific type*/
-                                    createComponent(elem)
-                                }
-                            }
-                            innerText.mkString("")
-                        }
-
-                        b4.vertical.formCSRF(controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()) { implicit vfc =>
-                            val v = parseElement(root)(vfc)
-                            Html(v)
-                        }
-
                     }
 
-                    </p>
-                </div>
+                    def getHeading(tag: String, title: String): String = {
+                        tag match {
+                            case "section" => "<h2>" + title + "</h2>"
+                            case "group" => "<h3>" + title + "</h3>"
+                            case "list" => "<h4>" + title + "</h4>"
+                            case _ => ""
+                        }
+                    }
+
+                    def parseElement(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
+                        val innerText = for(elem <- element.getChildren) yield {
+                            if(!elem.isComponent) {
+                                /*this creates a container element which consumes some html type text*/
+                                val innerText = parseElement(elem)
+                                val pre = elem.getPreTag("div")
+                                val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
+                                val post = elem.getPreTag("div")
+                                pre + heading + innerText + post
+                            } else {
+                                /*this creates a component of type a specific type*/
+                                createComponent(elem)
+                            }
+                        }
+                        innerText.mkString("")
+                    }
+
+                    b4.vertical.formCSRF(controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()) { implicit vfc =>
+                        val v = parseElement(root)(vfc)
+                        Html(v)
+                    }
+
+                }
+
+                </p>
             </div>
         </div>
-    }
+    </div>
+}
 
-    @Masterpage.apply(pageTitle) {
-        contentBlock
-        fragmentFilterQuestions
-    }
+@Masterpage.apply(pageTitle){
+    @bodyBlock
+    @fragmentFilterQuestions.apply(questionList)
+}

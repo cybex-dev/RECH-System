@@ -1,11 +1,13 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Embeddable
 public class EntityLiaisonfeedbackPK implements Serializable {
     private Timestamp feedbackDate;
     private String ethicsApplicationApplicationType;
@@ -15,7 +17,6 @@ public class EntityLiaisonfeedbackPK implements Serializable {
     private String ethicsApplicationFacultyName;
 
     @Column(name = "feedback_date", nullable = false)
-    @Id
     public Timestamp getFeedbackDate() {
         return feedbackDate;
     }
@@ -25,7 +26,6 @@ public class EntityLiaisonfeedbackPK implements Serializable {
     }
 
     @Column(name = "Ethics_Application_application_type", nullable = false, length = 1)
-    @Id
     public String getEthicsApplicationApplicationType() {
         return ethicsApplicationApplicationType;
     }
@@ -35,7 +35,6 @@ public class EntityLiaisonfeedbackPK implements Serializable {
     }
 
     @Column(name = "Ethics_Application_application_year", nullable = false)
-    @Id
     public Integer getEthicsApplicationApplicationYear() {
         return ethicsApplicationApplicationYear;
     }
@@ -45,7 +44,6 @@ public class EntityLiaisonfeedbackPK implements Serializable {
     }
 
     @Column(name = "Ethics_Application_application_number", nullable = false)
-    @Id
     public Integer getEthicsApplicationApplicationNumber() {
         return ethicsApplicationApplicationNumber;
     }
@@ -55,7 +53,6 @@ public class EntityLiaisonfeedbackPK implements Serializable {
     }
 
     @Column(name = "Ethics_Application_department_name", nullable = false, length = 50)
-    @Id
     public String getEthicsApplicationDepartmentName() {
         return ethicsApplicationDepartmentName;
     }
@@ -65,7 +62,6 @@ public class EntityLiaisonfeedbackPK implements Serializable {
     }
 
     @Column(name = "Ethics_Application_faculty_name", nullable = false, length = 50)
-    @Id
     public String getEthicsApplicationFacultyName() {
         return ethicsApplicationFacultyName;
     }

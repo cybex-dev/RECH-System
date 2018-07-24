@@ -4,10 +4,10 @@
 
 @(questionList: util.List[Question])
 
-<div id="question_form" class="modal">
+<div id="filter_question_form" class="modal">
     <div class="modal-content animate">
         <div class="header-panel">
-            <span onclick="document.getElementById('question_form').style.display='none'" class="close" title="Close PopUp">&times;</span>
+            <span onclick="hidePopup('filter_question_form')" class="close" title="Close PopUp">&times;</span>
             <h1 style="text-align:center">A couple of questions first</h1>
             <h4 style="text-align:center">This will help us determine if you study does require ethics approval</h4>
         </div>
@@ -18,23 +18,22 @@
             def getConditions(conditionList: util.List[Condition]): String = {
                 var list = ""
                 for (c <- conditionList) {
-                    list += "<input name=\"" + c.getConditionText + "\" type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\"><br>"
+                    list += "<input type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\">" + c.getConditionText + "<br>"
                 }
                 list
             }
 
             def processQuestions(): String = {
-                var l = ""
+                var list = ""
                 for (q <- questionList) {
-                    var list = getConditions(q.getConditionsList)
-                    l += "<div class=\"question\"><h2>q.getTitle</h2><div class=\"condition\">list</div></div>"
+                    var l = getConditions(q.getConditionsList)
+                    list += "<div class=\"question\"><h2>" + q.getTitle + "</h2><div class=\"condition\">" + l + "</div></div>"
                 }
-                l
+                list
             }
 
-            processQuestions()
+            Html(processQuestions())
         }
-
 
     </div>
 </div>

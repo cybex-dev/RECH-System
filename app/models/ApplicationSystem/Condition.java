@@ -11,13 +11,13 @@ public class Condition {
     }
 
     public enum Level {
-        None,
-        Faculty,
-        RECCommittee
+        none,
+        faculty,
+        committee
     }
 
     public enum Risk {
-        None, Low, Medium, High
+        none, low, medium, high
     }
 
     private Level level;

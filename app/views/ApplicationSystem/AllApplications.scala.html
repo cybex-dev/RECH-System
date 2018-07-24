@@ -1,5 +1,25 @@
 @import java.util
 
 @import dao.ApplicationSystem.EntityEthicsApplication
+@import views.html.Templates.Masterpage
+@import ApplicationStatus
 
 @(pageTitle: String)(applicationList: util.List[EntityEthicsApplication])
+
+@Masterpage.apply(pageTitle){
+
+    <table id="tblApplications">
+        <thead>
+            <tr>Application Title</tr>
+            <tr>Date Submitted</tr>
+            <tr>Status</tr>
+        </thead>
+    @for (application <- applicationList) {
+        <tr>
+            <td>@application.title</td>
+            <td>@application.getDateSubmitted.toString</td>
+            <td>@ApplicationStatus.parse(getInternalStatus)</td>
+        </tr>
+    }
+    </table>
+}

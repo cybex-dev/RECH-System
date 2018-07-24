@@ -96,9 +96,14 @@ public class ApplicationHandler extends Controller {
      * @return
      */
     public Result allApplications() {
-        EntityPerson person = EntityPerson.getPersonById(session().get("user_email"));
-        List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person);
-        return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
+        try {
+            EntityPerson person = EntityPerson.getPersonById(session().get("user_email"));
+            List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person);
+            return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
+        } catch (Exception x) {
+            flash().put("login_required", "Please login in to view applications");
+            return badRequest(views.html.ApplicationSystem.AllApplications.render(" :: Applications", new ArrayList<>()));
+        }
     }
 
     /**
@@ -111,7 +116,7 @@ public class ApplicationHandler extends Controller {
         DynamicForm form = formFactory.form();
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
         Element rootElement = ethicsApplication.getRootElement();
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form, ApplicationStatus.DRAFT));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList()));
     }
 
     public Result processApplication(){
@@ -150,7 +155,7 @@ public class ApplicationHandler extends Controller {
                     EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
                     DynamicForm form = formFactory.form();
                     form.bind(formApplication.rawData());
-                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), form, ApplicationStatus.DRAFT));
+                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), form, ApplicationStatus.DRAFT, application_template.getQuestionList()));
                 } catch (Exception x) {
                     return internalServerError();
                 }

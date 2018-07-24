@@ -120,8 +120,8 @@ public class EthicsApplication implements Serializable {
             Question question = new Question();
             question.setTitle(q.getAttributes().get("title"));
             q.getChildren().forEach(cond -> {
-                Condition.Level level = Condition.Level.valueOf(cond.getAttributes().get("level"));
-                Condition.Risk risk = Condition.Risk.valueOf(cond.getAttributes().get("risk"));
+                Condition.Level level = Condition.Level.valueOf(cond.getAttributes().get("level").toLowerCase());
+                Condition.Risk risk = Condition.Risk.valueOf(cond.getAttributes().get("risk").toLowerCase());
                 Condition condition = new Condition(cond.getValue().toString(), risk, level);
                 question.getConditionsList().add(condition);
             });
@@ -137,8 +137,10 @@ public class EthicsApplication implements Serializable {
      * @return
      */
     public static EthicsApplication lookupApplication(ApplicationType type) {
-        if (ethicsApplications.isEmpty())
+        if (ethicsApplications.isEmpty()) {
             loadApplications();
+            loadQuestionnaires();
+        }
         return ethicsApplications.stream()
                 .filter(ethicsApplication -> ethicsApplication.getType() == type)
                 .findFirst()

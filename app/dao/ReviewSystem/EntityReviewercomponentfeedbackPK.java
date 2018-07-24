@@ -1,11 +1,13 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Embeddable
 public class EntityReviewercomponentfeedbackPK implements Serializable {
     private Short version;
     private String componentId;
@@ -22,7 +24,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     private String reviewerFeedbackEthicsApplicationFacultyName;
 
     @Column(name = "version", nullable = false)
-    @Id
     public Short getVersion() {
         return version;
     }
@@ -32,7 +33,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "component_id", nullable = false, length = 50)
-    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -42,7 +42,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "application_type", nullable = false, length = 1)
-    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -52,7 +51,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "application_year", nullable = false)
-    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -62,7 +60,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "application_number", nullable = false)
-    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -72,7 +69,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "department_name", nullable = false, length = 50)
-    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -82,7 +78,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "faculty_name", nullable = false, length = 50)
-    @Id
     public String getFacultyName() {
         return facultyName;
     }
@@ -92,7 +87,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "ReviewerFeedback_application_assigned_date", nullable = false)
-    @Id
     public Timestamp getReviewerFeedbackApplicationAssignedDate() {
         return reviewerFeedbackApplicationAssignedDate;
     }
@@ -102,7 +96,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "ReviewerFeedback_Ethics_Application_application_type", nullable = false, length = 1)
-    @Id
     public String getReviewerFeedbackEthicsApplicationApplicationType() {
         return reviewerFeedbackEthicsApplicationApplicationType;
     }
@@ -112,7 +105,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "ReviewerFeedback_Ethics_Application_application_year", nullable = false)
-    @Id
     public Integer getReviewerFeedbackEthicsApplicationApplicationYear() {
         return reviewerFeedbackEthicsApplicationApplicationYear;
     }
@@ -122,7 +114,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "ReviewerFeedback_Ethics_Application_application_number", nullable = false)
-    @Id
     public Integer getReviewerFeedbackEthicsApplicationApplicationNumber() {
         return reviewerFeedbackEthicsApplicationApplicationNumber;
     }
@@ -132,7 +123,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "ReviewerFeedback_Ethics_Application_department_name", nullable = false, length = 50)
-    @Id
     public String getReviewerFeedbackEthicsApplicationDepartmentName() {
         return reviewerFeedbackEthicsApplicationDepartmentName;
     }
@@ -142,7 +132,6 @@ public class EntityReviewercomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "ReviewerFeedback_Ethics_Application_faculty_name", nullable = false, length = 50)
-    @Id
     public String getReviewerFeedbackEthicsApplicationFacultyName() {
         return reviewerFeedbackEthicsApplicationFacultyName;
     }

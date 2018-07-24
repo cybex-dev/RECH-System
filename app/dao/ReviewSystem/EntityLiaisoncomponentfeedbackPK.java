@@ -1,11 +1,13 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Embeddable
 public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     private Short version;
     private String componentId;
@@ -22,7 +24,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     private String liaisonFeedbackEthicsApplicationFacultyName;
 
     @Column(name = "version", nullable = false)
-    @Id
     public Short getVersion() {
         return version;
     }
@@ -32,7 +33,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "component_id", nullable = false, length = 50)
-    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -42,7 +42,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "application_type", nullable = false, length = 1)
-    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -52,7 +51,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "application_year", nullable = false)
-    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -62,7 +60,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "application_number", nullable = false)
-    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -72,7 +69,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "department_name", nullable = false, length = 50)
-    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -82,7 +78,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "faculty_name", nullable = false, length = 50)
-    @Id
     public String getFacultyName() {
         return facultyName;
     }
@@ -92,7 +87,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "LiaisonFeedback_feedback_date", nullable = false)
-    @Id
     public Timestamp getLiaisonFeedbackFeedbackDate() {
         return liaisonFeedbackFeedbackDate;
     }
@@ -102,7 +96,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "LiaisonFeedback_Ethics_Application_application_type", nullable = false, length = 1)
-    @Id
     public String getLiaisonFeedbackEthicsApplicationApplicationType() {
         return liaisonFeedbackEthicsApplicationApplicationType;
     }
@@ -112,7 +105,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "LiaisonFeedback_Ethics_Application_application_year", nullable = false)
-    @Id
     public Integer getLiaisonFeedbackEthicsApplicationApplicationYear() {
         return liaisonFeedbackEthicsApplicationApplicationYear;
     }
@@ -122,7 +114,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "LiaisonFeedback_Ethics_Application_application_number", nullable = false)
-    @Id
     public Integer getLiaisonFeedbackEthicsApplicationApplicationNumber() {
         return liaisonFeedbackEthicsApplicationApplicationNumber;
     }
@@ -132,7 +123,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "LiaisonFeedback_Ethics_Application_department_name", nullable = false, length = 50)
-    @Id
     public String getLiaisonFeedbackEthicsApplicationDepartmentName() {
         return liaisonFeedbackEthicsApplicationDepartmentName;
     }
@@ -142,7 +132,6 @@ public class EntityLiaisoncomponentfeedbackPK implements Serializable {
     }
 
     @Column(name = "LiaisonFeedback_Ethics_Application_faculty_name", nullable = false, length = 50)
-    @Id
     public String getLiaisonFeedbackEthicsApplicationFacultyName() {
         return liaisonFeedbackEthicsApplicationFacultyName;
     }
