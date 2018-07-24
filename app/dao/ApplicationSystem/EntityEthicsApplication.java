@@ -5,6 +5,7 @@ import dao.ReviewSystem.EntityReviewerfeedback;
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
 import io.ebean.Model;
+import models.ApplicationSystem.EthicsApplication;
 import models.UserSystem.UserType;
 
 import javax.persistence.*;
@@ -398,5 +399,9 @@ public class EntityEthicsApplication extends Model {
         pk.setDepartmentName(departmentName);
         pk.setFacultyName(facultyName);
         return pk;
+    }
+
+    public EthicsApplication.ApplicationType type(){
+        return EthicsApplication.ApplicationType.parse(applicationType);
     }
 }

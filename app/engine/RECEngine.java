@@ -9,17 +9,14 @@ import dao.Meeting.EntityAgendaitem;
 import dao.ReviewSystem.EntityLiaisonfeedback;
 import dao.ReviewSystem.EntityReviewerfeedback;
 import dao.UserSystem.EntityPerson;
-import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
-import models.UserSystem.UserType;
-import scala.App;
+import models.ApplicationSystem.EthicsApplication;
+import net.ddns.cyberstudios.Element;
 
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RECEngine {
@@ -73,7 +70,7 @@ public class RECEngine {
                 // Get all latest component data
 
                 // Check if application is ready to be submitted
-                applicationComplete = checkComplete(entityEthicsApplication.applicationPrimaryKey());
+                applicationComplete = isComplete(entityEthicsApplication.applicationPrimaryKey());
                 checkoutLatestApplication(applicationId);
 
                 actionable = new Actionable() {
@@ -185,10 +182,10 @@ public class RECEngine {
                         if (hod.isEmpty() ||
                                 rti.isEmpty()) {
                             if (hod.isEmpty()) {
-                                Notifier.systemNotification(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, SystemNotification.NO_HOD_AVAILABLE, piId, prpId, getRCDEmail());
+                                Notifier.systemNotification(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, SystemNotification.NO_HOD_AVAILABLE, piId, prpId, EntityPerson.getRCD());
                             }
                             if (rti.isEmpty()) {
-                                Notifier.systemNotification(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, SystemNotification.NO_RTI_AVAILABLE, piId, prpId, getRCDEmail());
+                                Notifier.systemNotification(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, SystemNotification.NO_RTI_AVAILABLE, piId, prpId, EntityPerson.getRCD());
                             }
 
                         } else {
@@ -286,10 +283,10 @@ public class RECEngine {
                     @Override
                     public void doNotify() {
                         if (availableReviewers.size() < 4) {
-                            Notifier.systemNotification(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, SystemNotification.NOT_ENOUGH_REVIEWERS, getRCDEmail());
+                            Notifier.systemNotification(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, SystemNotification.NOT_ENOUGH_REVIEWERS, EntityPerson.getRCD());
                         } else if (availableReviewers.size() == 4) {
                             if (isFacultyLevel) {
-                                Notifier.facultyReview(applicationId, applicationTitle, getRCDEmail(), entityEthicsApplication.getRtiId());
+                                Notifier.facultyReview(applicationId, applicationTitle, EntityPerson.getRCD(), entityEthicsApplication.getRtiId());
                                 Notifier.notifyStatus(applicationId, newStatus, applicationTitle, entityEthicsApplication.getHodId(), prpId);
                             } else {
                                 List<String> reviewers = getApplicationReviewers(applicationId);
@@ -373,7 +370,7 @@ public class RECEngine {
                         } else if (latestMeetingStatus == ApplicationStatus.TEMPORARILY_APPROVED_EDITS) {
                             Notifier.requireAttention(applicationId, latestMeetingStatus, applicationTitle, piId, prpId);
                         } else {
-                            Notifier.systemNotification(applicationId, ApplicationStatus.UNKNOWN, applicationTitle, SystemNotification.UNKNOWN_ASSIGNED, piId, prpId, getRCDEmail());
+                            Notifier.systemNotification(applicationId, ApplicationStatus.UNKNOWN, applicationTitle, SystemNotification.UNKNOWN_ASSIGNED, piId, prpId, EntityPerson.getRCD());
                         }
                     }
                 };
@@ -434,7 +431,7 @@ public class RECEngine {
                 // Liaision notified
 
 
-                applicationComplete = checkComplete(applicationId);
+                applicationComplete = isComplete(applicationId);
                 newStatus = (applicationComplete) ? ApplicationStatus.PENDING_REVIEW_LIAISON : ApplicationStatus.TEMPORARILY_APPROVED_EDITS;
 
                 actionable = new Actionable() {
@@ -487,7 +484,7 @@ public class RECEngine {
                     @Override
                     public void doNotify() {
                         if (entityLiaisonfeedback1 == null) {
-                            Notifier.systemNotification(applicationId, currentStatus, applicationTitle, SystemNotification.LIAISON_FEEDBACK_NOT_FOUND, getRCDEmail(), entityEthicsApplication.getLiaisonId(), piId, prpId);
+                            Notifier.systemNotification(applicationId, currentStatus, applicationTitle, SystemNotification.LIAISON_FEEDBACK_NOT_FOUND, EntityPerson.getRCD(), entityEthicsApplication.getLiaisonId(), piId, prpId);
                         } else {
                             if (entityLiaisonfeedback1.getRequiresEdits()) {
                                 Notifier.requireAttention(applicationId, newStatus, applicationTitle, piId, prpId);
@@ -604,7 +601,7 @@ public class RECEngine {
 
                     @Override
                     public void doNotify() {
-                        Notifier.systemNotification(applicationId, ApplicationStatus.UNKNOWN, applicationTitle, SystemNotification.UNKNOWN_ASSIGNED, getRCDEmail());
+                        Notifier.systemNotification(applicationId, ApplicationStatus.UNKNOWN, applicationTitle, SystemNotification.UNKNOWN_ASSIGNED, EntityPerson.getRCD());
                     }
                 };
                 return actionable;
@@ -724,19 +721,118 @@ public class RECEngine {
 
     /**
      * Traverses through all application elements, checking if all elements contain the required data -> this should match the appropriate XML file
+     *
      * @param pk
      * @return
      */
-    public boolean checkComplete(EntityEthicsApplicationPK pk) {
+    public boolean isComplete(EntityEthicsApplicationPK pk) {
+        EntityEthicsApplication application = EntityEthicsApplication.find.byId(pk);
+        if (application == null) {
+            return false;
+        }
+
+        // Get latest components of an application
         List<EntityComponentversion> latestComponents = EntityEthicsApplication.getLatestComponents(pk);
 
+        // Get all latest values into a map with <String; Object> definition
+        Map<String, Object> m = new HashMap<>();
+        for (EntityComponentversion latestComponent : latestComponents) {
+            switch (latestComponent.getResponseType().toLowerCase()) {
+                case "boolean": {
+                    m.put(latestComponent.getComponentId(), latestComponent.getBoolValue());
+                    break;
+                }
 
+                case "text": {
+                    m.put(latestComponent.getComponentId(), latestComponent.getTextValue());
+                    break;
+                }
 
-        return true;
+                case "document": {
+                    m.put(latestComponent.getComponentId() + "_title", latestComponent.getDocumentName());
+                    m.put(latestComponent.getComponentId() + "_desc", latestComponent.getDocumentDescription());
+                    m.put(latestComponent.getComponentId() + "_file", latestComponent.getDocumentLocationHash());
+                    break;
+                }
+            }
+        }
+
+        // Get EthicsApplication object
+        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
+
+        // Generate root Element with values attached
+        Element rootWithValues = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), m);
+
+        return checkComplete(rootWithValues, true);
     }
 
-    public String getRCDEmail() {
-        return EntityPerson.getRCD();
-    }
+    private boolean checkComplete(Element rootWithValues, boolean isRequired) {
+        boolean childrenPresent = true;
+        for (Element element : rootWithValues.getChildren()) {
+            switch (element.getTag()) {
+                case "application":
+                case "section":
+                case "list": {
+                    for (Element e : rootWithValues.getChildren()) {
+                        if (!checkComplete(e, isRequired)) {
+                            childrenPresent = false;
+                            break;
+                        }
+                    }
+                    return childrenPresent;
+                }
 
+                case "group": {
+                    // Nothing will happen here except is type is document, then we do some extra processing
+
+                    // Process all children
+                    for (Element e : rootWithValues.getChildren()) {
+                        // Check if root element is a document root
+                        if (element.getType().equals("document")) {
+                            // If child does not have a value and value is not required
+                            if ((!e.hasValue() && isRequired) || (e.hasValue() && !isRequired)) {
+                                childrenPresent = false;
+                                break;
+                            }
+                        }
+                        
+                        // Else process children as normal
+                        else {
+                            // Check if children are complete
+                            if (!checkComplete(e, isRequired)) {
+                                childrenPresent = false;
+                                break;
+                            }
+                        }
+                    }
+                    return childrenPresent;
+                }
+
+                case "extension": {
+                    // Get first child of extension
+                    LinkedList<Element> children = element.getChildren();
+
+                    // Check value of first child
+                    boolean newIsRequired = ((Boolean) children.pop().getValue());
+
+                    // Traverse all the rest of the child nodes of extension
+                    for (Element e : children) {
+                        if (!checkComplete(e, newIsRequired)) {
+                            childrenPresent = false;
+                            break;
+                        }
+                    }
+
+                    return childrenPresent;
+                }
+
+                case "component": {
+                    Element valueElement = rootWithValues.getChildren().getLast();
+                    return (isRequired && valueElement.hasValue());
+                }
+
+            }
+        }
+        return false;
+    }
 }
