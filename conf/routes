@@ -30,7 +30,7 @@ GET     /application                    controllers.ApplicationSystem.Applicatio
 GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
 GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: Integer)
 POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
-POST    /application/process            controllers.ApplicationSystem.ApplicationHandler.processApplication(id: Integer)
+POST    /application/process            controllers.ApplicationSystem.ApplicationHandler.processApplication
 
 GET     /application/review/:id         controllers.ApplicationSystem.ApplicationHandler.reviewApplication(id: Integer)
 POST    /application/review/submit      controllers.ApplicationSystem.ApplicationHandler.submitRevision

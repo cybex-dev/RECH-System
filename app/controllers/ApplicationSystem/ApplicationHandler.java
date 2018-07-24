@@ -114,6 +114,13 @@ public class ApplicationHandler extends Controller {
         return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form, ApplicationStatus.DRAFT));
     }
 
+    public Result processApplication(){
+        DynamicForm form = formFactory.form();
+        String id = form.get("application_id");
+        EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(session(CookieTags.user_id), id);
+        new RECEngine().nextStep(applicationPK);
+        return ok();
+    }
 
     /**
      * Creates a NEW application in the server database
@@ -244,7 +251,8 @@ public class ApplicationHandler extends Controller {
                 e.printStackTrace();
                 return internalServerError();
             }
-            application.setApplicationLevel(Short.parseShort(formApplication.get("application_level")));
+
+            new RECEngine().nextStep(application.applicationPrimaryKey());
 
             return ok();
 

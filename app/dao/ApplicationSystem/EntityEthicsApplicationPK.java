@@ -1,9 +1,13 @@
 package dao.ApplicationSystem;
 
+import models.ApplicationSystem.EthicsApplication;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Objects;
 
 @Embeddable
@@ -15,6 +19,25 @@ public class EntityEthicsApplicationPK implements Serializable {
     private String facultyName;
 
     public EntityEthicsApplicationPK() {
+    }
+
+    public static EntityEthicsApplicationPK fromString(String user, String id) {
+
+        String[] split = id.split("_");
+        Integer number = Integer.parseInt(split[0]);
+        Integer year = Integer.parseInt(split[1]);
+
+        EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(split[2]);
+        String appType = type.toString();
+
+        return EntityEthicsApplication.find.all().stream()
+                .filter(entityEthicsApplication -> entityEthicsApplication.getApplicationYear().equals(year) &&
+                        entityEthicsApplication.getApplicationNumber().equals(number) &&
+                        entityEthicsApplication.getApplicationType().equals(appType))
+                .map(entityEthicsApplication -> entityEthicsApplication.applicationPrimaryKey())
+                .findFirst()
+                .orElseThrow(null);
+
     }
 
     public String getApplicationType() {
