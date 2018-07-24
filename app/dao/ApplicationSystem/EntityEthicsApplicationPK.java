@@ -97,4 +97,14 @@ public class EntityEthicsApplicationPK implements Serializable {
 
         return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName);
     }
+
+    @Override
+    public String toString() {
+        String builder = String.valueOf(applicationNumber) +
+                "_" +
+                applicationYear +
+                "_" +
+                applicationType;
+        return builder;
+    }
 }

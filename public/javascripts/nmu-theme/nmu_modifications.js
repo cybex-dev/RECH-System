@@ -26,3 +26,6 @@ function hidePopup(id) {
     document.getElementById(id).style.display = 'none';
 }
 
+function showApplicationOptions(id) {
+    document.getElementById(id).style.display = 'block';
+}

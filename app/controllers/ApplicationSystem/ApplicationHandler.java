@@ -77,7 +77,7 @@ public class ApplicationHandler extends Controller {
      * @param applicationID
      * @return
      */
-    public Result reviewApplication(Integer applicationID) {
+    public Result reviewApplication(String applicationID) {
         return TODO;
     }
 

@@ -17,12 +17,8 @@
                 <a href="@controllers.UserSystem.routes.ProfileHandler.overview()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-reorder drop-bottom-5"></ic><br>
                     <span>Overview</span></a></div>
             <div class="portal-icon portal-icon-extend-margin">
-                <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()" id="IconMenuBarApplications"><ic class="fa fa-3x fa-book drop-bottom-5"></ic><br>
+                <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()" id="IconMenuBarApplications" onmouseenter="openPopup('application_dropdown-menu')"><ic class="fa fa-3x fa-book drop-bottom-5" ></ic><br>
                     <span>Applications</span></a>
-                <ul id="application_dropdown-menu" class="sm">
-                    <li><a href="#" onclick="openPopup('select_application_type_popup');">Create New Application</a></li>
-                    <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">View Applications</a></li>
-                </ul>
             </div>
             <div class="portal-icon portal-icon-extend-margin">
                 <a href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
@@ -48,9 +44,13 @@
             </div>
         </div>
     </div>
+    <ul id="application_dropdown-menu" class="sm darkbackground" style="display: none" onmouseleave="hidePopup('application_dropdown-menu')">
+        <li><a href="#" onclick="openPopup('select_application_type_popup');">Create New Application</a></li>
+        <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">View Applications</a></li>
+    </ul>
 </div>
 
-    <div id="select_application_type_popup" class="modal">
+    <div id="select_application_type_popup" class="modal" onmouseleave="hidePopup('select_application_type_popup')">
         <div class="modal-content animate">
             <div class="imgcontainer">
                 <span onclick="hidePopup('select_application_type_popup')" class="close" title="Close PopUp">&times;</span>

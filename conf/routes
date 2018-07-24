@@ -24,7 +24,7 @@ POST    /user/profile                   controllers.UserSystem.ProfileHandler.mo
 ### ### Application System ###
 
 # View all applications & statuses
-GET     /application                    controllers.ApplicationSystem.ApplicationHandler.allApplications
+GET     /user/applications              controllers.ApplicationSystem.ApplicationHandler.allApplications
 
 # New Application (application type passed as parameter)
 GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
@@ -32,7 +32,7 @@ GET     /application/edit/:id           controllers.ApplicationSystem.Applicatio
 POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
 POST    /application/process            controllers.ApplicationSystem.ApplicationHandler.processApplication
 
-GET     /application/review/:id         controllers.ApplicationSystem.ApplicationHandler.reviewApplication(id: Integer)
+GET     /application/review/:id         controllers.ApplicationSystem.ApplicationHandler.reviewApplication(id: String)
 POST    /application/review/submit      controllers.ApplicationSystem.ApplicationHandler.submitRevision
 GET     /application/jsRoutes           controllers.ApplicationSystem.ApplicationHandler.javascriptRoutes
 

@@ -100,3 +100,26 @@ button:hover {
     from {transform: scale(0)}
     to {transform: scale(1)}
 }
+
+.darkbackground {
+    background-color: #363636;
+}
+
+.darkbackground > li > a{
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+.darkbackground > li {
+    line-height: 4em;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+.darkbackground > li {
+    background-color: inherit;
+}
+
+.darkbackground > li:hover {
+    background-color: #f9b42a;
+}

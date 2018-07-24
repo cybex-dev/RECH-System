@@ -2,24 +2,29 @@
 
 @import dao.ApplicationSystem.EntityEthicsApplication
 @import views.html.Templates.Masterpage
-@import ApplicationStatus
 
 @(pageTitle: String)(applicationList: util.List[EntityEthicsApplication])
 
-@Masterpage.apply(pageTitle){
+@Masterpage.apply(pageTitle) {
+    <h2>All applications</h2>
 
-    <table id="tblApplications">
-        <thead>
-            <tr>Application Title</tr>
-            <tr>Date Submitted</tr>
-            <tr>Status</tr>
-        </thead>
-    @for (application <- applicationList) {
-        <tr>
-            <td>@application.title</td>
-            <td>@application.getDateSubmitted.toString</td>
-            <td>@ApplicationStatus.parse(getInternalStatus)</td>
-        </tr>
+    @if(applicationList.size() == 0) {
+        <h4>No applications found</h4>
+    } else {
+        <table id="tblApplications">
+            <thead>
+                <tr>Application Title</tr>
+                <tr>Date Submitted</tr>
+                <tr>Status</tr>
+            </thead>
+            @for(application <- applicationList) {
+                <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationPrimaryKey.toString)"><tr>
+                    <td>application.title</td>
+                    <td>application.getDateSubmitted.toString</td>
+                    <td>ApplicationStatus.parse(getInternalStatus)</td>
+                </tr>
+                </a>
+            }
+        </table>
     }
-    </table>
 }
