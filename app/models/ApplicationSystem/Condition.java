@@ -2,6 +2,14 @@ package models.ApplicationSystem;
 
 public class Condition {
 
+    public String getConditionText() {
+        return conditionText;
+    }
+
+    public void setConditionText(String conditionText) {
+        this.conditionText = conditionText;
+    }
+
     public enum Level {
         None,
         Faculty,
@@ -15,6 +23,7 @@ public class Condition {
     private Level level;
     private Risk risk;
     private boolean value;
+    private String conditionText;
 
     public Condition() {
     }
@@ -22,6 +31,7 @@ public class Condition {
     public Condition(String text, Risk risk, Level level) {
         this.level = level;
         this.risk = risk;
+        this.conditionText = text;
     }
 
     public boolean isValue() {

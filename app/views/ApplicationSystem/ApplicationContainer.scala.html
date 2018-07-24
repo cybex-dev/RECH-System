@@ -6,6 +6,7 @@
 @import net.ddns.cyberstudios.Element
 @import net.ddns.cyberstudios.XMLTools
 @import models.ApplicationSystem.ApplicationStatus
+@import views.html.ApplicationSystem.fragmentFilterQuestions
 
 @(pageTitle: String)(applicationType: String)(root: Element)(form: DynamicForm)(status: ApplicationStatus)
 
@@ -136,4 +137,7 @@
         </div>
     }
 
-    @Masterpage.apply(pageTitle)(contentBlock)
+    @Masterpage.apply(pageTitle) {
+        contentBlock
+        fragmentFilterQuestions
+    }

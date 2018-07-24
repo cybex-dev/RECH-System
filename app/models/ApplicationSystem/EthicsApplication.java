@@ -203,6 +203,13 @@ public class EthicsApplication implements Serializable {
         return application;
     }
 
+    public static Element addValuesToRootElement(Element root, Map<String, Object> values){
+        values.forEach((key, value) -> {
+            Element child = XMLTools.lookup(root, key);
+            child.setValue(value);
+        });
+        return root;
+    }
 
     public List<Question> getQuestionList() {
         return questionList;

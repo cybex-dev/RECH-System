@@ -119,11 +119,11 @@
                     <value></value>
                 </component>
                 <component id="restrictions_desc" type="text" hidden="false"
-                           hint="The scope in which the study will be performed, the geographical reaches">
-                    <question>Study Scope</question>
+                           hint="Describe the restrictions imposed">
+                    <question>Describe Restrictions</question>
                     <value></value>
                 </component>
-                <group id="grp_doc_restrictions" type="document" popup="true" name="Restrictions Document" hint="">
+                <group id="grp_doc_restrictions" type="document" popup="true" name="Restrictions Document" hint="" required="true">
                     <component id="doc_restrictions_title" type="text"
                                hint="Document which provides details of restrictions">
                         <question>Restriction Supporting Documents Title</question>
