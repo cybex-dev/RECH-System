@@ -64,7 +64,8 @@ input {
 }
 
 .question {
-
+    position: absolute;
+    display: none;
 }
 
 .condition {

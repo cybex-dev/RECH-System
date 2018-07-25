@@ -1,3 +1,11 @@
+// container to save number of section in application form
+var numSections = 0;
+var indexSections = -1;
+
+var numQuestions = 0;
+var indexQuestions = -1;
+
+
 // Runs functions when document has loaded
 function _docReady(funcName, baseObj) {
 
@@ -77,6 +85,79 @@ function _docReady(funcName, baseObj) {
     }
 }
 
-_docReady(function () {
+_docReady(docReady());
 
-})
+function docReady() {
+
+    // Sets number of section sections
+    numSections = document.querySelectorAll(".section").length;
+    indexSections = 0;
+
+    // Sets number of question sections
+    numQuestions = document.querySelectorAll(".question").length;
+    indexQuestions = 0;
+
+    // Show first question in popup question list
+    nextQuestion();
+
+    // Show first section in application form
+    nextSection();
+
+    document.querySelectorAll(".question")[0].classList.add("visible");
+}
+
+// - sets the 'state' to visible
+// - increments the index
+// - sets the new index to active
+
+function nextQuestion() {
+    // Set first section active
+    var nodelistQuestion = document.querySelectorAll(".question");
+    setVisible(nodelistQuestion[indexQuestions]);
+    setHidden(nodelistQuestion[++indexQuestions]);
+}
+
+// - sets the 'state' to hidden
+// - decrements the index
+// - sets the new index to active
+
+function previousQuestion() {
+    // Set first section active
+    var nodelistQuestion = document.querySelectorAll(".question");
+    setVisible(nodelistQuestion[indexQuestions]);
+    setHidden(nodelistQuestion[--indexQuestions]);
+}
+
+// - sets the 'state' to visible
+// - increments the index
+// - sets the new index to active
+
+function nextSection() {
+    // Set first section active
+    var nodelistSections = document.querySelectorAll(".section");
+    setVisible(nodelistSections[indexSections]);
+    setHidden(nodelistSections[++indexSections]);
+}
+
+// - sets the 'state' to hidden
+// - decrements the index
+// - sets the new index to active
+
+function previousSection() {
+    // Set first section active
+    var nodelistSections = document.querySelectorAll(".section");
+    setVisible(nodelistSections[indexSections]);
+    setHidden(nodelistSections[--indexSections]);
+}
+
+// hides an element
+function setHidden(element) {
+    element.classList.remove("visible");
+    element.classList.add("hidden");
+}
+
+// makes an element visible
+function setVisible(element) {
+    element.classList.remove("hidden");
+    element.classList.add("visible");
+}
