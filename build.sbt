@@ -13,8 +13,6 @@ lazy val root = (project in file("."))
 
 scalaVersion := "2.12.6"
 
-crossScalaVersions := Seq("2.11.12", "2.12.4")
-
 libraryDependencies += playCore
 libraryDependencies += akkaHttpServer
 libraryDependencies += guice

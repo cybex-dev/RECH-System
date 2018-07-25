@@ -75,6 +75,8 @@ function _docReady(funcName, baseObj) {
             readyEventHandlersInstalled = true;
         }
     }
-};
+}
 
-_docReady()
+_docReady(function () {
+
+})

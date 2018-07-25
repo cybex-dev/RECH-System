@@ -1,9 +1,38 @@
-.application {
+.wizard-container{
+    height: auto;
+    display: block;
+}
 
+.wizard-header{
+    height: auto;
+    display: block;
+}
+
+.wizard-body-container{
+    height: auto;
+    display: block;
+}
+
+.wizard-body {
+    height: auto;
+    display: block;
+}
+
+.application {
+    height: auto;
 }
 
 .section {
+    position: absolute;
+    display: none;
+}
 
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
 }
 
 .group {
@@ -12,6 +41,10 @@
 
 .component {
 
+}
+
+input {
+    margin-left: 2em;
 }
 
 .question {
@@ -28,4 +61,25 @@
 
 .extension {
 
+}
+
+.question {
+
+}
+
+.condition {
+    font-size: 1em;
+}
+
+.question-content {
+    color: white;
+}
+
+.opague-background {
+    background-color: #0009 !important
+}
+
+.nmu-theme-background {
+    color: white;
+    background-color: #0A283F !important;
 }

@@ -1,0 +1,29 @@
+// TODO
+
+set css section to absolute with top & left 0 and hidden,
+- use js to go to next section or make it collapsable
+divide section into header and content - use angular collapsable
+
+(optional - add line and progress circle
+- per section
+- per group
+
+For applcation review
+- provide submit button
+
+implement notifications
+
+Add reviewer section
+- add editable flag for twirl
+- Add field for reviewer with data field disabled
+
+Test create, edit, save application and submit
+
+Add user system
+
+assign reviewers to application
+
+test leave feedback
+
+
+

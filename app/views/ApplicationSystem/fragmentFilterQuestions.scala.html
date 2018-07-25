@@ -1,39 +1,42 @@
-@import models.ApplicationSystem.Question
-@import models.ApplicationSystem.Condition
 @import java.util
+
+@import models.ApplicationSystem.{Condition, Question}
 
 @(questionList: util.List[Question])
 
-<div id="filter_question_form" class="modal">
-    <div class="modal-content animate">
+<div id="filter_question_form" class="modal opague-background">
+    <div class="modal-content animate nmu-theme-background">
         <div class="header-panel">
             <span onclick="hidePopup('filter_question_form')" class="close" title="Close PopUp">&times;</span>
-            <h1 style="text-align:center">A couple of questions first</h1>
-            <h4 style="text-align:center">This will help us determine if you study does require ethics approval</h4>
+            <h1 style="text-align: left">A couple of questions first</h1>
+            <h4 style="text-align: left; font-style: italic !important;">This will help us determine if you study does require ethics approval</h4>
         </div>
 
-        @{
-            var questionId = 0;
+        <div class="question-content nmu-theme-background">
 
-            def getConditions(conditionList: util.List[Condition]): String = {
-                var list = ""
-                for (c <- conditionList) {
-                    list += "<input type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\">" + c.getConditionText + "<br>"
+            @{
+                var questionId = 0;
+
+                def getConditions(conditionList: util.List[Condition]): String = {
+                    var list = ""
+                    for(c <- conditionList) {
+                        list += "<input class=\"condition\" type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\">" + c.getConditionText + "<br>"
+                    }
+                    list
                 }
-                list
-            }
 
-            def processQuestions(): String = {
-                var list = ""
-                for (q <- questionList) {
-                    var l = getConditions(q.getConditionsList)
-                    list += "<div class=\"question\"><h2>" + q.getTitle + "</h2><div class=\"condition\">" + l + "</div></div>"
+                def processQuestions(): String = {
+                    var list = ""
+                    for(q <- questionList) {
+                        var l = getConditions(q.getConditionsList)
+                        list += "<div class=\"question hidden\"><h2>" + q.getTitle + "</h2><div class=\"condition\">" + l + "</div></div>"
+                    }
+                    list
                 }
-                list
-            }
 
-            Html(processQuestions())
-        }
+                Html(processQuestions())
+            }
+        </div>
 
     </div>
 </div>

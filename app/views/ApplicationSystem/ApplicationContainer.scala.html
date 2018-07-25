@@ -50,15 +50,15 @@
 @bodyBlock = {
     <h1>Create Ethics Application for @applicationType Research</h1>
     <br>
-    <div id="wizard-container">
-        <div id="wizard-header">
+    <div class="wizard-container">
+        <div class="wizard-header">
 
         </div>
-        <div id="wizard-body-container">
-            <div id="wizard-progress-container">
+        <div class="wizard-body-container">
+            <div class="wizard-progress-container">
 
             </div>
-            <div id="wizard-body">
+            <div class="wizard-body">
                 <p>
                 @{
                     def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
@@ -114,7 +114,7 @@
                                 val innerText = parseElement(elem)
                                 val pre = elem.getPreTag("div")
                                 val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
-                                val post = elem.getPreTag("div")
+                                val post = elem.getPostTag("div")
                                 pre + heading + innerText + post
                             } else {
                                 /*this creates a component of type a specific type*/
