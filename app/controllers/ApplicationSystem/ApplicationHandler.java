@@ -101,7 +101,6 @@ public class ApplicationHandler extends Controller {
             List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person);
             return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
         } catch (Exception x) {
-            flash().put("login_required", "Please login in to view applications");
             return badRequest(views.html.ApplicationSystem.AllApplications.render(" :: Applications", new ArrayList<>()));
         }
     }

@@ -5,38 +5,68 @@
 @(questionList: util.List[Question])
 
 <div id="filter_question_form" class="modal opague-background">
-    <div class="modal-content animate nmu-theme-background">
+    <div id="questionnaire_popup" class="modal-content animate popup-header">
         <div class="header-panel">
-            <span onclick="hidePopup('filter_question_form')" class="close" title="Close PopUp">&times;</span>
-            <h1 style="text-align: left">A couple of questions first</h1>
-            <h4 style="text-align: left; font-style: italic !important;">This will help us determine if you study does require ethics approval</h4>
+            <div class="row">
+                <div class="col-sm-7">
+                    <h2 style="text-align: left">A couple of questions first</h2>
+                    <h5 style="text-align: left; font-style: italic !important;">This will help us determine if you study does require ethics approval</h5>
+                </div>
+                <div class="col-sm-5">
+                    <h4 id="risk_eval" style="text-align: center; margin: 20px"></h4>
+                    <span onclick="hidePopup('filter_question_form')" class="close" title="Close PopUp">&times;</span>
+                </div>
+                <br>
+            </div>
         </div>
 
-        <div class="question-content nmu-theme-background">
+        <div class="standard-padding-20">
+            <button class="nmu-button" type="button" href="#" id="btnStartQuestions">Ok, lets begin</button>
+            <div class="question-content nmu-color-very-dark hidden">
+                @{
+                    var questionId = 0;
 
-            @{
-                var questionId = 0;
-
-                def getConditions(conditionList: util.List[Condition]): String = {
-                    var list = ""
-                    for(c <- conditionList) {
-                        list += "<input class=\"condition\" type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\">" + c.getConditionText + "<br>"
+                    def getConditions(conditionList: util.List[Condition]): String = {
+                        var list = ""
+                        for(c <- conditionList) {
+                            questionId += 1
+                            list += "<input class=\"condition\" type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\">" + c.getConditionText + "<br>"
+                        }
+                        list
                     }
-                    list
-                }
 
-                def processQuestions(): String = {
-                    var list = ""
-                    for(q <- questionList) {
-                        var l = getConditions(q.getConditionsList)
-                        list += "<div class=\"question hidden\"><h2>" + q.getTitle + "</h2><div class=\"condition\">" + l + "</div></div>"
+                    def processQuestions(): String = {
+                        var list = ""
+                        for(q <- questionList) {
+                            var l = getConditions(q.getConditionsList)
+                            list += "<div class=\"question\"><h3>" + q.getTitle + "</h3><div class=\"conditions\">" + l + "</div></div>"
+                        }
+                        list
                     }
-                    list
-                }
 
-                Html(processQuestions())
-            }
+                    Html(processQuestions())
+                }
+                <br>
+                <br>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <button id="btnPreviousQuestion" class="nmu-button" style="float: left;">Previous</button>
+                    </div>
+                    <div class="col-sm-6">
+                        <button id="btnNextQuestion" class="nmu-button" style="float: right;">Next</button>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
+    <div id="complete_popup" class="modal-content animate popup-header hidden">
+        <div class="header-panel">
+            <h2 style="text-align: left">Complete</h2>
+        </div>
+        <div class="question-content nmu-color-very-dark hidden">
+            <h4 style="text-align: center" id="risk_message"></h4>
+            <button class="button" id="btn_question_complete_proceed"></button>
+        </div>
     </div>
 </div>

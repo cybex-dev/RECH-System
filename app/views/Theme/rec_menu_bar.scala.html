@@ -45,24 +45,24 @@
         </div>
     </div>
     <ul id="application_dropdown-menu" class="sm darkbackground" style="display: none" onmouseleave="hidePopup('application_dropdown-menu')">
-        <li><a href="#" onclick="openPopup('select_application_type_popup');">Create New Application</a></li>
+        <li><a href="#" onclick="openPopup('select_application_type_popup', true);">Create New Application</a></li>
         <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">View Applications</a></li>
     </ul>
 </div>
 
     <div id="select_application_type_popup" class="modal" onmouseleave="hidePopup('select_application_type_popup')">
-        <div class="modal-content animate">
-            <div class="imgcontainer">
+        <div class="modal-content animate nmu-theme-darkbackground">
+            <div class="imgcontainer popup-header">
                 <span onclick="hidePopup('select_application_type_popup')" class="close" title="Close PopUp">&times;</span>
                 <h1 style="text-align:center">Choose application type</h1>
             </div>
 
             <form action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")" method="get">
-                <button type="submit">Human Research</button>
+                <button class="nmu-button" type="submit">Human Research</button>
             </form>
             <br/>
             <form action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")" method="get">
-                <button type="submit">Animal Research</button>
+                <button class="nmu-button" type="submit">Animal Research</button>
             </form>
         </div>
     </div>

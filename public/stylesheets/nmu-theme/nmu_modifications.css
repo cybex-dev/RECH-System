@@ -29,6 +29,11 @@ input[type=text], input[type=password] {
     font-size:16px;
 }
 
+input[type=checkbox] {
+    transform: scale(1.2);
+    margin: 10px;
+}
+
 /* Set a style for all buttons */
 button {
     background-color: #4CAF50;
@@ -72,10 +77,12 @@ button:hover {
 /* Modal Content Box */
 .modal-content {
     background-color: #fefefe;
-    margin: 6% auto 15% auto;
-    border: 1px solid #888;
-    width: 40%;
+    margin: 10% auto 15% auto;
+    width: 60%;
+    padding-top: 30px;
     padding-bottom: 30px;
+    border-radius: 0;
+    overflow: hidden;
 }
 
 /* The Close Button (x) */
@@ -122,4 +129,21 @@ button:hover {
 
 .darkbackground > li:hover {
     background-color: #f9b42a;
+}
+
+.nmu-button {
+    background-color: #0A283F !important;
+    margin-bottom: 20px;
+}
+
+.nmu-button:hover {
+    background-color: #f9b42a !important;
+}
+
+.container {
+    color: #FFFFFF;
+}
+
+.close {
+    color: #FFFFFF !important;
 }

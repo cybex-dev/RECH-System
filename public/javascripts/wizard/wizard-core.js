@@ -5,6 +5,8 @@ var indexSections = -1;
 var numQuestions = 0;
 var indexQuestions = -1;
 
+var risk = 0;
+
 
 // Runs functions when document has loaded
 function _docReady(funcName, baseObj) {
@@ -87,23 +89,145 @@ function _docReady(funcName, baseObj) {
 
 _docReady(docReady());
 
+function checkRisk() {
+    var r = 0;
+    document.querySelectorAll(".condition").forEach(function(element) {
+        if (element.checked) {
+            var v = element.attributes.getNamedItem("risk");
+            switch (v.nodeValue) {
+                case "low" : {
+                    if (r < 1)
+                        r = 1;
+                    break;
+                }
+
+                case "medium" : {
+                    if (r < 2)
+                        r = 2;
+                    break;
+                }
+
+                case "high" : {
+                    if (r < 3)
+                        r = 3;
+                    break;
+                }
+            }
+        }
+    });
+    risk = r;
+
+    switch (risk) {
+        case 0: {
+            document.getElementById("risk_eval").textContent = "None";
+            document.getElementById("risk_eval").style.color = "green";
+            break
+        }
+
+        case 1: {
+            document.getElementById("risk_eval").textContent = "Faculty";
+            document.getElementById("risk_eval").style.color = "orange";
+            break
+        }
+
+        case 2:
+        case 3: {
+            document.getElementById("risk_eval").textContent = "Committee";
+            document.getElementById("risk_eval").style.color = "red";
+            break
+        }
+
+    }
+}
+
+function completeQuestionaire() {
+    hideQuestions();
+    document.getElementById("filter_question_form").children[0].style.height = "15%"
+    setHidden(document.getElementsByClassName("question-content")[0]);
+
+    setHidden(document.getElementById("questionnaire_popup"));
+
+    switch (risk) {
+        case 0: {
+            document.getElementById("risk_message").textContent = "You do not need to submit an ethics application";
+            document.getElementById("risk_message").style.color = "green";
+            document.getElementById("btn_question_complete_proceed").textContent = "Home";
+            document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
+                //TODO redirect to home
+            };
+            break
+        }
+
+        case 1: {
+            document.getElementById("risk_message").textContent = "You need to submit an ethics application for your faculty to review";
+            document.getElementById("risk_message").style.color = "orange";
+            document.getElementById("btn_question_complete_proceed").textContent = "Ok";
+            break
+        }
+
+        case 2:
+        case 3: {
+            document.getElementById("risk_message").textContent = "You need to submit an ethics application for the central committee to review";
+            document.getElementById("risk_message").style.color = "red";
+            document.getElementById("btn_question_complete_proceed").textContent = "Ok";
+            break
+        }
+
+    }
+    setVisible(document.getElementById("complete_popup"));
+}
+
+function hideQuestions() {
+    var questionList = document.querySelectorAll(".question");
+    numQuestions = questionList.length;
+    questionList.forEach(function (e) {
+        setHidden(e);
+    });
+}
+
 function docReady() {
 
     // Sets number of section sections
-    numSections = document.querySelectorAll(".section").length;
-    indexSections = 0;
+    var sectionList = document.querySelectorAll(".section");
+    numSections = sectionList.length;
+    sectionList.forEach(function (e) {
+        setHidden(e);
+    });
 
     // Sets number of question sections
-    numQuestions = document.querySelectorAll(".question").length;
-    indexQuestions = 0;
-
-    // Show first question in popup question list
-    nextQuestion();
-
-    // Show first section in application form
-    nextSection();
+    hideQuestions();
 
     document.querySelectorAll(".question")[0].classList.add("visible");
+
+    document.getElementById("btnStartQuestions").onclick = function (ev) {
+
+        //TODO temporary setting only - fix height issue
+        document.getElementById("filter_question_form").children[0].style.height = "70%";
+        document.getElementsByClassName("question-content")[0].style.height = "90%";
+
+        setHidden(document.getElementById("btnStartQuestions"));
+        setVisible(document.querySelectorAll(".question-content").item(0));
+        nextQuestion();
+    };
+
+    document.querySelectorAll(".condition").forEach(function (value) { value.onclick = checkRisk});
+
+    document.getElementById("btnNextQuestion").onclick = function (ev) {
+
+        if (indexQuestions + 1 < numQuestions) {
+            nextQuestion()
+        } else {
+            completeQuestionaire();
+        }
+    };
+    document.getElementById("btnPreviousQuestion").onclick = function (ev) {
+        if (indexQuestions > 0) {
+            previousQuestion();
+        } else {
+            hide(document.getElementById("btnPreviousQuestion"));
+        }
+
+    };
 }
 
 // - sets the 'state' to visible
@@ -113,8 +237,8 @@ function docReady() {
 function nextQuestion() {
     // Set first section active
     var nodelistQuestion = document.querySelectorAll(".question");
-    setVisible(nodelistQuestion[indexQuestions]);
-    setHidden(nodelistQuestion[++indexQuestions]);
+    setHidden(nodelistQuestion[indexQuestions]);
+    setVisible(nodelistQuestion[++indexQuestions]);
 }
 
 // - sets the 'state' to hidden
@@ -124,8 +248,8 @@ function nextQuestion() {
 function previousQuestion() {
     // Set first section active
     var nodelistQuestion = document.querySelectorAll(".question");
-    setVisible(nodelistQuestion[indexQuestions]);
-    setHidden(nodelistQuestion[--indexQuestions]);
+    setHidden(nodelistQuestion[indexQuestions]);
+    setVisible(nodelistQuestion[--indexQuestions]);
 }
 
 // - sets the 'state' to visible
@@ -135,8 +259,8 @@ function previousQuestion() {
 function nextSection() {
     // Set first section active
     var nodelistSections = document.querySelectorAll(".section");
-    setVisible(nodelistSections[indexSections]);
-    setHidden(nodelistSections[++indexSections]);
+    setHidden(nodelistSections[indexSections]);
+    setVisible(nodelistSections[++indexSections]);
 }
 
 // - sets the 'state' to hidden
@@ -146,18 +270,37 @@ function nextSection() {
 function previousSection() {
     // Set first section active
     var nodelistSections = document.querySelectorAll(".section");
-    setVisible(nodelistSections[indexSections]);
-    setHidden(nodelistSections[--indexSections]);
+    setHidden(nodelistSections[indexSections]);
+    setVisible(nodelistSections[--indexSections]);
 }
 
 // hides an element
 function setHidden(element) {
+    if (element == null)
+        return;
     element.classList.remove("visible");
     element.classList.add("hidden");
 }
 
 // makes an element visible
 function setVisible(element) {
+    if (element == null)
+        return;
     element.classList.remove("hidden");
     element.classList.add("visible");
 }
+
+// hides an element
+function hide(element) {
+    if (element == null)
+        return;
+    element.style.display = "none"
+}
+
+// makes an element visible
+function show(element) {
+    if (element == null)
+        return;
+    element.style.display = ""
+}
+

@@ -24,7 +24,6 @@
 
 .section {
     position: absolute;
-    display: none;
 }
 
 .hidden {
@@ -65,7 +64,6 @@ input {
 
 .question {
     position: absolute;
-    display: none;
 }
 
 .condition {
@@ -73,7 +71,16 @@ input {
 }
 
 .question-content {
-    color: white;
+    background-color: white;
+    padding: 20px;
+}
+
+.nmu-color-very-dark {
+    color: #061c2c;
+}
+
+.nmu-color-dark {
+    color: #0A283F;
 }
 
 .opague-background {
@@ -83,4 +90,29 @@ input {
 .nmu-theme-background {
     color: white;
     background-color: #0A283F !important;
+}
+
+.nmu-theme-darkbackground {
+    background-color: #061c2c;
+}
+
+.popup-header{
+    padding: 20px;
+    position: relative;
+    top: -20px;
+    overflow: hidden;
+    background-color: #061c2c;
+}
+
+.standard-padding-20 {
+    padding-top: 20px;
+    margin: -20px;
+}
+
+.conditions {
+    font-size: 15pt;
+}
+
+.condition {
+    margin: 10px;
 }
