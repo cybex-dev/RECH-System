@@ -39,15 +39,15 @@ button {
     background-color: #4CAF50;
     color: white;
     padding: 14px 20px;
-    margin: 8px 26px;
+    margin: 26px;
     border: none;
     cursor: pointer;
-    width: 90%;
+    width: 95%;
     font-size:20px;
 }
-button:hover {
-    opacity: 0.8;
-}
+/*button:hover {*/
+    /*opacity: 0.8;*/
+/*}*/
 
 /* Center the image and position the close button */
 .imgcontainer {
@@ -80,7 +80,7 @@ button:hover {
     margin: 10% auto 15% auto;
     width: 60%;
     padding-top: 30px;
-    padding-bottom: 30px;
+    /*padding-bottom: 30px;*/
     border-radius: 0;
     overflow: hidden;
 }
@@ -115,12 +115,13 @@ button:hover {
 .darkbackground > li > a{
     padding-left: 10px;
     padding-right: 20px;
+    color: #FFFFFF;
 }
 
 .darkbackground > li {
-    line-height: 4em;
-    margin-left: 10px;
-    margin-right: 20px;
+    line-height: 3em;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .darkbackground > li {
@@ -146,4 +147,20 @@ button:hover {
 
 .close {
     color: #FFFFFF !important;
+}
+
+a:hover {
+    text-decoration: none !important;
+}
+
+.header-panel {
+    padding-bottom: 10px;
+}
+
+.lessen-top-margin {
+    margin-top: -30px;
+}
+
+.lessen-top-margin-child {
+    margin-top: -10px;
 }

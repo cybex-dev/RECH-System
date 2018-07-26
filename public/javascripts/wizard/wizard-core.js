@@ -91,7 +91,7 @@ _docReady(docReady());
 
 function checkRisk() {
     var r = 0;
-    document.querySelectorAll(".condition").forEach(function(element) {
+    document.querySelectorAll(".condition").forEach(function (element) {
         if (element.checked) {
             var v = element.attributes.getNamedItem("risk");
             switch (v.nodeValue) {
@@ -142,8 +142,9 @@ function checkRisk() {
 
 function completeQuestionaire() {
     hideQuestions();
-    document.getElementById("filter_question_form").children[0].style.height = "15%"
+    document.getElementById("filter_question_form").children[0].style.height = "15%";
     setHidden(document.getElementsByClassName("question-content")[0]);
+    setHidden(document.getElementById("filter_question_form"));
 
     setHidden(document.getElementById("questionnaire_popup"));
 
@@ -154,6 +155,7 @@ function completeQuestionaire() {
             document.getElementById("btn_question_complete_proceed").textContent = "Home";
             document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
                 //TODO redirect to home
+
             };
             break
         }
@@ -185,6 +187,23 @@ function hideQuestions() {
     });
 }
 
+function eventNextClick() {
+
+    var old = indexQuestions;
+    if (indexQuestions < numQuestions) {
+        document.getElementById("btnNextQuestion").textContent = "Next";
+        nextQuestion();
+        if (old === 0 && indexQuestions === 1)
+            show(document.getElementById("btnPreviousQuestion"));
+        if (indexQuestions + 1 === (numQuestions)) {
+            document.getElementById("btnNextQuestion").textContent = "Complete";
+            document.getElementById("btnNextQuestion").onclick = completeQuestionaire;
+        }
+        else
+            document.getElementById("btnNextQuestion").textContent = "Next";
+    }
+}
+
 function docReady() {
 
     // Sets number of section sections
@@ -210,24 +229,26 @@ function docReady() {
         nextQuestion();
     };
 
-    document.querySelectorAll(".condition").forEach(function (value) { value.onclick = checkRisk});
+    document.querySelectorAll(".condition").forEach(function (value) {
+        value.onclick = checkRisk
+    });
 
-    document.getElementById("btnNextQuestion").onclick = function (ev) {
-
-        if (indexQuestions + 1 < numQuestions) {
-            nextQuestion()
-        } else {
-            completeQuestionaire();
-        }
-    };
+    document.getElementById("btnNextQuestion").onclick = eventNextClick;
     document.getElementById("btnPreviousQuestion").onclick = function (ev) {
+
+        var old = indexQuestions;
         if (indexQuestions > 0) {
             previousQuestion();
-        } else {
-            hide(document.getElementById("btnPreviousQuestion"));
+            if (old === (numQuestions - 1) && indexQuestions === (numQuestions - 2)) {
+                show(document.getElementById("btnNextQuestion"));
+                document.getElementById("btnNextQuestion").onclick = eventNextClick;
+            }
         }
 
+        if (indexQuestions === 0)
+            hide(document.getElementById("btnPreviousQuestion"));
     };
+    hide(document.getElementById("btnPreviousQuestion"));
 }
 
 // - sets the 'state' to visible

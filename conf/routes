@@ -6,6 +6,7 @@
 GET     /                               controllers.HomeController.index
 GET     /about                          controllers.HomeController.about
 GET     /help_support                   controllers.HomeController.helpSupport
+GET     /jsRoutes                       controllers.HomeController.javascriptRoutes
 
 ### ### Application System ###
 
@@ -20,6 +21,7 @@ GET     /user/overview                  controllers.UserSystem.ProfileHandler.ov
 
 GET     /user/profile                   controllers.UserSystem.ProfileHandler.settings
 POST    /user/profile                   controllers.UserSystem.ProfileHandler.modifySettings
+GET     /user/jsRoutes                  controllers.UserSystem.ProfileHandler.javascriptRoutes
 
 ### ### Application System ###
 

@@ -50,19 +50,20 @@
     </ul>
 </div>
 
-    <div id="select_application_type_popup" class="modal" onmouseleave="hidePopup('select_application_type_popup')">
+    <div id="select_application_type_popup" class="modal">
         <div class="modal-content animate nmu-theme-darkbackground">
-            <div class="imgcontainer popup-header">
+            <div class="popup-header">
                 <span onclick="hidePopup('select_application_type_popup')" class="close" title="Close PopUp">&times;</span>
-                <h1 style="text-align:center">Choose application type</h1>
+                <h2>Choose application type</h2>
             </div>
 
-            <form action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")" method="get">
-                <button class="nmu-button" type="submit">Human Research</button>
-            </form>
-            <br/>
-            <form action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")" method="get">
-                <button class="nmu-button" type="submit">Animal Research</button>
-            </form>
+            <div class="lessen-top-margin">
+                <form class="lessen-top-margin-child" action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")" method="get">
+                    <button class="nmu-button" type="submit">Human Research</button>
+                </form>
+                <form class="lessen-top-margin-child" action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")" method="get">
+                    <button class="nmu-button" type="submit">Animal Research</button>
+                </form>
+            </div>
         </div>
     </div>

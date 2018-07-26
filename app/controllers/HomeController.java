@@ -1,9 +1,11 @@
 package controllers;
 
+import controllers.ApplicationSystem.routes;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.routing.JavaScriptReverseRouter;
 import views.html.Templates.Masterpage;
 
 import javax.inject.Inject;
@@ -87,5 +89,19 @@ public class HomeController extends Controller {
      */
     public Result helpSupport(){
         return ok(views.html.General.HelpSupport.render());
+    }
+
+    /**
+     * Generates controller javascript routes
+     * @return
+     */
+    public Result javascriptRoutes(){
+        return ok(
+                JavaScriptReverseRouter.create("homeRoutes",
+                        controllers.routes.javascript.HomeController.about(),
+                        controllers.routes.javascript.HomeController.helpSupport(),
+                        controllers.routes.javascript.HomeController.index()
+                        )
+        ).as("text/javascript");
     }
 }
