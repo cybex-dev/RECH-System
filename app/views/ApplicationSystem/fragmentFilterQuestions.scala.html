@@ -21,7 +21,7 @@
         </div>
 
         <div class="standard-padding-20">
-            <button class="nmu-button" type="button" href="#" id="btnStartQuestions">Ok, lets begin</button>
+            <button class="nmu-button" type="button" href="#" id="btnStartQuestions">Start</button>
             <div class="question-content nmu-color-very-dark hidden">
                 @{
                     var questionId = 0;
@@ -62,9 +62,10 @@
 
     <div id="complete_popup" class="modal-content animate popup-header hidden">
         <div class="header-panel">
-            <h2 style="text-align: left">Complete</h2>
+            <span onclick="hidePopup('complete_popup')" class="close" title="Close PopUp">&times;</span>
+            <h2 style="text-align: center">Complete</h2>
         </div>
-        <div class="question-content nmu-color-very-dark hidden">
+        <div class="question-content nmu-color-very-dark">
             <h4 style="text-align: center" id="risk_message"></h4>
             <button class="button" id="btn_question_complete_proceed"></button>
         </div>

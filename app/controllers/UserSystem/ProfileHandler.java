@@ -2,6 +2,7 @@ package controllers.UserSystem;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.routing.JavaScriptReverseRouter;
 
 public class ProfileHandler extends Controller {
 
@@ -34,5 +35,19 @@ public class ProfileHandler extends Controller {
      */
     public Result modifySettings(){
         return TODO;
+    }
+
+    /**
+     * Generates controller javascript routes
+     * @return
+     */
+    public Result javascriptRoutes(){
+        return ok(
+                JavaScriptReverseRouter.create("userRoutes",
+                        routes.javascript.ProfileHandler.overview(),
+                        routes.javascript.ProfileHandler.modifySettings(),
+                        routes.javascript.ProfileHandler.settings()
+                )
+        ).as("text/javascript");
     }
 }
