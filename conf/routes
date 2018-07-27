@@ -31,6 +31,7 @@ GET     /user/applications              controllers.ApplicationSystem.Applicatio
 # New Application (application type passed as parameter)
 GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
 GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: Integer)
++nocsrf
 POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
 POST    /application/process            controllers.ApplicationSystem.ApplicationHandler.processApplication
 

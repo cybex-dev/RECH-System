@@ -21,6 +21,7 @@ import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.RequireCSRFCheck;
+import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -45,12 +46,19 @@ public class ApplicationHandler extends Controller {
         this.formFactory = formFactory;
     }
 
-    @Inject
-    private JDBCExecutor jdbcExecutor;
+//    @Inject
+////    private JDBCExecutor jdbcExecutor;
+
+//    @Inject
+//    public ApplicationHandler(JDBCExecutor jdbcExecutor) {
+//        this.jdbcExecutor = jdbcExecutor;
+//    }
+
+    private HttpExecutionContext httpExecutionContext;
 
     @Inject
-    public ApplicationHandler(JDBCExecutor jdbcExecutor) {
-        this.jdbcExecutor = jdbcExecutor;
+    public ApplicationHandler(HttpExecutionContext ec) {
+        this.httpExecutionContext = ec;
     }
 
     // Uses XML document to create form, based in as Scala Squence type and processed in view
@@ -148,8 +156,9 @@ public class ApplicationHandler extends Controller {
 
             // Get application type as raw field
             try {
-                String type = formApplication.get("application_type");
-                application_type = ApplicationType.valueOf(type);
+//                String type = formApplication.get("application_type");;
+//                application_type = ApplicationType.valueOf(type);
+                application_type = ApplicationType.Human;
             } catch (Exception x) {
                 x.printStackTrace();
                 return badRequest(x.toString());
@@ -278,7 +287,8 @@ public class ApplicationHandler extends Controller {
 
             return ok();
 
-        }, jdbcExecutor);
+        }, httpExecutionContext.current() );
+        /*jdbcExecutor*/
     }
 
     /**
