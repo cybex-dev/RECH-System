@@ -136,15 +136,16 @@ function checkRisk() {
             document.getElementById("risk_eval").style.color = "red";
             break
         }
-
     }
+
+    document.getElementById('application_level').value = risk;
 }
 
-function completeQuestionaire() {
+function completeQuestionnaire() {
     hideQuestions();
     document.getElementById("filter_question_form").children[0].style.height = "15%";
     setHidden(document.getElementsByClassName("question-content")[0]);
-    setHidden(document.getElementById("filter_question_form"));
+
 
     setHidden(document.getElementById("questionnaire_popup"));
 
@@ -155,7 +156,7 @@ function completeQuestionaire() {
             document.getElementById("btn_question_complete_proceed").textContent = "Home";
             document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
                 //TODO redirect to home
-                window.location.href = 'homeRoutes.controllers.HomeControllers.index()';
+                window.location.href = homeRoutes.controllers.HomeController.index().url;
             };
             break
         }
@@ -163,7 +164,10 @@ function completeQuestionaire() {
         case 1: {
             document.getElementById("risk_message").textContent = "You need to submit an ethics application for your faculty to review";
             document.getElementById("risk_message").style.color = "orange";
-            document.getElementById("btn_question_complete_proceed").textContent = "Ok";
+            document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
+                setHidden(document.getElementById("filter_question_form"));
+                nextSection();
+            };
             break
         }
 
@@ -171,7 +175,10 @@ function completeQuestionaire() {
         case 3: {
             document.getElementById("risk_message").textContent = "You need to submit an ethics application for the central committee to review";
             document.getElementById("risk_message").style.color = "red";
-            document.getElementById("btn_question_complete_proceed").textContent = "Ok";
+            document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
+                setHidden(document.getElementById("filter_question_form"));
+                nextSection();
+            };
             break
         }
 
@@ -197,7 +204,7 @@ function eventNextClick() {
             show(document.getElementById("btnPreviousQuestion"));
         if (indexQuestions + 1 === (numQuestions)) {
             document.getElementById("btnNextQuestion").textContent = "Complete";
-            document.getElementById("btnNextQuestion").onclick = completeQuestionaire;
+            document.getElementById("btnNextQuestion").onclick = completeQuestionnaire;
         }
         else
             document.getElementById("btnNextQuestion").textContent = "Next";
@@ -206,17 +213,17 @@ function eventNextClick() {
 
 function docReady() {
 
-    // Sets number of section sections
-    var sectionList = document.querySelectorAll(".section");
-    numSections = sectionList.length;
-    sectionList.forEach(function (e) {
-        setHidden(e);
-    });
+    // // Sets number of section sections
+    // var sectionList = document.querySelectorAll(".section");
+    // numSections = sectionList.length;
+    // sectionList.forEach(function (e) {
+    //     setHidden(e);
+    // });
 
     // Sets number of question sections
     hideQuestions();
 
-    document.querySelectorAll(".question")[0].classList.add("visible");
+    // document.querySelectorAll(".question")[0].classList.add("visible");
 
     document.getElementById("btnStartQuestions").onclick = function (ev) {
 
@@ -249,6 +256,9 @@ function docReady() {
             hide(document.getElementById("btnPreviousQuestion"));
     };
     hide(document.getElementById("btnPreviousQuestion"));
+
+    // Initializes wizard
+    initWizard();
 }
 
 // - sets the 'state' to visible
@@ -325,3 +335,62 @@ function show(element) {
     element.style.display = ""
 }
 
+function addDocumentOverview() {
+    var docsHtml = "";
+    document.querySelectorAll("input[type='file']").forEach(function (value) {
+        var id = "chk_" + value.id;
+        var req = value.attributes.getNamedItem("file_required").value;
+        if (req==null)
+            req = "false";
+        var required = (req === "true") ? "Required" : "Optional";
+        var chkString = "<div class=\"row\"><div class=\"col-sm-10\"><p style='display: inline-block;; font-size: 0.8em'>" + value.attributes.getNamedItem("desc").value + " (" + required + ")</p></div><div class=\"col-sm-1\"><input style='padding-right: 10px; float: right' disabled type=\"checkbox\" value='false' id=\"" + id + "\"></div></div>";
+        docsHtml += chkString;
+    });
+    document.getElementById("documents_overview_container").innerHTML += docsHtml;
+}
+
+function addApplicationOverview() {
+    var docsHtml = "";
+    document.querySelectorAll(".section").forEach(function (value) {
+        var id = "chk_sect_" + value.id;
+        var name = value.getAttribute('name');
+        var chkString = "<div class=\"row\"><div class=\"col-sm-10\"><p style='display: inline-block;; font-size: 0.8em'>" + name + "</p></div><div class=\"col-sm-1\"><input style='padding-right: 10px; float: right' disabled type=\"checkbox\" value='false' id=\"" + id + "\"></div></div>";
+        docsHtml += chkString;
+    });
+    document.getElementById("application_overview_container").innerHTML += docsHtml;
+}
+
+// initialize Wizard
+function initWizard() {
+    function addCollapsibleSections() {
+        document.querySelectorAll(".section").forEach(function (value) {
+            value.firstChild.classList.add("nmu-button", "collapsible");
+        });
+        // document.querySelectorAll(".group").forEach(function (value) {
+        //     value.firstChild.classList.add("collapsible");
+        // });
+
+        // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
+        document.querySelectorAll(".section .group").forEach(function (e) {
+            e.classList.add("collapsible-child");
+        });
+    }
+
+    // Link each section heading to group collapbsible
+    document.querySelectorAll(".section").forEach(function (e) {
+        e.firstChild.onclick = function () {
+            document.querySelectorAll("#" + e.id + ".section .group").forEach(function (child) {
+                child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
+            })
+        }
+    });
+
+    var list = document.querySelectorAll(".section");
+    list.item(list.length - 1).style.border = "0";
+
+    addCollapsibleSections();
+
+    addDocumentOverview();
+
+    addApplicationOverview();
+}

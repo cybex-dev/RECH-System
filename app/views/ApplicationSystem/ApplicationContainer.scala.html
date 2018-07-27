@@ -5,15 +5,91 @@
 @import play.data.DynamicForm
 @import play.twirl.api.Html
 @import views.html.Templates.Masterpage
-@import views.html.b4
-@import views.html.b4.vertical
 @import views.html.ApplicationSystem.fragmentFilterQuestions
+@import views.html.Components._
+
 @(pageTitle: String)(applicationType: String)(root: Element)(form: DynamicForm)(status: ApplicationStatus)(questionList: util.List[Question])
 
 
+@application_content = @{
+    def createComponent(element: Element): String = {
+        val elementType = element.getType.toLowerCase
+        val q = element.getChildren.getFirst.getValue.toString
+        val hint = element.getHint
+        val id = element.getId
+        val a = ""
+        elementType match {
+            case "boolean" =>
+                /*creates checkbox*/
+                inputCheckbox.apply(id, q, a, hint).toString()
 
+            case "number" =>
+                inputText.apply(id, q, a, hint).toString()
+            /*creates text field with number specific*/
 
+            case "long_text" =>
+                /*creates a multiline text field*/
+                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words")).toString()
 
+            case "text" =>
+                /*creates text field*/
+                inputText.apply(id, q, a, hint).toString()
+
+            case "date" =>
+                /*creates text field*/
+                inputDate.apply(id, q, a, hint).toString()
+
+            case "document" =>
+                /*creates text field*/
+                var req = element.getAttributes.get("required")
+                if (req == null) {
+                    req = "false"
+                }
+                val desc = element.getAttributes.get("desc")
+                inputFile.apply(id, q, a, hint, desc, req).toString()
+
+            case "list" =>
+                "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
+
+            case _ =>
+                "<p>Unhandled Tag : " + element.getType.toLowerCase() + "</p>"
+        }
+    }
+
+    def getHeading(tag: String, title: String): String = {
+        tag match {
+            case "section" => "<h3>" + title + "</h3>"
+            case "group" => "<h5>" + title + "</h5>"
+            case "list" => "<h5>" + title + "</h5>"
+            case _ => ""
+        }
+    }
+
+    def parseElement(element: Element): String = {
+        val innerText = for(elem <- element.getChildren) yield {
+            if(!elem.isComponent) {
+                /*this creates a container element which consumes some html type text*/
+                val innerText = parseElement(elem)
+                val pre = elem.getPreTag("div")
+                val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
+                val post = elem.getPostTag("div")
+                pre + heading + innerText + post
+            } else {
+                /*this creates a component of type a specific type*/
+                createComponent(elem)
+            }
+        }
+        innerText.mkString("")
+    }
+
+    helper.form(action = controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()) {
+        helper.CSRF.formField
+        var v = parseElement(root)
+        v += "<br><button type=\"submit\" class=\"nmu-button\">Submit Application</button>"
+        Html(v)
+    }
+
+}
 
 
 
@@ -48,7 +124,8 @@
 
 
 @bodyBlock = {
-    <h1>Create Ethics Application for @applicationType Research</h1>
+    <br>
+    <h2>Create Ethics Application for @applicationType Research</h2>
     <br>
     <div class="wizard-container">
         <div class="wizard-header">
@@ -59,79 +136,20 @@
 
             </div>
             <div class="wizard-body">
-                <p>
-                @{
-                    def createComponent(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
-                        val elementType = element.getType.toLowerCase
-                        val q = element.getChildren.getFirst.getValue
-                        val a = ""
-                        elementType match {
-                            case "boolean" =>
-                                /*creates checkbox*/
-                                b4.checkbox(form(element.getId), '_label -> q, 'value -> a).toString()
-
-                            case "number" =>
-                                b4.number(form(element.getId), '_label -> q, 'value -> a).toString()
-                            /*creates text field with number specific*/
-
-                            case "long_text" =>
-                                /*creates a multiline text field*/
-                                b4.text(form(element.getId), '_label -> q, 'value -> a).toString()
-
-                            case "text" =>
-                                /*creates text field*/
-                                b4.text(form(element.getId), '_label -> q, 'value -> a).toString()
-
-                            case "date" =>
-                                /*creates text field*/
-                                b4.date(form(element.getId), '_label -> q, 'value -> a).toString()
-
-                            case "document" =>
-                                /*creates text field*/
-                                b4.file(form(element.getId), '_label -> q, 'value -> a).toString()
-
-                            case "list" =>
-                                "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
-
-                            case _ =>
-                                "<p>Unhandled Tag : " + element.getType.toLowerCase() + "</p>"
-                        }
-                    }
-
-                    def getHeading(tag: String, title: String): String = {
-                        tag match {
-                            case "section" => "<h2>" + title + "</h2>"
-                            case "group" => "<h3>" + title + "</h3>"
-                            case "list" => "<h4>" + title + "</h4>"
-                            case _ => ""
-                        }
-                    }
-
-                    def parseElement(element: Element)(implicit vfc: vertical.VerticalFieldConstructor): String = {
-                        val innerText = for(elem <- element.getChildren) yield {
-                            if(!elem.isComponent) {
-                                /*this creates a container element which consumes some html type text*/
-                                val innerText = parseElement(elem)
-                                val pre = elem.getPreTag("div")
-                                val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
-                                val post = elem.getPostTag("div")
-                                pre + heading + innerText + post
-                            } else {
-                                /*this creates a component of type a specific type*/
-                                createComponent(elem)
-                            }
-                        }
-                        innerText.mkString("")
-                    }
-
-                    b4.vertical.formCSRF(controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()) { implicit vfc =>
-                        val v = parseElement(root)(vfc)
-                        Html(v)
-                    }
-
-                }
-
-                </p>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <input type="hidden" value="" id="application_level">
+                        @application_content
+                    </div>
+                    <div class="col-sm-3">
+                        <div id="application_overview_container" style="margin: 10px; padding: 10px; border: 1px solid #ffffff">
+                            <h5>Application Overview</h5>
+                        </div>
+                        <div id="documents_overview_container" style="margin: 10px; padding: 10px; border: 1px solid #ffffff">
+                            <h5>Required Documents</h5>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

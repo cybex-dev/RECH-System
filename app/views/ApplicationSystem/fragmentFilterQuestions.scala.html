@@ -62,12 +62,12 @@
 
     <div id="complete_popup" class="modal-content animate popup-header hidden">
         <div class="header-panel">
-            <span onclick="hidePopup('complete_popup')" class="close" title="Close PopUp">&times;</span>
+            <span onclick="hidePopup('complete_popup'); setHidden(document.getElementById('filter_question_form'))" class="close" title="Close PopUp">&times;</span>
             <h2 style="text-align: center">Complete</h2>
         </div>
         <div class="question-content nmu-color-very-dark">
             <h4 style="text-align: center" id="risk_message"></h4>
-            <button class="button" id="btn_question_complete_proceed"></button>
+            <button class="button nmu-button" id="btn_question_complete_proceed">Ok</button>
         </div>
     </div>
 </div>

@@ -19,6 +19,8 @@ import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
 import play.data.FormFactory;
+import play.filters.csrf.AddCSRFToken;
+import play.filters.csrf.RequireCSRFCheck;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -62,6 +64,7 @@ public class ApplicationHandler extends Controller {
      * Should only be avialble if the is submitted property is true or {@link RECEngine} allows this.
      * @return
      */
+    @AddCSRFToken
     public Result editApplication(Integer applicationID) {
         return TODO;
     }
@@ -77,6 +80,7 @@ public class ApplicationHandler extends Controller {
      * @param applicationID
      * @return
      */
+    @AddCSRFToken
     public Result reviewApplication(String applicationID) {
         return TODO;
     }
@@ -85,6 +89,7 @@ public class ApplicationHandler extends Controller {
      * Submit revised application and component data only if {@link RECEngine} allows it
      * @return
      */
+    @RequireCSRFCheck
     public Result submitRevision() {
         return TODO;
     }
@@ -95,6 +100,7 @@ public class ApplicationHandler extends Controller {
      * Gets all applications associated with the user in a view
      * @return
      */
+    @AddCSRFToken
     public Result allApplications() {
         try {
             EntityPerson person = EntityPerson.getPersonById(session().get("user_email"));
@@ -110,6 +116,7 @@ public class ApplicationHandler extends Controller {
      * @param type
      * @return
      */
+    @AddCSRFToken
     public Result newApplication(String type) {
         ApplicationType applicationType = ApplicationType.parse(type);
         DynamicForm form = formFactory.form();
@@ -118,6 +125,7 @@ public class ApplicationHandler extends Controller {
         return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList()));
     }
 
+    @RequireCSRFCheck
     public Result processApplication(){
         DynamicForm form = formFactory.form();
         String id = form.get("application_id");
@@ -131,6 +139,7 @@ public class ApplicationHandler extends Controller {
      *
      * If Application for is complete (determined by engine, the PI should be notified of this application on the overview screen and once per week
      */
+    @RequireCSRFCheck
     //TODO implement draft save and RECEngine association
     public CompletionStage<Result> createApplication() {
         return CompletableFuture.supplyAsync(() -> {
@@ -219,8 +228,17 @@ public class ApplicationHandler extends Controller {
             });
 
             // Create Entities from Root Element
-            //TODO implement this
             try {
+                // Set application level
+                /*
+                 * 0 - None (should not appear)
+                 * 1 - Faculty review
+                 * 2 - Committee review
+                 */
+
+                short appLevel = Short.parseShort(formApplication.get("application_level"));
+                application.setApplicationLevel(appLevel);
+
                 // Get pi id from session
                 String pi_id = session(CookieTags.user_id);
                 application.setPiId(pi_id);
@@ -269,6 +287,7 @@ public class ApplicationHandler extends Controller {
      * @param applicationId
      * @return
      */
+    @RequireCSRFCheck
     public Result duplicateApplication(Integer applicationId){
         return TODO;
     }
@@ -437,6 +456,7 @@ public class ApplicationHandler extends Controller {
         }
     }
 
+    @RequireCSRFCheck
     public Result upload(String id) {
         File file = request().body().asRaw().asFile();
         String hashcode = String.valueOf(file.hashCode());
@@ -447,6 +467,7 @@ public class ApplicationHandler extends Controller {
      * Generates controller javascript routes
      * @return
      */
+    @AddCSRFToken
     public Result javascriptRoutes(){
         return ok(
                 JavaScriptReverseRouter.create("applicationRoutes",
