@@ -5,14 +5,36 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class EntityEthicsApplicationPK implements Serializable {
+public class EntityComponentVersionPK implements Serializable {
+    private Short version;
+    private String componentId;
     private String applicationType;
     private Integer applicationYear;
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "application_type", nullable = false, length = 255)
+    @Column(name = "version", nullable = false)
+    @Id
+    public Short getVersion() {
+        return version;
+    }
+
+    public void setVersion(Short version) {
+        this.version = version;
+    }
+
+    @Column(name = "component_id", nullable = false, length = 50)
+    @Id
+    public String getComponentId() {
+        return componentId;
+    }
+
+    public void setComponentId(String componentId) {
+        this.componentId = componentId;
+    }
+
+    @Column(name = "application_type", nullable = false, length = 1)
     @Id
     public String getApplicationType() {
         return applicationType;
@@ -66,8 +88,10 @@ public class EntityEthicsApplicationPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntityEthicsApplicationPK that = (EntityEthicsApplicationPK) o;
-        return Objects.equals(applicationType, that.applicationType) &&
+        EntityComponentVersionPK that = (EntityComponentVersionPK) o;
+        return Objects.equals(version, that.version) &&
+                Objects.equals(componentId, that.componentId) &&
+                Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
@@ -77,6 +101,6 @@ public class EntityEthicsApplicationPK implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
     }
 }

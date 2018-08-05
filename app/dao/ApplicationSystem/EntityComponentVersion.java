@@ -1,17 +1,17 @@
 package dao.ApplicationSystem;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import dao.ApplicationSystem.EntityComponentversion;
+import dao.ApplicationSystem.EntityComponentversionPK;
 import io.ebean.Finder;
-import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "componentversion", schema = "rech_system")
-@IdClass(EntityComponentversionPK.class)
-public class EntityComponentversion extends Model {
+@Table(name = "ComponentVersion", schema = "rech_system")
+@IdClass(EntityComponentVersionPK.class)
+public class EntityComponentVersion {
     private Short version;
     private String componentId;
     private String applicationType;
@@ -19,17 +19,17 @@ public class EntityComponentversion extends Model {
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
-    private Boolean submitted;
+    private Byte isSubmitted;
     private Timestamp dateSubmitted;
     private Timestamp dateLastEdited;
     private String responseType;
     private String textValue;
-    private Boolean boolValue;
+    private Byte boolValue;
     private String documentName;
     private String documentDescription;
     private String documentLocationHash;
 
-    public static Finder<EntityComponentversionPK, EntityComponentversion> find = new Finder<>(EntityComponentversion.class);
+    public static Finder<EntityComponentversionPK, EntityComponentversion> find = new Finder<>(dao.ApplicationSystem.EntityComponentversion.class);
 
     @Id
     @Column(name = "version", nullable = false)
@@ -103,12 +103,12 @@ public class EntityComponentversion extends Model {
 
     @Basic
     @Column(name = "is_submitted", nullable = true)
-    public Boolean getSubmitted() {
-        return submitted;
+    public Byte getIsSubmitted() {
+        return isSubmitted;
     }
 
-    public void setSubmitted(Boolean isSubmitted) {
-        this.submitted = isSubmitted;
+    public void setIsSubmitted(Byte isSubmitted) {
+        this.isSubmitted = isSubmitted;
     }
 
     @Basic
@@ -153,11 +153,11 @@ public class EntityComponentversion extends Model {
 
     @Basic
     @Column(name = "bool_value", nullable = true)
-    public Boolean getBoolValue() {
+    public Byte getBoolValue() {
         return boolValue;
     }
 
-    public void setBoolValue(Boolean boolValue) {
+    public void setBoolValue(Byte boolValue) {
         this.boolValue = boolValue;
     }
 
@@ -195,7 +195,7 @@ public class EntityComponentversion extends Model {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntityComponentversion that = (EntityComponentversion) o;
+        EntityComponentVersion that = (EntityComponentVersion) o;
         return Objects.equals(version, that.version) &&
                 Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
@@ -203,7 +203,7 @@ public class EntityComponentversion extends Model {
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName) &&
-                Objects.equals(submitted, that.submitted) &&
+                Objects.equals(isSubmitted, that.isSubmitted) &&
                 Objects.equals(dateSubmitted, that.dateSubmitted) &&
                 Objects.equals(dateLastEdited, that.dateLastEdited) &&
                 Objects.equals(responseType, that.responseType) &&
@@ -217,10 +217,10 @@ public class EntityComponentversion extends Model {
     @Override
     public int hashCode() {
 
-        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, submitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription, documentLocationHash);
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, isSubmitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription, documentLocationHash);
     }
 
-    public static dao.ApplicationSystem.EntityComponentversion getLatestComponent(String componentId) {
+    public static EntityComponentversion getLatestComponent(String componentId) {
         return find.all()
                 .stream()
                 .filter(entityComponentversion -> entityComponentversion.componentId.equals(componentId))
@@ -228,4 +228,6 @@ public class EntityComponentversion extends Model {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find any value for componentId: " + String.valueOf(componentId)));
 
     }
+
+
 }

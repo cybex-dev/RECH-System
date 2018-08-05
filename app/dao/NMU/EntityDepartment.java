@@ -2,19 +2,18 @@ package dao.NMU;
 
 import exceptions.InvalidFieldException;
 import io.ebean.Finder;
-import io.ebean.Model;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "department", schema = "rech_system")
+@Table(name = "Department", schema = "rech_system", catalog = "")
 @IdClass(EntityDepartmentPK.class)
-public class EntityDepartment extends Model {
+public class EntityDepartment {
     private String departmentName;
     private String facultyFacultyName;
 
-    public static Finder<EntityDepartmentPK, EntityDepartment> find = new Finder<>(EntityDepartment.class);
+    public static Finder<dao.NMU.EntityDepartmentPK, dao.NMU.EntityDepartment> find = new Finder<>(dao.NMU.EntityDepartment.class);
 
     @Id
     @Column(name = "department_name", nullable = false, length = 50)
@@ -51,6 +50,7 @@ public class EntityDepartment extends Model {
         return Objects.hash(departmentName, facultyFacultyName);
     }
 
+
     public static String findFacultyByDepartment(String dept) throws InvalidFieldException {
         return find.all()
                 .stream()
@@ -59,4 +59,6 @@ public class EntityDepartment extends Model {
                 .orElseThrow(() -> new InvalidFieldException("Department has no associated faculty"))
                 .getFacultyFacultyName();
     }
+
+
 }

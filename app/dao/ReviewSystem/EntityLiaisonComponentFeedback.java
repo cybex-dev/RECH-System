@@ -1,40 +1,45 @@
-package dao.Meeting;
+package dao.ReviewSystem;
 
-import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
-import io.ebean.Finder;
-import io.ebean.Model;
-import models.ApplicationSystem.ApplicationStatus;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "agendaitem", schema = "rech_system")
-@IdClass(EntityAgendaitemPK.class)
-public class EntityAgendaitem extends Model {
-    private Timestamp meetingDate;
+@Table(name = "LiaisonComponentFeedback", schema = "rech_system")
+@IdClass(EntityLiaisonComponentFeedbackPK.class)
+public class EntityLiaisonComponentFeedback {
+    private Short version;
+    private String componentId;
     private String applicationType;
     private Integer applicationYear;
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
-    private String resolution;
-    private Short applicationStatus;
-
-    public static Finder<dao.Meeting.EntityAgendaitemPK, dao.Meeting.EntityAgendaitem> find = new Finder<>(dao.Meeting.EntityAgendaitem.class);
+    private String liaisonEmail;
+    private String componentFeedback;
+    private Byte changeSatisfactory;
+    private Timestamp feedbackDate;
 
     @Id
-    @Column(name = "meeting_date", nullable = false)
-    public Timestamp getMeetingDate() {
-        return meetingDate;
+    @Column(name = "version", nullable = false)
+    public Short getVersion() {
+        return version;
     }
 
-    public void setMeetingDate(Timestamp meetingDate) {
-        this.meetingDate = meetingDate;
+    public void setVersion(Short version) {
+        this.version = version;
+    }
+
+    @Id
+    @Column(name = "component_id", nullable = false, length = 50)
+    public String getComponentId() {
+        return componentId;
+    }
+
+    public void setComponentId(String componentId) {
+        this.componentId = componentId;
     }
 
     @Id
@@ -87,45 +92,68 @@ public class EntityAgendaitem extends Model {
         this.facultyName = facultyName;
     }
 
+    @Id
+    @Column(name = "liaison_email", nullable = false, length = 100)
+    public String getLiaisonEmail() {
+        return liaisonEmail;
+    }
+
+    public void setLiaisonEmail(String liaisonEmail) {
+        this.liaisonEmail = liaisonEmail;
+    }
+
     @Basic
-    @Column(name = "resolution", nullable = true, length = -1)
-    public String getResolution() {
-        return resolution;
+    @Column(name = "component_feedback", nullable = true, length = 255)
+    public String getComponentFeedback() {
+        return componentFeedback;
     }
 
-    public void setResolution(String resolution) {
-        this.resolution = resolution;
+    public void setComponentFeedback(String componentFeedback) {
+        this.componentFeedback = componentFeedback;
     }
 
     @Basic
-    @Column(name = "application_status", nullable = true)
-    public Short getApplicationStatus() {
-        return applicationStatus;
+    @Column(name = "change_satisfactory", nullable = true)
+    public Byte getChangeSatisfactory() {
+        return changeSatisfactory;
     }
 
-    public void setApplicationStatus(Short applicationStatus) {
-        this.applicationStatus = applicationStatus;
+    public void setChangeSatisfactory(Byte changeSatisfactory) {
+        this.changeSatisfactory = changeSatisfactory;
+    }
+
+    @Basic
+    @Column(name = "feedback_date", nullable = true)
+    public Timestamp getFeedbackDate() {
+        return feedbackDate;
+    }
+
+    public void setFeedbackDate(Timestamp feedbackDate) {
+        this.feedbackDate = feedbackDate;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntityAgendaitem that = (EntityAgendaitem) o;
-        return Objects.equals(meetingDate, that.meetingDate) &&
+        EntityLiaisonComponentFeedback that = (EntityLiaisonComponentFeedback) o;
+        return Objects.equals(version, that.version) &&
+                Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName) &&
-                Objects.equals(resolution, that.resolution) &&
-                Objects.equals(applicationStatus, that.applicationStatus);
+                Objects.equals(liaisonEmail, that.liaisonEmail) &&
+                Objects.equals(componentFeedback, that.componentFeedback) &&
+                Objects.equals(changeSatisfactory, that.changeSatisfactory) &&
+                Objects.equals(feedbackDate, that.feedbackDate);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(meetingDate, applicationType, applicationYear, applicationNumber, departmentName, facultyName, resolution, applicationStatus);
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, liaisonEmail, componentFeedback, changeSatisfactory, feedbackDate);
     }
 
     public EntityEthicsApplicationPK applicationPrimaryKey() {

@@ -1,15 +1,14 @@
 package dao.UserSystem;
 
 import io.ebean.Finder;
-import io.ebean.Model;
 import models.UserSystem.UserType;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "person", schema = "rech_system")
-public class EntityPerson extends Model {
+@Table(name = "Person", schema = "rech_system")
+public class EntityPerson {
     private String userEmail;
     private String userPasswordHash;
     private String userFirstname;
@@ -24,26 +23,6 @@ public class EntityPerson extends Model {
     private String facultyName;
 
     public static Finder<String, dao.UserSystem.EntityPerson> find = new Finder<>(dao.UserSystem.EntityPerson.class);
-
-    public static String getRTI(String facultyName) {
-        return find.all().stream()
-                .filter(entityPerson -> entityPerson.facultyName.equals(facultyName) && entityPerson.userType().equals(UserType.FacultyRTI))
-                .map(EntityPerson::getUserEmail)
-                .findFirst()
-                .orElse("");
-    }
-
-    public static String getHod(String departmentName) {
-        return find.all().stream()
-                .filter(entityPerson -> entityPerson.departmentName.equals(departmentName) && entityPerson.userType().equals(UserType.DepartmentHead))
-                .map(EntityPerson::getUserEmail)
-                .findFirst()
-                .orElse("");
-    }
-
-    public static String getRCD() {
-        return find.all().stream().filter(entityPerson -> entityPerson.userType().equals(UserType.RCD)).map(EntityPerson::getUserEmail).findFirst().orElse("");
-    }
 
     @Id
     @Column(name = "user_email", nullable = false, length = 100)
@@ -197,4 +176,25 @@ public class EntityPerson extends Model {
     public UserType userType(){
         return UserType.valueOf(personType);
     }
+
+    public static String getRCD() {
+        return find.all().stream().filter(entityPerson -> entityPerson.userType().equals(UserType.RCD)).map(dao.UserSystem.EntityPerson::getUserEmail).findFirst().orElse("");
+    }
+
+    public static String getRTI(String facultyName) {
+        return find.all().stream()
+                .filter(entityPerson -> entityPerson.facultyName.equals(facultyName) && entityPerson.userType().equals(UserType.FacultyRTI))
+                .map(dao.UserSystem.EntityPerson::getUserEmail)
+                .findFirst()
+                .orElse("");
+    }
+
+    public static String getHod(String departmentName) {
+        return find.all().stream()
+                .filter(entityPerson -> entityPerson.departmentName.equals(departmentName) && entityPerson.userType().equals(UserType.DepartmentHead))
+                .map(dao.UserSystem.EntityPerson::getUserEmail)
+                .findFirst()
+                .orElse("");
+    }
+
 }

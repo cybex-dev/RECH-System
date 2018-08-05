@@ -1,32 +1,30 @@
-package dao.Meeting;
+package dao.ReviewSystem;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Objects;
 
-@Embeddable
-public class EntityAgendaitemPK implements Serializable {
-    private Timestamp meetingDate;
+public class EntityReviewerApplicationsPK implements Serializable {
+    private String reviewerEmail;
     private String applicationType;
     private Integer applicationYear;
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
 
-    public EntityAgendaitemPK() {
+    @Column(name = "reviewer_email", nullable = false, length = 100)
+    @Id
+    public String getReviewerEmail() {
+        return reviewerEmail;
     }
 
-    public Timestamp getMeetingDate() {
-        return meetingDate;
+    public void setReviewerEmail(String reviewerEmail) {
+        this.reviewerEmail = reviewerEmail;
     }
 
-    public void setMeetingDate(Timestamp meetingDate) {
-        this.meetingDate = meetingDate;
-    }
-
+    @Column(name = "application_type", nullable = false, length = 255)
+    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -35,6 +33,8 @@ public class EntityAgendaitemPK implements Serializable {
         this.applicationType = applicationType;
     }
 
+    @Column(name = "application_year", nullable = false)
+    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -43,6 +43,8 @@ public class EntityAgendaitemPK implements Serializable {
         this.applicationYear = applicationYear;
     }
 
+    @Column(name = "application_number", nullable = false)
+    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -51,6 +53,8 @@ public class EntityAgendaitemPK implements Serializable {
         this.applicationNumber = applicationNumber;
     }
 
+    @Column(name = "department_name", nullable = false, length = 50)
+    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -59,6 +63,8 @@ public class EntityAgendaitemPK implements Serializable {
         this.departmentName = departmentName;
     }
 
+    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Id
     public String getFacultyName() {
         return facultyName;
     }
@@ -71,8 +77,8 @@ public class EntityAgendaitemPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntityAgendaitemPK that = (EntityAgendaitemPK) o;
-        return Objects.equals(meetingDate, that.meetingDate) &&
+        EntityReviewerApplicationsPK that = (EntityReviewerApplicationsPK) o;
+        return Objects.equals(reviewerEmail, that.reviewerEmail) &&
                 Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
@@ -83,6 +89,6 @@ public class EntityAgendaitemPK implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(meetingDate, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(reviewerEmail, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
     }
 }

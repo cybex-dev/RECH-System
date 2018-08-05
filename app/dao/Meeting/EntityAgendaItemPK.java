@@ -1,18 +1,30 @@
-package dao.ApplicationSystem;
+package dao.Meeting;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
-public class EntityEthicsApplicationPK implements Serializable {
+public class EntityAgendaItemPK implements Serializable {
+    private Timestamp meetingDate;
     private String applicationType;
     private Integer applicationYear;
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "application_type", nullable = false, length = 255)
+    @Column(name = "meeting_date", nullable = false)
+    @Id
+    public Timestamp getMeetingDate() {
+        return meetingDate;
+    }
+
+    public void setMeetingDate(Timestamp meetingDate) {
+        this.meetingDate = meetingDate;
+    }
+
+    @Column(name = "application_type", nullable = false, length = 1)
     @Id
     public String getApplicationType() {
         return applicationType;
@@ -66,8 +78,9 @@ public class EntityEthicsApplicationPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntityEthicsApplicationPK that = (EntityEthicsApplicationPK) o;
-        return Objects.equals(applicationType, that.applicationType) &&
+        EntityAgendaItemPK that = (EntityAgendaItemPK) o;
+        return Objects.equals(meetingDate, that.meetingDate) &&
+                Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
@@ -77,6 +90,6 @@ public class EntityEthicsApplicationPK implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(meetingDate, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
     }
 }
