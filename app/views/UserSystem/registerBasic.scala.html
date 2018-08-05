@@ -1,0 +1,12 @@
+@import Components._
+@import play.data.Form
+@import models.UserSystem.UserLoginForm
+
+@(loginForm: Form[UserLoginForm])
+
+<div class="step">
+    @helper.inputText(loginForm("email"))
+    @helper.inputPassword(loginForm("password"))
+    @helper.inputPassword(loginForm("confirm_password"))
+</div>
+

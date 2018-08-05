@@ -1,0 +1,8 @@
+@import play.data.Form
+@import models.UserSystem.UserLoginForm
+
+@(loginForm: Form[UserLoginForm])
+
+<div class="step">
+    @helper.select(loginForm("degreeLevel"), Seq(("hs", "High-School"), ("dip", "Diploma"), ("deg", "Degree"), ("hon", "Honours"), ("mas", "Masters"), ("doc", "Doctorate")))
+</div>

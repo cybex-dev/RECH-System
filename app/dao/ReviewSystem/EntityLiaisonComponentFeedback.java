@@ -1,6 +1,7 @@
 package dao.ReviewSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
+import io.ebean.Finder;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -19,8 +20,10 @@ public class EntityLiaisonComponentFeedback {
     private String facultyName;
     private String liaisonEmail;
     private String componentFeedback;
-    private Byte changeSatisfactory;
+    private Boolean changeSatisfactory;
     private Timestamp feedbackDate;
+
+    public static Finder<EntityLiaisonComponentFeedbackPK, EntityLiaisonComponentFeedback> find = new Finder<>(EntityLiaisonComponentFeedback.class);
 
     @Id
     @Column(name = "version", nullable = false)
@@ -114,11 +117,11 @@ public class EntityLiaisonComponentFeedback {
 
     @Basic
     @Column(name = "change_satisfactory", nullable = true)
-    public Byte getChangeSatisfactory() {
+    public Boolean getIsChangeSatisfactory() {
         return changeSatisfactory;
     }
 
-    public void setChangeSatisfactory(Byte changeSatisfactory) {
+    public void setIsChangeSatisfactory(Boolean changeSatisfactory) {
         this.changeSatisfactory = changeSatisfactory;
     }
 

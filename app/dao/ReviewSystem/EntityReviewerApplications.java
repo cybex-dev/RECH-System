@@ -1,15 +1,20 @@
 package dao.ReviewSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
+import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "ReviewerApplications", schema = "rech_system")
 @IdClass(EntityReviewerApplicationsPK.class)
-public class EntityReviewerApplications {
-    private String dateAssigned;
+public class EntityReviewerApplications extends Model {
+    private Timestamp dateAssigned;
     private String reviewerEmail;
     private String applicationType;
     private Integer applicationYear;
@@ -17,13 +22,15 @@ public class EntityReviewerApplications {
     private String departmentName;
     private String facultyName;
 
+    public static Finder<EntityReviewerApplicationsPK, EntityReviewerApplications> find = new Finder<>(EntityReviewerApplications.class);
+
     @Basic
     @Column(name = "date_assigned", nullable = true, length = 45)
-    public String getDateAssigned() {
+    public Timestamp getDateAssigned() {
         return dateAssigned;
     }
 
-    public void setDateAssigned(String dateAssigned) {
+    public void setDateAssigned(Timestamp dateAssigned) {
         this.dateAssigned = dateAssigned;
     }
 
@@ -115,5 +122,20 @@ public class EntityReviewerApplications {
         pk.setDepartmentName(departmentName);
         pk.setFacultyName(facultyName);
         return pk;
+    }
+
+    public void setApplicationKey(EntityEthicsApplicationPK applicationId) {
+        this.applicationNumber = applicationId.getApplicationNumber();
+        this.applicationType = applicationId.getApplicationType();
+        this.applicationYear = applicationId.getApplicationYear();
+        this.facultyName = applicationId.getFacultyName();
+        this.departmentName = applicationId.getDepartmentName();
+    }
+
+    public static List<String> getApplicationReviewers(EntityEthicsApplicationPK applicationId) {
+        return EntityReviewerApplications.find.all().stream()
+                .filter(application -> application.applicationPrimaryKey().equals(applicationId))
+                .map(EntityReviewerApplications::getReviewerEmail)
+                .collect(Collectors.toList());
     }
 }

@@ -1,7 +1,7 @@
 package controllers.ApplicationSystem;
 
 import dao.ApplicationSystem.EntityComponent;
-import dao.ApplicationSystem.EntityComponentversion;
+import dao.ApplicationSystem.EntityComponentVersion;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.NMU.EntityDepartment;
@@ -322,10 +322,9 @@ public class ApplicationHandler extends Controller {
                         Element desc = rootElement.getChildren().pop();
                         Element file = rootElement.getChildren().pop();
 
-                        EntityComponentversion componentversion = new EntityComponentversion();
+                        EntityComponentVersion componentversion = new EntityComponentVersion();
                         componentversion.setResponseType(rootElement.getType().toLowerCase());
                         componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                        componentversion.setSubmitted(false);
                         componentversion.setResponseType(rootElement.getType());
 
                         // Set document details
@@ -362,10 +361,10 @@ public class ApplicationHandler extends Controller {
                     if (childElement.getValue() instanceof Boolean) {
 
                         // Get boolean value associated with the element.
-                        EntityComponentversion componentversion = new EntityComponentversion();
+                        EntityComponentVersion componentversion = new EntityComponentVersion();
                         componentversion.setResponseType(childElement.getType().toLowerCase());
                         componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                        componentversion.setSubmitted(false);
+                        componentversion.setIsSubmitted(false);
                         componentversion.setResponseType(childElement.getType());
                         Boolean b = (Boolean) childElement.getValue();
                         componentversion.setBoolValue(b);
@@ -398,7 +397,7 @@ public class ApplicationHandler extends Controller {
                         // loop through all children $size amount of times
                         for (int i = 0; i < size; i++) {
                             // Create version storing data
-                            EntityComponentversion componentversion = new EntityComponentversion();
+                            EntityComponentVersion componentversion = new EntityComponentVersion();
 
                             // Get value from list
                             Object v = list.get(i);
@@ -429,7 +428,7 @@ public class ApplicationHandler extends Controller {
                             }
                             componentversion.setResponseType(rootElement.getType().toLowerCase());
                             componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                            componentversion.setSubmitted(false);
+                            componentversion.setIsSubmitted(false);
 
                             // Create component entity
                             EntityComponent component = new EntityComponent();

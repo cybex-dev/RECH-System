@@ -2,8 +2,10 @@ package controllers.UserSystem;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
 
+@Security.Authenticated(Secured.class)
 public class ProfileHandler extends Controller {
 
     /**

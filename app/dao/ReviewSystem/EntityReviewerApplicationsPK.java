@@ -1,10 +1,12 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class EntityReviewerApplicationsPK implements Serializable {
     private String reviewerEmail;
     private String applicationType;
@@ -14,7 +16,6 @@ public class EntityReviewerApplicationsPK implements Serializable {
     private String facultyName;
 
     @Column(name = "reviewer_email", nullable = false, length = 100)
-    @Id
     public String getReviewerEmail() {
         return reviewerEmail;
     }
@@ -24,7 +25,6 @@ public class EntityReviewerApplicationsPK implements Serializable {
     }
 
     @Column(name = "application_type", nullable = false, length = 255)
-    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -34,7 +34,6 @@ public class EntityReviewerApplicationsPK implements Serializable {
     }
 
     @Column(name = "application_year", nullable = false)
-    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -44,7 +43,6 @@ public class EntityReviewerApplicationsPK implements Serializable {
     }
 
     @Column(name = "application_number", nullable = false)
-    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -54,7 +52,6 @@ public class EntityReviewerApplicationsPK implements Serializable {
     }
 
     @Column(name = "department_name", nullable = false, length = 50)
-    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -64,7 +61,6 @@ public class EntityReviewerApplicationsPK implements Serializable {
     }
 
     @Column(name = "faculty_name", nullable = false, length = 50)
-    @Id
     public String getFacultyName() {
         return facultyName;
     }

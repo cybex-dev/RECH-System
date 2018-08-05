@@ -1,9 +1,8 @@
 package dao.ApplicationSystem;
 
-import dao.ApplicationSystem.EntityComponentversion;
-import dao.ReviewSystem.EntityReviewerfeedback;
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
+import io.ebean.Model;
 import models.ApplicationSystem.EthicsApplication;
 import models.UserSystem.UserType;
 
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "Ethics_Application", schema = "rech_system")
 @IdClass(EntityEthicsApplicationPK.class)
-public class EntityEthicsApplication {
+public class EntityEthicsApplication extends Model {
     private String applicationType;
     private Integer applicationYear;
     private Integer applicationNumber;
@@ -37,11 +36,11 @@ public class EntityEthicsApplication {
     private Short internalStatus;
     private String liaisonId;
     private Timestamp liaisonAssignedDate;
-    private Byte hodApplicationReviewApproved;
-    private Byte hodFinalApplicationApproval;
-    private Byte rtiApplicationReviewApproved;
-    private Byte rtiFinalApplicationApproval;
-    private Byte applicationLevel;
+    private Boolean hodApplicationReviewApproved;
+    private Boolean hodFinalApplicationApproval;
+    private Boolean rtiApplicationReviewApproved;
+    private Boolean rtiFinalApplicationApproval;
+    private Short applicationLevel;
 
     public static Finder<dao.ApplicationSystem.EntityEthicsApplicationPK, dao.ApplicationSystem.EntityEthicsApplication> find = new Finder<>(dao.ApplicationSystem.EntityEthicsApplication.class);
 
@@ -247,51 +246,51 @@ public class EntityEthicsApplication {
 
     @Basic
     @Column(name = "hod_application_review_approved", nullable = true)
-    public Byte getHodApplicationReviewApproved() {
+    public Boolean getHodApplicationReviewApproved() {
         return hodApplicationReviewApproved;
     }
 
-    public void setHodApplicationReviewApproved(Byte hodApplicationReviewApproved) {
+    public void setHodApplicationReviewApproved(Boolean hodApplicationReviewApproved) {
         this.hodApplicationReviewApproved = hodApplicationReviewApproved;
     }
 
     @Basic
     @Column(name = "hod_final_application_approval", nullable = true)
-    public Byte getHodFinalApplicationApproval() {
+    public Boolean getHodFinalApplicationApproval() {
         return hodFinalApplicationApproval;
     }
 
-    public void setHodFinalApplicationApproval(Byte hodFinalApplicationApproval) {
+    public void setHodFinalApplicationApproval(Boolean hodFinalApplicationApproval) {
         this.hodFinalApplicationApproval = hodFinalApplicationApproval;
     }
 
     @Basic
     @Column(name = "rti_application_review_approved", nullable = true)
-    public Byte getRtiApplicationReviewApproved() {
+    public Boolean getRtiApplicationReviewApproved() {
         return rtiApplicationReviewApproved;
     }
 
-    public void setRtiApplicationReviewApproved(Byte rtiApplicationReviewApproved) {
+    public void setRtiApplicationReviewApproved(Boolean rtiApplicationReviewApproved) {
         this.rtiApplicationReviewApproved = rtiApplicationReviewApproved;
     }
 
     @Basic
     @Column(name = "rti_final_application_approval", nullable = true)
-    public Byte getRtiFinalApplicationApproval() {
+    public Boolean getRtiFinalApplicationApproval() {
         return rtiFinalApplicationApproval;
     }
 
-    public void setRtiFinalApplicationApproval(Byte rtiFinalApplicationApproval) {
+    public void setRtiFinalApplicationApproval(Boolean rtiFinalApplicationApproval) {
         this.rtiFinalApplicationApproval = rtiFinalApplicationApproval;
     }
 
     @Basic
     @Column(name = "application_level", nullable = true)
-    public Byte getApplicationLevel() {
+    public Short getApplicationLevel() {
         return applicationLevel;
     }
 
-    public void setApplicationLevel(Byte applicationLevel) {
+    public void setApplicationLevel(Short applicationLevel) {
         this.applicationLevel = applicationLevel;
     }
 
@@ -349,8 +348,9 @@ public class EntityEthicsApplication {
                         case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(personEmail);
                         case PrimaryResponsiblePerson: return ethicsApplicationEntity.getPrpId().equals(personEmail);
                         case Liaison: return ethicsApplicationEntity.getLiaisonId().equals(personEmail);
-                        case Reviewer: return EntityReviewerfeedback.find.all().stream()
-                                .anyMatch(entityReviewercomponentfeedback -> entityReviewercomponentfeedback.applicationPrimaryKey().equals(ethicsApplicationEntity.applicationPrimaryKey()) && entityReviewercomponentfeedback.getReviewerEmail().equals(personEmail));
+                        //TODO fix
+//                        case Reviewer: return EntityReviewerfeedback.find.all().stream()
+//                                .anyMatch(entityReviewercomponentfeedback -> entityReviewercomponentfeedback.applicationPrimaryKey().equals(ethicsApplicationEntity.applicationPrimaryKey()) && entityReviewercomponentfeedback.getReviewerEmail().equals(personEmail));
                         case FacultyRTI: return ethicsApplicationEntity.getRtiId().equals(personEmail);
                         case DepartmentHead: return ethicsApplicationEntity.getHodId().equals(personEmail);
                         case RCD: return true;
@@ -372,7 +372,7 @@ public class EntityEthicsApplication {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find any application with ID: " + String.valueOf(applicationId)))
                 .getComponentId();
 
-        return EntityComponentversion
+        return EntityComponentVersion
                 .getLatestComponent(componentId)
                 .getTextValue();
 
@@ -382,15 +382,15 @@ public class EntityEthicsApplication {
 
 
     /**
-     * Gets the latest {@link EntityComponentversion} for an {@link dao.ApplicationSystem.EntityEthicsApplication} given the application ID
+     * Gets the latest {@link EntityComponentVersion} for an {@link dao.ApplicationSystem.EntityEthicsApplication} given the application ID
      * @param applicationId application ID
      * @return
      */
-    public static List<EntityComponentversion> getLatestComponents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId){
+    public static List<EntityComponentVersion> getLatestComponents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId){
         return EntityComponent
                 .getAllApplicationCompontents(applicationId)
                 .stream()
-                .map(entityComponent -> EntityComponentversion.getLatestComponent(entityComponent.getComponentId()))
+                .map(entityComponent -> EntityComponentVersion.getLatestComponent(entityComponent.getComponentId()))
                 .collect(Collectors.toList());
     }
 

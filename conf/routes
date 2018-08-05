@@ -16,6 +16,7 @@ POST    /user/register/submit           controllers.UserSystem.RegistrationContr
 GET     /user/login                     controllers.UserSystem.LoginController.login
 POST    /user/login                     controllers.UserSystem.LoginController.doLogin
 POST    /user/logout                    controllers.UserSystem.LoginController.logout
+GET     /user/forgetPassword            controllers.UserSystem.LoginController.forgotPassword
 
 GET     /user/overview                  controllers.UserSystem.ProfileHandler.overview
 
@@ -31,6 +32,7 @@ GET     /user/applications              controllers.ApplicationSystem.Applicatio
 # New Application (application type passed as parameter)
 GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
 GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: Integer)
++nocsrf
 POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
 POST    /application/process            controllers.ApplicationSystem.ApplicationHandler.processApplication
 

@@ -1,6 +1,7 @@
 package dao.ApplicationSystem;
 
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "Component", schema = "rech_system")
 @IdClass(EntityComponentPK.class)
-public class EntityComponent {
+public class EntityComponent extends Model {
     private String componentId;
     private String applicationType;
     private Integer applicationYear;

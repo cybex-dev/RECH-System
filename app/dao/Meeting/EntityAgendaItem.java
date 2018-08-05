@@ -1,6 +1,7 @@
 package dao.Meeting;
 
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
+import io.ebean.Finder;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -18,6 +19,8 @@ public class EntityAgendaItem {
     private String facultyName;
     private String resolution;
     private Short applicationStatus;
+
+    public static Finder<EntityAgendaItemPK, EntityAgendaItem> find = new Finder<>(EntityAgendaItem.class);
 
     @Id
     @Column(name = "meeting_date", nullable = false)

@@ -2,6 +2,7 @@ package dao.UserSystem;
 
 import io.ebean.Finder;
 import models.UserSystem.UserType;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -23,6 +24,13 @@ public class EntityPerson {
     private String facultyName;
 
     public static Finder<String, dao.UserSystem.EntityPerson> find = new Finder<>(dao.UserSystem.EntityPerson.class);
+
+    public static boolean authenticate(String email, String password) {
+        EntityPerson entityPerson = find.byId(email);
+        if (entityPerson == null)
+            return false;
+        return BCrypt.checkpw(password, entityPerson.getUserPasswordHash());
+    }
 
     @Id
     @Column(name = "user_email", nullable = false, length = 100)

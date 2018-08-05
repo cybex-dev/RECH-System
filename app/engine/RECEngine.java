@@ -2,12 +2,12 @@ package engine;
 
 import controllers.NotificationSystem.Notifier;
 import dao.ApplicationSystem.EntityComponent;
-import dao.ApplicationSystem.EntityComponentversion;
+import dao.ApplicationSystem.EntityComponentVersion;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
-import dao.Meeting.EntityAgendaitem;
-import dao.ReviewSystem.EntityLiaisonfeedback;
-import dao.ReviewSystem.EntityReviewerfeedback;
+import dao.Meeting.EntityAgendaItem;
+import dao.ReviewSystem.EntityLiaisonComponentFeedback;
+import dao.ReviewSystem.EntityReviewerApplications;
 import dao.UserSystem.EntityPerson;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
@@ -44,7 +44,17 @@ public class RECEngine {
 
         ApplicationStatus currentStatus = ApplicationStatus.parse(entityEthicsApplication.getInternalStatus());
 
-        Actionable actionable;
+        Actionable actionable = new Actionable() {
+            @Override
+            public void doAction() {
+
+            }
+
+            @Override
+            public void doNotify() {
+
+            }
+        };
 
         String hod, rti;
 
@@ -121,7 +131,7 @@ public class RECEngine {
                 // STEP -> AWAITING_PRP_APPROVAL (PRP Approves)
                 // STEP -> NOT_SUBMITTED (PRP Reject)
 
-                boolean approved = (entityEthicsApplication.getPrpReviewDate() == null);
+                boolean approved = (entityEthicsApplication.getPrpApprovedDate() == null);
 
                 actionable = new Actionable() {
                     ApplicationStatus newStatus = (approved) ? ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL : ApplicationStatus.NOT_SUBMITTED;
@@ -200,8 +210,8 @@ public class RECEngine {
                 // PI/PRP notified of this
                 // STEP -> AWAITING_PRE_HOD_APPROVAL (RTI approved)
                 // STEP -> READY_FOR_SUBMISSION (Both approved)
-                hodNoResponse = entityEthicsApplication.getHodReviewDate() == null;
-                rtiNoResponse = entityEthicsApplication.getRtiReviewDate() == null;
+                hodNoResponse = entityEthicsApplication.getHodApplicationReviewApproved() == null;
+                rtiNoResponse = entityEthicsApplication.getRtiApplicationReviewApproved() == null;
                 hodPreApproved = (entityEthicsApplication.getHodApplicationReviewApproved());
                 hodDenied = (!entityEthicsApplication.getHodApplicationReviewApproved());
                 rtiPreApproved = (entityEthicsApplication.getHodApplicationReviewApproved());
@@ -268,10 +278,11 @@ public class RECEngine {
                             if (!isFacultyLevel) {
                                 Timestamp ts = Timestamp.from(new Date().toInstant());
                                 for (String reviewer : availableReviewers) {
-                                    EntityReviewerfeedback reviewerfeedback = new EntityReviewerfeedback();
-                                    reviewerfeedback.setApplicationAssignedDate(ts);
-                                    reviewerfeedback.setReviewerEmail(reviewer);
-                                    reviewerfeedback.insert();
+                                    EntityReviewerApplications reviewerApplications = new EntityReviewerApplications();
+                                    reviewerApplications.setDateAssigned(ts);
+                                    reviewerApplications.setReviewerEmail(reviewer);
+                                    reviewerApplications.setApplicationKey(applicationId);
+                                    reviewerApplications.insert();
                                 }
                             }
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
@@ -289,7 +300,7 @@ public class RECEngine {
                                 Notifier.facultyReview(applicationId, applicationTitle, EntityPerson.getRCD(), entityEthicsApplication.getRtiId());
                                 Notifier.notifyStatus(applicationId, newStatus, applicationTitle, entityEthicsApplication.getHodId(), prpId);
                             } else {
-                                List<String> reviewers = getApplicationReviewers(applicationId);
+                                List<String> reviewers = EntityReviewerApplications.getApplicationReviewers(applicationId);
                                 reviewers.forEach(s -> Notifier.requireAttention(applicationId, newStatus, applicationTitle, s));
                             }
                         }
@@ -311,7 +322,7 @@ public class RECEngine {
                 // Reviewer reviews application, leaves feedback and submits feedback
                 // PI/PRP notified of application review applicationComplete, notify of next stage
 
-                int size = getApplicationReviewers(applicationId).size();
+                int size = EntityReviewerApplications.getApplicationReviewers(applicationId).size();
                 newStatus = (size == 4) ? ApplicationStatus.PENDING_REVIEW_MEETING : ApplicationStatus.PENDING_REVIEW_REVIEWER;
 
                 actionable = new Actionable() {
@@ -464,16 +475,15 @@ public class RECEngine {
                 // STEP -> FEEDBACK_GIVEN_LIAISON (changes rejected / edits suggested)
                 // PI/PRP notified
 
-                EntityLiaisonfeedback entityLiaisonfeedback1 = EntityLiaisonfeedback.find.all().stream().filter(entityLiaisonfeedback -> entityEthicsApplication.applicationPrimaryKey().equals(applicationId)).findFirst().orElse(null);
+                boolean requiresEdits = EntityLiaisonComponentFeedback.find.all().stream()
+                        .filter(entityLiaisonComponentFeedback -> entityLiaisonComponentFeedback.applicationPrimaryKey().equals(applicationId))
+                        .anyMatch(entityLiaisonComponentFeedback -> !entityLiaisonComponentFeedback.getIsChangeSatisfactory());
                 newStatus = ApplicationStatus.FEEDBACK_GIVEN_LIAISON;
 
                 actionable = new Actionable() {
                     @Override
                     public void doAction() {
-                        if (entityLiaisonfeedback1 == null) {
-                            entityEthicsApplication.setInternalStatus(ApplicationStatus.UNKNOWN.getStatus());
-
-                        } else if (entityLiaisonfeedback1.getRequiresEdits()) {
+                        if (requiresEdits) {
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         } else {
                             entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_POST_HOD_RTI_APPROVAL.getStatus());
@@ -483,15 +493,12 @@ public class RECEngine {
 
                     @Override
                     public void doNotify() {
-                        if (entityLiaisonfeedback1 == null) {
-                            Notifier.systemNotification(applicationId, currentStatus, applicationTitle, SystemNotification.LIAISON_FEEDBACK_NOT_FOUND, EntityPerson.getRCD(), entityEthicsApplication.getLiaisonId(), piId, prpId);
+
+                        if (requiresEdits) {
+                            Notifier.requireAttention(applicationId, newStatus, applicationTitle, piId, prpId);
                         } else {
-                            if (entityLiaisonfeedback1.getRequiresEdits()) {
-                                Notifier.requireAttention(applicationId, newStatus, applicationTitle, piId, prpId);
-                            } else {
-                                Notifier.notifyStatus(applicationId, newStatus, applicationTitle, piId, prpId);
-                                Notifier.requireAttention(applicationId, newStatus, applicationTitle, entityEthicsApplication.getLiaisonId());
-                            }
+                            Notifier.notifyStatus(applicationId, newStatus, applicationTitle, piId, prpId);
+                            Notifier.requireAttention(applicationId, newStatus, applicationTitle, entityEthicsApplication.getLiaisonId());
                         }
                     }
                 };
@@ -505,8 +512,8 @@ public class RECEngine {
                 // STEP -> AWAITING_RTI_APPROVAL (HOD approved)
                 // STEP -> APPROVED (Both approved)
 
-                hodNoResponse = entityEthicsApplication.getHodFinalReviewDate() == null;
-                rtiNoResponse = entityEthicsApplication.getRtiFinalReviewDate() == null;
+                hodNoResponse = entityEthicsApplication.getHodFinalApplicationApproval() == null;
+                rtiNoResponse = entityEthicsApplication.getRtiFinalApplicationApproval() == null;
                 hodPreApproved = (entityEthicsApplication.getHodFinalApplicationApproval());
                 hodDenied = (!entityEthicsApplication.getHodApplicationReviewApproved());
                 rtiPreApproved = (entityEthicsApplication.getRtiFinalApplicationApproval());
@@ -608,17 +615,8 @@ public class RECEngine {
             }
         }
 
-        return new Actionable() {
-            @Override
-            public void doAction() {
 
-            }
-
-            @Override
-            public void doNotify() {
-
-            }
-        };
+        return actionable;
     }
 
     private void checkoutLatestApplication(EntityEthicsApplicationPK applicationId) {
@@ -634,10 +632,10 @@ public class RECEngine {
                 .getAllApplicationCompontents(applicationId)
                 .forEach(entityComponent -> {
                     //Get latest component
-                    EntityComponentversion latestComponent = EntityComponentversion.getLatestComponent(entityComponent.getComponentId());
+                    EntityComponentVersion latestComponent = EntityComponentVersion.getLatestComponent(entityComponent.getComponentId());
 
                     // Set submitted state
-                    latestComponent.setSubmitted(true);
+                    latestComponent.setIsSubmitted(true);
                     latestComponent.setDateSubmitted(ts);
 
                     // Save changes
@@ -655,12 +653,13 @@ public class RECEngine {
      * @param applicationId
      * @return
      */
-    private List<String> getApplicationReviewers(EntityEthicsApplicationPK applicationId) {
-        return EntityReviewerfeedback.find.all().stream()
-                .filter(entityReviewerfeedback -> entityReviewerfeedback.applicationPrimaryKey().equals(applicationId))
-                .map(EntityReviewerfeedback::getReviewerEmail)
-                .collect(Collectors.toList());
-    }
+    //TODO fix
+//    private List<String> getApplicationReviewers(EntityEthicsApplicationPK applicationId) {
+//        return EntityReviewerfeedback.find.all().stream()
+//                .filter(entityReviewerfeedback -> entityReviewerfeedback.applicationPrimaryKey().equals(applicationId))
+//                .map(EntityReviewerfeedback::getReviewerEmail)
+//                .collect(Collectors.toList());
+//    }
 
     // TODO check min lambda - this may not return the latest state
 
@@ -671,7 +670,7 @@ public class RECEngine {
      * @return
      */
     private ApplicationStatus getLatestMeetingStatus(EntityEthicsApplicationPK applicationId) {
-        return EntityAgendaitem.find.all()
+        return EntityAgendaItem.find.all()
                 .stream()
                 .filter(entityAgendaitem -> entityAgendaitem.applicationPrimaryKey().equals(applicationId))
                 .min((o1, o2) -> o1.getMeetingDate().before(o2.getMeetingDate()) ? -1 : (o1.getMeetingDate().after(o2.getMeetingDate()) ? 1 : 0))
@@ -689,12 +688,14 @@ public class RECEngine {
      */
     private List<String> getAvailableReviewers() {
         final List<String> distinctReviewersByDate = new ArrayList<>();
-        EntityReviewerfeedback.find.all().stream()
-                .sorted((o1, o2) -> o1.getApplicationAssignedDate().before(o2.getApplicationAssignedDate()) ? -1 : (o1.getApplicationAssignedDate().after(o2.getApplicationAssignedDate()) ? 1 : 0))
-                .forEach(entityReviewerfeedback -> {
-                    if (!distinctReviewersByDate.contains(entityReviewerfeedback.getReviewerEmail()))
-                        distinctReviewersByDate.add(entityReviewerfeedback.getReviewerEmail());
-                });
+
+        //TODO fix this
+//        EntityReviewerfeedback.find.all().stream()
+//                .sorted((o1, o2) -> o1.getApplicationAssignedDate().before(o2.getApplicationAssignedDate()) ? -1 : (o1.getApplicationAssignedDate().after(o2.getApplicationAssignedDate()) ? 1 : 0))
+//                .forEach(entityReviewerfeedback -> {
+//                    if (!distinctReviewersByDate.contains(entityReviewerfeedback.getReviewerEmail()))
+//                        distinctReviewersByDate.add(entityReviewerfeedback.getReviewerEmail());
+//                });
         if (distinctReviewersByDate.size() < 4)
             return new ArrayList<>();
 
@@ -732,11 +733,11 @@ public class RECEngine {
         }
 
         // Get latest components of an application
-        List<EntityComponentversion> latestComponents = EntityEthicsApplication.getLatestComponents(pk);
+        List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(pk);
 
         // Get all latest values into a map with <String; Object> definition
         Map<String, Object> m = new HashMap<>();
-        for (EntityComponentversion latestComponent : latestComponents) {
+        for (EntityComponentVersion latestComponent : latestComponents) {
             switch (latestComponent.getResponseType().toLowerCase()) {
                 case "boolean": {
                     m.put(latestComponent.getComponentId(), latestComponent.getBoolValue());
@@ -795,7 +796,7 @@ public class RECEngine {
                                 break;
                             }
                         }
-                        
+
                         // Else process children as normal
                         else {
                             // Check if children are complete

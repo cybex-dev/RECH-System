@@ -1,10 +1,12 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class EntityReviewerComponentFeedbackPK implements Serializable {
     private Short version;
     private String componentId;
@@ -16,7 +18,6 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     private String reviewerEmail;
 
     @Column(name = "version", nullable = false)
-    @Id
     public Short getVersion() {
         return version;
     }
@@ -26,7 +27,6 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "component_id", nullable = false, length = 50)
-    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -36,7 +36,6 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "application_type", nullable = false, length = 1)
-    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -46,7 +45,6 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "application_year", nullable = false)
-    @Id
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -56,7 +54,6 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "application_number", nullable = false)
-    @Id
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -66,7 +63,6 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "department_name", nullable = false, length = 50)
-    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -76,7 +72,6 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "faculty_name", nullable = false, length = 50)
-    @Id
     public String getFacultyName() {
         return facultyName;
     }
@@ -86,7 +81,6 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "reviewer_email", nullable = false, length = 100)
-    @Id
     public String getReviewerEmail() {
         return reviewerEmail;
     }

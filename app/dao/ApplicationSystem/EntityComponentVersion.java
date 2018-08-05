@@ -1,8 +1,7 @@
 package dao.ApplicationSystem;
 
-import dao.ApplicationSystem.EntityComponentversion;
-import dao.ApplicationSystem.EntityComponentversionPK;
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,7 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "ComponentVersion", schema = "rech_system")
 @IdClass(EntityComponentVersionPK.class)
-public class EntityComponentVersion {
+public class EntityComponentVersion extends Model {
     private Short version;
     private String componentId;
     private String applicationType;
@@ -19,17 +18,17 @@ public class EntityComponentVersion {
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
-    private Byte isSubmitted;
+    private Boolean isSubmitted;
     private Timestamp dateSubmitted;
     private Timestamp dateLastEdited;
     private String responseType;
     private String textValue;
-    private Byte boolValue;
+    private Boolean boolValue;
     private String documentName;
     private String documentDescription;
     private String documentLocationHash;
 
-    public static Finder<EntityComponentversionPK, EntityComponentversion> find = new Finder<>(dao.ApplicationSystem.EntityComponentversion.class);
+    public static Finder<EntityComponentVersionPK, EntityComponentVersion> find = new Finder<>(dao.ApplicationSystem.EntityComponentVersion.class);
 
     @Id
     @Column(name = "version", nullable = false)
@@ -103,11 +102,11 @@ public class EntityComponentVersion {
 
     @Basic
     @Column(name = "is_submitted", nullable = true)
-    public Byte getIsSubmitted() {
+    public Boolean getIsSubmitted() {
         return isSubmitted;
     }
 
-    public void setIsSubmitted(Byte isSubmitted) {
+    public void setIsSubmitted(Boolean isSubmitted) {
         this.isSubmitted = isSubmitted;
     }
 
@@ -153,11 +152,11 @@ public class EntityComponentVersion {
 
     @Basic
     @Column(name = "bool_value", nullable = true)
-    public Byte getBoolValue() {
+    public Boolean getBoolValue() {
         return boolValue;
     }
 
-    public void setBoolValue(Byte boolValue) {
+    public void setBoolValue(Boolean boolValue) {
         this.boolValue = boolValue;
     }
 
@@ -220,7 +219,7 @@ public class EntityComponentVersion {
         return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, isSubmitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription, documentLocationHash);
     }
 
-    public static EntityComponentversion getLatestComponent(String componentId) {
+    public static EntityComponentVersion getLatestComponent(String componentId) {
         return find.all()
                 .stream()
                 .filter(entityComponentversion -> entityComponentversion.componentId.equals(componentId))
