@@ -1,6 +1,7 @@
 package dao.UserSystem;
 
 import io.ebean.Finder;
+import io.ebean.Model;
 import models.UserSystem.UserType;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -9,9 +10,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "Person", schema = "rech_system")
-public class EntityPerson {
+public class EntityPerson extends Model {
     private String userEmail;
     private String userPasswordHash;
+    private String userTitle;
     private String userFirstname;
     private String userLastname;
     private String userGender;
@@ -32,6 +34,13 @@ public class EntityPerson {
         return BCrypt.checkpw(password, entityPerson.getUserPasswordHash());
     }
 
+    public static String getPersonType(String email) {
+        EntityPerson entityPerson = find.byId(email);
+        if (entityPerson == null)
+            return "";
+        return entityPerson.getPersonType();
+    }
+
     @Id
     @Column(name = "user_email", nullable = false, length = 100)
     public String getUserEmail() {
@@ -50,6 +59,16 @@ public class EntityPerson {
 
     public void setUserPasswordHash(String userPasswordHash) {
         this.userPasswordHash = userPasswordHash;
+    }
+
+    @Basic
+    @Column(name = "user_title", nullable = true, length = 50)
+    public String getUserTitle() {
+        return userTitle;
+    }
+
+    public void setUserTitle(String userTitle) {
+        this.userTitle = userTitle;
     }
 
     @Basic
@@ -159,6 +178,7 @@ public class EntityPerson {
         EntityPerson that = (EntityPerson) o;
         return Objects.equals(userEmail, that.userEmail) &&
                 Objects.equals(userPasswordHash, that.userPasswordHash) &&
+                Objects.equals(userTitle, that.userTitle) &&
                 Objects.equals(userFirstname, that.userFirstname) &&
                 Objects.equals(userLastname, that.userLastname) &&
                 Objects.equals(userGender, that.userGender) &&
@@ -174,7 +194,7 @@ public class EntityPerson {
     @Override
     public int hashCode() {
 
-        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
+        return Objects.hash(userEmail, userPasswordHash, userTitle, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
     }
 
     public static dao.UserSystem.EntityPerson getPersonById(String userEmail){

@@ -1,14 +1,44 @@
 package models.UserSystem;
 
-public class UserRegistrationForm {
+import controllers.UserSystem.Secured;
+import dao.UserSystem.EntityPerson;
+import play.data.validation.Constraints;
+import play.data.validation.ValidationError;
+
+import javax.swing.text.html.parser.Entity;
+import javax.validation.Constraint;
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserRegistrationForm implements Constraints.Validatable<List<ValidationError>> {
+    @Constraints.Email
+    @Constraints.Required
     private String email;
+
+    @Constraints.Required
+    @Constraints.MinLength(8)
     private String password;
+
+    @Constraints.Required
+    @Constraints.MinLength(8)
     private String confirm_password;
+
+    @Constraints.Required
     private String title;
+
+    @Constraints.Required
     private String firstname;
+
+    @Constraints.Required
     private String lastname;
+
+    @Constraints.Required
     private String gender;
+
+    @Constraints.Required
     private String mobile;
+
+    @Constraints.Required
     private String degreeLevel;
 
     public UserRegistrationForm() {
@@ -96,5 +126,20 @@ public class UserRegistrationForm {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public List<ValidationError> validate() {
+        List<ValidationError> errors = new ArrayList<>();
+
+        if (EntityPerson.getPersonById(email) == null) {
+            errors.add(new ValidationError("email", "Email address already exists"));
+        }
+
+        if (!password.equals(confirm_password)) {
+            errors.add(new ValidationError("confirm_password", "Passwords do not match"));
+        }
+
+        return errors;
     }
 }

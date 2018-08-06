@@ -4,6 +4,7 @@ import dao.UserSystem.EntityPerson;
 import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 
+import javax.validation.Constraint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,13 @@ import java.util.List;
  * Used to contain user login info
  */
 public class UserLoginForm implements Constraints.Validatable<List<ValidationError>> {
-    private String email, password;
+
+    @Constraints.Email
+    private String email;
+
+    @Constraints.Required
+    private String password;
+
     private Boolean remember;
 
     public UserLoginForm() {
@@ -52,9 +59,8 @@ public class UserLoginForm implements Constraints.Validatable<List<ValidationErr
     public List<ValidationError> validate() {
         List<ValidationError> errors = new ArrayList<>();
 
-        if (EntityPerson.authenticate(email, password)) {
-            errors.add(new ValidationError("email", ""));
-            errors.add(new ValidationError("password", ""));
+        if (!EntityPerson.authenticate(email, password)) {
+            errors.add(new ValidationError("", "Email or password is incorrect"));
         }
 
         return (errors.size() > 0) ? errors : null;

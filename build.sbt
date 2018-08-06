@@ -31,14 +31,14 @@ libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.12"
 
 libraryDependencies += "tyrex" % "tyrex" % "1.0.1"
 
+// Hashing for user passwords
+libraryDependencies += "de.svenkubiak" % "jBCrypt" % "0.4"
+
 // Using webjars for Bootstrap 4.1.1
 libraryDependencies += "org.webjars" % "bootstrap" % "4.1.1"
 libraryDependencies += "org.webjars" %% "webjars-play" % "2.6.3"
 libraryDependencies += "org.webjars" % "requirejs" % "2.3.5"
 libraryDependencies += "org.webjars" % "popper.js" % "1.14.1"
-
-// Hashing for user passwords
-libraryDependencies += "org.mindrot" % "jbcrypt" % "0.3m"
 
 // Make verbose tests
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))

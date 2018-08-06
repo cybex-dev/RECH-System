@@ -118,6 +118,7 @@ create table rech_system.message (
 create table rech_system.person (
   user_email                    varchar(100) not null,
   user_password_hash            varchar(50) not null,
+  user_title                    varchar(50),
   user_firstname                varchar(50),
   user_lastname                 varchar(50),
   user_gender                   varchar(1),

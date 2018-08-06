@@ -33,25 +33,28 @@
             @*TODO fix the drop down feature*@
             <div class="pull-right portal-icon larger-width">
             @if(getName == Nil) {
-                <div class="row">
-                    <div class="col-sm-6">
-                        <button onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button">Login</button></a>
+                <div class="row vertical-align-content">
+                    <div class="col-sm-4">
+                        <button onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button button-small">Login</button></a>
                     </div>
-                    <div class="col-sm-6l">
-                        <button onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.register()'" id="btnRegister" class="nmu-button">Register</button></a>
+                    <div class="col-sm-3" style="transform: translateY(70%);">
+                        <p>OR</p>
+                    </div>
+                    <div class="col-sm-5">
+                        <button onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.register()'" id="btnRegister" class="nmu-button button-small">Register</button></a>
                     </div>
                 </div>
             } else {
                 <ic class="fa fa-3x fa-user-circle-o drop-bottom-5"></ic>
                     <br/>
-                <ul id="profile-menu" class="sm sm-clean-vertical">
-                    <li><a href="#" id="IconMenuBarProfile">@getName<span class="caret"></span> </a>
-                        <ul class="dropdown-menu">
-                            <li><a style="background-color: red;" href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
-                            <li><a style="background-color: red;" href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                    <ul id="profile-menu" class="sm sm-clean-vertical">
+                        <li><a href="#" id="IconMenuBarProfile">@getName <span class="caret"></span> </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
+                                <li><a href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
             }
             </div>
         </div>
@@ -70,12 +73,8 @@
             </div>
 
             <div class="lessen-top-margin">
-                <form class="lessen-top-margin-child" action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")" method="get">
-                    <button class="nmu-button" type="submit">Human Research</button>
-                </form>
-                <form class="lessen-top-margin-child" action="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")" method="get">
-                    <button class="nmu-button" type="submit">Animal Research</button>
-                </form>
+                <button onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")'" class="nmu-button" type="submit">Human Research</button>
+                <button onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")'" class="nmu-button" type="submit">Animal Research</button>
             </div>
         </div>
     </div>

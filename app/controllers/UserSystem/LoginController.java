@@ -66,6 +66,7 @@ public class LoginController extends Controller{
 
         session().clear();
         session(CookieTags.user_id, loginData.getEmail());
+        session(CookieTags.user_type, EntityPerson.getPersonType(loginData.getEmail()));
 
         return redirect(routes.ProfileHandler.overview());
     }

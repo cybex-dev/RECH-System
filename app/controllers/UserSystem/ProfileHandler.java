@@ -1,5 +1,6 @@
 package controllers.UserSystem;
 
+import dao.UserSystem.EntityPerson;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
