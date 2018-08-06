@@ -3,6 +3,7 @@ package controllers.UserSystem;
 import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
 import models.UserSystem.UserLoginForm;
+import models.UserSystem.UserRegistrationForm;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.Constraints;
@@ -85,9 +86,10 @@ public class LoginController extends Controller{
      * @return
      */
     public Result register() {
+        Form<UserRegistrationForm> form = formFactory.form(UserRegistrationForm.class);
         if (!isLoggedIn()) {
             flash("message", "You are already logged in");
-            return ok(views.html.UserSystem.Register.render());
+            return ok(views.html.UserSystem.Register.render(form));
         } else {
             return redirect(routes.ProfileHandler.overview());
         }

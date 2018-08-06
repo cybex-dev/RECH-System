@@ -1,10 +1,10 @@
 @import views.html.Templates.Masterpage
 @import views.html.UserSystem._
 @import play.data.Form
-@import models.UserSystem.UserLoginForm
 @import helper._
+@import models.UserSystem.UserRegistrationForm
 
-@(loginForm: Form[UserLoginForm])
+@(registrationForm: Form[UserRegistrationForm])
 
 @Masterpage.apply(" :: Register"){
     <br/>
@@ -13,9 +13,9 @@
         @helper.form(action = controllers.UserSystem.routes.RegistrationController.submitRegistration()) {
             @CSRF.formField
             <div class="fragment-container border">
-                @registerBasic.apply(loginForm)
-                @registerUserInfo.apply(loginForm)
-                @registerAcademic.apply(loginForm)
+                @registerBasic.apply(registrationForm)
+                @registerUserInfo.apply(registrationForm)
+                @registerAcademic.apply(registrationForm)
                 <div class="row">
                     <button class="button" id="previous">\<</button>
                     <button class="button" id="next">\></button>

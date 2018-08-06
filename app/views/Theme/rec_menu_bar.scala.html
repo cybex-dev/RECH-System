@@ -4,7 +4,7 @@
 @getName = @{
     val v = session().get(CookieTags.fullname)
     if (v == null || v.isEmpty) {
-        "Unknown User"
+        Nil
     } else {
         v
     }
@@ -32,7 +32,18 @@
 
             @*TODO fix the drop down feature*@
             <div class="pull-right portal-icon larger-width">
-                <ic class="fa fa-3x fa-user-circle-o drop-bottom-5"></ic><br>
+            @if(getName == Nil) {
+                <div class="row">
+                    <div class="col-sm-6">
+                        <button onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button">Login</button></a>
+                    </div>
+                    <div class="col-sm-6l">
+                        <button onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.register()'" id="btnRegister" class="nmu-button">Register</button></a>
+                    </div>
+                </div>
+            } else {
+                <ic class="fa fa-3x fa-user-circle-o drop-bottom-5"></ic>
+                    <br/>
                 <ul id="profile-menu" class="sm sm-clean-vertical">
                     <li><a href="#" id="IconMenuBarProfile">@getName<span class="caret"></span> </a>
                         <ul class="dropdown-menu">
@@ -41,6 +52,7 @@
                         </ul>
                     </li>
                 </ul>
+            }
             </div>
         </div>
     </div>
