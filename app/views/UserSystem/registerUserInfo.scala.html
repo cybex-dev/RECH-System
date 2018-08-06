@@ -1,0 +1,14 @@
+@import Components._
+@import play.data.Form
+@import models.UserSystem.UserLoginForm
+
+@(loginForm: Form[UserLoginForm])
+
+
+<div class="step">
+    @helper.select(loginForm("title"), Seq(("mr", "Mr"), ("mrs" ,"Mrs"), ("ms" ,"Ms"), ("dr" ,"Dr"), ("prof" ,"Prof")))
+    @helper.inputText(loginForm("firstname"))
+    @helper.inputText(loginForm("lastname"))
+    @helper.inputRadioGroup(loginForm("gender"), Seq(("male", "Male"), ("female", "Female")))
+    @helper.inputText(loginForm("mobile"))
+</div>

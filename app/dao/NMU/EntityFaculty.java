@@ -1,14 +1,13 @@
 package dao.NMU;
 
 import io.ebean.Finder;
-import io.ebean.Model;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "faculty", schema = "rech_system")
-public class EntityFaculty extends Model {
+@Table(name = "Faculty", schema = "rech_system")
+public class EntityFaculty {
     private String facultyName;
     private String facultyInfo;
 
@@ -49,7 +48,8 @@ public class EntityFaculty extends Model {
         return Objects.hash(facultyName, facultyInfo);
     }
 
-    public static EntityFaculty getFacultyByName(String facultyName){
+    public static dao.NMU.EntityFaculty getFacultyByName(String facultyName){
         return find.byId(facultyName);
     }
+
 }

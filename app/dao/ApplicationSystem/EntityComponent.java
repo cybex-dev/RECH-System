@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "component", schema = "rech_system")
+@Table(name = "Component", schema = "rech_system")
 @IdClass(EntityComponentPK.class)
 public class EntityComponent extends Model {
     private String componentId;
@@ -19,7 +19,6 @@ public class EntityComponent extends Model {
     private String departmentName;
     private String facultyName;
     private String question;
-
 
     public static Finder<dao.ApplicationSystem.EntityComponentPK, dao.ApplicationSystem.EntityComponent> find = new Finder<>(dao.ApplicationSystem.EntityComponent.class);
 
@@ -113,7 +112,6 @@ public class EntityComponent extends Model {
         return Objects.hash(componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, question);
     }
 
-
     public static List<dao.ApplicationSystem.EntityComponent> getAllApplicationCompontents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
         return find.all()
                 .stream()
@@ -121,7 +119,7 @@ public class EntityComponent extends Model {
                 .collect(Collectors.toList());
     }
 
-    public boolean isComponent(EntityEthicsApplicationPK id){
+    public boolean isComponent(dao.ApplicationSystem.EntityEthicsApplicationPK id){
         return this.applicationNumber.equals(id.getApplicationNumber()) &&
                 this.applicationType.equals(id.getApplicationType()) &&
                 this.applicationYear.equals(id.getApplicationYear()) &&

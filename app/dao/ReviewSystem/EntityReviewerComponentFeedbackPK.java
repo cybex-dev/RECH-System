@@ -1,4 +1,4 @@
-package dao.ApplicationSystem;
+package dao.ReviewSystem;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class EntityComponentversionPK implements Serializable {
+public class EntityReviewerComponentFeedbackPK implements Serializable {
     private Short version;
     private String componentId;
     private String applicationType;
@@ -15,10 +15,9 @@ public class EntityComponentversionPK implements Serializable {
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
+    private String reviewerEmail;
 
-    public EntityComponentversionPK() {
-    }
-
+    @Column(name = "version", nullable = false)
     public Short getVersion() {
         return version;
     }
@@ -27,6 +26,7 @@ public class EntityComponentversionPK implements Serializable {
         this.version = version;
     }
 
+    @Column(name = "component_id", nullable = false, length = 50)
     public String getComponentId() {
         return componentId;
     }
@@ -35,6 +35,7 @@ public class EntityComponentversionPK implements Serializable {
         this.componentId = componentId;
     }
 
+    @Column(name = "application_type", nullable = false, length = 1)
     public String getApplicationType() {
         return applicationType;
     }
@@ -43,6 +44,7 @@ public class EntityComponentversionPK implements Serializable {
         this.applicationType = applicationType;
     }
 
+    @Column(name = "application_year", nullable = false)
     public Integer getApplicationYear() {
         return applicationYear;
     }
@@ -51,6 +53,7 @@ public class EntityComponentversionPK implements Serializable {
         this.applicationYear = applicationYear;
     }
 
+    @Column(name = "application_number", nullable = false)
     public Integer getApplicationNumber() {
         return applicationNumber;
     }
@@ -59,6 +62,7 @@ public class EntityComponentversionPK implements Serializable {
         this.applicationNumber = applicationNumber;
     }
 
+    @Column(name = "department_name", nullable = false, length = 50)
     public String getDepartmentName() {
         return departmentName;
     }
@@ -67,6 +71,7 @@ public class EntityComponentversionPK implements Serializable {
         this.departmentName = departmentName;
     }
 
+    @Column(name = "faculty_name", nullable = false, length = 50)
     public String getFacultyName() {
         return facultyName;
     }
@@ -75,23 +80,33 @@ public class EntityComponentversionPK implements Serializable {
         this.facultyName = facultyName;
     }
 
+    @Column(name = "reviewer_email", nullable = false, length = 100)
+    public String getReviewerEmail() {
+        return reviewerEmail;
+    }
+
+    public void setReviewerEmail(String reviewerEmail) {
+        this.reviewerEmail = reviewerEmail;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntityComponentversionPK that = (EntityComponentversionPK) o;
+        EntityReviewerComponentFeedbackPK that = (EntityReviewerComponentFeedbackPK) o;
         return Objects.equals(version, that.version) &&
                 Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName);
+                Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(reviewerEmail, that.reviewerEmail);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, reviewerEmail);
     }
 }

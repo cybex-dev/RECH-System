@@ -11,9 +11,7 @@ public class EntityDepartmentPK implements Serializable {
     private String departmentName;
     private String facultyFacultyName;
 
-    public EntityDepartmentPK() {
-    }
-
+    @Column(name = "department_name", nullable = false, length = 50)
     public String getDepartmentName() {
         return departmentName;
     }
@@ -22,6 +20,7 @@ public class EntityDepartmentPK implements Serializable {
         this.departmentName = departmentName;
     }
 
+    @Column(name = "Faculty_faculty_name", nullable = false, length = 50)
     public String getFacultyFacultyName() {
         return facultyFacultyName;
     }

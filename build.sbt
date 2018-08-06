@@ -26,13 +26,8 @@ libraryDependencies += ws
 libraryDependencies += "com.typesafe.play" %% "play-mailer" % "6.0.1"
 libraryDependencies += "com.typesafe.play" %% "play-mailer-guice" % "6.0.1"
 
-// Test Database
+// Database
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.12"
-libraryDependencies += "org.assertj" % "assertj-core" % "3.6.2"
-
-// Testing libraries for dealing with CompletionStage...
-libraryDependencies += "org.assertj" % "assertj-core" % "3.6.2" % Test
-libraryDependencies += "org.awaitility" % "awaitility" % "2.0.0" % Test
 
 libraryDependencies += "tyrex" % "tyrex" % "1.0.1"
 
@@ -42,11 +37,8 @@ libraryDependencies += "org.webjars" %% "webjars-play" % "2.6.3"
 libraryDependencies += "org.webjars" % "requirejs" % "2.3.5"
 libraryDependencies += "org.webjars" % "popper.js" % "1.14.1"
 
-// See: https://adrianhurt.github.io/play-bootstrap#Installation
-// Resolver is needed only for SNAPSHOT versions
-resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
-
-libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.4-P26-B4-SNAPSHOT"
+// Hashing for user passwords
+libraryDependencies += "org.mindrot" % "jbcrypt" % "0.3m"
 
 // Make verbose tests
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))

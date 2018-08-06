@@ -2,6 +2,57 @@
 
 @()
 
-@Masterpage.apply(" :: About the Committee"){
-    <br/>
-}
+    @Masterpage.apply(" :: About the Committee") {
+        <br/>
+        <h1>About the Ethics Committee</h1>
+        <div class="container">
+            <ul>
+                <li>Human Research</li>
+                <li>Animal Research</li>
+            </ul>
+        </div>
+        <br>
+        <br>
+        <h2>Human Research</h2>
+        <div class="container">
+            <h3>Committee Members</h3>
+            <div class="container">
+                <div class="container">
+                    <ul><h4>Prof. Charmain Cilliers</h4>
+                        <li>Position:    Associate Professor</li>
+                        <li>Department:    Computing Sciences</li>
+                        <li>Location:    South Campus</li>
+                        <li>Phone:    27 41 504 2235</li>
+                        <li>Fax:    27 41 504 2831</li>
+                        <li>Email:    charmain.cilliers@@mandela.ac.za</li>
+                        <li>Qualifications:    PhD</li>
+                    </ul>
+                    <ul><h4>Mr Imtiaz Khan</h4>
+                        <li>Position:    External Postgraduate Scholarship Co-ordinator</li>
+                        <li>Department:    Research Capacity Development</li>
+                        <li>Location:    South Campus</li>
+                        <li>Phone:    27 41 504 4329</li>
+                        <li>Fax:    27 41 504 2778</li>
+                        <li>Email:    Imtiaz.Khan@@mandela.ac.za</li>
+                    </ul>
+                    <ul><h4>Ms Ursula Spies</h4>
+                        <li>Position:    Committee Officer</li>
+                        <li>Department:    Governance Administration</li>
+                        <li>Room:    101</li>
+                        <li>Location:    Second Avenue Campus</li>
+                        <li>Phone:    27 41 504 3140</li>
+                        <li>Email:    Ursula.Spies@@mandela.ac.za</li>
+                        <li>Qualifications:    N Dip: Commercial Administration</li>
+                    </ul>
+                </div>
+            </div>
+            <br>
+            <br>
+            <h2>Process Flowchart</h2>
+            <div class="container">
+                <img src="@routes.Assets.versioned("images/process_flowchart.png")">
+            </div>
+        </div>
+
+
+    }

@@ -1,6 +1,4 @@
-package dao.ApplicationSystem;
-
-import models.ApplicationSystem.EthicsApplication;
+package dao.ReviewSystem;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,12 +7,22 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class EntityEthicsApplicationPK implements Serializable {
+public class EntityReviewerApplicationsPK implements Serializable {
+    private String reviewerEmail;
     private String applicationType;
     private Integer applicationYear;
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
+
+    @Column(name = "reviewer_email", nullable = false, length = 100)
+    public String getReviewerEmail() {
+        return reviewerEmail;
+    }
+
+    public void setReviewerEmail(String reviewerEmail) {
+        this.reviewerEmail = reviewerEmail;
+    }
 
     @Column(name = "application_type", nullable = false, length = 255)
     public String getApplicationType() {
@@ -65,8 +73,9 @@ public class EntityEthicsApplicationPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntityEthicsApplicationPK that = (EntityEthicsApplicationPK) o;
-        return Objects.equals(applicationType, that.applicationType) &&
+        EntityReviewerApplicationsPK that = (EntityReviewerApplicationsPK) o;
+        return Objects.equals(reviewerEmail, that.reviewerEmail) &&
+                Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
@@ -76,25 +85,6 @@ public class EntityEthicsApplicationPK implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName);
-    }
-
-    public static EntityEthicsApplicationPK fromString(String user, String id) {
-
-        String[] split = id.split("_");
-        Integer number = Integer.parseInt(split[0]);
-        Integer year = Integer.parseInt(split[1]);
-
-        EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(split[2]);
-        String appType = type.toString();
-
-        return EntityEthicsApplication.find.all().stream()
-                .filter(entityEthicsApplication -> entityEthicsApplication.getApplicationYear().equals(year) &&
-                        entityEthicsApplication.getApplicationNumber().equals(number) &&
-                        entityEthicsApplication.getApplicationType().equals(appType))
-                .map(entityEthicsApplication -> entityEthicsApplication.applicationPrimaryKey())
-                .findFirst()
-                .orElseThrow(null);
-
+        return Objects.hash(reviewerEmail, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
     }
 }

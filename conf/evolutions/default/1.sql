@@ -45,12 +45,11 @@ create table rech_system.componentversion (
 
 create table rech_system.department (
   department_name               varchar(50) not null,
-  faculty_faculty_name          varchar(255),
   faculty_faculty_name          varchar(50) not null
 );
 
 create table rech_system.ethics_application (
-  application_type              varchar(1) not null,
+  application_type              varchar(255) not null,
   application_year              integer not null,
   application_number            integer not null,
   department_name               varchar(50) not null,
@@ -64,16 +63,16 @@ create table rech_system.ethics_application (
   hod_id                        varchar(100),
   hod_pre_approved_date         datetime(6),
   hod_post_approved_date        datetime(6),
-  hod_application_review_approved tinyint(1),
-  hod_final_application_approval tinyint(1),
   rti_id                        varchar(100),
   rti_pre_approved_date         datetime(6),
   rti_post_approved_date        datetime(6),
-  rti_application_review_approved tinyint(1),
-  rti_final_application_approval tinyint(1),
   internal_status               smallint,
   liaison_id                    varchar(100),
   liaison_assigned_date         datetime(6),
+  hod_application_review_approved tinyint(1),
+  hod_final_application_approval tinyint(1),
+  rti_application_review_approved tinyint(1),
+  rti_final_application_approval tinyint(1),
   application_level             smallint
 );
 
@@ -91,24 +90,10 @@ create table rech_system.liaisoncomponentfeedback (
   application_number            integer not null,
   department_name               varchar(50) not null,
   faculty_name                  varchar(50) not null,
-  liaisonfeedback_feedback_date datetime(6) not null,
-  liaisonfeedback_ethics_application_application_type varchar(1) not null,
-  liaisonfeedback_ethics_application_application_year integer not null,
-  liaisonfeedback_ethics_application_application_number integer not null,
-  liaisonfeedback_ethics_application_department_name varchar(50) not null,
-  liaisonfeedback_ethics_application_faculty_name varchar(50) not null,
-  component_feedback            varchar(255)
-);
-
-create table rech_system.liaisonfeedback (
-  feedback_date                 datetime(6) not null,
-  ethics_application_application_type varchar(1) not null,
-  ethics_application_application_year integer not null,
-  ethics_application_application_number integer not null,
-  ethics_application_department_name varchar(50) not null,
-  ethics_application_faculty_name varchar(50) not null,
   liaison_email                 varchar(100) not null,
-  requires_edits                tinyint(1)
+  component_feedback            varchar(255),
+  change_satisfactory           tinyint(1),
+  feedback_date                 datetime(6)
 );
 
 create table rech_system.meeting (
@@ -146,6 +131,16 @@ create table rech_system.person (
   constraint pk_person primary key (user_email)
 );
 
+create table rech_system.reviewerapplications (
+  reviewer_email                varchar(100) not null,
+  application_type              varchar(255) not null,
+  application_year              integer not null,
+  application_number            integer not null,
+  department_name               varchar(50) not null,
+  faculty_name                  varchar(50) not null,
+  date_assigned                 datetime(6)(45)
+);
+
 create table rech_system.reviewercomponentfeedback (
   version                       smallint not null,
   component_id                  varchar(50) not null,
@@ -154,25 +149,9 @@ create table rech_system.reviewercomponentfeedback (
   application_number            integer not null,
   department_name               varchar(50) not null,
   faculty_name                  varchar(50) not null,
-  reviewerfeedback_application_assigned_date datetime(6) not null,
-  reviewerfeedback_ethics_application_application_type varchar(1) not null,
-  reviewerfeedback_ethics_application_application_year integer not null,
-  reviewerfeedback_ethics_application_application_number integer not null,
-  reviewerfeedback_ethics_application_department_name varchar(50) not null,
-  reviewerfeedback_ethics_application_faculty_name varchar(50) not null,
-  component_feedback            varchar(255)
-);
-
-create table rech_system.reviewerfeedback (
-  application_assigned_date     datetime(6) not null,
-  ethics_application_application_type varchar(1) not null,
-  ethics_application_application_year integer not null,
-  ethics_application_application_number integer not null,
-  ethics_application_department_name varchar(50) not null,
-  ethics_application_faculty_name varchar(50) not null,
   reviewer_email                varchar(100) not null,
-  feedback_date                 datetime(6),
-  requires_edits                tinyint(1)
+  component_feedback            varchar(255),
+  feedback_date                 datetime(6)
 );
 
 
@@ -192,15 +171,13 @@ drop table if exists rech_system.faculty;
 
 drop table if exists rech_system.liaisoncomponentfeedback;
 
-drop table if exists rech_system.liaisonfeedback;
-
 drop table if exists rech_system.meeting;
 
 drop table if exists rech_system.message;
 
 drop table if exists rech_system.person;
 
-drop table if exists rech_system.reviewercomponentfeedback;
+drop table if exists rech_system.reviewerapplications;
 
-drop table if exists rech_system.reviewerfeedback;
+drop table if exists rech_system.reviewercomponentfeedback;
 

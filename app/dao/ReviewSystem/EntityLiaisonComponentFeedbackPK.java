@@ -1,22 +1,42 @@
-package dao.ApplicationSystem;
-
-import models.ApplicationSystem.EthicsApplication;
+package dao.ReviewSystem;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class EntityEthicsApplicationPK implements Serializable {
+public class EntityLiaisonComponentFeedbackPK implements Serializable {
+    private Short version;
+    private String componentId;
     private String applicationType;
     private Integer applicationYear;
     private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
+    private String liaisonEmail;
 
-    @Column(name = "application_type", nullable = false, length = 255)
+    @Column(name = "version", nullable = false)
+    public Short getVersion() {
+        return version;
+    }
+
+    public void setVersion(Short version) {
+        this.version = version;
+    }
+
+    @Column(name = "component_id", nullable = false, length = 50)
+    public String getComponentId() {
+        return componentId;
+    }
+
+    public void setComponentId(String componentId) {
+        this.componentId = componentId;
+    }
+
+    @Column(name = "application_type", nullable = false, length = 1)
     public String getApplicationType() {
         return applicationType;
     }
@@ -61,40 +81,33 @@ public class EntityEthicsApplicationPK implements Serializable {
         this.facultyName = facultyName;
     }
 
+    @Column(name = "liaison_email", nullable = false, length = 100)
+    public String getLiaisonEmail() {
+        return liaisonEmail;
+    }
+
+    public void setLiaisonEmail(String liaisonEmail) {
+        this.liaisonEmail = liaisonEmail;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EntityEthicsApplicationPK that = (EntityEthicsApplicationPK) o;
-        return Objects.equals(applicationType, that.applicationType) &&
+        EntityLiaisonComponentFeedbackPK that = (EntityLiaisonComponentFeedbackPK) o;
+        return Objects.equals(version, that.version) &&
+                Objects.equals(componentId, that.componentId) &&
+                Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(applicationYear, that.applicationYear) &&
                 Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName);
+                Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(liaisonEmail, that.liaisonEmail);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName);
-    }
-
-    public static EntityEthicsApplicationPK fromString(String user, String id) {
-
-        String[] split = id.split("_");
-        Integer number = Integer.parseInt(split[0]);
-        Integer year = Integer.parseInt(split[1]);
-
-        EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(split[2]);
-        String appType = type.toString();
-
-        return EntityEthicsApplication.find.all().stream()
-                .filter(entityEthicsApplication -> entityEthicsApplication.getApplicationYear().equals(year) &&
-                        entityEthicsApplication.getApplicationNumber().equals(number) &&
-                        entityEthicsApplication.getApplicationType().equals(appType))
-                .map(entityEthicsApplication -> entityEthicsApplication.applicationPrimaryKey())
-                .findFirst()
-                .orElseThrow(null);
-
+        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, liaisonEmail);
     }
 }
