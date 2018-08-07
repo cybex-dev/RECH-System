@@ -1,8 +1,14 @@
 @import play.data.Form
 @import models.UserSystem.UserRegistrationForm
+@import java.util.List
 
-@(loginForm: Form[UserRegistrationForm])
+@import dao.NMU.EntityDepartment.DepartmentContainer
+
+@(loginForm: Form[UserRegistrationForm], departmentList: List[DepartmentContainer], facultyList: List[String])
 
 <div class="step">
-    @helper.select(loginForm("degreeLevel"), Seq(("hs", "High-School"), ("dip", "Diploma"), ("deg", "Degree"), ("hon", "Honours"), ("mas", "Masters"), ("doc", "Doctorate")), '_label -> "Highest Degree Level")
+    <h3>Academic Information</h3>
+    @helper.select(loginForm("degreeLevel"), helper.options(Seq("High-School","Diploma","Degree","Honours","Masters","Doctorate")), '_label -> "Highest Earned Degree")
+    @helper.select(loginForm("faculty"), helper.options(facultyList), '_label -> "Faculty")
+    @helper.select(loginForm("department"), helper.options( departmentList.map(f => f.dept)), '_label -> "Department")
 </div>

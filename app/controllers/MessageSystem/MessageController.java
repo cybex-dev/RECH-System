@@ -1,9 +1,12 @@
 package controllers.MessageSystem;
 
+import controllers.UserSystem.Secured;
 import play.mvc.Result;
+import play.mvc.Security;
 
 import static play.mvc.Results.TODO;
 
+@Security.Authenticated(Secured.class)
 public class MessageController {
 
     /**

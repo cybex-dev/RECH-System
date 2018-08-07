@@ -1,10 +1,16 @@
 package controllers.UserSystem;
 
+import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.UserSystem.EntityPerson;
+import helpers.CookieTags;
+import models.UserSystem.Application;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Security.Authenticated(Secured.class)
 public class ProfileHandler extends Controller {
@@ -21,7 +27,10 @@ public class ProfileHandler extends Controller {
      * @return
      */
     public Result overview(){
-        return TODO;
+        EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
+        List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), person.userType());
+        List<Application> allApplications = applicationsByPerson.stream().map(Application::create).collect(Collectors.toList());
+        return ok(views.html.UserSystem.Dashboard.render(allApplications));
     }
 
     /**

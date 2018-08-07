@@ -4,25 +4,24 @@
 @import helper._
 @import models.UserSystem.UserRegistrationForm
 
-@(registrationForm: Form[UserRegistrationForm])
+@import dao.NMU.EntityDepartment.DepartmentContainer
+@(registrationForm: Form[UserRegistrationForm], departmentList: List[DepartmentContainer], facultyList: List[String])
 
 @Masterpage.apply(" :: Register"){
     <br/>
     <div class="container">
         <h2>REC Registration</h2>
+        <div class="nmu-content-background-dark padding-all-30">
         @helper.form(action = controllers.UserSystem.routes.RegistrationController.submitRegistration()) {
             @CSRF.formField
             <div class="fragment-container border">
                 @registerBasic.apply(registrationForm)
                 @registerUserInfo.apply(registrationForm)
-                @registerAcademic.apply(registrationForm)
-                <div class="row">
-                    <button class="button" id="previous">\<</button>
-                    <button class="button" id="next">\></button>
-                </div>
-                <input type="submit" value="Register">
+                @registerAcademic.apply(registrationForm, departmentList, facultyList)
+                <br/>
+                <input type="submit" class="nmu-button button-small" value="Register">
             </div>
         }
-
+        </div>
     </div>
 }

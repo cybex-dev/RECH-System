@@ -1,5 +1,6 @@
 package controllers.ApplicationSystem;
 
+import controllers.UserSystem.Secured;
 import dao.ApplicationSystem.EntityComponent;
 import dao.ApplicationSystem.EntityComponentVersion;
 import dao.ApplicationSystem.EntityEthicsApplication;
@@ -35,8 +36,11 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
 
+@Security.Authenticated(Secured.class)
 public class ApplicationHandler extends Controller {
 
     @Inject

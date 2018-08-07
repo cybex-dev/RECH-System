@@ -3,7 +3,9 @@ package dao.NMU;
 import io.ebean.Finder;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Faculty", schema = "rech_system")
@@ -12,6 +14,10 @@ public class EntityFaculty {
     private String facultyInfo;
 
     public static Finder<String, dao.NMU.EntityFaculty> find = new Finder<>(dao.NMU.EntityFaculty.class);
+
+    public static List<String> getAllFacultyNames() {
+        return find.all().stream().map(EntityFaculty::getFacultyName).collect(Collectors.toList());
+    }
 
     @Id
     @Column(name = "faculty_name", nullable = false, length = 50)

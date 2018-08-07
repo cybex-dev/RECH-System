@@ -77,7 +77,7 @@
                 <question>Gender</question>
                 <value></value>
             </component>
-            <list id="list_coworkers" hint="Co workers on research study" affiliation_group="">
+            <list id="list_coworkers" name="All co-workers" hint="Co workers on research study" affiliation_group="">
                 <component name="" id="cw_firstname" type="text" hint="Coworker's firstname">
                     <question>Firstname</question>
                     <value></value>
@@ -205,7 +205,7 @@
                     <question>Any risk involved</question>
                     <value></value>
                 </component>
-                <list id="list_risks" hint="List all risks resulting from study">
+                <list id="list_risks" hint="List all risks resulting from study" name="All Expected risks">
                     <component id="risk_desc" name="" type="text" hint="Description of risk">
                         <question>Risk Description</question>
                         <value></value>
@@ -277,7 +277,7 @@
                     <question>Requires particular characteristic</question>
                     <value></value>
                 </component>
-                <component id="characteristics_desc" name="" type=""
+                <component id="characteristics_desc" name="" type="text"
                            hint="Describe required characteristics of participant group">
                     <question>Describe characteristics</question>
                     <value></value>
@@ -300,7 +300,7 @@
                     <question>Includes school students</question>
                     <value></value>
                 </component>
-                <component id="scholars_desc" name="" type=""
+                <component id="scholars_desc" name="" type="text"
                            hint="Describe the group(s) of scholars expected to participate in the study">
                     <question>Describe scholar groups</question>
                     <value></value>
@@ -314,7 +314,7 @@
                 </component>
                 <component id="institutional_persons_desc" name="" type="text"
                            hint="Describe the expected institution participants who will participate in the study">
-                    <question>Describe instuitutional participants</question>
+                    <question>Describe institutional participants</question>
                     <value></value>
                 </component>
             </extension>
@@ -364,8 +364,8 @@
                     <value></value>
                 </component>
                 <extension orientation="vertical">
-                    <group id="grp_doc_consent" type="document" popup="true" name="Methodology Document"
-                           hint="Provide the consent for document which participants will recieve">
+                    <group id="grp_doc_consent" type="document" popup="true" name="Written Consent Document"
+                           hint="Provide the consent document which participants will recieve">
                         <component id="doc_consent_title" name="" required="false" type="text">
                             <question>Consent Form Title</question>
                             <value></value>
@@ -445,7 +445,7 @@
                     <question>Describe institutional consent required</question>
                     <value></value>
                 </component>
-                <list id="list_permission_documents"
+                <list id="list_permission_documents" name="All Permission Documents"
                       hint="Any additional permission documents provided by Department of Education as permission to conduct the study">
                     <group id="grp_doc_permission" type="document" popup="true" name="Permissions Document"
                            hint="Provide the document given by the Dept. of Education or other giving permission for this research (if available)">
@@ -583,7 +583,7 @@
                     <question>Collected data stored</question>
                     <value></value>
                 </component>
-                <list id="list_collected_data_holders"
+                <list id="list_collected_data_holders" name="All Dataholders"
                       hint="Describe who will be storing the collected data with additional details"
                       affiliation_group="">
                     <component name="" id="dh_first_name" type="text" hint="Data holder firstname">

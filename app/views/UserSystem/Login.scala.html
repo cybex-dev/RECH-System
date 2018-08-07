@@ -7,16 +7,18 @@
 
 @content = {
     <h1>REC Login</h1>
-    <div class="container">
+    <div class="nmu-content-background-dark padding-all-30">
     @form(action = controllers.UserSystem.routes.LoginController.doLogin()) {
         @CSRF.formField
-        @inputText(loginForm("email"), '_label -> "Email")
-        @inputText(loginForm("password"), '_label -> "Password")
-        @checkbox(loginForm("remember"), '_label -> "Remember Me")
-        <input type="submit" value="Login">
-    }
+        @inputText(loginForm("email"), '_label -> "Email", '_class -> "input-text-short")
+        @inputText(loginForm("password"), '_label -> "Password", '_class -> "input-text-short")
+        <input type="checkbox" name="remember" id="remember" ><label> Remember Me</label>
         <br/>
-        <a href="@controllers.UserSystem.routes.LoginController.forgotPassword()">Forgot Password ?</a>
+        <br/>
+        <input type="submit" class="nmu-button action-button" value="Login" style="background-color: #f9b42a !important;">
+    }
+    <br/>
+    <a href="@controllers.UserSystem.routes.LoginController.forgotPassword()">I forgot my password?</a>
     </div>
 }
 

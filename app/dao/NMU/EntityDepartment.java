@@ -4,16 +4,33 @@ import exceptions.InvalidFieldException;
 import io.ebean.Finder;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "Department", schema = "rech_system", catalog = "")
+@Table(name = "Department", schema = "rech_system")
 @IdClass(EntityDepartmentPK.class)
 public class EntityDepartment {
+    public static class DepartmentContainer {
+        public String dept, faculty;
+
+        public static DepartmentContainer create(String dept, String faculty) {
+            DepartmentContainer d = new DepartmentContainer();
+            d.dept = dept;
+            d.faculty = faculty;
+            return d;
+        }
+    }
+
     private String departmentName;
     private String facultyFacultyName;
 
     public static Finder<dao.NMU.EntityDepartmentPK, dao.NMU.EntityDepartment> find = new Finder<>(dao.NMU.EntityDepartment.class);
+
+    public static List<DepartmentContainer> getAllDepartmentNames() {
+        return find.all().stream().map(entityDepartment -> DepartmentContainer.create(entityDepartment.departmentName, entityDepartment.facultyFacultyName)).collect(Collectors.toList());
+    }
 
     @Id
     @Column(name = "department_name", nullable = false, length = 50)

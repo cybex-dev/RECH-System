@@ -61,9 +61,14 @@
     display: block;
 }
 
+.group > h3 {
+    text-decoration: underline;
+}
+
 .group {
-    padding-left: 20px;
-    padding-top: 15px;
+    padding: 15px 20px;
+    border: 2px solid #061c2c;
+    margin: 10px;
 }
 
 .component {
@@ -87,7 +92,9 @@ input {
 }
 
 .extension {
-
+    border-left: 2px solid #061c20 !important;
+    padding-left: 10px;
+    margin: 5px 0px;
 }
 
 .question {

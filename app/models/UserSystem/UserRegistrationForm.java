@@ -41,10 +41,16 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
     @Constraints.Required
     private String degreeLevel;
 
+    @Constraints.Required
+    private String department;
+
+    @Constraints.Required
+    private String faculty;
+
     public UserRegistrationForm() {
     }
 
-    public UserRegistrationForm(String title, String email, String password, String confirm_password, String firstname, String lastname, String gender, String mobile, String degreeLevel) {
+    public UserRegistrationForm(String title, String email, String password, String confirm_password, String firstname, String lastname, String gender, String mobile, String degreeLevel, String department, String facutly) {
         this.title = title;
         this.email = email;
         this.password = password;
@@ -54,6 +60,8 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
         this.gender = gender;
         this.mobile = mobile;
         this.degreeLevel = degreeLevel;
+        this.department = department;
+        this.faculty = facutly;
     }
 
     public String getTitle() {
@@ -128,6 +136,22 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
         this.gender = gender;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
     @Override
     public List<ValidationError> validate() {
         List<ValidationError> errors = new ArrayList<>();
@@ -140,6 +164,6 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
             errors.add(new ValidationError("confirm_password", "Passwords do not match"));
         }
 
-        return errors;
+        return (errors.size() > 0 ? errors : null);
     }
 }

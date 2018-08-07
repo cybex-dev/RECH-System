@@ -125,14 +125,14 @@ function checkRisk() {
         }
 
         case 1: {
-            document.getElementById("risk_eval").textContent = "Faculty";
+            document.getElementById("risk_eval").textContent = "You need to submit an ethics application, which will be sent to the faculty ethics committee";
             document.getElementById("risk_eval").style.color = "orange";
             break
         }
 
         case 2:
         case 3: {
-            document.getElementById("risk_eval").textContent = "Committee";
+            document.getElementById("risk_eval").textContent = "You need to submit an ethics application to the Central Ethics Committee";
             document.getElementById("risk_eval").style.color = "red";
             break
         }
@@ -199,7 +199,11 @@ function eventNextClick() {
     var old = indexQuestions;
     if (indexQuestions < numQuestions) {
         document.getElementById("btnNextQuestion").textContent = "Next";
-        nextQuestion();
+        if (risk > 1) {
+            completeQuestionnaire();
+        } else {
+            nextQuestion();
+        }
         if (old === 0 && indexQuestions === 1)
             show(document.getElementById("btnPreviousQuestion"));
         if (indexQuestions + 1 === (numQuestions)) {
@@ -239,6 +243,7 @@ function docReady() {
     document.querySelectorAll(".condition").forEach(function (value) {
         value.onclick = checkRisk
     });
+    checkRisk();
 
     document.getElementById("btnNextQuestion").onclick = eventNextClick;
     document.getElementById("btnPreviousQuestion").onclick = function (ev) {
@@ -364,7 +369,7 @@ function addApplicationOverview() {
 function initWizard() {
     function addCollapsibleSections() {
         document.querySelectorAll(".section").forEach(function (value) {
-            value.firstChild.classList.add("nmu-button", "collapsible");
+            value.firstChild.classList.add("section-title", "collapsible");
         });
         // document.querySelectorAll(".group").forEach(function (value) {
         //     value.firstChild.classList.add("collapsible");
@@ -393,4 +398,19 @@ function initWizard() {
     addDocumentOverview();
 
     addApplicationOverview();
+
+    setExtensionHooks();
+}
+
+function setExtensionHooks() {
+    document.querySelectorAll(".extension>input").forEach(function (value) {
+        value.onclick = function () {
+            if (value.checked === true) {
+                value.parent.childNodes.forEach(function (value1) { hide(value1) });
+                show(value);
+            } else {
+                value.parent.childNodes.forEach(function (value1) { show(value1) });
+            }
+        }
+    })
 }

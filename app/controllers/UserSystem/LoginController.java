@@ -1,5 +1,7 @@
 package controllers.UserSystem;
 
+import dao.NMU.EntityDepartment;
+import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
 import models.UserSystem.UserLoginForm;
@@ -90,7 +92,7 @@ public class LoginController extends Controller{
         Form<UserRegistrationForm> form = formFactory.form(UserRegistrationForm.class);
         if (!isLoggedIn()) {
             flash("message", "You are already logged in");
-            return ok(views.html.UserSystem.Register.render(form));
+            return ok(views.html.UserSystem.Register.render(form, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
         } else {
             return redirect(routes.ProfileHandler.overview());
         }

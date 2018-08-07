@@ -6,54 +6,58 @@
 
 <div id="filter_question_form" class="modal opague-background">
     <div id="questionnaire_popup" class="modal-content animate popup-header">
-        <div class="header-panel">
-            <div class="row">
-                <div class="col-sm-7">
-                    <h2 style="text-align: left">A couple of questions first</h2>
-                    <h5 style="text-align: left; font-style: italic !important;">This will help us determine if you study does require ethics approval</h5>
+        <div class="row">
+            <div class="header-panel">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <h2 style="text-align: left">A couple of questions first</h2>
+                        <h5 style="text-align: left; font-style: italic !important;">This will help us determine if you study does require ethics approval</h5>
+                    </div>
+                    <div class="col-sm-5">
+                        <h4 id="risk_eval" style="text-align: center; margin: 20px"></h4>
+                        <span onclick="hidePopup('filter_question_form')" class="close" title="Close PopUp">&times;</span>
+                    </div>
+                    <br>
                 </div>
-                <div class="col-sm-5">
-                    <h4 id="risk_eval" style="text-align: center; margin: 20px"></h4>
-                    <span onclick="hidePopup('filter_question_form')" class="close" title="Close PopUp">&times;</span>
-                </div>
-                <br>
             </div>
         </div>
 
-        <div class="standard-padding-20">
-            <button class="nmu-button" type="button" href="#" id="btnStartQuestions">Start</button>
-            <div class="question-content nmu-color-very-dark hidden">
-                @{
-                    var questionId = 0;
+        <div class="row">
+            <div class="standard-padding-20">
+                <button class="nmu-button" type="button" href="#" id="btnStartQuestions">Start</button>
+                <div class="question-content nmu-color-very-dark hidden">
+                    @{
+                        var questionId = 0;
 
-                    def getConditions(conditionList: util.List[Condition]): String = {
-                        var list = ""
-                        for(c <- conditionList) {
-                            questionId += 1
-                            list += "<input class=\"condition\" type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\">" + c.getConditionText + "<br>"
+                        def getConditions(conditionList: util.List[Condition]): String = {
+                            var list = ""
+                            for(c <- conditionList) {
+                                questionId += 1
+                                list += "<input class=\"condition\" type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\">" + c.getConditionText + "<br>"
+                            }
+                            list
                         }
-                        list
-                    }
 
-                    def processQuestions(): String = {
-                        var list = ""
-                        for(q <- questionList) {
-                            var l = getConditions(q.getConditionsList)
-                            list += "<div class=\"question\"><h3>" + q.getTitle + "</h3><div class=\"conditions\">" + l + "</div></div>"
+                        def processQuestions(): String = {
+                            var list = ""
+                            for(q <- questionList) {
+                                var l = getConditions(q.getConditionsList)
+                                list += "<div class=\"question\"><h3>" + q.getTitle + "</h3><div class=\"conditions\">" + l + "</div></div>"
+                            }
+                            list
                         }
-                        list
-                    }
 
-                    Html(processQuestions())
-                }
-                <br>
-                <br>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <button id="btnPreviousQuestion" class="nmu-button" style="float: left;">Previous</button>
-                    </div>
-                    <div class="col-sm-6">
-                        <button id="btnNextQuestion" class="nmu-button" style="float: right;">Next</button>
+                        Html(processQuestions())
+                    }
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button id="btnPreviousQuestion" class="nmu-button" style="float: left;">Previous</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button id="btnNextQuestion" class="nmu-button" style="float: right;">Next</button>
+                        </div>
                     </div>
                 </div>
             </div>

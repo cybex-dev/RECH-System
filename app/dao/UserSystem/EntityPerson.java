@@ -202,7 +202,7 @@ public class EntityPerson extends Model {
     }
 
     public UserType userType(){
-        return UserType.valueOf(personType);
+        return UserType.parse(personType);
     }
 
     public static String getRCD() {

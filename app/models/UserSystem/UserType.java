@@ -17,6 +17,19 @@ public enum UserType {
         this.type = type;
     }
 
+    public static UserType parse(String personType) {
+        switch (personType) {
+            case "PI": return PrimaryInvestigator;
+            case "PRP": return PrimaryResponsiblePerson;
+            case "Liaison": return Liaison;
+            case "Reviewer": return Reviewer;
+            case "RTI": return FacultyRTI;
+            case "HOD": return DepartmentHead;
+            case "RCD": return RCD;
+        }
+        return null;
+    }
+
     public String getType() {
         return type;
     }

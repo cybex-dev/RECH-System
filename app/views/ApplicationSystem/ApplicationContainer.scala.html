@@ -58,9 +58,9 @@
 
     def getHeading(tag: String, title: String): String = {
         tag match {
-            case "section" => "<h3>" + title + "</h3>"
-            case "group" => "<h5>" + title + "</h5>"
-            case "list" => "<h5>" + title + "</h5>"
+            case "section" => "<h2>" + title + "</h3>"
+            case "group" => "<h3>" + title + "</h5>"
+            case "list" => "<h4>" + title + "</h5>"
             case _ => ""
         }
     }

@@ -1,8 +1,11 @@
 package controllers.MeetingSystem;
 
+import controllers.UserSystem.Secured;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 
+@Security.Authenticated(Secured.class)
 public class MeetingController extends Controller {
 
     /**
