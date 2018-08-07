@@ -4,5 +4,5 @@
 @(loginForm: Form[UserRegistrationForm])
 
 <div class="step">
-    @helper.select(loginForm("degreeLevel"), Seq(("hs", "High-School"), ("dip", "Diploma"), ("deg", "Degree"), ("hon", "Honours"), ("mas", "Masters"), ("doc", "Doctorate")))
+    @helper.select(loginForm("degreeLevel"), Seq(("hs", "High-School"), ("dip", "Diploma"), ("deg", "Degree"), ("hon", "Honours"), ("mas", "Masters"), ("doc", "Doctorate")), '_label -> "Highest Degree Level")
 </div>

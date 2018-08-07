@@ -5,8 +5,8 @@
 @(loginForm: Form[UserRegistrationForm])
 
 <div class="step">
-    @helper.inputText(loginForm("email"))
-    @helper.inputPassword(loginForm("password"))
-    @helper.inputPassword(loginForm("confirm_password"))
+    @helper.inputText(loginForm("email"), '_label -> "Email")
+    @helper.inputPassword(loginForm("password"), '_label -> "Password")
+    @helper.inputPassword(loginForm("confirm_password"), '_label -> "Confirm Password")
 </div>
 

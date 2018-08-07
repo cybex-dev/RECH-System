@@ -6,9 +6,9 @@
 
 
 <div class="step">
-    @helper.select(loginForm("title"), Seq(("mr", "Mr"), ("mrs" ,"Mrs"), ("ms" ,"Ms"), ("dr" ,"Dr"), ("prof" ,"Prof")))
-    @helper.inputText(loginForm("firstname"))
-    @helper.inputText(loginForm("lastname"))
-    @helper.inputRadioGroup(loginForm("gender"), Seq(("male", "Male"), ("female", "Female")))
-    @helper.inputText(loginForm("mobile"))
+    @helper.select(loginForm("title"), Seq(("mr", "Mr"), ("mrs" ,"Mrs"), ("ms" ,"Ms"), ("dr" ,"Dr"), ("prof" ,"Prof")), '_label -> "Title")
+    @helper.inputText(loginForm("firstname"), '_label -> "Firstname")
+    @helper.inputText(loginForm("lastname"), '_label -> "Lastname")
+    @helper.inputRadioGroup(loginForm("gender"), Seq(("male", "Male"), ("female", "Female")), '_label -> "Gender")
+    @helper.inputText(loginForm("mobile"), '_label -> "Mobile Number (+27)")
 </div>

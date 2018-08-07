@@ -10,11 +10,12 @@
     <div class="container">
     @form(action = controllers.UserSystem.routes.LoginController.doLogin()) {
         @CSRF.formField
-        @inputText(loginForm("email"))
-        @inputText(loginForm("password"))
-        @checkbox(loginForm("remember"))
+        @inputText(loginForm("email"), '_label -> "Email")
+        @inputText(loginForm("password"), '_label -> "Password")
+        @checkbox(loginForm("remember"), '_label -> "Remember Me")
         <input type="submit" value="Login">
     }
+        <br/>
         <a href="@controllers.UserSystem.routes.LoginController.forgotPassword()">Forgot Password ?</a>
     </div>
 }
