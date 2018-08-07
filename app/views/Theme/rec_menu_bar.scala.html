@@ -13,6 +13,7 @@
 <div class="row tbsRow">
     <div class="col-sm-12 tbsHnopad">
         <div class="col-sm-12 BoxMediumBlue TextWhite tbsVpad">
+            @if(getName != Nil) {
             <div class="portal-icon portal-icon-extend-margin">
                 <a href="@controllers.UserSystem.routes.ProfileHandler.overview()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-reorder drop-bottom-5"></ic><br>
                     <span>Overview</span></a></div>
@@ -23,6 +24,7 @@
             <div class="portal-icon portal-icon-extend-margin">
                 <a href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
                     <span>Message</span></a></div>
+            }
             <div class="portal-icon portal-icon-extend-margin">
                 <a href="@routes.HomeController.about()" id="IconMenuBarAbout"><ic class="fa fa-3x fa-users drop-bottom-5"></ic><br>
                     <span>About the Committee</span></a></div>
@@ -31,17 +33,18 @@
                     <span>Help & Support</span></a></div>
 
             @*TODO fix the drop down feature*@
-            <div class="pull-right portal-icon larger-width">
+            <div class="pull-right portal-icon larger-width" style="transform: translateY(45%);">
             @if(getName == Nil) {
-                <div class="row vertical-align-content">
-                    <div class="col-sm-4">
-                        <button onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button button-small">Login</button></a>
-                    </div>
-                    <div class="col-sm-3" style="transform: translateY(70%);">
-                        <p>OR</p>
-                    </div>
-                    <div class="col-sm-5">
-                        <button onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.register()'" id="btnRegister" class="nmu-button button-small">Register</button></a>
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-8">
+                        <div class="col-sm-4">
+                            <button-small onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button button-small">Login</button-small></a>
+                        </div>
+                        <div class="col-sm-1"><p style="margin-left: 10px"> OR </p></div>
+                        <div class="col-sm-5">
+                            <button-small onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.register()'" id="btnRegister" class="nmu-button button-small">Register</button-small></a>
+                        </div>
                     </div>
                 </div>
             } else {

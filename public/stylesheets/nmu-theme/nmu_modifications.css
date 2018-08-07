@@ -45,6 +45,19 @@ button {
     width: 95%;
     font-size:20px;
 }
+
+button-small {
+    background-color: #4CAF50;
+    font-weight: bold;
+    padding: 5px;
+    color: white;
+    margin: 14px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size:20px;
+}
+
 /*button:hover {*/
     /*opacity: 0.8;*/
 /*}*/
@@ -180,8 +193,6 @@ a:hover {
 }
 
 .button-small {
-    margin: 10px 15px !important;
-    padding: 5px !important;
     font-style: normal;
 }
 
@@ -193,8 +204,12 @@ a:hover {
     transform: translateY(50%);
 }
 
+.vertical-align-content-45 {
+    transform: translateY(45%);
+}
+
 .center-align-content {
     top: 50%;
     left: 50%;
-    transform: translateXY(50%, 50%);
+    transform: translate(50%, 50%);
 }

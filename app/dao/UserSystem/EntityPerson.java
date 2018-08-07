@@ -52,7 +52,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "user_password_hash", nullable = false, length = 50)
+    @Column(name = "user_password_hash", nullable = false, length = 100)
     public String getUserPasswordHash() {
         return userPasswordHash;
     }
@@ -92,7 +92,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "user_gender", nullable = true, length = 1)
+    @Column(name = "user_gender", nullable = true, length = 50)
     public String getUserGender() {
         return userGender;
     }
