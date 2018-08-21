@@ -66,9 +66,12 @@ public class LoginController extends Controller{
             return badRequest(Login.render(loginFormForm));
         }
 
+        EntityPerson person = EntityPerson.getPersonById(loginData.getEmail());
+
         session().clear();
         session(CookieTags.user_id, loginData.getEmail());
-        session(CookieTags.user_type, EntityPerson.getPersonType(loginData.getEmail()));
+        session(CookieTags.fullname, person.getUserFirstname() + " " + person.getUserLastname());
+        session(CookieTags.user_type, person.getPersonType());
 
         return redirect(routes.ProfileHandler.overview());
     }
@@ -79,6 +82,7 @@ public class LoginController extends Controller{
      */
     @Security.Authenticated(Secured.class)
     public Result logout(){
+        session().clear();
         return ok(views.html.General.About.render());
     }
 

@@ -6,7 +6,7 @@
     if (v == null || v.isEmpty) {
         Nil
     } else {
-        v
+        session().get(CookieTags.fullname)
     }
 }
 
@@ -22,20 +22,20 @@
                     <span>Applications</span></a>
             </div>
             <div class="portal-icon portal-icon-extend-margin">
-                <a href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
+                <a disabled="true" href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
                     <span>Message</span></a></div>
             }
             <div class="portal-icon portal-icon-extend-margin">
                 <a href="@routes.HomeController.about()" id="IconMenuBarAbout"><ic class="fa fa-3x fa-users drop-bottom-5"></ic><br>
                     <span>About the Committee</span></a></div>
             <div class="portal-icon portal-icon-extend-margin">
-                <a href="@routes.HomeController.helpSupport()" id="IconMenuBarHelpSupport"><ic class="fa fa-3x fa-question-circle-o drop-bottom-5"></ic><br>
+                <a disabled="true" href="@routes.HomeController.helpSupport()" id="IconMenuBarHelpSupport"><ic class="fa fa-3x fa-question-circle-o drop-bottom-5"></ic><br>
                     <span>Help & Support</span></a></div>
 
             @*TODO fix the drop down feature*@
 
             @if(getName == Nil) {
-                <div class="pull-right portal-icon larger-width" style="transform: translateY(45%);">
+                <div class="pull-right portal-icon larger-width" style="transform: translateY(45%); padding: 5px !important;">
                 <div class="row">
                     <div class="col-sm-4"></div>
                     <div class="col-sm-8">
@@ -53,12 +53,12 @@
                 <div class="pull-right portal-icon larger-width">
                 <ic class="fa fa-3x fa-user-circle-o drop-bottom-5"></ic>
                     <br/>
-                    <ul id="profile-menu" class="sm sm-clean-vertical">
+                    <ul id="profile-menu" class="sm sm-clean-vertical dropdown-menu-right profile-name-header">
                         <li><a href="#" id="IconMenuBarProfile">@getName <span class="caret"></span> </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
-                                <li><a href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>
-                            </ul>
+                        <ul id="MailDropDown" class="dropdown-menu">
+                            <li><a href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
+                            <li><a href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>
+                        </ul>
                         </li>
                     </ul>
                 </div>
@@ -81,7 +81,7 @@
 
             <div class="lessen-top-margin">
                 <button onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")'" class="nmu-button" type="submit">Human Research</button>
-                <button onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")'" class="nmu-button" type="submit">Animal Research</button>
+                <button disabled="true" onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")'" class="nmu-button" type="submit">Animal Research</button>
             </div>
         </div>
     </div>

@@ -30,7 +30,7 @@ public class EthicsApplication implements Serializable {
             switch (type.toLowerCase()) {
 
                 case "animal": {
-                    return Human;
+                    return Animal;
                 }
 
                 case "human":
@@ -152,7 +152,7 @@ public class EthicsApplication implements Serializable {
         return XMLTools.lookup(ethicsApplication.getRootElement(), id);
     }
 
-    public EthicsApplication(ApplicationType type, Document applicationDocument) {
+    public EthicsApplication(EthicsApplication.ApplicationType type, Document applicationDocument) {
         this.type = type;
         this.applicationDocumentDOM = applicationDocument;
     }

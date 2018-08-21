@@ -6,13 +6,13 @@
                        hint="The title should explain what your study is about, but keep it short.">
                 <question>Concise descriptive title of study (must contain keywords that best describe the study)
                 </question>
-                <value></value>e
+                <value></value>
             </component>
-            <component id="app_department" type="text"
+            <component id="app_department" type="text" dropdown="true"
                        hint="The university department associated with the research">
                 <question>University department associated with application.
                 </question>
-                <value></value>e
+                <value></value>
             </component>
         </group>
         <group id="grp_prp" name="Primary Responsible Person"

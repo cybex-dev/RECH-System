@@ -28,7 +28,7 @@ public class Condition {
     public Condition() {
     }
 
-    public Condition(String text, Risk risk, Level level) {
+    public Condition(String text, Condition.Risk risk, Condition.Level level) {
         this.level = level;
         this.risk = risk;
         this.conditionText = text;

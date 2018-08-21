@@ -1,5 +1,6 @@
 package controllers.ApplicationSystem;
 
+import controllers.UserSystem.ProfileHandler;
 import controllers.UserSystem.Secured;
 import dao.ApplicationSystem.EntityComponent;
 import dao.ApplicationSystem.EntityComponentVersion;
@@ -133,6 +134,10 @@ public class ApplicationHandler extends Controller {
         ApplicationType applicationType = ApplicationType.parse(type);
         DynamicForm form = formFactory.form();
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
+        if (ethicsApplication == null) {
+            flash("message", "No animal application form available");
+            return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
+        }
         Element rootElement = ethicsApplication.getRootElement();
         return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList()));
     }

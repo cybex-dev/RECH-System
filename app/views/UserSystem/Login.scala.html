@@ -11,7 +11,7 @@
     @form(action = controllers.UserSystem.routes.LoginController.doLogin()) {
         @CSRF.formField
         @inputText(loginForm("email"), '_label -> "Email", '_class -> "input-text-short")
-        @inputText(loginForm("password"), '_label -> "Password", '_class -> "input-text-short")
+        @inputPassword(loginForm("password"), '_label -> "Password", '_class -> "input-text-short")
         <input type="checkbox" name="remember" id="remember" ><label> Remember Me</label>
         <br/>
         <br/>

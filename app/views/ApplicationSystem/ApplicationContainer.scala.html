@@ -70,13 +70,27 @@
             if(!elem.isComponent) {
                 /*this creates a container element which consumes some html type text*/
                 val innerText = parseElement(elem)
-                val pre = elem.getPreTag("div")
-                val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
-                val post = elem.getPostTag("div")
-                pre + heading + innerText + post
+                val isList = elem.getTag.equals("list")
+                if(isList) {
+                    val pre = elem.getPreTag("table")
+                    val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
+                    val post = elem.getPostTag("table")
+                    heading + pre + "" + innerText + "" + post
+                } else {
+                    val pre = elem.getPreTag("div")
+                    val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
+                    val post = elem.getPostTag("div")
+                    pre + heading + innerText + post
+                }
             } else {
                 /*this creates a component of type a specific type*/
-                createComponent(elem)
+                val isListItem = element.getTag.equals("list")
+                val value = createComponent(elem)
+                if(isListItem) {
+                    "<td>" + value + "</td>"
+                } else {
+                    value
+                }
             }
         }
         innerText.mkString("")
@@ -137,18 +151,19 @@
             </div>
             <div class="wizard-body">
                 <div class="row">
-                    <div class="col-sm-9">
+                    @*<div class="col-sm-9">*@
+                    <div class="col-sm-12">
                         <input type="hidden" value="" id="application_level">
                         @application_content
                     </div>
-                    <div class="col-sm-3">
-                        <div id="application_overview_container" style="margin: 10px; padding: 10px; border: 1px solid #ffffff">
-                            <h5>Application Overview</h5>
-                        </div>
-                        <div id="documents_overview_container" style="margin: 10px; padding: 10px; border: 1px solid #ffffff">
-                            <h5>Required Documents</h5>
-                        </div>
-                    </div>
+                    @*<div class="col-sm-3">*@
+                        @*<div id="application_overview_container" style="margin: 10px; padding: 10px; border: 1px solid #ffffff">*@
+                            @*<h5>Application Overview</h5>*@
+                        @*</div>*@
+                        @*<div id="documents_overview_container" style="margin: 10px; padding: 10px; border: 1px solid #ffffff">*@
+                            @*<h5>Required Documents</h5>*@
+                        @*</div>*@
+                    @*</div>*@
                 </div>
             </div>
         </div>

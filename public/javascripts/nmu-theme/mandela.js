@@ -181,6 +181,8 @@ $(document).ready(function () {
 
     $('#main-menu').smartmenus({ subIndicators: false, subIndicatorsText: 'test', keepHighlighted:false});
 
+    $('#profile-menu').smartmenus({ subIndicators: false, subIndicatorsText: '', keepHighlighted:false, rightToLeftSubMenus: true});
+
 });
 
 $(document).ready(function () {

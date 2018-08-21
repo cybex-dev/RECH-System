@@ -328,16 +328,24 @@ function setVisible(element) {
 
 // hides an element
 function hide(element) {
-    if (element == null)
-        return;
-    element.style.display = "none"
+    try {
+        if (element == null)
+            return;
+        element.style.display = "none"
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 // makes an element visible
 function show(element) {
-    if (element == null)
-        return;
-    element.style.display = ""
+    try {
+        if (element == null)
+            return;
+        element.style.display = ""
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 function addDocumentOverview() {
@@ -367,21 +375,22 @@ function addApplicationOverview() {
 
 // initialize Wizard
 function initWizard() {
+    //Add collapsible to each section header and collapsible-child to each of the children
     function addCollapsibleSections() {
-        document.querySelectorAll(".section").forEach(function (value) {
-            value.firstChild.classList.add("section-title", "collapsible");
-        });
-        // document.querySelectorAll(".group").forEach(function (value) {
-        //     value.firstChild.classList.add("collapsible");
-        // });
+        document.querySelectorAll(".section").forEach(e => e.firstChild.classList.add("section-title", "collapsible"));
 
         // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
-        document.querySelectorAll(".section .group").forEach(function (e) {
-            e.classList.add("collapsible-child");
-        });
+        document.querySelectorAll(".section .group").forEach(e => e.classList.add("collapsible-child"));
     }
 
-    // Link each section heading to group collapbsible
+    function addCollapsibleGroups() {
+        document.querySelectorAll(".group > h3").forEach(e => e.classList.add("group-title", "collapsible"));
+
+        // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
+        document.querySelectorAll(".group").forEach(e => e.classList.add("collapsible-child"));
+    }
+
+    // Link each section heading to group collapbsible, adding an onclick event which collapses or expands a section when clicked
     document.querySelectorAll(".section").forEach(function (e) {
         e.firstChild.onclick = function () {
             document.querySelectorAll("#" + e.id + ".section .group").forEach(function (child) {
@@ -393,24 +402,44 @@ function initWizard() {
     var list = document.querySelectorAll(".section");
     list.item(list.length - 1).style.border = "0";
 
+    // Add collapsible functionality to wizard sections
     addCollapsibleSections();
 
-    addDocumentOverview();
+    // Add collapsible functionality to wizard groups (this includes document groups)
+    addCollapsibleGroups();
 
-    addApplicationOverview();
+    // // Deprecated
+    // addDocumentOverview();
+    //
+    // // Deprecated
+    // addApplicationOverview();
 
+    // Set hooks to expand an extension when checked
     setExtensionHooks();
 }
 
-function setExtensionHooks() {
-    document.querySelectorAll(".extension>input").forEach(function (value) {
-        value.onclick = function () {
-            if (value.checked === true) {
-                value.parent.childNodes.forEach(function (value1) { hide(value1) });
-                show(value);
-            } else {
-                value.parent.childNodes.forEach(function (value1) { show(value1) });
-            }
+function setAdaptiveHook(element) {
+    var parent = element.parentNode;
+    element.onclick = function () {
+        if (element.checked === false) {
+            parent.childNodes.forEach(hide);
+            show(element);
+            show(element.previousElementSibling);
+            show(element.previousElementSibling.previousElementSibling);
+        } else {
+            parent.childNodes.forEach(show);
         }
-    })
+    };
+    parent.childNodes.forEach(hide);
+    show(element);
+    show(element.previousElementSibling);
+    show(element.previousElementSibling.previousElementSibling);
+}
+
+function setExtensionHooks() {
+    document.querySelectorAll(".extension > input[type=checkbox]").forEach(setAdaptiveHook);
+}
+
+function createLists(listDiv) {
+    document.querySelectorAll("#listDiv").forEach(function(div) {div.classList.add("")})
 }
