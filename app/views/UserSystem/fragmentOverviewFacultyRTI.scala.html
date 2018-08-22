@@ -1,13 +1,13 @@
 @import views.html.UserSystem.fragmentSubmittedApplications
 @import views.html.UserSystem.fragmentApproveApplications
-@import views.html.UserSystem.fragmentReviewApplications
 @import models.UserSystem.Application
 
-@(newApps: List[Application])
+@(approveApplications: List[Application], facultyApplications: List[Application])
 
 <div class="container">
     <br>
     <h3>Applications</h3>
     <br>
-        @fragmentNewApplications.apply(newApps)
+        @fragmentApproveApplications.apply(approveApplications)
+        @fragmentFacultyApplications.apply(facultyApplications)
 </div>

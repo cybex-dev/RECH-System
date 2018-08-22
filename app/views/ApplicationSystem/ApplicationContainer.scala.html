@@ -99,7 +99,7 @@
     helper.form(action = controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()) {
         helper.CSRF.formField
         var v = parseElement(root)
-        v += "<br><button type=\"submit\" class=\"nmu-button\">Submit Application</button>"
+        v += "<br><button type=\"submit\" class=\"nmu-button\" style=\"width: auto;\">Save Application</button>"
         Html(v)
     }
 

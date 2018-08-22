@@ -24,6 +24,9 @@ GET     /user/profile                   controllers.UserSystem.ProfileHandler.se
 POST    /user/profile                   controllers.UserSystem.ProfileHandler.modifySettings
 GET     /user/jsRoutes                  controllers.UserSystem.ProfileHandler.javascriptRoutes
 
+GET     /user/enrol                     controllers.UserSystem.ProfileHandler.enrol
+POST    /user/enrol                     controllers.UserSystem.ProfileHandler.doEnrol
+
 ### ### Application System ###
 
 # View all applications & statuses

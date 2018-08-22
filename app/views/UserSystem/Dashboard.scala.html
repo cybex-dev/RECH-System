@@ -11,7 +11,7 @@
 @import views.html.UserSystem.fragmentOverviewLiaison
 @import views.html.UserSystem.fragmentRCDOverview
 
-@(applications: List[Application])
+@(newApps: List[Application], ownApplications: List[Application], approveApps: List[Application], reviewApps: List[Application], liaiseApps: List[Application], facultyApps: List[Application])
 
 @status_icons(status: ApplicationStatus) = @{
     status match {
@@ -22,14 +22,14 @@
 
 @getDashboard() = @{
     UserType.parse(session().get(CookieTags.user_type)) match {
-        case UserType.PrimaryResponsiblePerson => fragmentOverviewPRP.apply()
-        case UserType.Reviewer => fragmentOverviewReviewers.apply()
-        case UserType.Liaison => fragmentOverviewLiaison.apply()
-        case UserType.RCD => fragmentRCDOverview.apply()
-        case UserType.FacultyRTI =>
-        case UserType.DepartmentHead => ""
+        case UserType.PrimaryResponsiblePerson => fragmentOverviewPRP.apply(ownApplications, approveApps)
+        case UserType.Reviewer => fragmentOverviewReviewers.apply(ownApplications, approveApps, reviewApps)
+        case UserType.Liaison => fragmentOverviewLiaison.apply(ownApplications, approveApps, reviewApps, liaiseApps)
+        case UserType.RCD => fragmentRCDOverview.apply(newApps)
+        case UserType.FacultyRTI => fragmentOverviewFacultyRTI.apply(approveApps, facultyApps)
+        case UserType.DepartmentHead => fragmentOverviewHoD.apply(ownApplications, approveApps)
         case UserType.PrimaryInvestigator =>
-        case _ => fragmentOverviewPI.apply(applications)
+        case _ => fragmentOverviewPI.apply(ownApplications)
     }
 }
 

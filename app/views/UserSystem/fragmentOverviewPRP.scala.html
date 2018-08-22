@@ -1,1 +1,13 @@
-@()
+@import models.UserSystem.Application
+@import java.util.List
+@import views.html.UserSystem.fragmentSubmittedApplications
+
+@(applications: List[Application], approveApps: List[Application])
+
+<div class="container">
+    <br>
+    <h3>Applications</h3>
+    <br>
+        @fragmentSubmittedApplications.apply(applications)
+        @fragmentApproveApplications.apply(approveApps)
+</div>

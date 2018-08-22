@@ -1,1 +1,17 @@
-@()
+@import views.html.UserSystem.fragmentSubmittedApplications
+@import views.html.UserSystem.fragmentApproveApplications
+@import views.html.UserSystem.fragmentReviewApplications
+@import views.html.UserSystem.fragmentLiaiseApplications
+@import models.UserSystem.Application
+
+@(ownApplications: List[Application], approveApplications: List[Application], reviewApplications: List[Application], liaiseApplications: List[Application])
+
+<div class="container">
+    <br>
+    <h3>Applications</h3>
+    <br>
+    @fragmentSubmittedApplications.apply(ownApplications)
+    @fragmentApproveApplications.apply(approveApplications)
+    @fragmentReviewApplications.apply(reviewApplications)
+    @fragmentLiaiseApplications.apply(liaiseApplications)
+</div>

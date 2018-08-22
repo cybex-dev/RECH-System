@@ -1,5 +1,6 @@
 @import models.UserSystem.Application
 @import java.util.List
+@import views.html.UserSystem.fragmentSubmittedApplications
 
 @(applications: List[Application])
 
@@ -7,30 +8,5 @@
     <br>
     <h3>Applications</h3>
     <br>
-    @if(applications.size() > 0) {
-        <div class="row">
-            <table class="table">
-                <thead>
-                    <th>Application Title</th>
-                    <th>Notifications</th>
-                    <th>Status</th>
-                    <th>Date Submitted</th>
-                    <th>Date Approved</th>
-                </thead>
-                <tbody>
-                @for(application <- applications) {
-                    <tr>
-                        <td>@application.title</td>
-                        <td>N/A</td>
-                        <td>@application.status.name()</td>
-                        <td>@application.date_approved</td>
-                        <td>@application.date_submitted</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
-    } else {
-        <p>No applications associated with account</p>
-    }
+    @fragmentSubmittedApplications.apply(applications)
 </div>

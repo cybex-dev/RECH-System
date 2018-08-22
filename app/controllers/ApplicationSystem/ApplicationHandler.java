@@ -19,6 +19,7 @@ import models.ApplicationSystem.EthicsApplication.ApplicationType;
 
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
+import play.Play;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
@@ -477,6 +478,7 @@ public class ApplicationHandler extends Controller {
     @RequireCSRFCheck
     public Result upload(String id) {
         File file = request().body().asRaw().asFile();
+        String uploadDir = Play.application().configuration().getString("documentLocation");
         String hashcode = String.valueOf(file.hashCode());
         return ok();
     }

@@ -146,7 +146,7 @@ public class Mailer {
                 x.printStackTrace();
                 return false;
             }
-        }, notifierExecutor);
+        }/*, notifierExecutor*/);
     }
 
     private static Email StandardEmail() {
