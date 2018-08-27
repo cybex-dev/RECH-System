@@ -96,7 +96,7 @@
         innerText.mkString("")
     }
 
-    helper.form(action = controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()) {
+    helper.form(action = controllers.ApplicationSystem.routes.ApplicationHandler.createApplication(), 'enctype -> "multipart/form-data") {
         helper.CSRF.formField
         var v = parseElement(root)
         v += "<br><button type=\"submit\" class=\"nmu-button\" style=\"width: auto;\">Save Application</button>"

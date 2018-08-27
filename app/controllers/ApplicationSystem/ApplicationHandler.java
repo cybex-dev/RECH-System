@@ -1,18 +1,14 @@
 package controllers.ApplicationSystem;
 
-import controllers.UserSystem.ProfileHandler;
-import controllers.UserSystem.Secured;
 import dao.ApplicationSystem.EntityComponent;
 import dao.ApplicationSystem.EntityComponentVersion;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.NMU.EntityDepartment;
-import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
 import exceptions.InvalidFieldException;
 import exceptions.UnhandledElementException;
 import helpers.CookieTags;
-import helpers.JDBCExecutor;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
@@ -26,23 +22,18 @@ import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.RequireCSRFCheck;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
 
-@Security.Authenticated(Secured.class)
+//@Security.Authenticated(Secured.class)
 public class ApplicationHandler extends Controller {
 
     @Inject

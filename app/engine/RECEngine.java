@@ -8,7 +8,6 @@ import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.Meeting.EntityAgendaItem;
 import dao.ReviewSystem.EntityLiaisonComponentFeedback;
 import dao.ReviewSystem.EntityReviewerApplications;
-import dao.UserSystem.EntityPerson;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import net.ddns.cyberstudios.Element;
@@ -17,7 +16,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RECEngine {
 

@@ -1,12 +1,8 @@
 package models.UserSystem;
 
-import controllers.UserSystem.Secured;
-import dao.UserSystem.EntityPerson;
 import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 
-import javax.swing.text.html.parser.Entity;
-import javax.validation.Constraint;
 import java.util.ArrayList;
 import java.util.List;
 

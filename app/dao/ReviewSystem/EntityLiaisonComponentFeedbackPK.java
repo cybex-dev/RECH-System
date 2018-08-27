@@ -1,87 +1,22 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable
 public class EntityLiaisonComponentFeedbackPK implements Serializable {
-    private Short version;
+    private String liaisonEmail;
+    private short version;
     private String componentId;
+    private int applicationYear;
+    private int applicationNumber;
     private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
-    private String liaisonEmail;
 
-    @Column(name = "version", nullable = false)
-    public Short getVersion() {
-        return version;
-    }
-
-    public void setVersion(Short version) {
-        this.version = version;
-    }
-
-    @Column(name = "component_id", nullable = false, length = 50)
-    public String getComponentId() {
-        return componentId;
-    }
-
-    public void setComponentId(String componentId) {
-        this.componentId = componentId;
-    }
-
-    @Column(name = "application_type", nullable = false, length = 1)
-    public String getApplicationType() {
-        return applicationType;
-    }
-
-    public void setApplicationType(String applicationType) {
-        this.applicationType = applicationType;
-    }
-
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Column(name = "department_name", nullable = false, length = 50)
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    @Column(name = "faculty_name", nullable = false, length = 50)
-    public String getFacultyName() {
-        return facultyName;
-    }
-
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
-    }
-
-    @Column(name = "liaison_email", nullable = false, length = 100)
+    @Column(name = "liaison_email")
+    @Id
     public String getLiaisonEmail() {
         return liaisonEmail;
     }
@@ -90,24 +25,94 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
         this.liaisonEmail = liaisonEmail;
     }
 
+    @Column(name = "version")
+    @Id
+    public short getVersion() {
+        return version;
+    }
+
+    public void setVersion(short version) {
+        this.version = version;
+    }
+
+    @Column(name = "component_id")
+    @Id
+    public String getComponentId() {
+        return componentId;
+    }
+
+    public void setComponentId(String componentId) {
+        this.componentId = componentId;
+    }
+
+    @Column(name = "application_year")
+    @Id
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Column(name = "application_number")
+    @Id
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Column(name = "application_type")
+    @Id
+    public String getApplicationType() {
+        return applicationType;
+    }
+
+    public void setApplicationType(String applicationType) {
+        this.applicationType = applicationType;
+    }
+
+    @Column(name = "department_name")
+    @Id
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    @Column(name = "faculty_name")
+    @Id
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityLiaisonComponentFeedbackPK that = (EntityLiaisonComponentFeedbackPK) o;
-        return Objects.equals(version, that.version) &&
+        return version == that.version &&
+                applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
+                Objects.equals(liaisonEmail, that.liaisonEmail) &&
                 Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName) &&
-                Objects.equals(liaisonEmail, that.liaisonEmail);
+                Objects.equals(facultyName, that.facultyName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, liaisonEmail);
+        return Objects.hash(liaisonEmail, version, componentId, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
 }

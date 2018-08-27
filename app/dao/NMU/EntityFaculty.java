@@ -8,19 +8,25 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "Faculty", schema = "rech_system")
+@Table(name = "faculty", schema = "rech_system")
 public class EntityFaculty {
     private String facultyName;
     private String facultyInfo;
 
+
     public static Finder<String, dao.NMU.EntityFaculty> find = new Finder<>(dao.NMU.EntityFaculty.class);
 
     public static List<String> getAllFacultyNames() {
-        return find.all().stream().map(EntityFaculty::getFacultyName).collect(Collectors.toList());
+        return find.all().stream().map(dao.NMU.EntityFaculty::getFacultyName).collect(Collectors.toList());
+    }
+
+
+    public static dao.NMU.EntityFaculty getFacultyByName(String facultyName){
+        return find.byId(facultyName);
     }
 
     @Id
-    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Column(name = "faculty_name")
     public String getFacultyName() {
         return facultyName;
     }
@@ -30,7 +36,7 @@ public class EntityFaculty {
     }
 
     @Basic
-    @Column(name = "faculty_info", nullable = true, length = -1)
+    @Column(name = "faculty_info")
     public String getFacultyInfo() {
         return facultyInfo;
     }
@@ -53,9 +59,4 @@ public class EntityFaculty {
 
         return Objects.hash(facultyName, facultyInfo);
     }
-
-    public static dao.NMU.EntityFaculty getFacultyByName(String facultyName){
-        return find.byId(facultyName);
-    }
-
 }

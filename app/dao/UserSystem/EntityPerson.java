@@ -1,7 +1,6 @@
 package dao.UserSystem;
 
 import io.ebean.Finder;
-import io.ebean.Model;
 import models.UserSystem.UserType;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -9,14 +8,14 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Person", schema = "rech_system")
-public class EntityPerson extends Model {
+@Table(name = "person", schema = "rech_system")
+public class EntityPerson {
     private String userEmail;
     private String userPasswordHash;
-    private String userTitle;
     private String userFirstname;
     private String userLastname;
     private String userGender;
+    private String userTitle;
     private String currentDegreeLevel;
     private String contactNumberMobile;
     private String personType;
@@ -27,22 +26,8 @@ public class EntityPerson extends Model {
 
     public static Finder<String, dao.UserSystem.EntityPerson> find = new Finder<>(dao.UserSystem.EntityPerson.class);
 
-    public static boolean authenticate(String email, String password) {
-        EntityPerson entityPerson = find.byId(email);
-        if (entityPerson == null)
-            return false;
-        return BCrypt.checkpw(password, entityPerson.getUserPasswordHash());
-    }
-
-    public static String getPersonType(String email) {
-        EntityPerson entityPerson = find.byId(email);
-        if (entityPerson == null)
-            return "";
-        return entityPerson.getPersonType();
-    }
-
     @Id
-    @Column(name = "user_email", nullable = false, length = 100)
+    @Column(name = "user_email")
     public String getUserEmail() {
         return userEmail;
     }
@@ -52,7 +37,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "user_password_hash", nullable = false, length = 100)
+    @Column(name = "user_password_hash")
     public String getUserPasswordHash() {
         return userPasswordHash;
     }
@@ -62,17 +47,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "user_title", nullable = true, length = 50)
-    public String getUserTitle() {
-        return userTitle;
-    }
-
-    public void setUserTitle(String userTitle) {
-        this.userTitle = userTitle;
-    }
-
-    @Basic
-    @Column(name = "user_firstname", nullable = true, length = 50)
+    @Column(name = "user_firstname")
     public String getUserFirstname() {
         return userFirstname;
     }
@@ -82,7 +57,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "user_lastname", nullable = true, length = 50)
+    @Column(name = "user_lastname")
     public String getUserLastname() {
         return userLastname;
     }
@@ -92,7 +67,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "user_gender", nullable = true, length = 50)
+    @Column(name = "user_gender")
     public String getUserGender() {
         return userGender;
     }
@@ -102,7 +77,17 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "current_degree_level", nullable = true, length = 20)
+    @Column(name = "user_title")
+    public String getUserTitle() {
+        return userTitle;
+    }
+
+    public void setUserTitle(String userTitle) {
+        this.userTitle = userTitle;
+    }
+
+    @Basic
+    @Column(name = "current_degree_level")
     public String getCurrentDegreeLevel() {
         return currentDegreeLevel;
     }
@@ -112,7 +97,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "contact_number_mobile", nullable = true, length = 15)
+    @Column(name = "contact_number_mobile")
     public String getContactNumberMobile() {
         return contactNumberMobile;
     }
@@ -122,7 +107,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "person_type", nullable = true, length = 10)
+    @Column(name = "person_type")
     public String getPersonType() {
         return personType;
     }
@@ -132,7 +117,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "contact_office_telephone", nullable = true, length = 15)
+    @Column(name = "contact_office_telephone")
     public String getContactOfficeTelephone() {
         return contactOfficeTelephone;
     }
@@ -142,7 +127,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "office_address", nullable = true, length = 40)
+    @Column(name = "office_address")
     public String getOfficeAddress() {
         return officeAddress;
     }
@@ -152,7 +137,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
     }
@@ -162,7 +147,7 @@ public class EntityPerson extends Model {
     }
 
     @Basic
-    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Column(name = "faculty_name")
     public String getFacultyName() {
         return facultyName;
     }
@@ -178,10 +163,10 @@ public class EntityPerson extends Model {
         EntityPerson that = (EntityPerson) o;
         return Objects.equals(userEmail, that.userEmail) &&
                 Objects.equals(userPasswordHash, that.userPasswordHash) &&
-                Objects.equals(userTitle, that.userTitle) &&
                 Objects.equals(userFirstname, that.userFirstname) &&
                 Objects.equals(userLastname, that.userLastname) &&
                 Objects.equals(userGender, that.userGender) &&
+                Objects.equals(userTitle, that.userTitle) &&
                 Objects.equals(currentDegreeLevel, that.currentDegreeLevel) &&
                 Objects.equals(contactNumberMobile, that.contactNumberMobile) &&
                 Objects.equals(personType, that.personType) &&
@@ -194,7 +179,7 @@ public class EntityPerson extends Model {
     @Override
     public int hashCode() {
 
-        return Objects.hash(userEmail, userPasswordHash, userTitle, userFirstname, userLastname, userGender, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
+        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, userTitle, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
     }
 
     public static dao.UserSystem.EntityPerson getPersonById(String userEmail){
@@ -225,4 +210,17 @@ public class EntityPerson extends Model {
                 .orElse("");
     }
 
+    public static boolean authenticate(String email, String password) {
+        dao.UserSystem.EntityPerson entityPerson = find.byId(email);
+        if (entityPerson == null)
+            return false;
+        return BCrypt.checkpw(password, entityPerson.getUserPasswordHash());
+    }
+
+    public static String getPersonType(String email) {
+        dao.UserSystem.EntityPerson entityPerson = find.byId(email);
+        if (entityPerson == null)
+            return "";
+        return entityPerson.getPersonType();
+    }
 }

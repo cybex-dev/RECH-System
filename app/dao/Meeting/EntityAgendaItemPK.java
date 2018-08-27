@@ -1,31 +1,41 @@
 package dao.Meeting;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
-@Embeddable
 public class EntityAgendaItemPK implements Serializable {
-    private Timestamp meetingDate;
+    private int applicationYear;
+    private int applicationNumber;
     private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
+    private Timestamp meetingDate;
 
-    @Column(name = "meeting_date", nullable = false)
-    public Timestamp getMeetingDate() {
-        return meetingDate;
+    @Column(name = "application_year")
+    @Id
+    public int getApplicationYear() {
+        return applicationYear;
     }
 
-    public void setMeetingDate(Timestamp meetingDate) {
-        this.meetingDate = meetingDate;
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
     }
 
-    @Column(name = "application_type", nullable = false, length = 1)
+    @Column(name = "application_number")
+    @Id
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Column(name = "application_type")
+    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -34,25 +44,8 @@ public class EntityAgendaItemPK implements Serializable {
         this.applicationType = applicationType;
     }
 
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
+    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -61,7 +54,8 @@ public class EntityAgendaItemPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Column(name = "faculty_name")
+    @Id
     public String getFacultyName() {
         return facultyName;
     }
@@ -70,22 +64,32 @@ public class EntityAgendaItemPK implements Serializable {
         this.facultyName = facultyName;
     }
 
+    @Column(name = "meeting_date")
+    @Id
+    public Timestamp getMeetingDate() {
+        return meetingDate;
+    }
+
+    public void setMeetingDate(Timestamp meetingDate) {
+        this.meetingDate = meetingDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityAgendaItemPK that = (EntityAgendaItemPK) o;
-        return Objects.equals(meetingDate, that.meetingDate) &&
+        return applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
                 Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName);
+                Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(meetingDate, that.meetingDate);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(meetingDate, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(applicationYear, applicationNumber, applicationType, departmentName, facultyName, meetingDate);
     }
 }

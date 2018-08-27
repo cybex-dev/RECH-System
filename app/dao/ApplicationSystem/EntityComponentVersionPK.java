@@ -1,31 +1,31 @@
 package dao.ApplicationSystem;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Embeddable
 public class EntityComponentVersionPK implements Serializable {
-    private Short version;
+    private short version;
     private String componentId;
+    private int applicationYear;
+    private int applicationNumber;
     private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "version", nullable = false)
-    public Short getVersion() {
+    @Column(name = "version")
+    @Id
+    public short getVersion() {
         return version;
     }
 
-    public void setVersion(Short version) {
+    public void setVersion(short version) {
         this.version = version;
     }
 
-    @Column(name = "component_id", nullable = false, length = 50)
+    @Column(name = "component_id")
+    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -34,7 +34,28 @@ public class EntityComponentVersionPK implements Serializable {
         this.componentId = componentId;
     }
 
-    @Column(name = "application_type", nullable = false, length = 1)
+    @Column(name = "application_year")
+    @Id
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Column(name = "application_number")
+    @Id
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Column(name = "application_type")
+    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -43,25 +64,8 @@ public class EntityComponentVersionPK implements Serializable {
         this.applicationType = applicationType;
     }
 
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
+    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -70,7 +74,8 @@ public class EntityComponentVersionPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Column(name = "faculty_name")
+    @Id
     public String getFacultyName() {
         return facultyName;
     }
@@ -84,11 +89,11 @@ public class EntityComponentVersionPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityComponentVersionPK that = (EntityComponentVersionPK) o;
-        return Objects.equals(version, that.version) &&
+        return version == that.version &&
+                applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
                 Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName);
     }
@@ -96,6 +101,6 @@ public class EntityComponentVersionPK implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(version, componentId, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
 }

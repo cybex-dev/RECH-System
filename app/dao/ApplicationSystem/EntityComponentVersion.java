@@ -1,117 +1,56 @@
 package dao.ApplicationSystem;
 
 import io.ebean.Finder;
-import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ComponentVersion", schema = "rech_system")
+@Table(name = "componentversion", schema = "rech_system")
 @IdClass(EntityComponentVersionPK.class)
-public class EntityComponentVersion extends Model {
-    private Short version;
-    private String componentId;
-    private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
-    private String departmentName;
-    private String facultyName;
-    private Boolean isSubmitted;
+public class EntityComponentVersion {
+    private short version;
+    private Byte isSubmitted;
     private Timestamp dateSubmitted;
     private Timestamp dateLastEdited;
     private String responseType;
     private String textValue;
-    private Boolean boolValue;
+    private Byte boolValue;
     private String documentName;
     private String documentDescription;
     private String documentLocationHash;
+    private String componentId;
+    private int applicationYear;
+    private int applicationNumber;
+    private String applicationType;
+    private String departmentName;
+    private String facultyName;
 
     public static Finder<EntityComponentVersionPK, EntityComponentVersion> find = new Finder<>(dao.ApplicationSystem.EntityComponentVersion.class);
 
     @Id
-    @Column(name = "version", nullable = false)
-    public Short getVersion() {
+    @Column(name = "version")
+    public short getVersion() {
         return version;
     }
 
-    public void setVersion(Short version) {
+    public void setVersion(short version) {
         this.version = version;
     }
 
-    @Id
-    @Column(name = "component_id", nullable = false, length = 50)
-    public String getComponentId() {
-        return componentId;
-    }
-
-    public void setComponentId(String componentId) {
-        this.componentId = componentId;
-    }
-
-    @Id
-    @Column(name = "application_type", nullable = false, length = 1)
-    public String getApplicationType() {
-        return applicationType;
-    }
-
-    public void setApplicationType(String applicationType) {
-        this.applicationType = applicationType;
-    }
-
-    @Id
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Id
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Id
-    @Column(name = "department_name", nullable = false, length = 50)
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    @Id
-    @Column(name = "faculty_name", nullable = false, length = 50)
-    public String getFacultyName() {
-        return facultyName;
-    }
-
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
-    }
-
     @Basic
-    @Column(name = "is_submitted", nullable = true)
-    public Boolean getIsSubmitted() {
+    @Column(name = "is_submitted")
+    public Byte getIsSubmitted() {
         return isSubmitted;
     }
 
-    public void setIsSubmitted(Boolean isSubmitted) {
+    public void setIsSubmitted(Byte isSubmitted) {
         this.isSubmitted = isSubmitted;
     }
 
     @Basic
-    @Column(name = "date_submitted", nullable = true)
+    @Column(name = "date_submitted")
     public Timestamp getDateSubmitted() {
         return dateSubmitted;
     }
@@ -121,7 +60,7 @@ public class EntityComponentVersion extends Model {
     }
 
     @Basic
-    @Column(name = "date_last_edited", nullable = true)
+    @Column(name = "date_last_edited")
     public Timestamp getDateLastEdited() {
         return dateLastEdited;
     }
@@ -131,7 +70,7 @@ public class EntityComponentVersion extends Model {
     }
 
     @Basic
-    @Column(name = "response_type", nullable = true, length = 8)
+    @Column(name = "response_type")
     public String getResponseType() {
         return responseType;
     }
@@ -141,7 +80,7 @@ public class EntityComponentVersion extends Model {
     }
 
     @Basic
-    @Column(name = "text_value", nullable = true, length = 255)
+    @Column(name = "text_value")
     public String getTextValue() {
         return textValue;
     }
@@ -151,17 +90,17 @@ public class EntityComponentVersion extends Model {
     }
 
     @Basic
-    @Column(name = "bool_value", nullable = true)
-    public Boolean getBoolValue() {
+    @Column(name = "bool_value")
+    public Byte getBoolValue() {
         return boolValue;
     }
 
-    public void setBoolValue(Boolean boolValue) {
+    public void setBoolValue(Byte boolValue) {
         this.boolValue = boolValue;
     }
 
     @Basic
-    @Column(name = "document_name", nullable = true, length = 100)
+    @Column(name = "document_name")
     public String getDocumentName() {
         return documentName;
     }
@@ -171,7 +110,7 @@ public class EntityComponentVersion extends Model {
     }
 
     @Basic
-    @Column(name = "document_description", nullable = true, length = 255)
+    @Column(name = "document_description")
     public String getDocumentDescription() {
         return documentDescription;
     }
@@ -181,7 +120,7 @@ public class EntityComponentVersion extends Model {
     }
 
     @Basic
-    @Column(name = "document_location_hash", nullable = true, length = 255)
+    @Column(name = "document_location_hash")
     public String getDocumentLocationHash() {
         return documentLocationHash;
     }
@@ -190,18 +129,74 @@ public class EntityComponentVersion extends Model {
         this.documentLocationHash = documentLocationHash;
     }
 
+    @Id
+    @Column(name = "component_id")
+    public String getComponentId() {
+        return componentId;
+    }
+
+    public void setComponentId(String componentId) {
+        this.componentId = componentId;
+    }
+
+    @Id
+    @Column(name = "application_year")
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Id
+    @Column(name = "application_number")
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Id
+    @Column(name = "application_type")
+    public String getApplicationType() {
+        return applicationType;
+    }
+
+    public void setApplicationType(String applicationType) {
+        this.applicationType = applicationType;
+    }
+
+    @Id
+    @Column(name = "department_name")
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    @Id
+    @Column(name = "faculty_name")
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityComponentVersion that = (EntityComponentVersion) o;
-        return Objects.equals(version, that.version) &&
-                Objects.equals(componentId, that.componentId) &&
-                Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
-                Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName) &&
+        return version == that.version &&
+                applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
                 Objects.equals(isSubmitted, that.isSubmitted) &&
                 Objects.equals(dateSubmitted, that.dateSubmitted) &&
                 Objects.equals(dateLastEdited, that.dateLastEdited) &&
@@ -210,14 +205,19 @@ public class EntityComponentVersion extends Model {
                 Objects.equals(boolValue, that.boolValue) &&
                 Objects.equals(documentName, that.documentName) &&
                 Objects.equals(documentDescription, that.documentDescription) &&
-                Objects.equals(documentLocationHash, that.documentLocationHash);
+                Objects.equals(documentLocationHash, that.documentLocationHash) &&
+                Objects.equals(componentId, that.componentId) &&
+                Objects.equals(applicationType, that.applicationType) &&
+                Objects.equals(departmentName, that.departmentName) &&
+                Objects.equals(facultyName, that.facultyName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(version, componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName, isSubmitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription, documentLocationHash);
+        return Objects.hash(version, isSubmitted, dateSubmitted, dateLastEdited, responseType, textValue, boolValue, documentName, documentDescription, documentLocationHash, componentId, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
+
 
     public static EntityComponentVersion getLatestComponent(String componentId) {
         return find.all()
@@ -227,6 +227,4 @@ public class EntityComponentVersion extends Model {
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find any value for componentId: " + String.valueOf(componentId)));
 
     }
-
-
 }

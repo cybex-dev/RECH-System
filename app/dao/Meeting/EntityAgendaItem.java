@@ -8,82 +8,23 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "AgendaItem", schema = "rech_system")
+@Table(name = "agendaitem", schema = "rech_system")
 @IdClass(EntityAgendaItemPK.class)
 public class EntityAgendaItem {
-    private Timestamp meetingDate;
-    private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
-    private String departmentName;
-    private String facultyName;
     private String resolution;
     private Short applicationStatus;
+    private int applicationYear;
+    private int applicationNumber;
+    private String applicationType;
+    private String departmentName;
+    private String facultyName;
+    private Timestamp meetingDate;
+
 
     public static Finder<EntityAgendaItemPK, EntityAgendaItem> find = new Finder<>(EntityAgendaItem.class);
 
-    @Id
-    @Column(name = "meeting_date", nullable = false)
-    public Timestamp getMeetingDate() {
-        return meetingDate;
-    }
-
-    public void setMeetingDate(Timestamp meetingDate) {
-        this.meetingDate = meetingDate;
-    }
-
-    @Id
-    @Column(name = "application_type", nullable = false, length = 1)
-    public String getApplicationType() {
-        return applicationType;
-    }
-
-    public void setApplicationType(String applicationType) {
-        this.applicationType = applicationType;
-    }
-
-    @Id
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Id
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Id
-    @Column(name = "department_name", nullable = false, length = 50)
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    @Id
-    @Column(name = "faculty_name", nullable = false, length = 50)
-    public String getFacultyName() {
-        return facultyName;
-    }
-
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
-    }
-
     @Basic
-    @Column(name = "resolution", nullable = true, length = -1)
+    @Column(name = "resolution")
     public String getResolution() {
         return resolution;
     }
@@ -93,7 +34,7 @@ public class EntityAgendaItem {
     }
 
     @Basic
-    @Column(name = "application_status", nullable = true)
+    @Column(name = "application_status")
     public Short getApplicationStatus() {
         return applicationStatus;
     }
@@ -102,26 +43,87 @@ public class EntityAgendaItem {
         this.applicationStatus = applicationStatus;
     }
 
+    @Id
+    @Column(name = "application_year")
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Id
+    @Column(name = "application_number")
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Id
+    @Column(name = "application_type")
+    public String getApplicationType() {
+        return applicationType;
+    }
+
+    public void setApplicationType(String applicationType) {
+        this.applicationType = applicationType;
+    }
+
+    @Id
+    @Column(name = "department_name")
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    @Id
+    @Column(name = "faculty_name")
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
+    }
+
+    @Id
+    @Column(name = "meeting_date")
+    public Timestamp getMeetingDate() {
+        return meetingDate;
+    }
+
+    public void setMeetingDate(Timestamp meetingDate) {
+        this.meetingDate = meetingDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityAgendaItem that = (EntityAgendaItem) o;
-        return Objects.equals(meetingDate, that.meetingDate) &&
+        return applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
+                Objects.equals(resolution, that.resolution) &&
+                Objects.equals(applicationStatus, that.applicationStatus) &&
                 Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName) &&
-                Objects.equals(resolution, that.resolution) &&
-                Objects.equals(applicationStatus, that.applicationStatus);
+                Objects.equals(meetingDate, that.meetingDate);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(meetingDate, applicationType, applicationYear, applicationNumber, departmentName, facultyName, resolution, applicationStatus);
+        return Objects.hash(resolution, applicationStatus, applicationYear, applicationNumber, applicationType, departmentName, facultyName, meetingDate);
     }
+
     public EntityEthicsApplicationPK applicationPrimaryKey() {
         EntityEthicsApplicationPK pk = new EntityEthicsApplicationPK();
         pk.setApplicationNumber(applicationNumber);

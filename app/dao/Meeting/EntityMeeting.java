@@ -5,13 +5,13 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Meeting", schema = "rech_system", catalog = "")
+@Table(name = "meeting", schema = "rech_system")
 public class EntityMeeting {
     private Timestamp meetingDate;
     private String announcements;
 
     @Id
-    @Column(name = "meeting_date", nullable = false)
+    @Column(name = "meeting_date")
     public Timestamp getMeetingDate() {
         return meetingDate;
     }
@@ -21,7 +21,7 @@ public class EntityMeeting {
     }
 
     @Basic
-    @Column(name = "announcements", nullable = true, length = 45)
+    @Column(name = "announcements")
     public String getAnnouncements() {
         return announcements;
     }

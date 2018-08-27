@@ -9,9 +9,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "Department", schema = "rech_system")
+@Table(name = "department", schema = "rech_system")
 @IdClass(EntityDepartmentPK.class)
 public class EntityDepartment {
+    private String departmentName;
+    private String facultyName;
+
     public static class DepartmentContainer {
         public String dept, faculty;
 
@@ -23,17 +26,14 @@ public class EntityDepartment {
         }
     }
 
-    private String departmentName;
-    private String facultyFacultyName;
-
-    public static Finder<dao.NMU.EntityDepartmentPK, dao.NMU.EntityDepartment> find = new Finder<>(dao.NMU.EntityDepartment.class);
+    public static Finder<EntityDepartmentPK, dao.NMU.EntityDepartment> find = new Finder<>(dao.NMU.EntityDepartment.class);
 
     public static List<DepartmentContainer> getAllDepartmentNames() {
-        return find.all().stream().map(entityDepartment -> DepartmentContainer.create(entityDepartment.departmentName, entityDepartment.facultyFacultyName)).collect(Collectors.toList());
+        return find.all().stream().map(entityDepartment -> DepartmentContainer.create(entityDepartment.departmentName, entityDepartment.facultyName)).collect(Collectors.toList());
     }
 
     @Id
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
     }
@@ -43,13 +43,13 @@ public class EntityDepartment {
     }
 
     @Id
-    @Column(name = "Faculty_faculty_name", nullable = false, length = 50)
-    public String getFacultyFacultyName() {
-        return facultyFacultyName;
+    @Column(name = "faculty_name")
+    public String getFacultyName() {
+        return facultyName;
     }
 
-    public void setFacultyFacultyName(String facultyFacultyName) {
-        this.facultyFacultyName = facultyFacultyName;
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     @Override
@@ -58,15 +58,14 @@ public class EntityDepartment {
         if (o == null || getClass() != o.getClass()) return false;
         EntityDepartment that = (EntityDepartment) o;
         return Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyFacultyName, that.facultyFacultyName);
+                Objects.equals(facultyName, that.facultyName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(departmentName, facultyFacultyName);
+        return Objects.hash(departmentName, facultyName);
     }
-
 
     public static String findFacultyByDepartment(String dept) throws InvalidFieldException {
         return find.all()
@@ -74,8 +73,6 @@ public class EntityDepartment {
                 .filter(entityDepartment -> entityDepartment.departmentName.equals(dept))
                 .findFirst()
                 .orElseThrow(() -> new InvalidFieldException("Department has no associated faculty"))
-                .getFacultyFacultyName();
+                .getFacultyName();
     }
-
-
 }

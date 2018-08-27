@@ -380,26 +380,26 @@ function initWizard() {
         document.querySelectorAll(".section").forEach(e => e.firstChild.classList.add("section-title", "collapsible"));
 
         // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
-        document.querySelectorAll(".section > .group").forEach(e => e.classList.add("collapsible-child"));
+        document.querySelectorAll(".section .group").forEach(e => e.classList.add("collapsible-child"));
     }
 
     function addCollapsibleGroups() {
         document.querySelectorAll(".group > h3").forEach(e => e.classList.add("group-title", "collapsible"));
 
         // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
-        document.querySelectorAll(".group").forEach(e => e.childNodes.forEach(ee => {
-            try {
-                if(ee.nodeName !== "H3" && ee.nodeType === 1) {
-                    ee.classList.add("collapsible-child")
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        }));
+        // document.querySelectorAll(".group").forEach(e => e.childNodes.forEach(ee => {
+        //     try {
+        //         if(ee.nodeName !== "H3" && ee.nodeType === 1) {
+        //             ee.classList.add("collapsible-child")
+        //         }
+        //     } catch (e) {
+        //         console.log(e);
+        //     }
+        // }));
     }
 
     // Link each section heading to group collapbsible, adding an onclick event which collapses or expands a section when clicked
-    document.querySelectorAll(".group").forEach(function (e) {
+    document.querySelectorAll(".section").forEach(function (e) {
         e.firstChild.onclick = function () {
             document.querySelectorAll("#" + e.id + ".section .group").forEach(function (child) {
                 child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
