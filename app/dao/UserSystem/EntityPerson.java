@@ -1,6 +1,7 @@
 package dao.UserSystem;
 
 import io.ebean.Finder;
+import io.ebean.Model;
 import models.UserSystem.UserType;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -9,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "person", schema = "rech_system")
-public class EntityPerson {
+public class EntityPerson extends Model {
     private String userEmail;
     private String userPasswordHash;
     private String userFirstname;

@@ -2,8 +2,10 @@ package dao.ReviewSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -11,8 +13,8 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "reviewerapplications", schema = "rech_system")
 @IdClass(EntityReviewerApplicationsPK.class)
-public class EntityReviewerApplications {
-    private String dateAssigned;
+public class EntityReviewerApplications extends Model {
+    private Timestamp dateAssigned;
     private String reviewerEmail;
     private int applicationYear;
     private int applicationNumber;
@@ -25,11 +27,11 @@ public class EntityReviewerApplications {
 
     @Basic
     @Column(name = "date_assigned")
-    public String getDateAssigned() {
+    public Timestamp getDateAssigned() {
         return dateAssigned;
     }
 
-    public void setDateAssigned(String dateAssigned) {
+    public void setDateAssigned(Timestamp dateAssigned) {
         this.dateAssigned = dateAssigned;
     }
 

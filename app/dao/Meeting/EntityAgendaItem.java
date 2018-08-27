@@ -2,6 +2,7 @@ package dao.Meeting;
 
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,7 +11,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "agendaitem", schema = "rech_system")
 @IdClass(EntityAgendaItemPK.class)
-public class EntityAgendaItem {
+public class EntityAgendaItem extends Model {
     private String resolution;
     private Short applicationStatus;
     private int applicationYear;

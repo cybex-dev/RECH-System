@@ -1,10 +1,12 @@
 package dao.ReviewSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class EntityLiaisonComponentFeedbackPK implements Serializable {
     private String liaisonEmail;
     private short version;
@@ -16,7 +18,6 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
     private String facultyName;
 
     @Column(name = "liaison_email")
-    @Id
     public String getLiaisonEmail() {
         return liaisonEmail;
     }
@@ -26,7 +27,6 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "version")
-    @Id
     public short getVersion() {
         return version;
     }
@@ -36,7 +36,6 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "component_id")
-    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -46,7 +45,6 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "application_year")
-    @Id
     public int getApplicationYear() {
         return applicationYear;
     }
@@ -56,7 +54,6 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "application_number")
-    @Id
     public int getApplicationNumber() {
         return applicationNumber;
     }
@@ -66,7 +63,6 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "application_type")
-    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -76,7 +72,6 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "department_name")
-    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -86,7 +81,6 @@ public class EntityLiaisonComponentFeedbackPK implements Serializable {
     }
 
     @Column(name = "faculty_name")
-    @Id
     public String getFacultyName() {
         return facultyName;
     }

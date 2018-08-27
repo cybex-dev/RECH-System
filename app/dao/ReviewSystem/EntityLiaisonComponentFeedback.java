@@ -2,16 +2,17 @@ package dao.ReviewSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "liaisoncomponentfeedback", schema = "rech_system", catalog = "")
+@Table(name = "liaisoncomponentfeedback", schema = "rech_system")
 @IdClass(EntityLiaisonComponentFeedbackPK.class)
-public class EntityLiaisonComponentFeedback {
-    private Byte changeSatisfactory;
+public class EntityLiaisonComponentFeedback extends Model {
+    private Boolean changeSatisfactory;
     private Timestamp feedbackDate;
     private String liaisonEmail;
     private short version;
@@ -27,11 +28,11 @@ public class EntityLiaisonComponentFeedback {
 
     @Basic
     @Column(name = "change_satisfactory")
-    public Byte getChangeSatisfactory() {
+    public Boolean getChangeSatisfactory() {
         return changeSatisfactory;
     }
 
-    public void setChangeSatisfactory(Byte changeSatisfactory) {
+    public void setChangeSatisfactory(Boolean changeSatisfactory) {
         this.changeSatisfactory = changeSatisfactory;
     }
 

@@ -1,10 +1,12 @@
 package dao.ApplicationSystem;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class EntityComponentPK implements Serializable {
     private String componentId;
     private int applicationYear;
@@ -14,7 +16,6 @@ public class EntityComponentPK implements Serializable {
     private String facultyName;
 
     @Column(name = "component_id")
-    @Id
     public String getComponentId() {
         return componentId;
     }
@@ -24,7 +25,6 @@ public class EntityComponentPK implements Serializable {
     }
 
     @Column(name = "application_year")
-    @Id
     public int getApplicationYear() {
         return applicationYear;
     }
@@ -34,7 +34,6 @@ public class EntityComponentPK implements Serializable {
     }
 
     @Column(name = "application_number")
-    @Id
     public int getApplicationNumber() {
         return applicationNumber;
     }
@@ -44,7 +43,6 @@ public class EntityComponentPK implements Serializable {
     }
 
     @Column(name = "application_type")
-    @Id
     public String getApplicationType() {
         return applicationType;
     }
@@ -54,7 +52,6 @@ public class EntityComponentPK implements Serializable {
     }
 
     @Column(name = "department_name")
-    @Id
     public String getDepartmentName() {
         return departmentName;
     }
@@ -64,7 +61,6 @@ public class EntityComponentPK implements Serializable {
     }
 
     @Column(name = "faculty_name")
-    @Id
     public String getFacultyName() {
         return facultyName;
     }

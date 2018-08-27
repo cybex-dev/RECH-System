@@ -1,6 +1,7 @@
 package dao.ApplicationSystem;
 
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -9,14 +10,14 @@ import java.util.Objects;
 @Entity
 @Table(name = "componentversion", schema = "rech_system")
 @IdClass(EntityComponentVersionPK.class)
-public class EntityComponentVersion {
+public class EntityComponentVersion extends Model {
     private short version;
-    private Byte isSubmitted;
+    private Boolean isSubmitted;
     private Timestamp dateSubmitted;
     private Timestamp dateLastEdited;
     private String responseType;
     private String textValue;
-    private Byte boolValue;
+    private Boolean boolValue;
     private String documentName;
     private String documentDescription;
     private String documentLocationHash;
@@ -41,11 +42,11 @@ public class EntityComponentVersion {
 
     @Basic
     @Column(name = "is_submitted")
-    public Byte getIsSubmitted() {
+    public Boolean getIsSubmitted() {
         return isSubmitted;
     }
 
-    public void setIsSubmitted(Byte isSubmitted) {
+    public void setIsSubmitted(Boolean isSubmitted) {
         this.isSubmitted = isSubmitted;
     }
 
@@ -91,11 +92,11 @@ public class EntityComponentVersion {
 
     @Basic
     @Column(name = "bool_value")
-    public Byte getBoolValue() {
+    public Boolean getBoolValue() {
         return boolValue;
     }
 
-    public void setBoolValue(Byte boolValue) {
+    public void setBoolValue(Boolean boolValue) {
         this.boolValue = boolValue;
     }
 

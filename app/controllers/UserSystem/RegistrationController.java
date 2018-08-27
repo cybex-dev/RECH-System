@@ -2,6 +2,7 @@ package controllers.UserSystem;
 
 import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
+import dao.UserSystem.EntityPerson;
 import helpers.Mailer;
 import models.UserSystem.UserRegistrationForm;
 import models.UserSystem.UserType;

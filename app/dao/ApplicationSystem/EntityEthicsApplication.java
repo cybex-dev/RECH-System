@@ -2,6 +2,7 @@ package dao.ApplicationSystem;
 
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
+import io.ebean.Model;
 import models.ApplicationSystem.EthicsApplication;
 import models.UserSystem.UserType;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "ethics_application", schema = "rech_system")
 @IdClass(EntityEthicsApplicationPK.class)
-public class EntityEthicsApplication {
+public class EntityEthicsApplication extends Model {
     private int applicationYear;
     private int applicationNumber;
     private String applicationType;
@@ -29,11 +30,11 @@ public class EntityEthicsApplication {
     private Timestamp rtiPostApprovedDate;
     private Short internalStatus;
     private Timestamp liaisonAssignedDate;
-    private Byte hodApplicationReviewApproved;
-    private Byte hodFinalApplicationApproval;
-    private Byte rtiApplicationReviewApproved;
-    private Byte rtiFinalApplicationApproval;
-    private Byte applicationLevel;
+    private Boolean hodApplicationReviewApproved;
+    private Boolean hodFinalApplicationApproval;
+    private Boolean rtiApplicationReviewApproved;
+    private Boolean rtiFinalApplicationApproval;
+    private Short applicationLevel;
     private String departmentName;
     private String facultyName;
     private String piId;
@@ -186,51 +187,51 @@ public class EntityEthicsApplication {
 
     @Basic
     @Column(name = "hod_application_review_approved")
-    public Byte getHodApplicationReviewApproved() {
+    public Boolean getHodApplicationReviewApproved() {
         return hodApplicationReviewApproved;
     }
 
-    public void setHodApplicationReviewApproved(Byte hodApplicationReviewApproved) {
+    public void setHodApplicationReviewApproved(Boolean hodApplicationReviewApproved) {
         this.hodApplicationReviewApproved = hodApplicationReviewApproved;
     }
 
     @Basic
     @Column(name = "hod_final_application_approval")
-    public Byte getHodFinalApplicationApproval() {
+    public Boolean getHodFinalApplicationApproval() {
         return hodFinalApplicationApproval;
     }
 
-    public void setHodFinalApplicationApproval(Byte hodFinalApplicationApproval) {
+    public void setHodFinalApplicationApproval(Boolean hodFinalApplicationApproval) {
         this.hodFinalApplicationApproval = hodFinalApplicationApproval;
     }
 
     @Basic
     @Column(name = "rti_application_review_approved")
-    public Byte getRtiApplicationReviewApproved() {
+    public Boolean getRtiApplicationReviewApproved() {
         return rtiApplicationReviewApproved;
     }
 
-    public void setRtiApplicationReviewApproved(Byte rtiApplicationReviewApproved) {
+    public void setRtiApplicationReviewApproved(Boolean rtiApplicationReviewApproved) {
         this.rtiApplicationReviewApproved = rtiApplicationReviewApproved;
     }
 
     @Basic
     @Column(name = "rti_final_application_approval")
-    public Byte getRtiFinalApplicationApproval() {
+    public Boolean getRtiFinalApplicationApproval() {
         return rtiFinalApplicationApproval;
     }
 
-    public void setRtiFinalApplicationApproval(Byte rtiFinalApplicationApproval) {
+    public void setRtiFinalApplicationApproval(Boolean rtiFinalApplicationApproval) {
         this.rtiFinalApplicationApproval = rtiFinalApplicationApproval;
     }
 
     @Basic
     @Column(name = "application_level")
-    public Byte getApplicationLevel() {
+    public Short getApplicationLevel() {
         return applicationLevel;
     }
 
-    public void setApplicationLevel(Byte applicationLevel) {
+    public void setApplicationLevel(Short applicationLevel) {
         this.applicationLevel = applicationLevel;
     }
 

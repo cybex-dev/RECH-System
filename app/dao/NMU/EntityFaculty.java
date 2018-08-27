@@ -1,6 +1,7 @@
 package dao.NMU;
 
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "faculty", schema = "rech_system")
-public class EntityFaculty {
+public class EntityFaculty extends Model {
     private String facultyName;
     private String facultyInfo;
 

@@ -2,6 +2,7 @@ package dao.NMU;
 
 import exceptions.InvalidFieldException;
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "department", schema = "rech_system")
 @IdClass(EntityDepartmentPK.class)
-public class EntityDepartment {
+public class EntityDepartment extends Model {
     private String departmentName;
     private String facultyName;
 

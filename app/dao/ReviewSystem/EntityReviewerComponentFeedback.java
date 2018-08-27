@@ -3,6 +3,7 @@ package dao.ReviewSystem;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.ReviewSystem.EntityReviewerComponentFeedbackPK;
 import io.ebean.Finder;
+import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,7 +12,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "reviewercomponentfeedback", schema = "rech_system")
 @IdClass(EntityReviewerComponentFeedbackPK.class)
-public class EntityReviewerComponentFeedback {
+public class EntityReviewerComponentFeedback extends Model {
     private String componentFeedback;
     private Timestamp feedbackDate;
     private String reviewerEmail;

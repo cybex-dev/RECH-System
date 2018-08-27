@@ -1,6 +1,7 @@
 package controllers.UserSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplication;
+import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
 import helpers.FileScanner;
 import models.UserSystem.Application;

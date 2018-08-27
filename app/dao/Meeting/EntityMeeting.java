@@ -1,12 +1,14 @@
 package dao.Meeting;
 
+import io.ebean.Model;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 @Table(name = "meeting", schema = "rech_system")
-public class EntityMeeting {
+public class EntityMeeting extends Model {
     private Timestamp meetingDate;
     private String announcements;
 

@@ -8,6 +8,7 @@ import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.Meeting.EntityAgendaItem;
 import dao.ReviewSystem.EntityLiaisonComponentFeedback;
 import dao.ReviewSystem.EntityReviewerApplications;
+import dao.UserSystem.EntityPerson;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import net.ddns.cyberstudios.Element;
@@ -475,7 +476,7 @@ public class RECEngine {
 
                 boolean requiresEdits = EntityLiaisonComponentFeedback.find.all().stream()
                         .filter(entityLiaisonComponentFeedback -> entityLiaisonComponentFeedback.applicationPrimaryKey().equals(applicationId))
-                        .anyMatch(entityLiaisonComponentFeedback -> !entityLiaisonComponentFeedback.getIsChangeSatisfactory());
+                        .anyMatch(entityLiaisonComponentFeedback -> !entityLiaisonComponentFeedback.getChangeSatisfactory());
                 newStatus = ApplicationStatus.FEEDBACK_GIVEN_LIAISON;
 
                 actionable = new Actionable() {
