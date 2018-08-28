@@ -30,7 +30,8 @@ public class EntityDepartment extends Model {
     public static Finder<EntityDepartmentPK, dao.NMU.EntityDepartment> find = new Finder<>(dao.NMU.EntityDepartment.class);
 
     public static List<DepartmentContainer> getAllDepartmentNames() {
-        return find.all().stream().map(entityDepartment -> DepartmentContainer.create(entityDepartment.departmentName, entityDepartment.facultyName)).collect(Collectors.toList());
+        List<DepartmentContainer> collect = find.all().stream().map(entityDepartment -> DepartmentContainer.create(entityDepartment.departmentName, entityDepartment.facultyName)).collect(Collectors.toList());
+        return collect;
     }
 
     @Id

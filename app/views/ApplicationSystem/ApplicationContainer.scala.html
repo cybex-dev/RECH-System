@@ -11,6 +11,72 @@
 @(pageTitle: String)(applicationType: String)(root: Element)(status: ApplicationStatus)(questionList: util.List[Question])
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @application_content = @{
 
     def createComponent(element: Element): String = {
@@ -22,7 +88,7 @@
         elementType match {
             case "boolean" =>
                 /*creates checkbox*/
-                if (element.getAttributes().equals("radio") == null) {
+                if (element.getAttributes().get("radio") == null) {
                     inputCheckbox.apply(id, q, a, hint).toString()
                 } else {
                     if (element.getAttributes().get("radio").equals("true")) {
