@@ -8,6 +8,9 @@ version := "1.0"
 // Version : 11.15.x
 // Plugin Version : 4.1.3
 
+// Additional Settings
+PlayKeys.playDefaultPort := 9000
+
 lazy val root = (project in file("."))
   .enablePlugins(PlayJava, PlayScala, PlayEbean, ScalaJSPlugin, JavaAppPackaging, JavaServerAppPackaging, LauncherJarPlugin)
 
@@ -18,6 +21,7 @@ libraryDependencies += akkaHttpServer
 libraryDependencies += guice
 
 libraryDependencies += jdbc
+libraryDependencies += javaJdbc
 libraryDependencies += evolutions
 libraryDependencies += ehcache
 libraryDependencies += ws
