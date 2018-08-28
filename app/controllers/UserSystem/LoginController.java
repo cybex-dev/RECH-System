@@ -8,15 +8,12 @@ import models.UserSystem.UserLoginForm;
 import models.UserSystem.UserRegistrationForm;
 import play.data.Form;
 import play.data.FormFactory;
-import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import views.html.UserSystem.Login;
 
 import javax.inject.Inject;
-
-import static views.html.UserSystem.Login.*;
 
 public class LoginController extends Controller{
 

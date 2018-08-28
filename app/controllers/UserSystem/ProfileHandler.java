@@ -7,7 +7,6 @@ import helpers.FileScanner;
 import models.UserSystem.Application;
 import models.UserSystem.UserType;
 import play.data.DynamicForm;
-import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -16,7 +15,6 @@ import play.routing.JavaScriptReverseRouter;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;

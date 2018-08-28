@@ -10,13 +10,31 @@ import java.util.Objects;
 
 @Embeddable
 public class EntityEthicsApplicationPK implements Serializable {
+    private int applicationYear;
+    private int applicationNumber;
     private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "application_type", nullable = false, length = 255)
+    @Column(name = "application_year")
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Column(name = "application_number")
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Column(name = "application_type")
     public String getApplicationType() {
         return applicationType;
     }
@@ -25,25 +43,7 @@ public class EntityEthicsApplicationPK implements Serializable {
         this.applicationType = applicationType;
     }
 
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
     }
@@ -52,7 +52,7 @@ public class EntityEthicsApplicationPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Column(name = "faculty_name")
     public String getFacultyName() {
         return facultyName;
     }
@@ -66,9 +66,9 @@ public class EntityEthicsApplicationPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityEthicsApplicationPK that = (EntityEthicsApplicationPK) o;
-        return Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
+        return applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
+                Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName);
     }
@@ -76,10 +76,10 @@ public class EntityEthicsApplicationPK implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
 
-    public static EntityEthicsApplicationPK fromString(String user, String id) {
+    public static dao.ApplicationSystem.EntityEthicsApplicationPK fromString(String user, String id) {
 
         String[] split = id.split("_");
         Integer number = Integer.parseInt(split[0]);
@@ -88,11 +88,11 @@ public class EntityEthicsApplicationPK implements Serializable {
         EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(split[2]);
         String appType = type.toString();
 
-        return EntityEthicsApplication.find.all().stream()
-                .filter(entityEthicsApplication -> entityEthicsApplication.getApplicationYear().equals(year) &&
-                        entityEthicsApplication.getApplicationNumber().equals(number) &&
+        return dao.ApplicationSystem.EntityEthicsApplication.find.all().stream()
+                .filter(entityEthicsApplication -> entityEthicsApplication.getApplicationYear() == year &&
+                        entityEthicsApplication.getApplicationNumber() == number &&
                         entityEthicsApplication.getApplicationType().equals(appType))
-                .map(entityEthicsApplication -> entityEthicsApplication.applicationPrimaryKey())
+                .map(EntityEthicsApplication::applicationPrimaryKey)
                 .findFirst()
                 .orElseThrow(null);
 

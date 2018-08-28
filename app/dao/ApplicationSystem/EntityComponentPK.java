@@ -9,13 +9,13 @@ import java.util.Objects;
 @Embeddable
 public class EntityComponentPK implements Serializable {
     private String componentId;
+    private int applicationYear;
+    private int applicationNumber;
     private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "component_id", nullable = false, length = 50)
+    @Column(name = "component_id")
     public String getComponentId() {
         return componentId;
     }
@@ -24,7 +24,25 @@ public class EntityComponentPK implements Serializable {
         this.componentId = componentId;
     }
 
-    @Column(name = "application_type", nullable = false, length = 1)
+    @Column(name = "application_year")
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Column(name = "application_number")
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Column(name = "application_type")
     public String getApplicationType() {
         return applicationType;
     }
@@ -33,25 +51,7 @@ public class EntityComponentPK implements Serializable {
         this.applicationType = applicationType;
     }
 
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
     }
@@ -60,7 +60,7 @@ public class EntityComponentPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Column(name = "faculty_name")
     public String getFacultyName() {
         return facultyName;
     }
@@ -74,10 +74,10 @@ public class EntityComponentPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityComponentPK that = (EntityComponentPK) o;
-        return Objects.equals(componentId, that.componentId) &&
+        return applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
+                Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName);
     }
@@ -85,6 +85,6 @@ public class EntityComponentPK implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(componentId, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(componentId, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
 }

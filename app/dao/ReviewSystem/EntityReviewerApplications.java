@@ -11,21 +11,22 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "ReviewerApplications", schema = "rech_system")
+@Table(name = "reviewerapplications", schema = "rech_system")
 @IdClass(EntityReviewerApplicationsPK.class)
 public class EntityReviewerApplications extends Model {
     private Timestamp dateAssigned;
     private String reviewerEmail;
+    private int applicationYear;
+    private int applicationNumber;
     private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
+
 
     public static Finder<EntityReviewerApplicationsPK, EntityReviewerApplications> find = new Finder<>(EntityReviewerApplications.class);
 
     @Basic
-    @Column(name = "date_assigned", nullable = true, length = 45)
+    @Column(name = "date_assigned")
     public Timestamp getDateAssigned() {
         return dateAssigned;
     }
@@ -35,7 +36,7 @@ public class EntityReviewerApplications extends Model {
     }
 
     @Id
-    @Column(name = "reviewer_email", nullable = false, length = 100)
+    @Column(name = "reviewer_email")
     public String getReviewerEmail() {
         return reviewerEmail;
     }
@@ -45,7 +46,27 @@ public class EntityReviewerApplications extends Model {
     }
 
     @Id
-    @Column(name = "application_type", nullable = false, length = 255)
+    @Column(name = "application_year")
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Id
+    @Column(name = "application_number")
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Id
+    @Column(name = "application_type")
     public String getApplicationType() {
         return applicationType;
     }
@@ -55,27 +76,7 @@ public class EntityReviewerApplications extends Model {
     }
 
     @Id
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Id
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Id
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
     }
@@ -85,7 +86,7 @@ public class EntityReviewerApplications extends Model {
     }
 
     @Id
-    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Column(name = "faculty_name")
     public String getFacultyName() {
         return facultyName;
     }
@@ -99,11 +100,11 @@ public class EntityReviewerApplications extends Model {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityReviewerApplications that = (EntityReviewerApplications) o;
-        return Objects.equals(dateAssigned, that.dateAssigned) &&
+        return applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
+                Objects.equals(dateAssigned, that.dateAssigned) &&
                 Objects.equals(reviewerEmail, that.reviewerEmail) &&
                 Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName);
     }
@@ -111,11 +112,11 @@ public class EntityReviewerApplications extends Model {
     @Override
     public int hashCode() {
 
-        return Objects.hash(dateAssigned, reviewerEmail, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(dateAssigned, reviewerEmail, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
 
-    public EntityEthicsApplicationPK applicationPrimaryKey() {
-        EntityEthicsApplicationPK pk = new EntityEthicsApplicationPK();
+    public dao.ApplicationSystem.EntityEthicsApplicationPK applicationPrimaryKey() {
+        dao.ApplicationSystem.EntityEthicsApplicationPK pk = new dao.ApplicationSystem.EntityEthicsApplicationPK();
         pk.setApplicationNumber(applicationNumber);
         pk.setApplicationType(applicationType);
         pk.setApplicationYear(applicationYear);
@@ -124,7 +125,7 @@ public class EntityReviewerApplications extends Model {
         return pk;
     }
 
-    public void setApplicationKey(EntityEthicsApplicationPK applicationId) {
+    public void setApplicationKey(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
         this.applicationNumber = applicationId.getApplicationNumber();
         this.applicationType = applicationId.getApplicationType();
         this.applicationYear = applicationId.getApplicationYear();

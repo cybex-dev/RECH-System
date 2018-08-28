@@ -9,9 +9,9 @@ import java.util.Objects;
 @Embeddable
 public class EntityDepartmentPK implements Serializable {
     private String departmentName;
-    private String facultyFacultyName;
+    private String facultyName;
 
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
     }
@@ -20,13 +20,13 @@ public class EntityDepartmentPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "Faculty_faculty_name", nullable = false, length = 50)
-    public String getFacultyFacultyName() {
-        return facultyFacultyName;
+    @Column(name = "faculty_name")
+    public String getFacultyName() {
+        return facultyName;
     }
 
-    public void setFacultyFacultyName(String facultyFacultyName) {
-        this.facultyFacultyName = facultyFacultyName;
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
     }
 
     @Override
@@ -35,12 +35,12 @@ public class EntityDepartmentPK implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         EntityDepartmentPK that = (EntityDepartmentPK) o;
         return Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyFacultyName, that.facultyFacultyName);
+                Objects.equals(facultyName, that.facultyName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(departmentName, facultyFacultyName);
+        return Objects.hash(departmentName, facultyName);
     }
 }

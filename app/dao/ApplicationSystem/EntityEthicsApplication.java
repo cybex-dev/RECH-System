@@ -13,39 +13,60 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "Ethics_Application", schema = "rech_system")
+@Table(name = "ethics_application", schema = "rech_system")
 @IdClass(EntityEthicsApplicationPK.class)
 public class EntityEthicsApplication extends Model {
+    private int applicationYear;
+    private int applicationNumber;
     private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
-    private String departmentName;
-    private String facultyName;
     private Timestamp dateSubmitted;
+    private Integer applicationRevision;
     private Timestamp dateApproved;
-    private String piId;
     private Timestamp piApprovedDate;
-    private String prpId;
     private Timestamp prpApprovedDate;
-    private String hodId;
     private Timestamp hodPreApprovedDate;
     private Timestamp hodPostApprovedDate;
-    private String rtiId;
     private Timestamp rtiPreApprovedDate;
     private Timestamp rtiPostApprovedDate;
     private Short internalStatus;
-    private String liaisonId;
     private Timestamp liaisonAssignedDate;
     private Boolean hodApplicationReviewApproved;
     private Boolean hodFinalApplicationApproval;
     private Boolean rtiApplicationReviewApproved;
     private Boolean rtiFinalApplicationApproval;
     private Short applicationLevel;
+    private String departmentName;
+    private String facultyName;
+    private String piId;
+    private String prpId;
+    private String rtiId;
+    private String hodId;
+    private String liaisonId;
 
     public static Finder<dao.ApplicationSystem.EntityEthicsApplicationPK, dao.ApplicationSystem.EntityEthicsApplication> find = new Finder<>(dao.ApplicationSystem.EntityEthicsApplication.class);
 
     @Id
-    @Column(name = "application_type", nullable = false, length = 255)
+    @Column(name = "application_year")
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Id
+    @Column(name = "application_number")
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Id
+    @Column(name = "application_type")
     public String getApplicationType() {
         return applicationType;
     }
@@ -54,48 +75,8 @@ public class EntityEthicsApplication extends Model {
         this.applicationType = applicationType;
     }
 
-    @Id
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Id
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Id
-    @Column(name = "department_name", nullable = false, length = 50)
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    @Id
-    @Column(name = "faculty_name", nullable = false, length = 50)
-    public String getFacultyName() {
-        return facultyName;
-    }
-
-    public void setFacultyName(String facultyName) {
-        this.facultyName = facultyName;
-    }
-
     @Basic
-    @Column(name = "date_submitted", nullable = true)
+    @Column(name = "date_submitted")
     public Timestamp getDateSubmitted() {
         return dateSubmitted;
     }
@@ -105,7 +86,17 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "date_approved", nullable = true)
+    @Column(name = "application_revision")
+    public Integer getApplicationRevision() {
+        return applicationRevision;
+    }
+
+    public void setApplicationRevision(Integer applicationRevision) {
+        this.applicationRevision = applicationRevision;
+    }
+
+    @Basic
+    @Column(name = "date_approved")
     public Timestamp getDateApproved() {
         return dateApproved;
     }
@@ -115,17 +106,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "pi_id", nullable = false, length = 100)
-    public String getPiId() {
-        return piId;
-    }
-
-    public void setPiId(String piId) {
-        this.piId = piId;
-    }
-
-    @Basic
-    @Column(name = "pi_approved_date", nullable = true)
+    @Column(name = "pi_approved_date")
     public Timestamp getPiApprovedDate() {
         return piApprovedDate;
     }
@@ -135,17 +116,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "prp_id", nullable = false, length = 100)
-    public String getPrpId() {
-        return prpId;
-    }
-
-    public void setPrpId(String prpId) {
-        this.prpId = prpId;
-    }
-
-    @Basic
-    @Column(name = "prp_approved_date", nullable = true)
+    @Column(name = "prp_approved_date")
     public Timestamp getPrpApprovedDate() {
         return prpApprovedDate;
     }
@@ -155,17 +126,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "hod_id", nullable = true, length = 100)
-    public String getHodId() {
-        return hodId;
-    }
-
-    public void setHodId(String hodId) {
-        this.hodId = hodId;
-    }
-
-    @Basic
-    @Column(name = "hod_pre_approved_date", nullable = true)
+    @Column(name = "hod_pre_approved_date")
     public Timestamp getHodPreApprovedDate() {
         return hodPreApprovedDate;
     }
@@ -175,7 +136,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "hod_post_approved_date", nullable = true)
+    @Column(name = "hod_post_approved_date")
     public Timestamp getHodPostApprovedDate() {
         return hodPostApprovedDate;
     }
@@ -185,17 +146,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "rti_id", nullable = true, length = 100)
-    public String getRtiId() {
-        return rtiId;
-    }
-
-    public void setRtiId(String rtiId) {
-        this.rtiId = rtiId;
-    }
-
-    @Basic
-    @Column(name = "rti_pre_approved_date", nullable = true)
+    @Column(name = "rti_pre_approved_date")
     public Timestamp getRtiPreApprovedDate() {
         return rtiPreApprovedDate;
     }
@@ -205,7 +156,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "rti_post_approved_date", nullable = true)
+    @Column(name = "rti_post_approved_date")
     public Timestamp getRtiPostApprovedDate() {
         return rtiPostApprovedDate;
     }
@@ -215,7 +166,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "internal_status", nullable = true)
+    @Column(name = "internal_status")
     public Short getInternalStatus() {
         return internalStatus;
     }
@@ -225,17 +176,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "liaison_id", nullable = true, length = 100)
-    public String getLiaisonId() {
-        return liaisonId;
-    }
-
-    public void setLiaisonId(String liaisonId) {
-        this.liaisonId = liaisonId;
-    }
-
-    @Basic
-    @Column(name = "liaison_assigned_date", nullable = true)
+    @Column(name = "liaison_assigned_date")
     public Timestamp getLiaisonAssignedDate() {
         return liaisonAssignedDate;
     }
@@ -245,7 +186,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "hod_application_review_approved", nullable = true)
+    @Column(name = "hod_application_review_approved")
     public Boolean getHodApplicationReviewApproved() {
         return hodApplicationReviewApproved;
     }
@@ -255,7 +196,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "hod_final_application_approval", nullable = true)
+    @Column(name = "hod_final_application_approval")
     public Boolean getHodFinalApplicationApproval() {
         return hodFinalApplicationApproval;
     }
@@ -265,7 +206,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "rti_application_review_approved", nullable = true)
+    @Column(name = "rti_application_review_approved")
     public Boolean getRtiApplicationReviewApproved() {
         return rtiApplicationReviewApproved;
     }
@@ -275,7 +216,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "rti_final_application_approval", nullable = true)
+    @Column(name = "rti_final_application_approval")
     public Boolean getRtiFinalApplicationApproval() {
         return rtiFinalApplicationApproval;
     }
@@ -285,7 +226,7 @@ public class EntityEthicsApplication extends Model {
     }
 
     @Basic
-    @Column(name = "application_level", nullable = true)
+    @Column(name = "application_level")
     public Short getApplicationLevel() {
         return applicationLevel;
     }
@@ -294,42 +235,113 @@ public class EntityEthicsApplication extends Model {
         this.applicationLevel = applicationLevel;
     }
 
+    @Id
+    @Column(name = "department_name")
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    @Id
+    @Column(name = "faculty_name")
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
+    }
+
+    @Basic
+    @Column(name = "pi_id")
+    public String getPiId() {
+        return piId;
+    }
+
+    public void setPiId(String piId) {
+        this.piId = piId;
+    }
+
+    @Basic
+    @Column(name = "prp_id")
+    public String getPrpId() {
+        return prpId;
+    }
+
+    public void setPrpId(String prpId) {
+        this.prpId = prpId;
+    }
+
+    @Basic
+    @Column(name = "rti_id")
+    public String getRtiId() {
+        return rtiId;
+    }
+
+    public void setRtiId(String rtiId) {
+        this.rtiId = rtiId;
+    }
+
+    @Basic
+    @Column(name = "hod_id")
+    public String getHodId() {
+        return hodId;
+    }
+
+    public void setHodId(String hodId) {
+        this.hodId = hodId;
+    }
+
+    @Basic
+    @Column(name = "liaison_id")
+    public String getLiaisonId() {
+        return liaisonId;
+    }
+
+    public void setLiaisonId(String liaisonId) {
+        this.liaisonId = liaisonId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityEthicsApplication that = (EntityEthicsApplication) o;
-        return Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
-                Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName) &&
+        return applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
+                Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(dateSubmitted, that.dateSubmitted) &&
+                Objects.equals(applicationRevision, that.applicationRevision) &&
                 Objects.equals(dateApproved, that.dateApproved) &&
-                Objects.equals(piId, that.piId) &&
                 Objects.equals(piApprovedDate, that.piApprovedDate) &&
-                Objects.equals(prpId, that.prpId) &&
                 Objects.equals(prpApprovedDate, that.prpApprovedDate) &&
-                Objects.equals(hodId, that.hodId) &&
                 Objects.equals(hodPreApprovedDate, that.hodPreApprovedDate) &&
                 Objects.equals(hodPostApprovedDate, that.hodPostApprovedDate) &&
-                Objects.equals(rtiId, that.rtiId) &&
                 Objects.equals(rtiPreApprovedDate, that.rtiPreApprovedDate) &&
                 Objects.equals(rtiPostApprovedDate, that.rtiPostApprovedDate) &&
                 Objects.equals(internalStatus, that.internalStatus) &&
-                Objects.equals(liaisonId, that.liaisonId) &&
                 Objects.equals(liaisonAssignedDate, that.liaisonAssignedDate) &&
                 Objects.equals(hodApplicationReviewApproved, that.hodApplicationReviewApproved) &&
                 Objects.equals(hodFinalApplicationApproval, that.hodFinalApplicationApproval) &&
                 Objects.equals(rtiApplicationReviewApproved, that.rtiApplicationReviewApproved) &&
                 Objects.equals(rtiFinalApplicationApproval, that.rtiFinalApplicationApproval) &&
-                Objects.equals(applicationLevel, that.applicationLevel);
+                Objects.equals(applicationLevel, that.applicationLevel) &&
+                Objects.equals(departmentName, that.departmentName) &&
+                Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(piId, that.piId) &&
+                Objects.equals(prpId, that.prpId) &&
+                Objects.equals(rtiId, that.rtiId) &&
+                Objects.equals(hodId, that.hodId) &&
+                Objects.equals(liaisonId, that.liaisonId);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(applicationType, applicationYear, applicationNumber, departmentName, facultyName, dateSubmitted, dateApproved, piId, piApprovedDate, prpId, prpApprovedDate, hodId, hodPreApprovedDate, hodPostApprovedDate, rtiId, rtiPreApprovedDate, rtiPostApprovedDate, internalStatus, liaisonId, liaisonAssignedDate, hodApplicationReviewApproved, hodFinalApplicationApproval, rtiApplicationReviewApproved, rtiFinalApplicationApproval, applicationLevel);
+        return Objects.hash(applicationYear, applicationNumber, applicationType, dateSubmitted, applicationRevision, dateApproved, piApprovedDate, prpApprovedDate, hodPreApprovedDate, hodPostApprovedDate, rtiPreApprovedDate, rtiPostApprovedDate, internalStatus, liaisonAssignedDate, hodApplicationReviewApproved, hodFinalApplicationApproval, rtiApplicationReviewApproved, rtiFinalApplicationApproval, applicationLevel, departmentName, facultyName, piId, prpId, rtiId, hodId, liaisonId);
     }
 
     public dao.ApplicationSystem.EntityEthicsApplication findApplicationById(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {

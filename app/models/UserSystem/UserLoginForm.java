@@ -4,7 +4,6 @@ import dao.UserSystem.EntityPerson;
 import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 
-import javax.validation.Constraint;
 import java.util.ArrayList;
 import java.util.List;
 

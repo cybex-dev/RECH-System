@@ -9,13 +9,13 @@ import java.util.Objects;
 @Embeddable
 public class EntityReviewerApplicationsPK implements Serializable {
     private String reviewerEmail;
+    private int applicationYear;
+    private int applicationNumber;
     private String applicationType;
-    private Integer applicationYear;
-    private Integer applicationNumber;
     private String departmentName;
     private String facultyName;
 
-    @Column(name = "reviewer_email", nullable = false, length = 100)
+    @Column(name = "reviewer_email")
     public String getReviewerEmail() {
         return reviewerEmail;
     }
@@ -24,7 +24,25 @@ public class EntityReviewerApplicationsPK implements Serializable {
         this.reviewerEmail = reviewerEmail;
     }
 
-    @Column(name = "application_type", nullable = false, length = 255)
+    @Column(name = "application_year")
+    public int getApplicationYear() {
+        return applicationYear;
+    }
+
+    public void setApplicationYear(int applicationYear) {
+        this.applicationYear = applicationYear;
+    }
+
+    @Column(name = "application_number")
+    public int getApplicationNumber() {
+        return applicationNumber;
+    }
+
+    public void setApplicationNumber(int applicationNumber) {
+        this.applicationNumber = applicationNumber;
+    }
+
+    @Column(name = "application_type")
     public String getApplicationType() {
         return applicationType;
     }
@@ -33,25 +51,7 @@ public class EntityReviewerApplicationsPK implements Serializable {
         this.applicationType = applicationType;
     }
 
-    @Column(name = "application_year", nullable = false)
-    public Integer getApplicationYear() {
-        return applicationYear;
-    }
-
-    public void setApplicationYear(Integer applicationYear) {
-        this.applicationYear = applicationYear;
-    }
-
-    @Column(name = "application_number", nullable = false)
-    public Integer getApplicationNumber() {
-        return applicationNumber;
-    }
-
-    public void setApplicationNumber(Integer applicationNumber) {
-        this.applicationNumber = applicationNumber;
-    }
-
-    @Column(name = "department_name", nullable = false, length = 50)
+    @Column(name = "department_name")
     public String getDepartmentName() {
         return departmentName;
     }
@@ -60,7 +60,7 @@ public class EntityReviewerApplicationsPK implements Serializable {
         this.departmentName = departmentName;
     }
 
-    @Column(name = "faculty_name", nullable = false, length = 50)
+    @Column(name = "faculty_name")
     public String getFacultyName() {
         return facultyName;
     }
@@ -74,10 +74,10 @@ public class EntityReviewerApplicationsPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EntityReviewerApplicationsPK that = (EntityReviewerApplicationsPK) o;
-        return Objects.equals(reviewerEmail, that.reviewerEmail) &&
+        return applicationYear == that.applicationYear &&
+                applicationNumber == that.applicationNumber &&
+                Objects.equals(reviewerEmail, that.reviewerEmail) &&
                 Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(applicationYear, that.applicationYear) &&
-                Objects.equals(applicationNumber, that.applicationNumber) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName);
     }
@@ -85,6 +85,6 @@ public class EntityReviewerApplicationsPK implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(reviewerEmail, applicationType, applicationYear, applicationNumber, departmentName, facultyName);
+        return Objects.hash(reviewerEmail, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
 }

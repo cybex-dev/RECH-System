@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RECEngine {
 
@@ -477,7 +476,7 @@ public class RECEngine {
 
                 boolean requiresEdits = EntityLiaisonComponentFeedback.find.all().stream()
                         .filter(entityLiaisonComponentFeedback -> entityLiaisonComponentFeedback.applicationPrimaryKey().equals(applicationId))
-                        .anyMatch(entityLiaisonComponentFeedback -> !entityLiaisonComponentFeedback.getIsChangeSatisfactory());
+                        .anyMatch(entityLiaisonComponentFeedback -> !entityLiaisonComponentFeedback.getChangeSatisfactory());
                 newStatus = ApplicationStatus.FEEDBACK_GIVEN_LIAISON;
 
                 actionable = new Actionable() {

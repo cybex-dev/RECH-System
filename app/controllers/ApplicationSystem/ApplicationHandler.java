@@ -1,7 +1,5 @@
 package controllers.ApplicationSystem;
 
-import controllers.UserSystem.ProfileHandler;
-import controllers.UserSystem.Secured;
 import dao.ApplicationSystem.EntityComponent;
 import dao.ApplicationSystem.EntityComponentVersion;
 import dao.ApplicationSystem.EntityEthicsApplication;
@@ -12,7 +10,6 @@ import engine.RECEngine;
 import exceptions.InvalidFieldException;
 import exceptions.UnhandledElementException;
 import helpers.CookieTags;
-import helpers.JDBCExecutor;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
@@ -26,23 +23,18 @@ import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.RequireCSRFCheck;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
 
-@Security.Authenticated(Secured.class)
+//@Security.Authenticated(Secured.class)
 public class ApplicationHandler extends Controller {
 
     @Inject
@@ -133,14 +125,13 @@ public class ApplicationHandler extends Controller {
     @AddCSRFToken
     public Result newApplication(String type) {
         ApplicationType applicationType = ApplicationType.parse(type);
-        DynamicForm form = formFactory.form();
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
         if (ethicsApplication == null) {
             flash("info", "No animal application form available");
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
         Element rootElement = ethicsApplication.getRootElement();
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList()));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList()));
     }
 
     @RequireCSRFCheck
@@ -180,9 +171,7 @@ public class ApplicationHandler extends Controller {
                 try {
                     // TODO check if data is mapped
                     EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
-                    DynamicForm form = formFactory.form();
-                    form.bind(formApplication.rawData());
-                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), form, ApplicationStatus.DRAFT, application_template.getQuestionList()));
+                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList()));
                 } catch (Exception x) {
                     return internalServerError();
                 }
@@ -191,7 +180,10 @@ public class ApplicationHandler extends Controller {
             // Create basic Ethics Application
             EntityEthicsApplication application = new EntityEthicsApplication();
             application.setApplicationType(application_type.name().toLowerCase());
+            application.setApplicationNumber(0);
             application.setApplicationYear(Calendar.getInstance().get(Calendar.YEAR));
+            application.setFacultyName("F");
+            application.setDepartmentName("D");
             application.insert();
 
             // Get copy of application form

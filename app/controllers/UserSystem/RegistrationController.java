@@ -1,6 +1,5 @@
 package controllers.UserSystem;
 
-import controllers.NotificationSystem.Notifier;
 import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
@@ -14,7 +13,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class RegistrationController extends Controller {
 

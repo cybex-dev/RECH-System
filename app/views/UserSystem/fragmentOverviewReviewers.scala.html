@@ -5,9 +5,7 @@
 
 @(ownApplications: List[Application], approveApplications: List[Application], reviewApplications: List[Application])
 
-<div class="container">
-    <br>
-    <h3>Applications</h3>
+<div class="">
     <br>
         @fragmentSubmittedApplications.apply(ownApplications)
         @fragmentApproveApplications.apply(approveApplications)

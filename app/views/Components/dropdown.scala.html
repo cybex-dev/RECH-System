@@ -1,0 +1,9 @@
+@(id: String, label: String, options: java.util.List[String], hint: String)
+
+<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
+<select name="@id" id="@id">
+    @for(option <- options) {
+        <option id="">option</option>
+    }
+</select>
+<br>
