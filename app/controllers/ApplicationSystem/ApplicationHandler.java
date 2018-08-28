@@ -125,14 +125,13 @@ public class ApplicationHandler extends Controller {
     @AddCSRFToken
     public Result newApplication(String type) {
         ApplicationType applicationType = ApplicationType.parse(type);
-        DynamicForm form = formFactory.form();
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
         if (ethicsApplication == null) {
             flash("message", "No animal application form available");
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
         Element rootElement = ethicsApplication.getRootElement();
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, form, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList()));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList()));
     }
 
     @RequireCSRFCheck
@@ -172,9 +171,7 @@ public class ApplicationHandler extends Controller {
                 try {
                     // TODO check if data is mapped
                     EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
-                    DynamicForm form = formFactory.form();
-                    form.bind(formApplication.rawData());
-                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), form, ApplicationStatus.DRAFT, application_template.getQuestionList()));
+                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList()));
                 } catch (Exception x) {
                     return internalServerError();
                 }
@@ -183,7 +180,10 @@ public class ApplicationHandler extends Controller {
             // Create basic Ethics Application
             EntityEthicsApplication application = new EntityEthicsApplication();
             application.setApplicationType(application_type.name().toLowerCase());
+            application.setApplicationNumber(0);
             application.setApplicationYear(Calendar.getInstance().get(Calendar.YEAR));
+            application.setFacultyName("F");
+            application.setDepartmentName("D");
             application.insert();
 
             // Get copy of application form

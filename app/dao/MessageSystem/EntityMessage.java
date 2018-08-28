@@ -50,7 +50,7 @@ public class EntityMessage extends Model {
     }
 
     @Basic
-    @Column(name = "receiver_email1")
+    @Column(name = "receiver_email")
     public String getReceiverEmail1() {
         return receiverEmail1;
     }

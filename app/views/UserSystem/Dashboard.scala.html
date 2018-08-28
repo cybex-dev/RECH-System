@@ -28,14 +28,11 @@
         case UserType.RCD => fragmentRCDOverview.apply(newApps)
         case UserType.FacultyRTI => fragmentOverviewFacultyRTI.apply(approveApps, facultyApps)
         case UserType.DepartmentHead => fragmentOverviewHoD.apply(ownApplications, approveApps)
-        case UserType.PrimaryInvestigator =>
+        case UserType.PrimaryInvestigator => fragmentOverviewPI.apply(ownApplications)
         case _ => fragmentOverviewPI.apply(ownApplications)
     }
 }
 
 @Masterpage.apply(" :: Overview"){
-    <br/>
-    <h2 style="text-decoration: underline;">Overview</h2>
-    <br/>
-    @getDashboard()
+    @getDashboard
 }
