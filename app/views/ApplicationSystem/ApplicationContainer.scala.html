@@ -12,6 +12,7 @@
 
 
 @application_content = @{
+
     def createComponent(element: Element): String = {
         val elementType = element.getType.toLowerCase
         val q = element.getChildren.getFirst.getValue.toString
@@ -21,10 +22,28 @@
         elementType match {
             case "boolean" =>
                 /*creates checkbox*/
-                inputCheckbox.apply(id, q, a, hint).toString()
+                if (element.getAttributes().equals("radio") == null) {
+                    inputCheckbox.apply(id, q, a, hint).toString()
+                } else {
+                    if (element.getAttributes().get("radio").equals("true")) {
+                        var childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
+                        inputDropdown.apply(id, q, a, childItems, hint).toString()
+                    } else {
+                        inputCheckbox.apply(id, q, a, hint).toString()
+                    }
+                }
 
             case "number" =>
-                inputText.apply(id, q, a, hint).toString()
+                if (element.getAttributes().get("dropdown") == null){
+                    inputText.apply(id, q, a, hint).toString()
+                } else {
+                    if (element.getAttributes().get("dropdown").equals("true")) {
+                        var childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
+                        inputDropdown.apply(id, q, a, childItems, hint).toString()
+                    } else {
+                        inputText.apply(id, q, a, hint).toString()
+                    }
+                }
             /*creates text field with number specific*/
 
             case "long_text" =>
@@ -33,7 +52,16 @@
 
             case "text" =>
                 /*creates text field*/
-                inputText.apply(id, q, a, hint).toString()
+                if (element.getAttributes().get("dropdown") == null){
+                    inputText.apply(id, q, a, hint).toString()
+                } else {
+                    if (element.getAttributes().get("dropdown").equals("true")) {
+                        var childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
+                        inputDropdown.apply(id, q, a, childItems, hint).toString()
+                    } else {
+                        inputText.apply(id, q, a, hint).toString()
+                    }
+                }
 
             case "date" =>
                 /*creates text field*/

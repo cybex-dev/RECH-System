@@ -26,18 +26,34 @@
                 <value></value>
             </component>
             <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found">
+                <data>
+                    <item>George Campus</item>
+                    <item>Missionvale Campus</item>
+                    <item>North Campus</item>
+                    <item>Second Avenue Campus</item>
+                    <item>South Campus (Main Campus)</item>
+                </data>
                 <question>Campus</question>
                 <value></value>
             </component>
             <component name="" id="prp_building" dropdown="true" type="text" hint="Building where PRP is found">
+                <data>
+                    <item></item>
+                </data>
                 <question>Building</question>
                 <value></value>
             </component>
             <component name="" id="prp_floor" dropdown="true" type="number" hint="Floor where PRP is found">
+                <data>
+                    <item></item>
+                </data>
                 <question>Floor</question>
                 <value></value>
             </component>
             <component name="" id="prp_room" dropdown="true" type="number" hint="Room where PRP is found">
+                <data>
+                    <item></item>
+                </data>
                 <question>Office</question>
                 <value></value>
             </component>
@@ -53,11 +69,11 @@
                 <question>Mobile Number</question>
                 <value></value>
             </component>
-            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP">
+            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculty">
                 <question>Faculty</question>
                 <value></value>
             </component>
-            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP">
+            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP" db-mapping="department">
                 <question>Department</question>
                 <value></value>
             </component>
@@ -72,26 +88,41 @@
                 <question>Lastname</question>
                 <value></value>
             </component>
-            <component name="" id="pi_gender" dropdown="true" type="boolean"
-                       hint="Your biological gender assigned at birth">
+            <component name="" id="pi_gender" dropdown="true" type="boolean" radiogroup="true"
+                       hint="Your biological gender">
+                <data>
+                    <item>Male</item>
+                    <item>Female</item>
+                </data>
                 <question>Gender</question>
                 <value></value>
             </component>
-            <list id="list_coworkers" name="All co-workers" hint="Co workers on research study" affiliation_group="">
-                <component name="" id="cw_firstname" type="text" hint="Coworker's firstname">
-                    <question>Firstname</question>
+            <extension>
+                <component name="" id="cow_affiliations" hint="The description of the affliators as a group e.g. Interns, Master Students, etc" dropdown="true" type="text" text-enabled="true">
+                    <question>Affiliation group of coworkers</question>
                     <value></value>
                 </component>
-                <component name="" id="cw_lastname" type="text" hint="Coworker's lastname">
-                    <question>Lastname</question>
+                <component name="" id="cow_number" hint="The number of affliators involved" type="number">
+                    <question>Number of coworkers</question>
                     <value></value>
                 </component>
-                <component name="" id="cw_affiliation" type="text" dropdown="true" text-enabled="true"
-                           hint="Affiliation of coworker to study">
-                    <question>Affiliation</question>
-                    <value></value>
-                </component>
-            </list>
+                <extension orientation="vertical">
+                    <component name="" id="has_known_coworkers" hint="Do you know the coworkers and the names" type="boolean">
+                        <question>Are coworkers known to you?</question>
+                        <value></value>
+                    </component>
+                    <list id="list_coworkers" name="All co-workers" hint="Co workers on research study">
+                        <component name="" id="cw_firstname" type="text" hint="Coworker's firstname">
+                            <question>Firstname</question>
+                            <value></value>
+                        </component>
+                        <component name="" id="cw_lastname" type="text" hint="Coworker's lastname">
+                            <question>Lastname</question>
+                            <value></value>
+                        </component>
+                    </list>
+                </extension>
+            </extension>
         </group>
         <group id="grp_study_details" name="Study Details" hint="Information about the study">
             <component id="study_scope" type="text" dropdown="true"

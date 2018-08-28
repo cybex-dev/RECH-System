@@ -38,7 +38,7 @@ public class LoginController extends Controller{
      */
     public Result login(){
         if (isLoggedIn()) {
-            flash("message", "You are already logged in");
+            flash("warning", "You are already logged in");
             return redirect(routes.ProfileHandler.overview());
         }
         Form<UserLoginForm> loginFormForm = formFactory.form(UserLoginForm.class);
@@ -56,13 +56,13 @@ public class LoginController extends Controller{
 
         // Check for errors
         if (loginFormForm.hasErrors()){
-            flash("error", "Incomplete details, check fields.");
+            flash("warning", "Incomplete details, check fields.");
             return badRequest(Login.render(loginFormForm));
         }
 
         UserLoginForm loginData = loginFormForm.get();
         if (!EntityPerson.authenticate(loginData.getEmail(), loginData.getPassword())) {
-            flash("error", "Incorrect username or password, please try again.");
+            flash("danger", "Incorrect username or password, please try again.");
             return badRequest(Login.render(loginFormForm));
         }
 
@@ -95,7 +95,7 @@ public class LoginController extends Controller{
     public Result register() {
         Form<UserRegistrationForm> form = formFactory.form(UserRegistrationForm.class);
         if (!isLoggedIn()) {
-            flash("message", "You are already logged in");
+            flash("info", "You are already logged in");
             return ok(views.html.UserSystem.Register.render(form, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
         } else {
             return redirect(routes.ProfileHandler.overview());
@@ -115,7 +115,7 @@ public class LoginController extends Controller{
     }
 
     public Result doEnrol(){
-        flash("message", "No implemented yet");
+        flash("info", "No implemented yet");
         return TODO;
     }
 }

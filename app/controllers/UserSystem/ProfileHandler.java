@@ -100,7 +100,7 @@ public class ProfileHandler extends Controller {
         }
 
         if (form.hasGlobalErrors()) {
-            flash("error", "Invalid enrolment key");
+            flash("danger", "Invalid enrolment key");
             return badRequest(views.html.UserSystem.Enrol.render(p.getDepartmentName(), p.getFacultyName()));
         }
 
@@ -127,11 +127,11 @@ public class ProfileHandler extends Controller {
 
         Map.Entry<UserType, String> enrol_code = enrolmentKeys.entrySet().stream().filter(userTypeStringEntry -> userTypeStringEntry.getValue().equals(form.get("enrol_code"))).findFirst().orElse(null);
         if (enrol_code == null) {
-            flash("error", "Invalid enrolment key");
+            flash("danger", "Invalid enrolment key");
             return badRequest(views.html.UserSystem.Enrol.render(p.getDepartmentName(), p.getFacultyName()));
         }
 
-        flash("message", "You are now a " + enrol_code.getKey());
+        flash("success", "You are now a " + enrol_code.getKey());
         return redirect(routes.ProfileHandler.overview());
     }
 }

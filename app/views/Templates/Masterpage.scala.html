@@ -5,6 +5,36 @@
 @import views.html.Theme.{nmu_footer, nmu_javascripts, nmu_stylesheets, rec_header, rec_menu_bar, static_header}
 @import views.html.Templates._
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @(pageTabTitle: String)(bodyContent: Html)
 @*
 * Call the `main` template with two arguments. The first
@@ -18,6 +48,17 @@
     }
 } {
     @DefaultBody.apply {
+            @{
+                //TODO fix
+                for(e <- Seq("danger", "warning", "info", "success")) {
+                    if(flash().containsKey(e)) {
+                            <div class="alert alert-@e alert-dismissible fade in">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            flash().get(e)
+                            </div>
+                    }
+                }
+            }
             <form method="post" action="@routes.HomeController.postNMUSearch()" id="form">
                 @helper.CSRF.formField
                 @static_header.apply()

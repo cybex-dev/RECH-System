@@ -136,7 +136,7 @@ public class ApplicationHandler extends Controller {
         DynamicForm form = formFactory.form();
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
         if (ethicsApplication == null) {
-            flash("message", "No animal application form available");
+            flash("info", "No animal application form available");
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
         Element rootElement = ethicsApplication.getRootElement();

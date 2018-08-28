@@ -44,14 +44,14 @@ public class RegistrationController extends Controller {
     public Result submitRegistration(){
         Form<UserRegistrationForm> userRegistrationFormForm = formFactory.form(UserRegistrationForm.class).bindFromRequest();
         if (userRegistrationFormForm.hasErrors()) {
-            flash("error", "Check input fields");
+            flash("danger", "Check input fields");
             return badRequest(views.html.UserSystem.Register.render(userRegistrationFormForm, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
         }
 
         UserRegistrationForm userRegistrationForm = userRegistrationFormForm.get();
 
         if (EntityPerson.getPersonById(userRegistrationForm.getEmail()) != null) {
-            flash("error", "Account with email " + userRegistrationForm.getEmail() + " already exists!");
+            flash("danger", "Account with email " + userRegistrationForm.getEmail() + " already exists!");
             return badRequest(views.html.UserSystem.Register.render(userRegistrationFormForm, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
         }
 
@@ -71,9 +71,9 @@ public class RegistrationController extends Controller {
 
         // Send welcome email
         Mailer.SendWelcome(person.getUserFirstname(), person.getUserEmail()).thenApply(aBoolean -> {
-            flash("message", "Please login to proceed");
+            flash("info", "Please login to proceed");
             if (!aBoolean) {
-                flash("error", "Unable to send welcome message");
+                flash("warning", "Unable to send welcome message");
             }
             return null;
         });

@@ -1,0 +1,13 @@
+@(id: String, label: String, value: String, options: java.util.List[String], hint: String)
+
+<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
+<select id="@id" name="@id">
+    @for(option <- options) {
+        @if(value.equals(option)) {
+            <option id="" selected="selected">option</option>
+        } else {
+            <option id="">option</option>
+        }
+    }
+</select>
+<br>
