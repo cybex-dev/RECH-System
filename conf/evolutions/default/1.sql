@@ -103,7 +103,7 @@ create table rech_system.message (
   message_date                  datetime(6) not null,
   message                       varchar(255),
   sender_email                  varchar(255),
-  receiver_email1               varchar(255),
+  receiver_email                varchar(255),
   application_year              integer not null,
   application_number            integer not null,
   application_type              varchar(255),

@@ -8,7 +8,13 @@
                 </question>
                 <value></value>
             </component>
-            <component id="app_department" type="text" dropdown="true"
+            <component id="app_faculty" type="text" dropdown="true" db-mapping="faculties"
+                       hint="The university faculty associated with the research">
+                <question>University faculty associated with application.
+                </question>
+                <value></value>
+            </component>
+            <component id="app_department" type="text" dropdown="true" db-mapping="departments"
                        hint="The university department associated with the research">
                 <question>University department associated with application.
                 </question>
