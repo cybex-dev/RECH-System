@@ -104,8 +104,13 @@
                     inputText.apply(id, q, a, hint).toString()
                 } else {
                     if (element.getAttributes().get("dropdown").equals("true")) {
-                        var childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
-                        inputDropdown.apply(id, q, a, childItems, hint).toString()
+                        if(element.getAttributes.get("db-mapping") == null) {
+                            val childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
+                            inputDropdown.apply(id, q, a, childItems, hint).toString()
+                        } else {
+                            val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
+                            inputDropdown.apply(id, q, a, childItems, hint).toString()
+                        }
                     } else {
                         inputText.apply(id, q, a, hint).toString()
                     }
@@ -165,14 +170,13 @@
                 /*this creates a container element which consumes some html type text*/
                 val innerText = parseElement(elem)
                 val isList = elem.getTag.equals("list")
+                val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
                 if(isList) {
                     val pre = elem.getPreTag("table")
-                    val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
                     val post = elem.getPostTag("table")
                     heading + pre + "" + innerText + "" + post
                 } else {
                     val pre = elem.getPreTag("div")
-                    val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
                     val post = elem.getPostTag("div")
                     pre + heading + innerText + post
                 }

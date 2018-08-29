@@ -157,9 +157,9 @@ public class ApplicationHandler extends Controller {
 
             // Get application type as raw field
             try {
-//                String type = formApplication.get("application_type");;
-//                application_type = ApplicationType.valueOf(type);
-                application_type = ApplicationType.Human;
+                String type = formApplication.get("application_type");;
+                application_type = ApplicationType.valueOf(type);
+//                application_type = ApplicationType.Human;
             } catch (Exception x) {
                 x.printStackTrace();
                 return badRequest(x.toString());

@@ -424,6 +424,29 @@ function initWizard() {
 
     // Set hooks to expand an extension when checked
     setExtensionHooks();
+
+    // Adds checkboxes to right side of section indicating if a section is completed or not, etc.
+    addSectionCheckboxes();
+
+    // Completes the application form by getting the db-mapping elements from the form and filling in the application
+    getDataFromServer();
+}
+
+function addSectionCheckboxes() {
+    document.querySelectorAll(".section").forEach(value => {
+        //get section id and add _check to it
+        let id = value.id + "_check";
+
+        // Create checkbox
+        let check = document.createElement("input");
+        check.id = id;
+        check.name = id;
+        check.classList.add("section-checkbox");
+        check.type = "checkbox";
+        check.disabled = true;
+
+        value.firstElementChild.appendChild(check);
+    })
 }
 
 function setAdaptiveHook(element) {

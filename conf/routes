@@ -35,7 +35,6 @@ GET     /user/applications              controllers.ApplicationSystem.Applicatio
 # New Application (application type passed as parameter)
 GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
 GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: Integer)
-+nocsrf
 POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
 POST    /application/process            controllers.ApplicationSystem.ApplicationHandler.processApplication
 
@@ -60,6 +59,14 @@ GET     /meeting/applications           controllers.MeetingSystem.MeetingControl
 
 GET     /meeting/application/:appId     controllers.MeetingSystem.MeetingController.getApplication(appId: Integer)
 POST    /meeting/application/submit     controllers.MeetingSystem.MeetingController.submitResolution
+
+
+### ### API Controller ###
+GET     /api/jsRoutes                   controllers.APIController.javascriptRoutes
+
+GET     /api/getData                    controllers.APIController.getData
+GET     /api/searchPerson               controllers.APIController.searchPerson
+GET     /api/searchLocation             controllers.APIController.searchLocation
 
 
 # An example controller showing how to use dependency injection
