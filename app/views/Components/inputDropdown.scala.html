@@ -4,9 +4,9 @@
 <select id="@id" name="@id">
     @for(option <- options) {
         @if(value.equals(option)) {
-            <option id="" selected="selected">option</option>
+            <option id="@option.toString.replace(" ", "")" name="@option.toString.replace(" ", "")" selected="selected">@option</option>
         } else {
-            <option id="">option</option>
+            <option id="@option.toString.replace(" ", "")" name="@option.toString.replace(" ", "")">@option</option>
         }
     }
 </select>

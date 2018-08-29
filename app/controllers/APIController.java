@@ -34,9 +34,11 @@ public class APIController extends Controller {
         switch (data) {
             case "faculties": {
                 list = EntityFaculty.getAllFacultyNames();
+                break;
             }
             case "departments": {
                 list = EntityDepartment.getAllDepartmentNames().stream().map(departmentContainer -> departmentContainer.dept).collect(Collectors.toList());
+                break;
             }
             default: break;
         }

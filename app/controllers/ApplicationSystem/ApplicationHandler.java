@@ -158,7 +158,7 @@ public class ApplicationHandler extends Controller {
             // Get application type as raw field
             try {
                 String type = formApplication.get("application_type");;
-                application_type = ApplicationType.valueOf(type);
+                application_type = ApplicationType.parse(type);
 //                application_type = ApplicationType.Human;
             } catch (Exception x) {
                 x.printStackTrace();
@@ -182,8 +182,8 @@ public class ApplicationHandler extends Controller {
             application.setApplicationType(application_type.name().toLowerCase());
             application.setApplicationNumber(0);
             application.setApplicationYear(Calendar.getInstance().get(Calendar.YEAR));
-            application.setFacultyName("F");
-            application.setDepartmentName("D");
+            application.setFacultyName(formApplication.get("app_faculty"));
+            application.setDepartmentName(formApplication.get("app_department"));
             application.insert();
 
             // Get copy of application form

@@ -75,11 +75,11 @@
                 <question>Mobile Number</question>
                 <value></value>
             </component>
-            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculty">
+            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculties" b-mapping="faculties">
                 <question>Faculty</question>
                 <value></value>
             </component>
-            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP" db-mapping="department">
+            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP" db-mapping="departments">
                 <question>Department</question>
                 <value></value>
             </component>
@@ -192,14 +192,14 @@
                 <question>Objectives of Study</question>
                 <value></value>
             </component>
-            <component id="rationale" type="text" max-words="300"
+            <component id="rationale" type="long_text" max-words="300"
                        hint="State the background and reason for performing this research, supporting references may be included.">
                 <question>Rationale of Study</question>
                 <value></value>
             </component>
         </group>
         <group id="grp_methodology" name="Methodology" hint="Information about your research methodology">
-            <component id="methodology_text" type="text" hint="A brief description of your methodology (max 300 words)"
+            <component id="methodology_text" type="long_text" hint="A brief description of your methodology (max 300 words)"
                        max-words="300">
                 <question>Methodology</question>
                 <value></value>

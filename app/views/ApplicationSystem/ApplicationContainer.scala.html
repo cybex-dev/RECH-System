@@ -127,8 +127,13 @@
                     inputText.apply(id, q, a, hint).toString()
                 } else {
                     if (element.getAttributes().get("dropdown").equals("true")) {
-                        var childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
-                        inputDropdown.apply(id, q, a, childItems, hint).toString()
+                        if(element.getAttributes.get("db-mapping") == null) {
+                            val childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
+                            inputDropdown.apply(id, q, a, childItems, hint).toString()
+                        } else {
+                            val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
+                            inputDropdown.apply(id, q, a, childItems, hint).toString()
+                        }
                     } else {
                         inputText.apply(id, q, a, hint).toString()
                     }
@@ -194,13 +199,7 @@
         innerText.mkString("")
     }
 
-    helper.form(action = controllers.ApplicationSystem.routes.ApplicationHandler.createApplication(), 'enctype -> "multipart/form-data") {
-        helper.CSRF.formField
-        var v = parseElement(root)
-        v += "<br><button type=\"submit\" class=\"nmu-button\" style=\"width: auto;\">Save Application</button>"
-        Html(v)
-    }
-
+    Html(parseElement(root))
 }
 
 
@@ -251,8 +250,12 @@
                 <div class="row">
                     @*<div class="col-sm-9">*@
                     <div class="col-sm-12">
-                        <input type="hidden" value="" id="application_level">
-                        @application_content
+                        @helper.form(action = helper.CSRF.apply(controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()), 'enctype -> "multipart/form-data") {
+                            <input type="hidden" value="" id="application_level" name="application_level">
+                            <input type="hidden" value="@applicationType" id="application_type" name="application_type">
+                            @application_content
+                            <br><button type="submit" class="nmu-button" style="width: auto;">Save Application</button>
+                        }
                     </div>
                     @*<div class="col-sm-3">*@
                         @*<div id="application_overview_container" style="margin: 10px; padding: 10px; border: 1px solid #ffffff">*@
