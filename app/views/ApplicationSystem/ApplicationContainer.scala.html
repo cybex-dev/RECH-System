@@ -8,7 +8,7 @@
 @import views.html.ApplicationSystem.fragmentFilterQuestions
 @import views.html.Components._
 
-@(pageTitle: String)(applicationType: String)(root: Element)(status: ApplicationStatus)(questionList: util.List[Question])
+@(pageTitle: String)(applicationType: String)(root: Element)(status: ApplicationStatus)(questionList: util.List[Question])(editable: Boolean)(callback: play.api.mvc.Call)(showQuestions: Boolean)
 
 
 
@@ -88,60 +88,82 @@
         elementType match {
             case "boolean" =>
                 /*creates checkbox*/
-                if (element.getAttributes().get("radio") == null) {
-                    inputCheckbox.apply(id, q, a, hint).toString()
+                var autofill = ""
+                if(element.getAttributes.get("autofill_id") != null) {
+                    autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
+                }
+                var value = if(a.isEmpty){ autofill } else a
+                if (element.getAttributes().get("radiogroup") == null) {
+                    inputCheckbox.apply(id, q, value, hint, editable).toString()
                 } else {
-                    if (element.getAttributes().get("radio").equals("true")) {
+                    if (element.getAttributes().get("radiogroup").equals("true")) {
                         var childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
-                        inputDropdown.apply(id, q, a, childItems, hint).toString()
+                        inputRadiobuttonGroup.apply(id, q, value, childItems, hint, editable).toString()
                     } else {
-                        inputCheckbox.apply(id, q, a, hint).toString()
+                        inputCheckbox.apply(id, q, value, hint, editable).toString()
                     }
                 }
 
             case "number" =>
+                var autofill = ""
+                if(element.getAttributes.get("autofill_id") != null) {
+                    autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
+                }
+                var value = if(a.isEmpty){ autofill } else a
+
                 if (element.getAttributes().get("dropdown") == null){
-                    inputText.apply(id, q, a, hint).toString()
+                    inputText.apply(id, q, value, hint, editable).toString()
                 } else {
                     if (element.getAttributes().get("dropdown").equals("true")) {
                         if(element.getAttributes.get("db-mapping") == null) {
                             val childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
-                            inputDropdown.apply(id, q, a, childItems, hint).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
                         } else {
                             val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
-                            inputDropdown.apply(id, q, a, childItems, hint).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
                         }
                     } else {
-                        inputText.apply(id, q, a, hint).toString()
+                        inputText.apply(id, q, value, hint, editable).toString()
                     }
                 }
             /*creates text field with number specific*/
 
             case "long_text" =>
                 /*creates a multiline text field*/
-                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words")).toString()
+                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words"), editable).toString()
 
             case "text" =>
                 /*creates text field*/
+                var autofill = ""
+                if(element.getAttributes.get("autofill_id") != null) {
+                    autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
+                }
+                var value = if(a.isEmpty){ autofill } else a
+
                 if (element.getAttributes().get("dropdown") == null){
-                    inputText.apply(id, q, a, hint).toString()
+                    inputText.apply(id, q, value, hint, editable).toString()
                 } else {
                     if (element.getAttributes().get("dropdown").equals("true")) {
                         if(element.getAttributes.get("db-mapping") == null) {
                             val childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
-                            inputDropdown.apply(id, q, a, childItems, hint).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
                         } else {
                             val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
-                            inputDropdown.apply(id, q, a, childItems, hint).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
                         }
                     } else {
-                        inputText.apply(id, q, a, hint).toString()
+                        inputText.apply(id, q, value, hint, editable).toString()
                     }
                 }
 
             case "date" =>
                 /*creates text field*/
-                inputDate.apply(id, q, a, hint).toString()
+                var autofill = ""
+                if(element.getAttributes.get("autofill_id") != null) {
+                    autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
+                }
+                var value = if(a.isEmpty){ autofill } else a
+                inputDate.apply(id, q, value, hint, editable).toString()
 
             case "document" =>
                 /*creates text field*/
@@ -150,7 +172,7 @@
                     req = "false"
                 }
                 val desc = element.getAttributes.get("desc")
-                inputFile.apply(id, q, a, hint, desc, req).toString()
+                inputFile.apply(id, q, a, hint, desc, req, editable).toString()
 
             case "list" =>
                 "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
@@ -170,7 +192,7 @@
     }
 
     def parseElement(element: Element): String = {
-        val innerText = for(elem <- element.getChildren) yield {
+        val innerText = for(elem: Element <- element.getChildren) yield {
             if(!elem.isComponent) {
                 /*this creates a container element which consumes some html type text*/
                 val innerText = parseElement(elem)
@@ -250,11 +272,12 @@
                 <div class="row">
                     @*<div class="col-sm-9">*@
                     <div class="col-sm-12">
-                        @helper.form(action = helper.CSRF.apply(controllers.ApplicationSystem.routes.ApplicationHandler.createApplication()), 'enctype -> "multipart/form-data") {
+                        @helper.form(action = helper.CSRF.apply(callback), 'enctype -> "multipart/form-data", 'id -> "application_form") {
                             <input type="hidden" value="" id="application_level" name="application_level">
+                            <input type="hidden" value="false" id="application_questions_shown" name="application_questions_shown">
                             <input type="hidden" value="@applicationType" id="application_type" name="application_type">
                             @application_content
-                            <br><button type="submit" class="nmu-button" style="width: auto;">Save Application</button>
+                            <br><button type="submit" class="nmu-button" style="width: auto;">@if(showQuestions){Save Application}else{Update Application}</button>
                         }
                     </div>
                     @*<div class="col-sm-3">*@
@@ -273,5 +296,7 @@
 
 @Masterpage.apply(pageTitle){
     @bodyBlock
-    @fragmentFilterQuestions.apply(questionList)
+    @if(showQuestions) {
+        @fragmentFilterQuestions.apply(questionList)
+    } else {}
 }

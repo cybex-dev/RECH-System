@@ -1,0 +1,9 @@
+@import views.html.Components.editable
+
+@(id: String, label: String, value: String, items: List[String], hint: String, canEdit: Boolean)
+
+<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>
+@for(item <- items){
+    @item<input style="margin-left: 20px" id="@id" name="@id" value="@value" type="radio" @editable.apply(canEdit)>
+}
+<br>

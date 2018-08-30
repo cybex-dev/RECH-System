@@ -84,27 +84,31 @@
                 <value></value>
             </component>
         </group>
-        <group id="grp_pi" name="Principle Investigators and Co-workers" hint="Your details as the researcher"
-               autofill_id="" is_prp="">
-            <component name="" id="pi_firstname" type="text" hint="Your firstname">
+        <group id="grp_pi" name="Principle Investigators and Co-workers" hint="Your details as the researcher">
+            <component name="" id="pi_firstname" type="text" hint="Your firstname" autofill_id="pi_firstname">
                 <question>Firstname</question>
                 <value></value>
             </component>
-            <component name="" id="pi_lastname" type="text" hint="Your lastname">
+            <component name="" id="pi_lastname" type="text" hint="Your lastname" autofill_id="pi_lastname">
                 <question>Lastname</question>
                 <value></value>
             </component>
-            <component name="" id="pi_gender" dropdown="true" type="boolean" radiogroup="true"
-                       hint="Your biological gender">
+            <component name="" id="pi_gender" dropdown="true" type="boolean" radiogroup="true" hint="Your biological gender" autofill_id="pi_gender">
                 <data>
                     <item>Male</item>
                     <item>Female</item>
                 </data>
-                <question>Gender</question>
+                <question>Biological Gender</question>
                 <value></value>
             </component>
             <extension>
                 <component name="" id="cow_affiliations" hint="The description of the affliators as a group e.g. Interns, Master Students, etc" dropdown="true" type="text" text-enabled="true">
+                    <data>
+                        <item>Internship Individuals</item>
+                        <item>Masters Students</item>
+                        <item>Doctorate Students</item>
+                        <item>Other</item>
+                    </data>
                     <question>Affiliation group of coworkers</question>
                     <value></value>
                 </component>
@@ -126,6 +130,18 @@
                             <question>Lastname</question>
                             <value></value>
                         </component>
+                        <component name="" id="cw_affiliation" type="text" dropdown="true" text-enabled="true" hint="Coworker's affiliation">
+                            <data>
+                                <item>Co-investigator</item>
+                                <item>Assistant Researcher</item>
+                                <item>Supervisor</item>
+                                <item>Co-supervisor</item>
+                                <item>Promoter</item>
+                                <item>Co-promoter</item>
+                            </data>
+                            <question>Affiliation</question>
+                            <value></value>
+                        </component>
                     </list>
                 </extension>
             </extension>
@@ -133,51 +149,82 @@
         <group id="grp_study_details" name="Study Details" hint="Information about the study">
             <component id="study_scope" type="text" dropdown="true"
                        hint="The scope in which the study will be performed, the geographical reaches">
+                <data>
+                    <item>Local</item>
+                    <item>Regional</item>
+                    <item>National</item>
+                    <item>International</item>
+                </data>
                 <question>Study Scope</question>
                 <value></value>
             </component>
             <component id="purpose" type="text" dropdown="true"
-                       hint="Your current degree for which you are performing the study (if applicable)">
+                       hint="Your current degree for which you are performing the study (if applicable)" autofill_id="pi_degree">
+                <data>
+                    <item>Not for degree purpose</item>
+                    <item>Doctoral</item>
+                    <item>Masters</item>
+                    <item>Honours</item>
+                    <item>Undergraduate</item>
+                    <item>Diploma</item>
+                    <item>Other</item>
+                </data>
                 <question>Purpose</question>
                 <value></value>
             </component>
-            <component id="funding_type" type="text" dropdown="true" hint="Is your research study funded?">
-                <question>Has funding</question>
-                <value></value>
-            </component>
-            <component id="funding_desc" type="text" hint="Give details of funding">
-                <question>Funding details</question>
-                <value></value>
-            </component>
             <extension orientation="vertical">
-                <component id="has_restrictions" type="boolean"
-                           hint="Are there publication restrictions associated with study results">
-                    <question>Publication Restrictions</question>
+                <component id="has_funding" type="boolean" hint="Is your research study funded?">
+                    <question>Is this research funded</question>
                     <value></value>
                 </component>
-                <component id="restrictions_desc" type="text" hidden="false"
-                           hint="Describe the restrictions imposed">
-                    <question>Describe Restrictions</question>
+                <component id="funding_type" type="text" dropdown="true" hint="Is your research study funded?">
+                    <data>
+                        <item>NRF Grant</item>
+                        <item>Thuthuka Grant</item>
+                        <item>MRC Grant</item>
+                        <item>Privately Funded</item>
+                        <item>No Specific Funding</item>
+                        <item>Combined Funding</item>
+                        <item>Other</item>
+                    </data>
+                    <question>Type of funding</question>
                     <value></value>
                 </component>
-                <group id="grp_doc_restrictions" type="document" popup="true" name="Restrictions Document" hint="" desc="Restrictions"
-                       required="true">
-                    <component id="doc_restrictions_title" type="text"
-                               hint="Document which provides details of restrictions">
-                        <question>Restriction Supporting Documents Title</question>
+
+                <component id="funding_desc" type="text" hint="Give details of funding if combined or other was selected">
+                    <question>Funding details (if Combined Funding or Other)</question>
+                    <value></value>
+                </component>
+                <extension orientation="vertical">
+                    <component id="has_restrictions" type="boolean"
+                               hint="Are there publication restrictions associated with study results">
+                        <question>Publication Restrictions</question>
                         <value></value>
                     </component>
-                    <component id="doc_restrictions_desc" type="text"
-                               hint="Document which provides details of restrictions">
-                        <question>Restriction Supporting Documents Description</question>
+                    <component id="restrictions_desc" type="text" hidden="false"
+                               hint="Describe the restrictions imposed">
+                        <question>Describe Restrictions</question>
                         <value></value>
                     </component>
-                    <component id="doc_restrictions_title" type="document"
-                               hint="Document which provides details of restrictions">
-                        <question>Restriction Supporting Documents File</question>
-                        <value></value>
-                    </component>
-                </group>
+                    <group id="grp_doc_restrictions" type="document" popup="true" name="Restrictions Document" hint="" desc="Restrictions"
+                           required="true">
+                        <component id="doc_restrictions_title" type="text"
+                                   hint="Document which provides details of restrictions">
+                            <question>Restriction Supporting Documents Title</question>
+                            <value></value>
+                        </component>
+                        <component id="doc_restrictions_desc" type="text"
+                                   hint="Document which provides details of restrictions">
+                            <question>Restriction Supporting Documents Description</question>
+                            <value></value>
+                        </component>
+                        <component id="doc_restrictions_title" type="document"
+                                   hint="Document which provides details of restrictions">
+                            <question>Restriction Supporting Documents File</question>
+                            <value></value>
+                        </component>
+                    </group>
+                </extension>
             </extension>
             <component id="date_start" type="date" hint="Date when data collection is expected to start.">
                 <question>Start Date</question>
@@ -614,7 +661,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extensione orientation="vertical">
+            <extension orientation="vertical">
                 <component id="data_stored" name="" type="boolean"
                            hint="Will the collected data be stored in any form after the study has been completed">
                     <question>Collected data stored</question>
@@ -652,7 +699,7 @@
                         <value></value>
                     </component>
                 </list>
-            </extensione>
+            </extension>
             <extension orientation="vertical">
                 <component id="reusing_stored_data" name="" type="boolean"
                            hint="Will stored data be made available for reuse">
@@ -766,17 +813,17 @@
     </section>
     <section id="sct_declaration" name="Declaration" hint="">
         <group id="grp_declaration" name="Declaration">
-            <note>If any changes are made to the above arrangements or procedures, I will bring these to the attention
-                of
-                the Research Ethics Committee (Human)
-            </note>
-            <component recorded="false" type="boolean" id="read_ethics_guidelines" hint="?"
+            <component recorded="false" type="boolean" id="read_ethics_guidelines" hint="Declaration of understanding of the terms and conditions"
                        link="http://www.sahealthinfo.org/ethics/">
                 <question>I have read, understood and will comply with the Guidelines for Ethical Conduct in Research
                     and
                     Education at the Nelson Mandela Metropolitan University and have taken cognisance of the
                     availability
-                    (on-line) of the Medical Research Council Guidelines on Ethics for Research
+                    (on-line) of the Medical Research Council Guidelines on Ethics for Research.
+
+                    If any changes are made to the above arrangements or procedures, I will bring these to the attention
+                    of
+                    the Research Ethics Committee (Human)
                 </question>
             </component>
             <component recorded="false" type="boolean" id="participant_indemnified"

@@ -6,7 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Embeddable
 public class EntityEthicsApplicationPK implements Serializable {
@@ -86,16 +88,21 @@ public class EntityEthicsApplicationPK implements Serializable {
         Integer year = Integer.parseInt(split[1]);
 
         EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(split[2]);
-        String appType = type.toString();
 
-        return dao.ApplicationSystem.EntityEthicsApplication.find.all().stream()
-                .filter(entityEthicsApplication -> entityEthicsApplication.getApplicationYear() == year &&
-                        entityEthicsApplication.getApplicationNumber() == number &&
-                        entityEthicsApplication.getApplicationType().equals(appType))
+        List<EntityEthicsApplication> all = EntityEthicsApplication.find.all();
+        Optional<EntityEthicsApplicationPK> first = all.stream()
+                .filter(entityEthicsApplication -> {
+                    int applicationYear = entityEthicsApplication.getApplicationYear();
+                    int applicationNumber = entityEthicsApplication.getApplicationNumber();
+                    EthicsApplication.ApplicationType applicationType = EthicsApplication.ApplicationType.parse(entityEthicsApplication.getApplicationType());
+
+                    return number == applicationNumber &&
+                            year == applicationYear &&
+                            type.equals(applicationType);
+                })
                 .map(EntityEthicsApplication::applicationPrimaryKey)
-                .findFirst()
-                .orElseThrow(null);
-
+                .findFirst();
+        return first.orElseThrow(null);
     }
 
     @Override

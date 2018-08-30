@@ -72,7 +72,14 @@ public class ApplicationHandler extends Controller {
      */
     @AddCSRFToken
     public Result editApplication(String applicationID) {
-        return TODO;
+        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(session().get(CookieTags.user_id), applicationID);
+        EntityEthicsApplication ethicsApplication = EntityEthicsApplication.find.byId(entityEthicsApplicationPK);
+        if (ethicsApplication == null) {
+            return badRequest();
+        }
+
+        Element element = populateRootElement(ethicsApplication);
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, true, routes.ApplicationHandler.submitEdit(), false));
     }
 
     /**
@@ -94,15 +101,34 @@ public class ApplicationHandler extends Controller {
         if (ApplicationStatus.parse(ethicsApplication.getInternalStatus()) == ApplicationStatus.DRAFT){
             return editApplication(applicationID);
         } else {
-            Element element = populateRootElement(entityEthicsApplicationPK);
-            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.getApplicationType(), rootElement, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null));
+            Element element = populateRootElement(ethicsApplication);
+            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, false, routes.ApplicationHandler.submitRevision(), false));
         }
     }
 
     private Element populateRootElement(EntityEthicsApplication application) {
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
-        latestComponents.stream().map()
+        Map<String, Object> entryMap = new HashMap<>();
+        latestComponents.forEach(entityComponentVersion -> {
+            switch (entityComponentVersion.getResponseType()) {
+                case "boolean": {
+                    entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getBoolValue());
+                }
+
+                case "text": {
+                    entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getTextValue());
+                }
+
+                case "document": {
+                    entryMap.put(entityComponentVersion.getComponentId() + "_title", entityComponentVersion.getDocumentName());
+                    entryMap.put(entityComponentVersion.getComponentId() + "_desc", entityComponentVersion.getDocumentName());
+                    entryMap.put(entityComponentVersion.getComponentId() + "_document", entityComponentVersion.getDocumentName());
+                }
+            }
+        });
+        Element element = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
+        return element;
     }
 
     /**
@@ -146,12 +172,12 @@ public class ApplicationHandler extends Controller {
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
         Element rootElement = ethicsApplication.getRootElement();
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList()));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList(), true, routes.ApplicationHandler.createApplication(), true));
     }
 
     @RequireCSRFCheck
-    public Result processApplication(){
-        DynamicForm form = formFactory.form();
+    public Result submitEdit(){
+        DynamicForm form = formFactory.form().bindFromRequest();
         String id = form.get("application_id");
         EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(session(CookieTags.user_id), id);
         new RECEngine().nextStep(applicationPK);
@@ -186,7 +212,7 @@ public class ApplicationHandler extends Controller {
                 try {
                     // TODO check if data is mapped
                     EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
-                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList()));
+                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), true, routes.ApplicationHandler.submitEdit(), false));
                 } catch (Exception x) {
                     return internalServerError();
                 }
@@ -275,36 +301,18 @@ public class ApplicationHandler extends Controller {
                 String prp_contact_email = XMLTools.lookup(rootElement, "prp_contact_email").getChildren().getLast().getValue().toString();
                 application.setPrpId(prp_contact_email.isEmpty() ? null : prp_contact_email);
 
-                // Get application department and faculty
-                String dept_name = XMLTools.lookup(rootElement, "app_department").getChildren().getLast().getValue().toString();
-                String faculty_name = EntityDepartment.findFacultyByDepartment(dept_name);
-
-                // Set application data
-                application.setDepartmentName(dept_name);
-                application.setFacultyName(faculty_name);
-
                 application.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
 
                 // Update application
                 application.update();
 
-            } catch (InvalidFieldException e) {
-                e.printStackTrace();
-                return notFound();
-            }
-
-            try {
-                // Create entities from Root Element
-                createEntities(application.applicationPrimaryKey(), rootElement);
-            } catch (UnhandledElementException e) {
-                e.printStackTrace();
-                return badRequest();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return internalServerError();
             }
 
-            new RECEngine().nextStep(application.applicationPrimaryKey());
+            // Create entities from Root Element
+            createEntities(application.applicationPrimaryKey(), rootElement);
 
             flash("success", "Your application has been saved");
             return allApplications();
@@ -331,162 +339,179 @@ public class ApplicationHandler extends Controller {
      * @throws UnhandledElementException
      * @throws IOException
      */
-    private void createEntities(EntityEthicsApplicationPK applicationId, Element rootElement) throws UnhandledElementException, IOException {
-        if (rootElement != null) {
-            switch (rootElement.getTag()) {
-                case "value":
-                case "question":
-                case "list":
-                case "section":
-                case "application": {
-                    //do nothing, just continue
-                    for (Element e : rootElement.getChildren()) {
-                        createEntities(applicationId, e);
-                    }
-                    break;
-                }
-
-                case "group": {
-                    //creates new group, do something only if group type = document
-                    if (rootElement.getType().equals("document")){
-                        // Title
-                        Element title = rootElement.getChildren().pop();
-                        Element desc = rootElement.getChildren().pop();
-                        Element file = rootElement.getChildren().pop();
-
-                        EntityComponentVersion componentversion = new EntityComponentVersion();
-                        componentversion.setResponseType(rootElement.getType().toLowerCase());
-                        componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                        componentversion.setResponseType(rootElement.getType());
-
-                        // Set document details
-                        componentversion.setDocumentName(title.getValue().toString());
-                        componentversion.setDocumentDescription(desc.getValue().toString());
-                        if (file.getValue() instanceof File) {
-                            File doc = (File) file.getValue();
-                            String hashCode = String.valueOf(doc.hashCode());
-                            componentversion.setDocumentLocationHash(hashCode);
-                        }
-
-                        // Create component entity
-                        EntityComponent component = new EntityComponent();
-                        component.setApplicationId(applicationId);
-                        component.setComponentId(rootElement.getId());
-                        component.insert();
-
-                        // Set component Id in component version and add to database
-                        componentversion.setComponentId(component.getComponentId());
-                        componentversion.insert();
-
-                        //TODO upload file
-//                        saveDocumentToDirectory(rootElement.getId(), doc);
-                    } else {
+    private void createEntities(EntityEthicsApplicationPK applicationId, Element rootElement) {
+            if (rootElement != null) {
+                switch (rootElement.getTag()) {
+                    case "value":
+                    case "question":
+                    case "list":
+                    case "section":
+                    case "application": {
+                        //do nothing, just continue
                         for (Element e : rootElement.getChildren()) {
                             createEntities(applicationId, e);
                         }
+                        break;
                     }
-                    break;
-                }
 
-                case "extension": {
-                    //creates new component combination, depending on boolean value, adds a new component
-                    LinkedList<Element> children = rootElement.getChildren();
-                    Element childElement = children.pop();
-                    if (childElement.getValue() instanceof Boolean) {
+                    case "group": {
+                        try {
+                            //creates new group, do something only if group type = document
+                            if (rootElement.getType().equals("document")){
+                                // Title
+                                Element title = rootElement.getChildren().pop();
+                                Element desc = rootElement.getChildren().pop();
+                                Element file = rootElement.getChildren().pop();
 
-                        // Get boolean value associated with the element.
-                        EntityComponentVersion componentversion = new EntityComponentVersion();
-                        componentversion.setResponseType(childElement.getType().toLowerCase());
-                        componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                        componentversion.setIsSubmitted(false);
-                        componentversion.setResponseType(childElement.getType());
-                        Boolean b = (Boolean) childElement.getValue();
-                        componentversion.setBoolValue(b);
+                                EntityComponentVersion componentversion = new EntityComponentVersion();
+                                componentversion.setResponseType(rootElement.getType().toLowerCase());
+                                componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
+                                componentversion.setResponseType(rootElement.getType());
 
-                        // Create component entity
-                        EntityComponent component = new EntityComponent();
-                        component.setApplicationId(applicationId);
-                        component.setComponentId(childElement.getId());
-                        component.insert();
-
-                        // Set component Id in component version and add to database
-                        componentversion.setComponentId(component.getComponentId());
-                        componentversion.insert();
-
-                        if (b) {
-                            for (Element e : children) {
-                                createEntities(applicationId, e);
-                            }
-                        }
-                    }
-                    break;
-                }
-                case "component": {
-                    //creates new basic component from children: question and value
-
-                    if (rootElement.getValue() instanceof ArrayList) {
-                        ArrayList list = (ArrayList) rootElement.getValue();
-                        int size = list.size();
-
-                        // loop through all children $size amount of times
-                        for (int i = 0; i < size; i++) {
-                            // Create version storing data
-                            EntityComponentVersion componentversion = new EntityComponentVersion();
-
-                            // Get value from list
-                            Object v = list.get(i);
-
-                            // Switch statement early in processing to handle exceptions early before transactions have been done
-                            switch (rootElement.getType().toLowerCase()) {
-                                case "boolean": {
-                                    componentversion.setBoolValue(Boolean.parseBoolean(v.toString()));
-                                    break;
+                                // Set document details
+                                componentversion.setDocumentName(title.getValue().toString());
+                                componentversion.setDocumentDescription(desc.getValue().toString());
+                                if (file.getValue() instanceof File) {
+                                    File doc = (File) file.getValue();
+                                    String hashCode = String.valueOf(doc.hashCode());
+                                    componentversion.setDocumentLocationHash(hashCode);
                                 }
 
-                                case "text":
-                                case "date":
-                                case "number":
-                                case "long_text": {
-                                    componentversion.setTextValue(v.toString());
-                                    break;
-                                }
+                                // Create component entity
+                                EntityComponent component = new EntityComponent();
+                                component.setApplicationId(applicationId);
+                                component.setComponentId(rootElement.getId());
+                                component.insert();
 
-                                case "document": {
-                                    // This should never be triggered
-                                    throw new UnhandledElementException("Document " + rootElement.getId() + "(i=" + String.valueOf(i) + ") processed in case \"Document\" statement");
-                                }
+                                // Set component Id in component version and add to database
+                                componentversion.setComponentId(component.getComponentId());
+                                componentversion.insert();
 
-                                default:{
-                                    throw new UnhandledElementException(rootElement.toString());
+                                //TODO upload file
+    //                        saveDocumentToDirectory(rootElement.getId(), doc);
+                            } else {
+                                for (Element e : rootElement.getChildren()) {
+                                    createEntities(applicationId, e);
                                 }
                             }
-                            componentversion.setResponseType(rootElement.getType().toLowerCase());
-                            componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                            componentversion.setIsSubmitted(false);
-
-                            // Create component entity
-                            EntityComponent component = new EntityComponent();
-                            component.setApplicationId(applicationId);
-                            component.setQuestion(rootElement.getId());
-                            component.insert();
-
-                            // Set component Id in component version and add to database
-                            componentversion.setComponentId(component.getComponentId());
-                            componentversion.insert();
+                        } catch (Exception x){
+                            x.printStackTrace();
                         }
-
-                    } else {
-                        // not a list or an empty list, do nothing
-                        return;
+                        break;
                     }
-                    break;
-                }
 
-                default:{
-                    throw new UnhandledElementException(rootElement.toString());
+                    case "extension": {
+                        try {
+                            //creates new component combination, depending on boolean value, adds a new component
+                            LinkedList<Element> children = rootElement.getChildren();
+                            Element childElement = children.pop();
+                            if (childElement.getValue() instanceof Boolean) {
+
+                                // Get boolean value associated with the element.
+                                EntityComponentVersion componentversion = new EntityComponentVersion();
+                                componentversion.setResponseType(childElement.getType().toLowerCase());
+                                componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
+                                componentversion.setIsSubmitted(false);
+                                componentversion.setResponseType(childElement.getType());
+                                Boolean b = (Boolean) childElement.getValue();
+                                componentversion.setBoolValue(b);
+
+                                // Create component entity
+                                EntityComponent component = new EntityComponent();
+                                component.setApplicationId(applicationId);
+                                component.setComponentId(childElement.getId());
+                                component.insert();
+
+                                // Set component Id in component version and add to database
+                                componentversion.setComponentId(component.getComponentId());
+                                componentversion.insert();
+
+                                if (b) {
+                                    for (Element e : children) {
+                                        createEntities(applicationId, e);
+                                    }
+                                }
+                            }
+                        } catch (Exception x){
+                            x.printStackTrace();
+                        }
+                        break;
+                    }
+                    case "component": {
+                        try {
+                        //creates new basic component from children: question and value
+
+                            if (rootElement.getValue() instanceof ArrayList) {
+                                ArrayList list = (ArrayList) rootElement.getValue();
+                                int size = list.size();
+
+                                // loop through all children $size amount of times
+                                for (int i = 0; i < size; i++) {
+                                    // Create version storing data
+                                    EntityComponentVersion componentversion = new EntityComponentVersion();
+
+                                    // Get value from list
+                                    Object v = list.get(i);
+
+                                    // Switch statement early in processing to handle exceptions early before transactions have been done
+                                    switch (rootElement.getType().toLowerCase()) {
+                                        case "boolean": {
+                                            componentversion.setBoolValue(Boolean.parseBoolean(v.toString()));
+                                            break;
+                                        }
+
+                                        case "text":
+                                        case "date":
+                                        case "number":
+                                        case "long_text": {
+                                            componentversion.setTextValue(v.toString());
+                                            break;
+                                        }
+
+                                        case "document": {
+                                            // This should never be triggered
+                                            throw new UnhandledElementException("Document " + rootElement.getId() + "(i=" + String.valueOf(i) + ") processed in case \"Document\" statement");
+                                        }
+
+                                        default:{
+                                            throw new UnhandledElementException(rootElement.toString());
+                                        }
+                                    }
+                                    componentversion.setResponseType(rootElement.getType().toLowerCase());
+                                    componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
+                                    componentversion.setIsSubmitted(false);
+
+                                    // Create component entity
+                                    EntityComponent component = new EntityComponent();
+                                    component.setApplicationId(applicationId);
+                                    component.setQuestion(rootElement.getId());
+                                    component.insert();
+
+                                    // Set component Id in component version and add to database
+                                    componentversion.setComponentId(component.getComponentId());
+                                    componentversion.insert();
+                                }
+
+                            } else {
+                                // not a list or an empty list, do nothing
+                                return;
+                            }
+                        } catch (Exception x){
+                            x.printStackTrace();
+                        }
+                        break;
+                    }
+
+                    default:{
+                        try {
+                            throw new UnhandledElementException(rootElement.toString());
+                        } catch (UnhandledElementException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-        }
+
     }
 
     @RequireCSRFCheck

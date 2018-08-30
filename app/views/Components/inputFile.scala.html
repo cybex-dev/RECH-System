@@ -1,5 +1,7 @@
-@(id: String, label: String, value: String, hint: String, shortDesc: String, required: String)
+@import views.html.Components.editable
+
+@(id: String, label: String, value: String, hint: String, shortDesc: String, required: String, canEdit: Boolean)
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<input style="margin-left: 40px;" id="@id" value="@value" name="@id" type="file" desc="@shortDesc" file_required="@required">
+<input style="margin-left: 40px;" id="@id" value="@value" name="@id" type="file" desc="@shortDesc" file_required="@required" @editable.apply(canEdit)>
 <br>

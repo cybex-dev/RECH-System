@@ -379,10 +379,15 @@ public class EntityEthicsApplication extends Model {
 
     public static String GetTitle(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
         List<EntityComponent> allApplicationCompontents = EntityComponent.getAllApplicationCompontents(applicationId);
-        Optional<EntityComponent> title = allApplicationCompontents
-                .stream()
-                .filter(entityComponent -> entityComponent.getQuestion().equals("title"))
-                .findFirst();
+        Optional<EntityComponent> title = Optional.empty();
+        try {
+            title = allApplicationCompontents
+                    .stream()
+                    .filter(entityComponent -> entityComponent.getQuestion().equals("title"))
+                    .findFirst();
+        } catch (NullPointerException x) {
+            x.printStackTrace();
+        }
         if (!title.isPresent())
             return "N/A";
 

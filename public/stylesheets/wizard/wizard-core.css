@@ -189,5 +189,6 @@ h3 {
 
 .section-checkbox {
     float: right;
-    transform: scale(1.5) !important;
+    transform: scale(1.6) !important;
+    cursor: pointer;
 }

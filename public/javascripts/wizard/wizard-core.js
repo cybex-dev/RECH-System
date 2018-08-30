@@ -2,10 +2,7 @@
 var numSections = 0;
 var indexSections = -1;
 
-var numQuestions = 0;
-var indexQuestions = -1;
 
-var risk = 0;
 
 
 // Runs functions when document has loaded
@@ -89,132 +86,6 @@ function _docReady(funcName, baseObj) {
 
 _docReady(docReady());
 
-function checkRisk() {
-    var r = 0;
-    document.querySelectorAll(".condition").forEach(function (element) {
-        if (element.checked) {
-            var v = element.attributes.getNamedItem("risk");
-            switch (v.nodeValue) {
-                case "low" : {
-                    if (r < 1)
-                        r = 1;
-                    break;
-                }
-
-                case "medium" : {
-                    if (r < 2)
-                        r = 2;
-                    break;
-                }
-
-                case "high" : {
-                    if (r < 3)
-                        r = 3;
-                    break;
-                }
-            }
-        }
-    });
-    risk = r;
-
-    switch (risk) {
-        case 0: {
-            document.getElementById("risk_eval").textContent = "None";
-            document.getElementById("risk_eval").style.color = "green";
-            break
-        }
-
-        case 1: {
-            document.getElementById("risk_eval").textContent = "You need to submit an ethics application, which will be sent to the faculty ethics committee";
-            document.getElementById("risk_eval").style.color = "orange";
-            break
-        }
-
-        case 2:
-        case 3: {
-            document.getElementById("risk_eval").textContent = "You need to submit an ethics application to the Central Ethics Committee";
-            document.getElementById("risk_eval").style.color = "red";
-            break
-        }
-    }
-
-    document.getElementById('application_level').value = risk;
-}
-
-function completeQuestionnaire() {
-    hideQuestions();
-    document.getElementById("filter_question_form").children[0].style.height = "15%";
-    setHidden(document.getElementsByClassName("question-content")[0]);
-
-
-    setHidden(document.getElementById("questionnaire_popup"));
-
-    switch (risk) {
-        case 0: {
-            document.getElementById("risk_message").textContent = "You do not need to submit an ethics application";
-            document.getElementById("risk_message").style.color = "green";
-            document.getElementById("btn_question_complete_proceed").textContent = "Home";
-            document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
-                //TODO redirect to home
-                window.location.href = homeRoutes.controllers.HomeController.index().url;
-            };
-            break
-        }
-
-        case 1: {
-            document.getElementById("risk_message").textContent = "You need to submit an ethics application for your faculty to review";
-            document.getElementById("risk_message").style.color = "orange";
-            document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
-                setHidden(document.getElementById("filter_question_form"));
-                nextSection();
-            };
-            break
-        }
-
-        case 2:
-        case 3: {
-            document.getElementById("risk_message").textContent = "You need to submit an ethics application for the central committee to review";
-            document.getElementById("risk_message").style.color = "red";
-            document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
-                setHidden(document.getElementById("filter_question_form"));
-                nextSection();
-            };
-            break
-        }
-
-    }
-    setVisible(document.getElementById("complete_popup"));
-}
-
-function hideQuestions() {
-    var questionList = document.querySelectorAll(".question");
-    numQuestions = questionList.length;
-    questionList.forEach(function (e) {
-        setHidden(e);
-    });
-}
-
-function eventNextClick() {
-
-    var old = indexQuestions;
-    if (indexQuestions < numQuestions) {
-        document.getElementById("btnNextQuestion").textContent = "Next";
-        if (risk > 1) {
-            completeQuestionnaire();
-        } else {
-            nextQuestion();
-        }
-        if (old === 0 && indexQuestions === 1)
-            show(document.getElementById("btnPreviousQuestion"));
-        if (indexQuestions + 1 === (numQuestions)) {
-            document.getElementById("btnNextQuestion").textContent = "Complete";
-            document.getElementById("btnNextQuestion").onclick = completeQuestionnaire;
-        }
-        else
-            document.getElementById("btnNextQuestion").textContent = "Next";
-    }
-}
-
 function docReady() {
 
     // // Sets number of section sections
@@ -223,69 +94,8 @@ function docReady() {
     // sectionList.forEach(function (e) {
     //     setHidden(e);
     // });
-
-    // Sets number of question sections
-    hideQuestions();
-
-    // document.querySelectorAll(".question")[0].classList.add("visible");
-
-    document.getElementById("btnStartQuestions").onclick = function (ev) {
-
-        //TODO temporary setting only - fix height issue
-        document.getElementById("filter_question_form").children[0].style.height = "70%";
-        document.getElementsByClassName("question-content")[0].style.height = "90%";
-
-        setHidden(document.getElementById("btnStartQuestions"));
-        setVisible(document.querySelectorAll(".question-content").item(0));
-        nextQuestion();
-    };
-
-    document.querySelectorAll(".condition").forEach(function (value) {
-        value.onclick = checkRisk
-    });
-    checkRisk();
-
-    document.getElementById("btnNextQuestion").onclick = eventNextClick;
-    document.getElementById("btnPreviousQuestion").onclick = function (ev) {
-
-        var old = indexQuestions;
-        if (indexQuestions > 0) {
-            previousQuestion();
-            if (old === (numQuestions - 1) && indexQuestions === (numQuestions - 2)) {
-                show(document.getElementById("btnNextQuestion"));
-                document.getElementById("btnNextQuestion").onclick = eventNextClick;
-            }
-        }
-
-        if (indexQuestions === 0)
-            hide(document.getElementById("btnPreviousQuestion"));
-    };
-    hide(document.getElementById("btnPreviousQuestion"));
-
     // Initializes wizard
     initWizard();
-}
-
-// - sets the 'state' to visible
-// - increments the index
-// - sets the new index to active
-
-function nextQuestion() {
-    // Set first section active
-    var nodelistQuestion = document.querySelectorAll(".question");
-    setHidden(nodelistQuestion[indexQuestions]);
-    setVisible(nodelistQuestion[++indexQuestions]);
-}
-
-// - sets the 'state' to hidden
-// - decrements the index
-// - sets the new index to active
-
-function previousQuestion() {
-    // Set first section active
-    var nodelistQuestion = document.querySelectorAll(".question");
-    setHidden(nodelistQuestion[indexQuestions]);
-    setVisible(nodelistQuestion[--indexQuestions]);
 }
 
 // - sets the 'state' to visible
@@ -333,7 +143,6 @@ function hide(element) {
             return;
         element.style.display = "none"
     } catch (e) {
-        console.log(e)
     }
 }
 
@@ -344,33 +153,7 @@ function show(element) {
             return;
         element.style.display = ""
     } catch (e) {
-        console.log(e)
     }
-}
-
-function addDocumentOverview() {
-    var docsHtml = "";
-    document.querySelectorAll("input[type='file']").forEach(function (value) {
-        var id = "chk_" + value.id;
-        var req = value.attributes.getNamedItem("file_required").value;
-        if (req==null)
-            req = "false";
-        var required = (req === "true") ? "Required" : "Optional";
-        var chkString = "<div class=\"row\"><div class=\"col-sm-10\"><p style='display: inline-block;; font-size: 0.8em'>" + value.attributes.getNamedItem("desc").value + " (" + required + ")</p></div><div class=\"col-sm-1\"><input style='padding-right: 10px; float: right' disabled type=\"checkbox\" value='false' id=\"" + id + "\"></div></div>";
-        docsHtml += chkString;
-    });
-    document.getElementById("documents_overview_container").innerHTML += docsHtml;
-}
-
-function addApplicationOverview() {
-    var docsHtml = "";
-    document.querySelectorAll(".section").forEach(function (value) {
-        var id = "chk_sect_" + value.id;
-        var name = value.getAttribute('name');
-        var chkString = "<div class=\"row\"><div class=\"col-sm-10\"><p style='display: inline-block;; font-size: 0.8em'>" + name + "</p></div><div class=\"col-sm-1\"><input style='padding-right: 10px; float: right' disabled type=\"checkbox\" value='false' id=\"" + id + "\"></div></div>";
-        docsHtml += chkString;
-    });
-    document.getElementById("application_overview_container").innerHTML += docsHtml;
 }
 
 // initialize Wizard

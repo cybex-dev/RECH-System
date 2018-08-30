@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
+import helpers.CookieTags;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -40,6 +41,47 @@ public class APIController extends Controller {
                 list = EntityDepartment.getAllDepartmentNames().stream().map(departmentContainer -> departmentContainer.dept).collect(Collectors.toList());
                 break;
             }
+
+            case "pi_firstname":{
+                EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
+                if (personById == null){
+                    list.add("");
+                } else {
+                    list.add(personById.getUserFirstname());
+                }
+                break;
+            }
+
+            case "pi_lastname":{
+                EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
+                if (personById == null){
+                    list.add("");
+                } else {
+                    list.add(personById.getUserLastname());
+                }
+                break;
+            }
+
+            case "pi_gender":{
+                EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
+                if (personById == null){
+                    list.add("");
+                } else {
+                    list.add(personById.getUserGender());
+                }
+                break;
+            }
+
+            case "pi_degree":{
+                EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
+                if (personById == null){
+                    list.add("");
+                } else {
+                    list.add(personById.getCurrentDegreeLevel());
+                }
+                break;
+            }
+
             default: break;
         }
         return list;

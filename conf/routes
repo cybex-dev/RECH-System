@@ -34,9 +34,10 @@ GET     /user/applications              controllers.ApplicationSystem.Applicatio
 
 # New Application (application type passed as parameter)
 GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
-GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: Integer)
-POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
-POST    /application/process            controllers.ApplicationSystem.ApplicationHandler.processApplication
+POST    /application/new/submit         controllers.ApplicationSystem.ApplicationHandler.createApplication
+
+GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: String)
+POST    /application/edit/submit        controllers.ApplicationSystem.ApplicationHandler.submitEdit
 
 GET     /application/review/:id         controllers.ApplicationSystem.ApplicationHandler.reviewApplication(id: String)
 POST    /application/review/submit      controllers.ApplicationSystem.ApplicationHandler.submitRevision

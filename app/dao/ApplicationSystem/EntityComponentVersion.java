@@ -221,11 +221,15 @@ public class EntityComponentVersion extends Model {
 
 
     public static EntityComponentVersion getLatestComponent(String componentId) {
-        return find.all()
-                .stream()
-                .filter(entityComponentversion -> entityComponentversion.componentId.equals(componentId))
-                .max((o1, o2) -> o1.version > o2.version ? -1 : (o1.version < o2.version ? 1 : 0))
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find any value for componentId: " + String.valueOf(componentId)));
+        try {
+            return find.all()
+                    .stream()
+                    .filter(entityComponentversion -> entityComponentversion.componentId.equals(componentId))
+                    .max((o1, o2) -> Short.compare(o2.version, o1.version))
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find any value for componentId: " + String.valueOf(componentId)));
+        } catch (Exception x){
+            return null;
+        }
 
     }
 }
