@@ -48,7 +48,7 @@ public class ProfileHandler extends Controller {
         EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
         List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), person.userType());
         List<Application> allApplications = applicationsByPerson.stream().map(Application::create).collect(Collectors.toList());
-        return ok(views.html.UserSystem.Dashboard.render(allApplications, new ArrayList<Application>(), new ArrayList<Application>(), new ArrayList<Application>(), new ArrayList<Application>(), new ArrayList<Application>()));
+        return ok(views.html.UserSystem.Dashboard.render(new ArrayList<Application>(), allApplications, new ArrayList<Application>(), new ArrayList<Application>(), new ArrayList<Application>(), new ArrayList<Application>()));
     }
 
     /**

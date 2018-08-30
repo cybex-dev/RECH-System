@@ -274,3 +274,10 @@ a:hover {
 h2, h3, h4 {
     padding: 0px !important;
 }
+
+.table-button {
+    margin: 0 !important;
+    padding: 5px !important;
+    font-size: 14px;
+    width: 60%;
+}

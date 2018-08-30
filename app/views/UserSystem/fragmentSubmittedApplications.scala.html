@@ -1,7 +1,7 @@
 @import models.UserSystem.Application
 @(applications: List[Application])
 
-<h3>Your Applications</h3>
+<h3>Your Ethics Applications</h3>
 @if(applications.size() > 0) {
     <div class="row">
         <table class="table">
@@ -26,5 +26,5 @@
         </table>
     </div>
 } else {
-    <p>No applications associated with account</p>
+    <p>No applications associated with this account</p>
 }

@@ -40,7 +40,7 @@ public enum ApplicationStatus implements Serializable {
         this.status = status;
     }
 
-    public static ApplicationStatus parse(int status) {
+    public static ApplicationStatus parse(short status) {
         switch (status) {
             case 0:
                 return ApplicationStatus.NOT_SUBMITTED;

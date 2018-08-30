@@ -97,4 +97,9 @@ public class EntityEthicsApplicationPK implements Serializable {
                 .orElseThrow(null);
 
     }
+
+    @Override
+    public String toString() {
+        return applicationNumber + "_" + applicationYear + "_" + applicationType;
+    }
 }

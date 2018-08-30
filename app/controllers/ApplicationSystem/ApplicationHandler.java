@@ -71,7 +71,7 @@ public class ApplicationHandler extends Controller {
      * @return
      */
     @AddCSRFToken
-    public Result editApplication(Integer applicationID) {
+    public Result editApplication(String applicationID) {
         return TODO;
     }
 
@@ -88,7 +88,21 @@ public class ApplicationHandler extends Controller {
      */
     @AddCSRFToken
     public Result reviewApplication(String applicationID) {
-        return TODO;
+        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(session().get(CookieTags.user_id), applicationID);
+        EntityEthicsApplication ethicsApplication = EntityEthicsApplication.find.byId(entityEthicsApplicationPK);
+
+        if (ApplicationStatus.parse(ethicsApplication.getInternalStatus()) == ApplicationStatus.DRAFT){
+            return editApplication(applicationID);
+        } else {
+            Element element = populateRootElement(entityEthicsApplicationPK);
+            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.getApplicationType(), rootElement, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null));
+        }
+    }
+
+    private Element populateRootElement(EntityEthicsApplication application) {
+        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
+        List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
+        latestComponents.stream().map()
     }
 
     /**
@@ -109,10 +123,11 @@ public class ApplicationHandler extends Controller {
     @AddCSRFToken
     public Result allApplications() {
         try {
-            EntityPerson person = EntityPerson.getPersonById(session().get("user_email"));
+            EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
             List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person);
             return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
         } catch (Exception x) {
+            x.printStackTrace();
             return badRequest(views.html.ApplicationSystem.AllApplications.render(" :: Applications", new ArrayList<>()));
         }
     }
@@ -184,6 +199,11 @@ public class ApplicationHandler extends Controller {
             application.setApplicationYear(Calendar.getInstance().get(Calendar.YEAR));
             application.setFacultyName(formApplication.get("app_faculty"));
             application.setDepartmentName(formApplication.get("app_department"));
+
+            // Get pi id from session
+            String pi_id = session(CookieTags.user_id);
+            application.setPiId(pi_id);
+
             application.insert();
 
             // Get copy of application form
@@ -204,12 +224,12 @@ public class ApplicationHandler extends Controller {
                 int index = -1;
 
                 // Check if key is in form 'some_name[_$index]'
-                if (key.matches("^(.)+([_](\\d)+)$")){
-                    // implies a list item
-                    int last = key.lastIndexOf("_");
-                    index = Integer.parseInt(key.substring(last) + 1);
-                    key = key.substring(0, key.length() - (last-1));
-                }
+//                if (key.matches("^(.)+([_](\\d)+)$")){
+////                     implies a list item
+//                    int last = key.lastIndexOf("_");
+//                    index = Integer.parseInt(key.substring(last) + 1);
+//                    key = key.substring(0, key.length() - (last-1));
+//                }
 
                 // Get element by id
                 Element element = XMLTools.lookup(rootElement, key);
@@ -217,24 +237,25 @@ public class ApplicationHandler extends Controller {
                 //if Element found, then
                 if (element != null) {
 
-                    if (element.getParent().getTag().equals("list")){
-
-                        // If element is a list, requiring special processing, create list if list not made, then add values to list
-                        ArrayList<Object> list;
-                        Object o = element.getValue();
-                        if (o instanceof ArrayList) {
-                            //TODO fix this ???
-                            //noinspection unchecked
-                            list = (ArrayList<Object>) o;
-                        } else {
-                            list = new ArrayList<>();
-                        }
-                        list.add(index, value);
-                        element.setValue(list);
-                    } else {
+//                    if (element.getParent().getTag().equals("list")){
+//
+//                        // If element is a list, requiring special processing, create list if list not made, then add values to list
+//                        ArrayList<Object> list;
+//                        Object o = element.getValue();
+//                        if (o instanceof ArrayList) {
+//                            //TODO fix this ???
+//                            //noinspection unchecked
+//                            list = (ArrayList<Object>) o;
+//                        } else {
+//                            list = new ArrayList<>();
+//                        }
+//                        list.add(index, value);
+//                        element.setValue(list);
+//                    } else {
                         //else assign the value
-                        element.setValue(value);
-                    }
+                        element.getChildren().getLast().setValue(value);
+
+//                    }
                 }
             });
 
@@ -247,24 +268,22 @@ public class ApplicationHandler extends Controller {
                  * 2 - Committee review
                  */
 
-                short appLevel = Short.parseShort(formApplication.get("application_level"));
-                application.setApplicationLevel(appLevel);
-
-                // Get pi id from session
-                String pi_id = session(CookieTags.user_id);
-                application.setPiId(pi_id);
+//                short appLevel = Short.parseShort(formApplication.get("application_level"));
+//                application.setApplicationLevel(appLevel);
 
                 // Get prp id from Elements
-                String prp_contact_email = XMLTools.lookup(rootElement, "prp_contact_email").getValue().toString();
-                application.setPrpId(prp_contact_email);
+                String prp_contact_email = XMLTools.lookup(rootElement, "prp_contact_email").getChildren().getLast().getValue().toString();
+                application.setPrpId(prp_contact_email.isEmpty() ? null : prp_contact_email);
 
                 // Get application department and faculty
-                String dept_name = XMLTools.lookup(rootElement, "app_department").getValue().toString();
+                String dept_name = XMLTools.lookup(rootElement, "app_department").getChildren().getLast().getValue().toString();
                 String faculty_name = EntityDepartment.findFacultyByDepartment(dept_name);
 
                 // Set application data
                 application.setDepartmentName(dept_name);
                 application.setFacultyName(faculty_name);
+
+                application.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
 
                 // Update application
                 application.update();
@@ -287,7 +306,8 @@ public class ApplicationHandler extends Controller {
 
             new RECEngine().nextStep(application.applicationPrimaryKey());
 
-            return ok();
+            flash("success", "Your application has been saved");
+            return allApplications();
 
         }, httpExecutionContext.current() );
         /*jdbcExecutor*/
@@ -342,9 +362,11 @@ public class ApplicationHandler extends Controller {
                         // Set document details
                         componentversion.setDocumentName(title.getValue().toString());
                         componentversion.setDocumentDescription(desc.getValue().toString());
-                        File doc = (File) file.getValue();
-                        String hashCode = String.valueOf(doc.hashCode());
-                        componentversion.setDocumentLocationHash(hashCode);
+                        if (file.getValue() instanceof File) {
+                            File doc = (File) file.getValue();
+                            String hashCode = String.valueOf(doc.hashCode());
+                            componentversion.setDocumentLocationHash(hashCode);
+                        }
 
                         // Create component entity
                         EntityComponent component = new EntityComponent();

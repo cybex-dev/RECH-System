@@ -21,6 +21,7 @@ public class Application {
 
     public static Application create(EntityEthicsApplication entityEthicsApplication) {
         ApplicationStatus status = ApplicationStatus.parse(entityEthicsApplication.getInternalStatus());
-        return new Application(entityEthicsApplication.title(), entityEthicsApplication.getDateSubmitted(), entityEthicsApplication.getDateApproved(), status);
+        Application application = new Application(entityEthicsApplication.title(), entityEthicsApplication.getDateSubmitted(), entityEthicsApplication.getDateApproved(), status);
+        return application;
     }
 }

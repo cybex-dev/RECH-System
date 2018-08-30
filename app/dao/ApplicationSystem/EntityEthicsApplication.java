@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Entity
@@ -377,12 +378,15 @@ public class EntityEthicsApplication extends Model {
     }
 
     public static String GetTitle(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
-        String componentId = dao.ApplicationSystem.EntityComponent.getAllApplicationCompontents(applicationId)
+        List<EntityComponent> allApplicationCompontents = EntityComponent.getAllApplicationCompontents(applicationId);
+        Optional<EntityComponent> title = allApplicationCompontents
                 .stream()
                 .filter(entityComponent -> entityComponent.getQuestion().equals("title"))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find any application with ID: " + String.valueOf(applicationId)))
-                .getComponentId();
+                .findFirst();
+        if (!title.isPresent())
+            return "N/A";
+
+        String componentId = title.get().getComponentId();
 
         return EntityComponentVersion
                 .getLatestComponent(componentId)
