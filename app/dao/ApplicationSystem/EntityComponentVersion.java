@@ -196,7 +196,7 @@ public class EntityComponentVersion extends Model {
         if (o == null || getClass() != o.getClass()) return false;
         EntityComponentVersion that = (EntityComponentVersion) o;
         return version == that.version &&
-                applicationYear == that.applicationYear &&
+                applicationYear == that.applicationYear &&      
                 applicationNumber == that.applicationNumber &&
                 Objects.equals(isSubmitted, that.isSubmitted) &&
                 Objects.equals(dateSubmitted, that.dateSubmitted) &&
@@ -230,6 +230,15 @@ public class EntityComponentVersion extends Model {
         } catch (Exception x){
             return null;
         }
+    }
 
+    public dao.ApplicationSystem.EntityEthicsApplicationPK applicationPrimaryKey() {
+        dao.ApplicationSystem.EntityEthicsApplicationPK pk = new dao.ApplicationSystem.EntityEthicsApplicationPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        return pk;
     }
 }

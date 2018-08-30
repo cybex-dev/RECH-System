@@ -14,16 +14,18 @@
             <table class="table">
                 <thead>
                     <th>Application Title</th>
-                    <th>Date Submitted</th>
                     <th>Status</th>
+                    <th>Last Edit Date</th>
+                    <th>Date Submitted</th>
                     <th></th>
                 </thead>
                 <tbody>
                 @for(application: EntityEthicsApplication <- applicationList) {
                     <tr>
                         <td>@application.title()</td>
-                        <td>@application.getDateSubmitted</td>
                         <td>@ApplicationStatus.parse(application.getInternalStatus)</td>
+                        <td>@EntityEthicsApplication.GetLastEditDate(application.applicationPrimaryKey())</td>
+                        <td>@application.getDateSubmitted</td>
                         <td><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationPrimaryKey.toString)">
                             <button class="nmu-button table-button">EDIT</button>
                         </a></td>

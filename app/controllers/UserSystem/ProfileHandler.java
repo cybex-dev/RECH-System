@@ -46,9 +46,21 @@ public class ProfileHandler extends Controller {
      */
     public Result overview(){
         EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
-        List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), person.userType());
-        List<Application> allApplications = applicationsByPerson.stream().map(Application::create).collect(Collectors.toList());
-        return ok(views.html.UserSystem.Dashboard.render(new ArrayList<Application>(), allApplications, new ArrayList<Application>(), new ArrayList<Application>(), new ArrayList<Application>(), new ArrayList<Application>()));
+        List<EntityEthicsApplication> entity_newApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.RCD);
+        List<EntityEthicsApplication> entity_ownApplications = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryInvestigator);
+        List<EntityEthicsApplication> entity_approveApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryResponsiblePerson);
+        List<EntityEthicsApplication> entity_reviewApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.Reviewer);
+        List<EntityEthicsApplication> entity_liaiseApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.Liaison);
+        List<EntityEthicsApplication> entity_facultyApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.FacultyRTI);
+
+        return ok(views.html.UserSystem.Dashboard.render(
+                entity_newApps.stream().map(Application::create).collect(Collectors.toList()),
+                entity_ownApplications.stream().map(Application::create).collect(Collectors.toList()),
+                entity_approveApps.stream().map(Application::create).collect(Collectors.toList()),
+                entity_reviewApps.stream().map(Application::create).collect(Collectors.toList()),
+                entity_liaiseApps.stream().map(Application::create).collect(Collectors.toList()),
+                entity_facultyApps.stream().map(Application::create).collect(Collectors.toList()))
+        );
     }
 
     /**
@@ -119,7 +131,13 @@ public class ProfileHandler extends Controller {
             }
         }
 
-        Map.Entry<UserType, String> enrol_code = enrolmentKeys.entrySet().stream().filter(userTypeStringEntry -> userTypeStringEntry.getValue().equals(form.get("enrol_code"))).findFirst().orElse(null);
+        Map.Entry<UserType, String> enrol_code = enrolmentKeys.entrySet().stream()
+                .filter(userTypeStringEntry -> {
+                    String value = userTypeStringEntry.getValue();
+                    String enrol_code1 = form.get("enrol_code");
+                    return value.equals(enrol_code1);
+                }).findFirst()
+                .orElse(null);
         if (enrol_code == null) {
             flash("danger", "Invalid enrolment key");
             return badRequest(views.html.UserSystem.Enrol.render());
@@ -132,6 +150,9 @@ public class ProfileHandler extends Controller {
         }
 
         personById.setPersonType(enrol_code.getKey().toString());
+        personById.update();
+        session().remove(CookieTags.user_type);
+        session(CookieTags.user_type, enrol_code.getKey().toString());
 
         flash("success", "You are now a " + enrol_code.getKey());
         return redirect(routes.ProfileHandler.overview());

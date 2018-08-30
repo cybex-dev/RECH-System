@@ -3,11 +3,13 @@ package dao.ApplicationSystem;
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
 import io.ebean.Model;
+import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.UserSystem.UserType;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -353,19 +355,27 @@ public class EntityEthicsApplication extends Model {
         return findApplicationsByPerson(person.getUserEmail(), person.userType());
     }
 
+    public static List<dao.ApplicationSystem.EntityEthicsApplication> findSubmittedApplicationsByPerson(String personEmail) {
+        return findApplicationsByPerson(personEmail, UserType.PrimaryInvestigator);
+    }
+
     public static List<dao.ApplicationSystem.EntityEthicsApplication> findApplicationsByPerson(String personEmail, UserType userType) {
         return find.all()
                 .stream()
                 .filter(ethicsApplicationEntity -> {
                     switch (userType) {
                         case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(personEmail);
-                        case PrimaryResponsiblePerson: return ethicsApplicationEntity.getPrpId().equals(personEmail);
-                        case Liaison: return ethicsApplicationEntity.getLiaisonId().equals(personEmail);
+                        case PrimaryResponsiblePerson: return ethicsApplicationEntity.internalStatus != ApplicationStatus.DRAFT.getStatus() &&
+                                    ethicsApplicationEntity.getPrpId().equals(personEmail);
+                        case Liaison: return ethicsApplicationEntity.getLiaisonId() != null &&
+                                ethicsApplicationEntity.getLiaisonId().equals(personEmail);
                         //TODO fix
 //                        case Reviewer: return EntityReviewerfeedback.find.all().stream()
 //                                .anyMatch(entityReviewercomponentfeedback -> entityReviewercomponentfeedback.applicationPrimaryKey().equals(ethicsApplicationEntity.applicationPrimaryKey()) && entityReviewercomponentfeedback.getReviewerEmail().equals(personEmail));
-                        case FacultyRTI: return ethicsApplicationEntity.getRtiId().equals(personEmail);
-                        case DepartmentHead: return ethicsApplicationEntity.getHodId().equals(personEmail);
+                        case FacultyRTI: return ethicsApplicationEntity.getRtiId() != null &&
+                                ethicsApplicationEntity.getRtiId().equals(personEmail);
+                        case DepartmentHead: return ethicsApplicationEntity.getRtiId() != null &&
+                                ethicsApplicationEntity.getHodId().equals(personEmail);
                         case RCD: return true;
                     }
                     return false;
@@ -413,6 +423,17 @@ public class EntityEthicsApplication extends Model {
                 .stream()
                 .map(entityComponent -> EntityComponentVersion.getLatestComponent(entityComponent.getComponentId()))
                 .collect(Collectors.toList());
+    }
+
+    public static String GetLastEditDate(EntityEthicsApplicationPK pk){
+        Optional<EntityComponentVersion> max = EntityComponentVersion.find.all().stream()
+                .filter(entityComponentVersion -> entityComponentVersion.applicationPrimaryKey().equals(pk))
+                .max(Comparator.comparing(EntityComponentVersion::getDateLastEdited));
+        if (!max.isPresent()){
+            return "N/A";
+        } else {
+            return max.get().getDateLastEdited().toString();
+        }
     }
 
     public dao.ApplicationSystem.EntityEthicsApplicationPK applicationPrimaryKey() {

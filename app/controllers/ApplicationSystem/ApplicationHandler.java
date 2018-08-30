@@ -154,7 +154,7 @@ public class ApplicationHandler extends Controller {
     public Result allApplications() {
         try {
             EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
-            List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findApplicationsByPerson(person);
+            List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findSubmittedApplicationsByPerson(person.getUserEmail());
             return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
         } catch (Exception x) {
             x.printStackTrace();
@@ -445,22 +445,22 @@ public class ApplicationHandler extends Controller {
                         try {
                         //creates new basic component from children: question and value
 
-                            if (rootElement.getValue() instanceof ArrayList) {
-                                ArrayList list = (ArrayList) rootElement.getValue();
-                                int size = list.size();
-
-                                // loop through all children $size amount of times
-                                for (int i = 0; i < size; i++) {
-                                    // Create version storing data
+//                            if (rootElement.getValue() instanceof ArrayList) {
+//                                ArrayList list = (ArrayList) rootElement.getValue();
+//                                int size = list.size();
+//
+//                                // loop through all children $size amount of times
+//                                for (int i = 0; i < size; i++) {
+//                                    // Create version storing data
                                     EntityComponentVersion componentversion = new EntityComponentVersion();
 
                                     // Get value from list
-                                    Object v = list.get(i);
+//                                    Object v = list.get(i);
 
                                     // Switch statement early in processing to handle exceptions early before transactions have been done
                                     switch (rootElement.getType().toLowerCase()) {
                                         case "boolean": {
-                                            componentversion.setBoolValue(Boolean.parseBoolean(v.toString()));
+                                            componentversion.setBoolValue(Boolean.parseBoolean(rootElement.getValue().toString()));
                                             break;
                                         }
 
@@ -468,13 +468,13 @@ public class ApplicationHandler extends Controller {
                                         case "date":
                                         case "number":
                                         case "long_text": {
-                                            componentversion.setTextValue(v.toString());
+                                            componentversion.setTextValue(rootElement.getValue().toString());
                                             break;
                                         }
 
                                         case "document": {
                                             // This should never be triggered
-                                            throw new UnhandledElementException("Document " + rootElement.getId() + "(i=" + String.valueOf(i) + ") processed in case \"Document\" statement");
+                                            throw new UnhandledElementException("Document " + rootElement.getId() + "(i=" /*+ String.valueOf(i)*/ + ") processed in case \"Document\" statement");
                                         }
 
                                         default:{
@@ -494,12 +494,12 @@ public class ApplicationHandler extends Controller {
                                     // Set component Id in component version and add to database
                                     componentversion.setComponentId(component.getComponentId());
                                     componentversion.insert();
-                                }
-
-                            } else {
-                                // not a list or an empty list, do nothing
-                                return;
-                            }
+//                                }
+//
+//                            } else {
+//                                // not a list or an empty list, do nothing
+//                                return;
+//                            }
                         } catch (Exception x){
                             x.printStackTrace();
                         }
