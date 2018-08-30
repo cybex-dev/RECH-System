@@ -56,7 +56,7 @@ public class ProfileHandler extends Controller {
      * @return
      */
     public Result settings(){
-        return TODO;
+        return ok(views.html.UserSystem.Settings.render());
     }
 
     /**
@@ -82,11 +82,7 @@ public class ProfileHandler extends Controller {
     }
 
     public Result enrol(){
-        EntityPerson p = EntityPerson.getPersonById(session(CookieTags.user_id));
-        if (p == null){
-            return redirect(routes.LoginController.logout());
-        }
-        return ok(views.html.UserSystem.Enrol.render(p.getDepartmentName(), p.getFacultyName()));
+        return ok(views.html.UserSystem.Enrol.render());
     }
 
     public Result doEnrol(){
@@ -99,7 +95,7 @@ public class ProfileHandler extends Controller {
 
         if (form.hasGlobalErrors()) {
             flash("danger", "Invalid enrolment key");
-            return badRequest(views.html.UserSystem.Enrol.render(p.getDepartmentName(), p.getFacultyName()));
+            return badRequest(views.html.UserSystem.Enrol.render());
         }
 
         if (enrolmentKeys.size() == 0) {
@@ -126,8 +122,16 @@ public class ProfileHandler extends Controller {
         Map.Entry<UserType, String> enrol_code = enrolmentKeys.entrySet().stream().filter(userTypeStringEntry -> userTypeStringEntry.getValue().equals(form.get("enrol_code"))).findFirst().orElse(null);
         if (enrol_code == null) {
             flash("danger", "Invalid enrolment key");
-            return badRequest(views.html.UserSystem.Enrol.render(p.getDepartmentName(), p.getFacultyName()));
+            return badRequest(views.html.UserSystem.Enrol.render());
         }
+
+        EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
+        if (personById.userType().equals(enrol_code.getKey())){
+            flash("danger", "You are already a " + personById.userType().toString());
+            return badRequest(views.html.UserSystem.Enrol.render());
+        }
+
+        personById.setPersonType(enrol_code.getKey().toString());
 
         flash("success", "You are now a " + enrol_code.getKey());
         return redirect(routes.ProfileHandler.overview());

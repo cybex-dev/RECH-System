@@ -111,20 +111,24 @@ public class ApplicationHandler extends Controller {
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
         Map<String, Object> entryMap = new HashMap<>();
         latestComponents.forEach(entityComponentVersion -> {
-            switch (entityComponentVersion.getResponseType()) {
-                case "boolean": {
-                    entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getBoolValue());
-                }
+            try {
+                switch (entityComponentVersion.getResponseType()) {
+                    case "boolean": {
+                        entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getBoolValue());
+                    }
 
-                case "text": {
-                    entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getTextValue());
-                }
+                    case "text": {
+                        entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getTextValue());
+                    }
 
-                case "document": {
-                    entryMap.put(entityComponentVersion.getComponentId() + "_title", entityComponentVersion.getDocumentName());
-                    entryMap.put(entityComponentVersion.getComponentId() + "_desc", entityComponentVersion.getDocumentName());
-                    entryMap.put(entityComponentVersion.getComponentId() + "_document", entityComponentVersion.getDocumentName());
+                    case "document": {
+                        entryMap.put(entityComponentVersion.getComponentId() + "_title", entityComponentVersion.getDocumentName());
+                        entryMap.put(entityComponentVersion.getComponentId() + "_desc", entityComponentVersion.getDocumentName());
+                        entryMap.put(entityComponentVersion.getComponentId() + "_document", entityComponentVersion.getDocumentName());
+                    }
                 }
+            } catch (Exception x){
+                x.printStackTrace();
             }
         });
         Element element = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
@@ -315,7 +319,7 @@ public class ApplicationHandler extends Controller {
             createEntities(application.applicationPrimaryKey(), rootElement);
 
             flash("success", "Your application has been saved");
-            return allApplications();
+            return redirect(routes.ApplicationHandler.allApplications());
 
         }, httpExecutionContext.current() );
         /*jdbcExecutor*/
