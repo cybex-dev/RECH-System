@@ -45,7 +45,7 @@ GET     /application/jsRoutes           controllers.ApplicationSystem.Applicatio
 
 ### ### Review System ###
 
-GET     /review/application/:id         controllers.ReviewSystem.ReviewHandler.reviewApplication(id: Integer)
+GET     /review/application/:id         controllers.ReviewSystem.ReviewHandler.reviewApplication(id: String)
 POST    /review/application/submit      controllers.ReviewSystem.ReviewHandler.submitReview
 
 ### ### Message System ###

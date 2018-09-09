@@ -393,7 +393,7 @@ public class EntityEthicsApplication extends Model {
         try {
             title = allApplicationCompontents
                     .stream()
-                    .filter(entityComponent -> entityComponent.getQuestion().equals("title"))
+                    .filter(entityComponent -> entityComponent.getComponentId().equals("title"))
                     .findFirst();
         } catch (NullPointerException x) {
             x.printStackTrace();
@@ -425,15 +425,11 @@ public class EntityEthicsApplication extends Model {
                 .collect(Collectors.toList());
     }
 
-    public static String GetLastEditDate(EntityEthicsApplicationPK pk){
+    public static Timestamp GetLastEditDate(EntityEthicsApplicationPK pk){
         Optional<EntityComponentVersion> max = EntityComponentVersion.find.all().stream()
                 .filter(entityComponentVersion -> entityComponentVersion.applicationPrimaryKey().equals(pk))
                 .max(Comparator.comparing(EntityComponentVersion::getDateLastEdited));
-        if (!max.isPresent()){
-            return "N/A";
-        } else {
-            return max.get().getDateLastEdited().toString();
-        }
+        return max.map(EntityComponentVersion::getDateLastEdited).orElse(null);
     }
 
     public dao.ApplicationSystem.EntityEthicsApplicationPK applicationPrimaryKey() {

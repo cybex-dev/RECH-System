@@ -2,20 +2,22 @@
 
 @(applications: List[Application])
 
-<h3>Applications Requiring Liaison Attention</h3>
+<h3>Applications Requiring Approval</h3>
 @if(applications.size() > 0) {
     <div class="row">
         <table class="table">
             <thead>
                 <th>Application Title</th>
+                <th>Notifications</th>
                 <th>Status</th>
                 <th>Date Submitted</th>
                 <th>Date Approved</th>
             </thead>
             <tbody>
-            @for(application <- applications) {
-                <tr>
+            @for(application: Application <- applications) {
+                <tr class="nmu-button" data-url="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationID)">
                     <td>@application.title</td>
+                    <td></td>
                     <td>@application.status.name()</td>
                     <td>@application.date_approved</td>
                     <td>@application.date_submitted</td>
@@ -25,5 +27,5 @@
         </table>
     </div>
 } else {
-    <p>No new applications</p>
+    <p>No applications requiring approval</p>
 }

@@ -1,13 +1,17 @@
 package dao.NMU;
 
 import exceptions.InvalidFieldException;
+import exceptions.UnknownDataException;
 import io.ebean.Finder;
 import io.ebean.Model;
 
+import javax.lang.model.UnknownEntityException;
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 @Entity
 @Table(name = "department", schema = "rech_system")
@@ -15,6 +19,23 @@ import java.util.stream.Collectors;
 public class EntityDepartment extends Model {
     private String departmentName;
     private String facultyName;
+
+    public static EntityDepartment findDepartmentByName(String departmentName) {
+        return find.all().stream().filter(entityDepartment -> entityDepartment.departmentName.equals(departmentName)).findFirst().orElse(null);
+    }
+
+    public static EntityDepartment FromShortName(String dept_fac) {
+        List<EntityDepartment> collect = find.all().stream().filter(entityDepartment -> entityDepartment.shortName().equals(dept_fac)).collect(Collectors.toList());
+        if (collect.size() == 0)
+            return null;
+        else if (collect.size() > 1)
+            try {
+                throw new UnknownDataException("Department-Faculty shortname has duplicates:\n" + collect.stream().map(EntityDepartment::shortName).reduce((s, s2) -> s.concat("-").concat(s2)).toString());
+            } catch (UnknownDataException e) {
+                e.printStackTrace();
+            }
+        return collect.get(0);
+    }
 
     public static class DepartmentContainer {
         public String dept, faculty;
@@ -76,5 +97,11 @@ public class EntityDepartment extends Model {
                 .findFirst()
                 .orElseThrow(() -> new InvalidFieldException("Department has no associated faculty"))
                 .getFacultyName();
+    }
+
+    public String shortName() {
+        EntityFaculty faculty = EntityFaculty.getFacultyByName(facultyName);
+        String dept = Arrays.stream(departmentName.split(" ")).map(s -> s.substring(0, 3)).reduce((s, s2) -> s.concat("_").concat(s2)).orElse("Any");
+        return dept.concat("-").concat(faculty.shortName());
     }
 }

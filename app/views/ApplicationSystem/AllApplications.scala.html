@@ -4,7 +4,16 @@
 @import views.html.Templates.Masterpage
 @import models.ApplicationSystem.ApplicationStatus
 
+@import java.sql.Timestamp
 @(pageTitle: String)(applicationList: util.List[EntityEthicsApplication])
+
+@getDate(time: Timestamp, neg: String) = @{
+    if(time==null){
+        neg
+    } else {
+        time.toString.split(" ")(0)
+    }
+}
 
 @Masterpage.apply(pageTitle) {
     <h2>All applications</h2>
@@ -21,12 +30,12 @@
                 </thead>
                 <tbody>
                 @for(application: EntityEthicsApplication <- applicationList) {
-                    <tr>
+                    <tr class="nmu-button" data-url="">
                         <td>@application.title()</td>
                         <td>@ApplicationStatus.parse(application.getInternalStatus)</td>
-                        <td>@EntityEthicsApplication.GetLastEditDate(application.applicationPrimaryKey())</td>
-                        <td>@application.getDateSubmitted</td>
-                        <td><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationPrimaryKey.toString)">
+                        <td>@getDate(EntityEthicsApplication.GetLastEditDate(application.applicationPrimaryKey()), "Not yet edited")</td>
+                        <td>@getDate(application.getDateSubmitted, "Not submitted")</td>
+                        <td><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationPrimaryKey.shortName())">
                             <button class="nmu-button table-button">EDIT</button>
                         </a></td>
                     </tr>

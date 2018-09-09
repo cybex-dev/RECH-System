@@ -241,4 +241,12 @@ public class EntityComponentVersion extends Model {
         pk.setFacultyName(facultyName);
         return pk;
     }
+
+    public void setApplicationId(EntityEthicsApplicationPK applicationId) {
+        this.applicationYear = applicationId.getApplicationYear();
+        this.applicationType = applicationId.getApplicationType();
+        this.departmentName = applicationId.getDepartmentName();
+        this.facultyName = applicationId.getFacultyName();
+        this.applicationNumber = applicationId.getApplicationNumber();
+    }
 }

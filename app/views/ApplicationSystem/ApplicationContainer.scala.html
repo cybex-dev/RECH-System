@@ -81,10 +81,16 @@
 
     def createComponent(element: Element): String = {
         val elementType = element.getType.toLowerCase
-        val q = element.getChildren.getFirst.getValue.toString
+        var q = ""
         val hint = element.getHint
         val id = element.getId
-        val a = ""
+        var a = ""
+        if(element.getChildren.size()==3){
+            q = element.getChildren.get(1).getValue.toString
+        } else {
+            q = element.getChildren.getFirst.getValue.toString
+        }
+        a = element.getChildren.getLast.getValue.toString
         elementType match {
             case "boolean" =>
                 /*creates checkbox*/
@@ -97,7 +103,7 @@
                     inputCheckbox.apply(id, q, value, hint, editable).toString()
                 } else {
                     if (element.getAttributes().get("radiogroup").equals("true")) {
-                        var childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
+                        var childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
                         inputRadiobuttonGroup.apply(id, q, value, childItems, hint, editable).toString()
                     } else {
                         inputCheckbox.apply(id, q, value, hint, editable).toString()
@@ -116,7 +122,7 @@
                 } else {
                     if (element.getAttributes().get("dropdown").equals("true")) {
                         if(element.getAttributes.get("db-mapping") == null) {
-                            val childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
+                            val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
                             inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
                         } else {
                             val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
@@ -145,7 +151,7 @@
                 } else {
                     if (element.getAttributes().get("dropdown").equals("true")) {
                         if(element.getAttributes.get("db-mapping") == null) {
-                            val childItems = element.getChildren().head.getChildren().map(f => f.getValue.toString).toList
+                            val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
                             inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
                         } else {
                             val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))

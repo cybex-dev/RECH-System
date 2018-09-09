@@ -14,7 +14,7 @@ public class ReviewHandler {
      * @param applicationID
      * @return
      */
-    public Result reviewApplication(Integer applicationID) {
+    public Result reviewApplication(String applicationID) {
         return TODO;
     }
 

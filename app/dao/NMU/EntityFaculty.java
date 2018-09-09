@@ -4,6 +4,7 @@ import io.ebean.Finder;
 import io.ebean.Model;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -59,5 +60,9 @@ public class EntityFaculty extends Model {
     public int hashCode() {
 
         return Objects.hash(facultyName, facultyInfo);
+    }
+
+    public String shortName() {
+        return Arrays.stream(facultyName.split(" ")).map(s -> s.substring(0, 2)).reduce((s, s2) -> s.concat("_").concat(s2)).orElse("Any") ;
     }
 }

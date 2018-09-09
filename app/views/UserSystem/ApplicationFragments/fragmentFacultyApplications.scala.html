@@ -2,7 +2,7 @@
 
 @(applications: List[Application])
 
-<h3>Applications Requiring Liaison Attention</h3>
+<h3>Applications Requiring Faculty Level Attention</h3>
 @if(applications.size() > 0) {
     <div class="row">
         <table class="table">
@@ -14,10 +14,10 @@
                 <th>Date Approved</th>
             </thead>
             <tbody>
-            @for(application <- applications) {
+            @for(application: Application <- applications) {
                 <tr>
                     <td>@application.title</td>
-                    <td>N/A</td>
+                    <td></td>
                     <td>@application.status.name()</td>
                     <td>@application.date_approved</td>
                     <td>@application.date_submitted</td>

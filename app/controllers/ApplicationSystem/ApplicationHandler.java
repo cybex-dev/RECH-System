@@ -1,5 +1,6 @@
 package controllers.ApplicationSystem;
 
+import controllers.UserSystem.Secured;
 import dao.ApplicationSystem.EntityComponent;
 import dao.ApplicationSystem.EntityComponentVersion;
 import dao.ApplicationSystem.EntityEthicsApplication;
@@ -10,6 +11,7 @@ import engine.RECEngine;
 import exceptions.InvalidFieldException;
 import exceptions.UnhandledElementException;
 import helpers.CookieTags;
+import helpers.JDBCExecutor;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
@@ -32,9 +34,10 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
 
-//@Security.Authenticated(Secured.class)
+@Security.Authenticated(Secured.class)
 public class ApplicationHandler extends Controller {
 
     @Inject
@@ -44,17 +47,16 @@ public class ApplicationHandler extends Controller {
         this.formFactory = formFactory;
     }
 
-//    @Inject
-////    private JDBCExecutor jdbcExecutor;
+    @Inject
+    private JDBCExecutor jdbcExecutor;
 
-//    @Inject
-//    public ApplicationHandler(JDBCExecutor jdbcExecutor) {
-//        this.jdbcExecutor = jdbcExecutor;
-//    }
-
-    private HttpExecutionContext httpExecutionContext;
+    public ApplicationHandler(JDBCExecutor jdbcExecutor) {
+        this.jdbcExecutor = jdbcExecutor;
+    }
 
     @Inject
+    private HttpExecutionContext httpExecutionContext;
+
     public ApplicationHandler(HttpExecutionContext ec) {
         this.httpExecutionContext = ec;
     }
@@ -72,7 +74,7 @@ public class ApplicationHandler extends Controller {
      */
     @AddCSRFToken
     public Result editApplication(String applicationID) {
-        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(session().get(CookieTags.user_id), applicationID);
+        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(applicationID);
         EntityEthicsApplication ethicsApplication = EntityEthicsApplication.find.byId(entityEthicsApplicationPK);
         if (ethicsApplication == null) {
             return badRequest();
@@ -95,7 +97,7 @@ public class ApplicationHandler extends Controller {
      */
     @AddCSRFToken
     public Result reviewApplication(String applicationID) {
-        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(session().get(CookieTags.user_id), applicationID);
+        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(applicationID);
         EntityEthicsApplication ethicsApplication = EntityEthicsApplication.find.byId(entityEthicsApplicationPK);
 
         if (ApplicationStatus.parse(ethicsApplication.getInternalStatus()) == ApplicationStatus.DRAFT){
@@ -115,16 +117,21 @@ public class ApplicationHandler extends Controller {
                 switch (entityComponentVersion.getResponseType()) {
                     case "boolean": {
                         entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getBoolValue());
+                        break;
                     }
 
                     case "text": {
                         entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getTextValue());
+                        break;
                     }
 
                     case "document": {
-                        entryMap.put(entityComponentVersion.getComponentId() + "_title", entityComponentVersion.getDocumentName());
-                        entryMap.put(entityComponentVersion.getComponentId() + "_desc", entityComponentVersion.getDocumentName());
-                        entryMap.put(entityComponentVersion.getComponentId() + "_document", entityComponentVersion.getDocumentName());
+                        String component = entityComponentVersion.getComponentId();
+                        String compString = component.substring(4, component.length());
+                        entryMap.put(compString + "_title", entityComponentVersion.getDocumentName());
+                        entryMap.put(compString + "_desc", entityComponentVersion.getDocumentName());
+                        entryMap.put(compString + "_document", entityComponentVersion.getDocumentName());
+                        break;
                     }
                 }
             } catch (Exception x){
@@ -183,7 +190,7 @@ public class ApplicationHandler extends Controller {
     public Result submitEdit(){
         DynamicForm form = formFactory.form().bindFromRequest();
         String id = form.get("application_id");
-        EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(session(CookieTags.user_id), id);
+        EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(id);
         new RECEngine().nextStep(applicationPK);
         return ok();
     }
@@ -363,14 +370,13 @@ public class ApplicationHandler extends Controller {
                             //creates new group, do something only if group type = document
                             if (rootElement.getType().equals("document")){
                                 // Title
-                                Element title = rootElement.getChildren().pop();
-                                Element desc = rootElement.getChildren().pop();
-                                Element file = rootElement.getChildren().pop();
+                                Element title = rootElement.getChildren().get(0);
+                                Element desc = rootElement.getChildren().get(1);
+                                Element file = rootElement.getChildren().get(2);
 
                                 EntityComponentVersion componentversion = new EntityComponentVersion();
                                 componentversion.setResponseType(rootElement.getType().toLowerCase());
                                 componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                                componentversion.setResponseType(rootElement.getType());
 
                                 // Set document details
                                 componentversion.setDocumentName(title.getValue().toString());
@@ -385,9 +391,12 @@ public class ApplicationHandler extends Controller {
                                 EntityComponent component = new EntityComponent();
                                 component.setApplicationId(applicationId);
                                 component.setComponentId(rootElement.getId());
+                                String s = rootElement.getChildren().getFirst().getValue().toString();
+                                component.setQuestion(s);
                                 component.insert();
 
                                 // Set component Id in component version and add to database
+                                componentversion.setApplicationId(applicationId);
                                 componentversion.setComponentId(component.getComponentId());
                                 componentversion.insert();
 
@@ -424,9 +433,11 @@ public class ApplicationHandler extends Controller {
                                 EntityComponent component = new EntityComponent();
                                 component.setApplicationId(applicationId);
                                 component.setComponentId(childElement.getId());
+                                component.setQuestion(rootElement.getChildren().getFirst().getValue().toString());
                                 component.insert();
 
                                 // Set component Id in component version and add to database
+                                componentversion.setApplicationId(applicationId);
                                 componentversion.setComponentId(component.getComponentId());
                                 componentversion.insert();
 
@@ -460,7 +471,8 @@ public class ApplicationHandler extends Controller {
                                     // Switch statement early in processing to handle exceptions early before transactions have been done
                                     switch (rootElement.getType().toLowerCase()) {
                                         case "boolean": {
-                                            componentversion.setBoolValue(Boolean.parseBoolean(rootElement.getValue().toString()));
+                                            boolean b = Boolean.parseBoolean(rootElement.getChildren().getLast().getValue().toString());
+                                            componentversion.setBoolValue(b);
                                             break;
                                         }
 
@@ -468,7 +480,10 @@ public class ApplicationHandler extends Controller {
                                         case "date":
                                         case "number":
                                         case "long_text": {
-                                            componentversion.setTextValue(rootElement.getValue().toString());
+                                            String s = rootElement.getChildren().getLast().getValue().toString();
+                                            if (s.isEmpty())
+                                                return;
+                                            componentversion.setTextValue(s);
                                             break;
                                         }
 
@@ -487,12 +502,14 @@ public class ApplicationHandler extends Controller {
 
                                     // Create component entity
                                     EntityComponent component = new EntityComponent();
+                                    component.setComponentId(rootElement.getId());
                                     component.setApplicationId(applicationId);
-                                    component.setQuestion(rootElement.getId());
+                                    component.setQuestion(rootElement.getChildren().getFirst().getValue().toString());
                                     component.insert();
 
                                     // Set component Id in component version and add to database
                                     componentversion.setComponentId(component.getComponentId());
+                                    componentversion.setApplicationId(applicationId);
                                     componentversion.insert();
 //                                }
 //

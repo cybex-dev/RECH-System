@@ -1,10 +1,9 @@
 package dao.ApplicationSystem;
 
+import dao.NMU.EntityDepartment;
 import models.ApplicationSystem.EthicsApplication;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +12,8 @@ import java.util.Optional;
 @Embeddable
 public class EntityEthicsApplicationPK implements Serializable {
     private int applicationYear;
+
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int applicationNumber;
     private String applicationType;
     private String departmentName;
@@ -81,7 +82,7 @@ public class EntityEthicsApplicationPK implements Serializable {
         return Objects.hash(applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
 
-    public static dao.ApplicationSystem.EntityEthicsApplicationPK fromString(String user, String id) {
+    public static dao.ApplicationSystem.EntityEthicsApplicationPK fromString(String id) {
 
         String[] split = id.split("_");
         Integer number = Integer.parseInt(split[0]);
@@ -89,24 +90,34 @@ public class EntityEthicsApplicationPK implements Serializable {
 
         EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(split[2]);
 
+        EntityDepartment dept = EntityDepartment.FromShortName(split[3]);
+
         List<EntityEthicsApplication> all = EntityEthicsApplication.find.all();
         Optional<EntityEthicsApplicationPK> first = all.stream()
                 .filter(entityEthicsApplication -> {
                     int applicationYear = entityEthicsApplication.getApplicationYear();
                     int applicationNumber = entityEthicsApplication.getApplicationNumber();
                     EthicsApplication.ApplicationType applicationType = EthicsApplication.ApplicationType.parse(entityEthicsApplication.getApplicationType());
+                    String department = entityEthicsApplication.getDepartmentName();
+                    String facultyName = entityEthicsApplication.getFacultyName();
 
                     return number == applicationNumber &&
                             year == applicationYear &&
-                            type.equals(applicationType);
+                            type.equals(applicationType) &&
+                            facultyName.equals(dept.getFacultyName()) &&
+                            department.equals(dept.getDepartmentName());
                 })
                 .map(EntityEthicsApplication::applicationPrimaryKey)
                 .findFirst();
         return first.orElseThrow(null);
     }
 
-    @Override
-    public String toString() {
-        return applicationNumber + "_" + applicationYear + "_" + applicationType;
+    public String shortName(){
+        EntityDepartment dept = EntityDepartment.findDepartmentByName(departmentName);
+        if (dept == null){
+            return null;
+        }
+
+        return applicationNumber + "_" + applicationYear + "_" + applicationType + "_" + dept.shortName();
     }
 }

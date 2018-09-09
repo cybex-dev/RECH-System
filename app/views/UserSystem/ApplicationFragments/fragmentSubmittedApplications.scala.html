@@ -1,7 +1,7 @@
 @import models.UserSystem.Application
 @(applications: List[Application])
 
-<h3>Your Ethics Applications</h3>
+<h3>My Applications</h3>
 @if(applications.size() > 0) {
     <div class="row">
         <table class="table">
@@ -13,14 +13,15 @@
                 <th>Date Approved</th>
             </thead>
             <tbody>
-            @for(application <- applications) {
-                <tr>
-                    <td>@application.title</td>
-                    <td>N/A</td>
-                    <td>@application.status.name()</td>
-                    <td>@application.date_approved</td>
-                    <td>@application.date_submitted</td>
-                </tr>
+            @for(application: Application <- applications) {
+
+                    <tr class="nmu-button" data-url="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationID)">
+                        <td>@application.title</td>
+                        <td></td>
+                        <td>@application.status.name()</td>
+                        <td>@application.date_approved</td>
+                        <td>@application.date_submitted</td>
+                    </tr>
             }
             </tbody>
         </table>

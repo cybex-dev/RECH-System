@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <application type="human" version="1">
     <section id="sct_general_particulars" name="General Particulars" hint="Basic information about your study">
         <group id="grp_title_of_study" name="Study Details" hint="Title of your study">
@@ -218,7 +218,7 @@
                             <question>Restriction Supporting Documents Description</question>
                             <value></value>
                         </component>
-                        <component id="doc_restrictions_title" type="document"
+                        <component id="doc_restrictions_document" type="document"
                                    hint="Document which provides details of restrictions">
                             <question>Restriction Supporting Documents File</question>
                             <value></value>
@@ -458,7 +458,7 @@
                             <question>Consent Form Description</question>
                             <value></value>
                         </component>
-                        <component id="doc_consent_file" type="document" required="true" desc="Participant Consent">
+                        <component id="doc_consent_document" type="document" required="true" desc="Participant Consent">
                             <question>Consent Form File</question>
                             <value></value>
                         </component>
@@ -543,7 +543,7 @@
                             <question>Document File</question>
                             <value></value>
                         </component>
-                        <component id="doc_permission_file" type="document" required="false" desc="Additional Permissions"
+                        <component id="doc_permission_document" type="document" required="false" desc="Additional Permissions"
                                    hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
                             <question>Document File</question>
                             <value></value>
@@ -566,13 +566,13 @@
                 <question>Written information provided Description</question>
                 <value></value>
             </component>
-            <component id="doc_prior_consent_written_file" name="" type="document" desc="Written Consent"
+            <component id="doc_prior_consent_written_document" name="" type="document" desc="Written Consent"
                        hint="Written information presented to participants prior to their consent given">
                 <question>Written information provided file</question>
                 <value></value>
             </component>
         </group>
-        <group id="grp_doc_methodology" type="document" popup="true" name="Oral Consent Document"
+        <group id="grp_doc_prior_consent_oral" type="document" popup="true" name="Oral Consent Document"
                hint="A fully detailed document containing research methodology protocol and information - previously known as Appendix 1">
             <component id="doc_prior_consent_oral_title" name="" type="text"
                        hint="Oral information presented to participants prior to their consent given">
@@ -584,7 +584,7 @@
                 <question>Oral information provided Description</question>
                 <value></value>
             </component>
-            <component id="doc_prior_consent_oral_file" name="" type="document" desc="Oral Consent"
+            <component id="doc_prior_consent_oral_document" name="" type="document" desc="Oral Consent"
                        hint="Oral information presented to participants prior to their consent given">
                 <question>Oral information provided file</question>
                 <value></value>
@@ -593,7 +593,7 @@
         <group name="Information Provider" id="grp_information_provider"
                hint="The individual who will provide the prior consent information to participants">
             <component id="info_prov_firstname" name="" type="text" hint="Information Provider firstname">
-                <question>firstname</question>
+                <question>Firstname</question>
                 <value></value>
             </component>
             <component id="info_prov_lastname" name="" type="text" hint="Information Provider lastname">
@@ -605,9 +605,9 @@
                 <value></value>
             </component>
             <extension orientation="vertical">
-                <component id="complete_information" name="" type="text"
+                <component id="complete_information" name="" type="boolean"
                            hint="Will all information be given to participant which is complete and accurate">
-                    <question>Will incomplete/inaccurate information provided</question>
+                    <question>Will any information provided to the participants be incomplete/inaccurate</question>
                     <value></value>
                 </component>
                 <component id="no_complete_information_desc" name="" type="text"
@@ -831,6 +831,7 @@
                 <question>All participants are aware of any potential health hazards or risks associated with this
                     study.
                 </question>
+                <value></value>
             </component>
             <extension orientation="vertical">
                 <component id="conflicting_interests" name="" type="boolean"

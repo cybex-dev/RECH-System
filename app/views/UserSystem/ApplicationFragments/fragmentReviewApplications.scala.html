@@ -1,0 +1,31 @@
+@import models.UserSystem.Application
+
+@(applications: List[Application])
+
+<h3>Assigned Applications</h3>
+@if(applications.size() > 0) {
+    <div class="row">
+        <table class="table">
+            <thead>
+                <th>Application Title</th>
+                <th>Status</th>
+                <th>Date Assigned</th>
+                <th>Due Date</th>
+            </thead>
+            <tbody>
+            @for(application: Application <- applications) {
+                <tr class="nmu-button" data-url="@controllers.ReviewSystem.routes.ReviewHandler.reviewApplication(application.applicationID)">
+                    <tr class="nmu-button">
+                        <td>@application.title</td>
+                        <td></td>
+                        <td>@application.date_approved</td>
+                        <td>@application.date_submitted</td>
+                    </tr>
+                </a>
+            }
+            </tbody>
+        </table>
+    </div>
+} else {
+    <p>No applications to review</p>
+}
