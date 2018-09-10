@@ -104,7 +104,7 @@ public class EntityEthicsApplicationPK implements Serializable {
                     return number == applicationNumber &&
                             year == applicationYear &&
                             type.equals(applicationType) &&
-                            facultyName.equals(dept.getFacultyName()) &&
+                            facultyName.equals((dept == null) ? "Any" : dept.getFacultyName()) &&
                             department.equals(dept.getDepartmentName());
                 })
                 .map(EntityEthicsApplication::applicationPrimaryKey)
