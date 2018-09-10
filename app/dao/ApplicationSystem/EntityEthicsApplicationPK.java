@@ -13,7 +13,7 @@ import java.util.Optional;
 public class EntityEthicsApplicationPK implements Serializable {
     private int applicationYear;
 
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int applicationNumber;
     private String applicationType;
     private String departmentName;

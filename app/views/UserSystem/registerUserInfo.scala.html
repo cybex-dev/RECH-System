@@ -9,6 +9,5 @@
     @helper.select(loginForm("title"), helper.options(Seq("Mr","Mrs","Ms","Dr","Prof")), '_label -> "Preferred Title")
     @helper.inputText(loginForm("firstname"), '_label -> "Firstname", '_class -> "input-text-short")
     @helper.inputText(loginForm("lastname"), '_label -> "Lastname", '_class -> "input-text-short")
-    @helper.inputRadioGroup(loginForm("gender"), helper.options(Seq("Male", "Female")), '_label -> "Gender")
     @helper.inputText(loginForm("mobile"), '_label -> "Mobile Number (+27)", '_class -> "input-text-short")
 </div>

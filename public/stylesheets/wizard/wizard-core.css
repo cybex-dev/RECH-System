@@ -26,7 +26,14 @@
     background-color: #ffffff !important;
     color: #061c2c !important;
     width: 100%;
+}
+
+.section > h2 {
     border-bottom: 1px dashed #FFFFFF;
+}
+
+.group > * :not(.group)  {
+    padding-left: 20px !important;
 }
 
 .collapsible {
@@ -63,12 +70,11 @@
 
 .group > h3 {
     text-decoration: underline;
+    padding-left: 40px !important;
 }
 
 .group {
-    padding: 15px 20px;
-    border: 2px solid #061c2c;
-    margin: 10px;
+
 }
 
 .component {
@@ -98,7 +104,6 @@ input {
 }
 
 .question {
-    position: absolute;
 }
 
 .condition {
@@ -189,6 +194,31 @@ h3 {
 
 .section-checkbox {
     float: right;
-    transform: scale(1.6) !important;
     cursor: pointer;
+}
+
+
+.section-title {
+    background-color: #0A283F !important;
+    padding: 15px !important;
+    margin: 0 !important;
+}
+
+.section-title:hover {
+    background-color: #f9b42a !important;
+}
+
+.group-title {
+    background-color: #0A283F !important;
+    padding: 10px !important;
+    margin: 0 !important;
+    line-height: 1em !important;
+}
+
+.group-title:hover {
+    background-color: #f9b42a !important;
+}
+
+ic {
+    margin-bottom: 8px;
 }

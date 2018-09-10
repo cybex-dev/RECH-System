@@ -101,7 +101,7 @@ public class EntityDepartment extends Model {
 
     public String shortName() {
         EntityFaculty faculty = EntityFaculty.getFacultyByName(facultyName);
-        String dept = Arrays.stream(departmentName.split(" ")).map(s -> s.substring(0, 3)).reduce((s, s2) -> s.concat("_").concat(s2)).orElse("Any");
+        String dept = Arrays.stream(departmentName.split(" ")).map(s -> (s.length() > 3) ? s.substring(0, 3) : "").reduce((s, s2) -> s.concat("_").concat(s2)).orElse("Any");
         return dept.concat("-").concat(faculty.shortName());
     }
 }

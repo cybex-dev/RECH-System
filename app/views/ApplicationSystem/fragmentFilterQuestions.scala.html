@@ -5,8 +5,8 @@
 @(questionList: util.List[Question])
 
 <div id="filter_question_form" class="modal opague-background">
-    <div id="questionnaire_popup" class="modal-content animate popup-header">
-        <div class="row">
+    <div id="questionnaire_popup" class="modal-content animate popup-header" style="height: auto">
+        <div class="row" style="height: auto">
             <div class="header-panel">
                 <div class="row">
                     <div class="col-sm-7">
@@ -21,11 +21,9 @@
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="standard-padding-20">
-                <button class="nmu-button" type="button" href="#" id="btnStartQuestions">Start</button>
-                <div class="question-content nmu-color-very-dark hidden">
+        <div class="row hidden" style="height: auto" id="row-question-content">
+            <div class="standard-padding-20" style="height: auto">
+                <div class="question-content nmu-color-very-dark" style="height: auto">
                     @{
                         var questionId = 0;
 
@@ -49,17 +47,16 @@
 
                         Html(processQuestions())
                     }
-                    <br>
-                    <br>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button id="btnPreviousQuestion" class="nmu-button" style="float: left;">Previous</button>
-                        </div>
-                        <div class="col-sm-6">
-                            <button id="btnNextQuestion" class="nmu-button" style="float: right;">Next</button>
-                        </div>
-                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="row" style="height: auto; margin-top: 30px;" id="question_button_bar">
+            <button class="nmu-button" type="button" href="#" id="btnStartQuestions">Start</button>
+            <div class="col-sm-6">
+                <button id="btnPreviousQuestion" class="nmu-button hidden" style="float: left; ">Previous</button>
+            </div>
+            <div class="col-sm-6">
+                <button id="btnNextQuestion" class="nmu-button hidden" style="float: right;">Next</button>
             </div>
         </div>
     </div>

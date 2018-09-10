@@ -631,7 +631,7 @@ public class RECEngine {
                 .getAllApplicationCompontents(applicationId)
                 .forEach(entityComponent -> {
                     //Get latest component
-                    EntityComponentVersion latestComponent = EntityComponentVersion.getLatestComponent(entityComponent.getComponentId());
+                    EntityComponentVersion latestComponent = EntityComponentVersion.getLatestComponent(applicationId, entityComponent.getComponentId());
 
                     // Set submitted state
                     latestComponent.setIsSubmitted(true);

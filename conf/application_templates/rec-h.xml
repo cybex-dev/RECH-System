@@ -42,25 +42,8 @@
                 <question>Campus</question>
                 <value></value>
             </component>
-            <component name="" id="prp_building" dropdown="true" type="text" hint="Building where PRP is found">
-                <data>
-                    <item></item>
-                </data>
-                <question>Building</question>
-                <value></value>
-            </component>
-            <component name="" id="prp_floor" dropdown="true" type="number" hint="Floor where PRP is found">
-                <data>
-                    <item></item>
-                </data>
-                <question>Floor</question>
-                <value></value>
-            </component>
-            <component name="" id="prp_room" dropdown="true" type="number" hint="Room where PRP is found">
-                <data>
-                    <item></item>
-                </data>
-                <question>Office</question>
+            <component name="" id="prp_address" type="text" hint="Address where PRP is found">
+                <question>Office Address</question>
                 <value></value>
             </component>
             <component name="" id="prp_contact_email" type="text" hint="Email address of PRP">
@@ -91,14 +74,6 @@
             </component>
             <component name="" id="pi_lastname" type="text" hint="Your lastname" autofill_id="pi_lastname">
                 <question>Lastname</question>
-                <value></value>
-            </component>
-            <component name="" id="pi_gender" dropdown="true" type="boolean" radiogroup="true" hint="Your biological gender" autofill_id="pi_gender">
-                <data>
-                    <item>Male</item>
-                    <item>Female</item>
-                </data>
-                <question>Biological Gender</question>
                 <value></value>
             </component>
             <extension>

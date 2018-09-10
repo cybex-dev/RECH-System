@@ -3,8 +3,6 @@ var numSections = 0;
 var indexSections = -1;
 
 
-
-
 // Runs functions when document has loaded
 function _docReady(funcName, baseObj) {
 
@@ -86,6 +84,24 @@ function _docReady(funcName, baseObj) {
 
 _docReady(docReady());
 
+function findParentGroup(input) {
+
+}
+
+function reaccess(parentGroup) {
+    parentGroup.querySelectorAll("input").forEach(function (input) {
+
+    })
+}
+
+function assignInputListeners() {
+    let allInputs = document.querySelectorAll("input");
+    allInputs.forEach(function (input) {
+        let parentGroup = findParentGroup(input);
+        reaccess(parentGroup);
+    })
+}
+
 function docReady() {
 
     // // Sets number of section sections
@@ -96,6 +112,14 @@ function docReady() {
     // });
     // Initializes wizard
     initWizard();
+
+    // TODO Fix
+    document.querySelectorAll(".group > h3").forEach(e => {
+        e.click();
+        e.click();
+    });
+
+    assignInputListeners();
 }
 
 // - sets the 'state' to visible
@@ -167,7 +191,21 @@ function initWizard() {
     }
 
     function addCollapsibleGroups() {
-        document.querySelectorAll(".group > h3").forEach(e => e.classList.add("group-title", "collapsible"));
+        // Add collapsible groups
+        document.querySelectorAll(".group > *").forEach(function (e) {
+            if (e.tagName !== "BR") {
+                e.classList.add("collapsible-child")
+            };
+        });
+
+        // Add collabsible group heading
+        document.querySelectorAll(".group > h3").forEach(function (e) {
+                e.classList.add("group-title", "collapsible", );
+                e.classList.remove("collapsible-child");
+            }
+        );
+
+        document.querySelectorAll(".group .group").forEach(e => e.classList.add("collapsible-child"));
 
         // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
         // document.querySelectorAll(".group").forEach(e => e.childNodes.forEach(ee => {
@@ -186,6 +224,24 @@ function initWizard() {
         e.firstChild.onclick = function () {
             document.querySelectorAll("#" + e.id + ".section .group").forEach(function (child) {
                 child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
+            })
+        }
+    });
+
+    // Link each group heading to subcomponents collapbsible, adding an onclick event which collapses or expands a group when clicked
+    document.querySelectorAll(".section .group").forEach(function (e) {
+        e.firstChild.onclick = function () {
+            document.querySelectorAll("#" + e.id)[0].childNodes.forEach(function (child) {
+                if (child.tagName !== "H3" &&
+                    child.nodeType === Node.ELEMENT_NODE) {
+                    if (child.tagName === "IC" ||
+                        child.tagName === "LABEL"){
+                        child.style.display = (child.style.display === "none" || child.style.display === "") ? "inline-block" : "none";
+                    } else {
+                        child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
+                    }
+                }
+
             })
         }
     });
@@ -209,25 +265,38 @@ function initWizard() {
     setExtensionHooks();
 
     // Adds checkboxes to right side of section indicating if a section is completed or not, etc.
-    addSectionCheckboxes();
+    addSectionStatus();
+
+    addGroupStatus();
 
     // Completes the application form by getting the db-mapping elements from the form and filling in the application
-    getDataFromServer();
+    // getDataFromServer();
 }
 
-function addSectionCheckboxes() {
+function addSectionStatus() {
     document.querySelectorAll(".section").forEach(value => {
         //get section id and add _check to it
         let id = value.id + "_check";
 
         // Create checkbox
-        let check = document.createElement("input");
+        let check = document.createElement("i");
         check.id = id;
         check.name = id;
-        check.classList.add("section-checkbox");
-        check.type = "checkbox";
-        check.disabled = true;
+        check.classList.add("fa", "fa-ellipsis-h", "section-checkbox");
+        value.firstElementChild.appendChild(check);
+    })
+}
 
+function addGroupStatus() {
+    document.querySelectorAll(".section .group").forEach(value => {
+        //get section id and add _check to it
+        let id = value.id + "_check";
+
+        // Create checkbox
+        let check = document.createElement("i");
+        check.id = id;
+        check.name = id;
+        check.classList.add("fa", "fa-ellipsis-h", "section-checkbox");
         value.firstElementChild.appendChild(check);
     })
 }
@@ -255,5 +324,7 @@ function setExtensionHooks() {
 }
 
 function createLists(listDiv) {
-    document.querySelectorAll("#listDiv").forEach(function(div) {div.classList.add("")})
+    document.querySelectorAll("#listDiv").forEach(function (div) {
+        div.classList.add("")
+    })
 }

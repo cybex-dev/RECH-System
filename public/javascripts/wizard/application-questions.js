@@ -268,8 +268,11 @@ function docReady() {
         document.getElementById("btnStartQuestions").onclick = function (ev) {
 
             //TODO temporary setting only - fix height issue
-            document.getElementById("filter_question_form").children[0].style.height = "70%";
-            document.getElementsByClassName("question-content")[0].style.height = "90%";
+            // document.getElementById("filter_question_form").children[0].style.height = "70%";
+            // document.getElementsByClassName("question-content")[0].style.height = "90%";
+
+            setVisible(document.getElementById("btnNextQuestion"));
+            setVisible(document.getElementById("row-question-content"));
 
             setHidden(document.getElementById("btnStartQuestions"));
             setVisible(document.querySelectorAll(".question-content").item(0));

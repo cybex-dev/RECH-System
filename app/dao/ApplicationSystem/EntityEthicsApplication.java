@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Table(name = "ethics_application", schema = "rech_system")
@@ -47,6 +48,10 @@ public class EntityEthicsApplication extends Model {
     private String liaisonId;
 
     public static Finder<dao.ApplicationSystem.EntityEthicsApplicationPK, dao.ApplicationSystem.EntityEthicsApplication> find = new Finder<>(dao.ApplicationSystem.EntityEthicsApplication.class);
+
+    public static int GetNextApplicationNumber() {
+        return find.all().stream().map(EntityEthicsApplication::getApplicationNumber).max(Integer::compareTo).map(integer -> integer + 1).orElse(0);
+    }
 
     @Id
     @Column(name = "application_year")
@@ -391,10 +396,10 @@ public class EntityEthicsApplication extends Model {
         List<EntityComponent> allApplicationCompontents = EntityComponent.getAllApplicationCompontents(applicationId);
         Optional<EntityComponent> title = Optional.empty();
         try {
-            title = allApplicationCompontents
+            List<EntityComponent> titleList = allApplicationCompontents
                     .stream()
-                    .filter(entityComponent -> entityComponent.getComponentId().equals("title"))
-                    .findFirst();
+                    .filter(entityComponent -> entityComponent.getComponentId().equals("title")).collect(Collectors.toList());
+            title = Optional.ofNullable(titleList.get(0));
         } catch (NullPointerException x) {
             x.printStackTrace();
         }
@@ -404,7 +409,7 @@ public class EntityEthicsApplication extends Model {
         String componentId = title.get().getComponentId();
 
         return EntityComponentVersion
-                .getLatestComponent(componentId)
+                .getLatestComponent(applicationId, componentId)
                 .getTextValue();
 
     }
@@ -421,7 +426,7 @@ public class EntityEthicsApplication extends Model {
         return EntityComponent
                 .getAllApplicationCompontents(applicationId)
                 .stream()
-                .map(entityComponent -> EntityComponentVersion.getLatestComponent(entityComponent.getComponentId()))
+                .map(entityComponent -> EntityComponentVersion.getLatestComponent(applicationId, entityComponent.getComponentId()))
                 .collect(Collectors.toList());
     }
 

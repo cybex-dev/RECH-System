@@ -35,8 +35,8 @@
                         <td>@ApplicationStatus.parse(application.getInternalStatus)</td>
                         <td>@getDate(EntityEthicsApplication.GetLastEditDate(application.applicationPrimaryKey()), "Not yet edited")</td>
                         <td>@getDate(application.getDateSubmitted, "Not submitted")</td>
-                        <td><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationPrimaryKey.shortName())">
-                            <button class="nmu-button table-button">EDIT</button>
+                        <td><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.editApplication(application.applicationPrimaryKey.shortName())">
+                            <button class="nmu-button table-button">Modify Application</button>
                         </a></td>
                     </tr>
                 }

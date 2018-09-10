@@ -283,7 +283,15 @@
                             <input type="hidden" value="false" id="application_questions_shown" name="application_questions_shown">
                             <input type="hidden" value="@applicationType" id="application_type" name="application_type">
                             @application_content
-                            <br><button type="submit" class="nmu-button" style="width: auto;">@if(showQuestions){Save Application}else{Update Application}</button>
+                            <br>
+                            <div class="col-sm-6">
+                                <button type="submit" class="nmu-button" style="width: auto; float: left">@if(showQuestions){Save Application}else{Update Application}</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.">
+                                    <button type="submit" class="nmu-button" style="width: auto; float: right">Submit Application</button>
+                                </a>
+                            </div>
                         }
                     </div>
                     @*<div class="col-sm-3">*@

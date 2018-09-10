@@ -220,11 +220,14 @@ public class EntityComponentVersion extends Model {
     }
 
 
-    public static EntityComponentVersion getLatestComponent(String componentId) {
+    public static EntityComponentVersion getLatestComponent(EntityEthicsApplicationPK applicationId, String componentId) {
         try {
             return find.all()
                     .stream()
-                    .filter(entityComponentversion -> entityComponentversion.componentId.equals(componentId))
+                    .filter(entityComponentversion ->
+                            entityComponentversion.componentId.equals(componentId) &&
+                            entityComponentversion.applicationPrimaryKey().equals(applicationId)
+                    )
                     .max((o1, o2) -> Short.compare(o2.version, o1.version))
                     .orElseThrow(() -> new EntityNotFoundException("Cannot find any value for componentId: " + String.valueOf(componentId)));
         } catch (Exception x){

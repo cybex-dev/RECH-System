@@ -174,25 +174,6 @@ button-small {
     color: white !important;
 }
 
-.section-title {
-    background-color: #0A283F !important;
-    padding: 15px !important;
-    margin: 0 !important;
-}
-
-.section-title:hover {
-    background-color: #f9b42a !important;
-}
-
-.group-title {
-    background-color: #0A283F !important;
-    padding: 15px !important;
-    margin: 0 !important;
-}
-
-.group-title:hover {
-    background-color: #f9b42a !important;
-}
 
 .container {
     color: #FFFFFF;

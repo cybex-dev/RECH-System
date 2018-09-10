@@ -232,7 +232,7 @@ public class ApplicationHandler extends Controller {
             // Create basic Ethics Application
             EntityEthicsApplication application = new EntityEthicsApplication();
             application.setApplicationType(application_type.name().toLowerCase());
-            application.setApplicationNumber(0);
+            application.setApplicationNumber(EntityEthicsApplication.GetNextApplicationNumber());
             application.setApplicationYear(Calendar.getInstance().get(Calendar.YEAR));
             application.setFacultyName(formApplication.get("app_faculty"));
             application.setDepartmentName(formApplication.get("app_department"));

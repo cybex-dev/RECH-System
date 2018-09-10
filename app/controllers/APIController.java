@@ -62,16 +62,6 @@ public class APIController extends Controller {
                 break;
             }
 
-            case "pi_gender":{
-                EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
-                if (personById == null){
-                    list.add("");
-                } else {
-                    list.add(personById.getUserGender());
-                }
-                break;
-            }
-
             case "pi_degree":{
                 EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
                 if (personById == null){
