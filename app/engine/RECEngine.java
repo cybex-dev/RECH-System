@@ -628,10 +628,10 @@ public class RECEngine {
         Timestamp ts = Timestamp.from(new Date().toInstant());
         EntityComponent
                 // Get all application components
-                .getAllApplicationCompontents(applicationId)
+                .GetAllApplicationCompontents(applicationId)
                 .forEach(entityComponent -> {
                     //Get latest component
-                    EntityComponentVersion latestComponent = EntityComponentVersion.getLatestComponent(applicationId, entityComponent.getComponentId());
+                    EntityComponentVersion latestComponent = EntityComponentVersion.GetLatestComponent(applicationId, entityComponent.getComponentId());
 
                     // Set submitted state
                     latestComponent.setIsSubmitted(true);

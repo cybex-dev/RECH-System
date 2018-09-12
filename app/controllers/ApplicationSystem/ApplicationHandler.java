@@ -8,8 +8,6 @@ import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.NMU.EntityDepartment;
 import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
-import exceptions.InvalidFieldException;
-import exceptions.UnhandledElementException;
 import helpers.CookieTags;
 import helpers.JDBCExecutor;
 import models.ApplicationSystem.ApplicationStatus;
@@ -25,14 +23,16 @@ import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.RequireCSRFCheck;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.io.*;
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
@@ -68,8 +68,9 @@ public class ApplicationHandler extends Controller {
 
     /**
      * Allows to edit and application, by loading all data of the latest application.
-     *
+     * <p>
      * Should only be avialble if the is submitted property is true or {@link RECEngine} allows this.
+     *
      * @return
      */
     @AddCSRFToken
@@ -88,10 +89,11 @@ public class ApplicationHandler extends Controller {
      * Provides the latest application version.
      * Dependant of {@link RECEngine}, the form will be altered by showing either
      * <ul>
-     *      <li>The next step: Request PRP approval / Submit Application</li>
-     *      <li>Latest feedback and allowing edits (if an unsubmitted review) dependant on {@link RECEngine}.</li>
-     *      <li>Latest application as readonly (if accepted)</li>
+     * <li>The next step: Request PRP approval / Submit Application</li>
+     * <li>Latest feedback and allowing edits (if an unsubmitted review) dependant on {@link RECEngine}.</li>
+     * <li>Latest application as readonly (if accepted)</li>
      * </ul>
+     *
      * @param applicationID
      * @return
      */
@@ -100,7 +102,7 @@ public class ApplicationHandler extends Controller {
         EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(applicationID);
         EntityEthicsApplication ethicsApplication = EntityEthicsApplication.find.byId(entityEthicsApplicationPK);
 
-        if (ApplicationStatus.parse(ethicsApplication.getInternalStatus()) == ApplicationStatus.DRAFT){
+        if (ApplicationStatus.parse(ethicsApplication.getInternalStatus()) == ApplicationStatus.DRAFT) {
             return editApplication(applicationID);
         } else {
             Element element = populateRootElement(ethicsApplication);
@@ -113,7 +115,7 @@ public class ApplicationHandler extends Controller {
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
         Map<String, Object> entryMap = new HashMap<>();
         latestComponents.forEach(entityComponentVersion -> {
-            try {
+            if (entityComponentVersion != null) {
                 switch (entityComponentVersion.getResponseType()) {
                     case "boolean": {
                         entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getBoolValue());
@@ -134,9 +136,8 @@ public class ApplicationHandler extends Controller {
                         break;
                     }
                 }
-            } catch (Exception x){
-                x.printStackTrace();
             }
+
         });
         Element element = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
         return element;
@@ -144,6 +145,7 @@ public class ApplicationHandler extends Controller {
 
     /**
      * Submit revised application and component data only if {@link RECEngine} allows it
+     *
      * @return
      */
     @RequireCSRFCheck
@@ -155,6 +157,7 @@ public class ApplicationHandler extends Controller {
 
     /**
      * Gets all applications associated with the user in a view
+     *
      * @return
      */
     @AddCSRFToken
@@ -171,6 +174,7 @@ public class ApplicationHandler extends Controller {
 
     /**
      * Provides a form to complete a new application depending on type
+     *
      * @param type
      * @return
      */
@@ -187,7 +191,7 @@ public class ApplicationHandler extends Controller {
     }
 
     @RequireCSRFCheck
-    public Result submitEdit(){
+    public Result submitEdit() {
         DynamicForm form = formFactory.form().bindFromRequest();
         String id = form.get("application_id");
         EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(id);
@@ -197,7 +201,7 @@ public class ApplicationHandler extends Controller {
 
     /**
      * Creates a NEW application in the server database
-     *
+     * <p>
      * If Application for is complete (determined by engine, the PI should be notified of this application on the overview screen and once per week
      */
     @RequireCSRFCheck
@@ -205,334 +209,165 @@ public class ApplicationHandler extends Controller {
     public CompletionStage<Result> createApplication() {
         return CompletableFuture.supplyAsync(() -> {
             DynamicForm formApplication = formFactory.form().bindFromRequest();
-            ApplicationType application_type;
 
             // Get application type as raw field
-            try {
-                String type = formApplication.get("application_type");;
-                application_type = ApplicationType.parse(type);
-//                application_type = ApplicationType.Human;
-            } catch (Exception x) {
-                x.printStackTrace();
-                return badRequest(x.toString());
-            }
-
+            String type = formApplication.get("application_type");
+            ApplicationType application_type = ApplicationType.parse(type);
 
             // Handle form errors
             if (formApplication.hasErrors()) {
-                try {
-                    // TODO check if data is mapped
-                    EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
-                    return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), true, routes.ApplicationHandler.submitEdit(), false));
-                } catch (Exception x) {
-                    return internalServerError();
-                }
+                EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
+                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), true, routes.ApplicationHandler.submitEdit(), false));
+
             }
 
             // Create basic Ethics Application
+            int year = Calendar.getInstance().get(Calendar.YEAR);
             EntityEthicsApplication application = new EntityEthicsApplication();
             application.setApplicationType(application_type.name().toLowerCase());
-            application.setApplicationNumber(EntityEthicsApplication.GetNextApplicationNumber());
-            application.setApplicationYear(Calendar.getInstance().get(Calendar.YEAR));
+            application.setApplicationYear(year);
             application.setFacultyName(formApplication.get("app_faculty"));
             application.setDepartmentName(formApplication.get("app_department"));
+            EntityDepartment app_department = EntityDepartment.findDepartmentByName(formApplication.get("app_department"));
+            int applicationNumber = EntityEthicsApplication.GetNextApplicationNumber(app_department, application_type, year);
+            application.setApplicationNumber(applicationNumber);
 
             // Get pi id from session
             String pi_id = session(CookieTags.user_id);
             application.setPiId(pi_id);
-
             application.insert();
 
-            // Get copy of application form
-            EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
 
-            // Get root element to add values to
-            Element rootElement = application_template.getRootElement();
+            Map<String, Object> filteredData = new HashMap<>();
+            formApplication.get().getData().entrySet().stream().filter(e -> e.getValue() != null && !e.getValue().toString().isEmpty()).forEach(e -> filteredData.put(e.getKey(), e.getValue()));
+            request().body().asMultipartFormData().getFiles().stream()
+                    .filter(o -> !o.getFilename().isEmpty())
+                    // containers FilePart which has file name, and key and actual file
+                    .forEach(e -> filteredData.put(e.getKey(), e));
 
-            // Get form data and add to root element
-            Map<String, Object> data = formApplication.get().getData();
-
-            data.forEach((key, value) -> {
-
-                // Gets the application level -> committee or facutly level
-                if (key.equals("application_level"))
-                    return;
-
-                int index = -1;
-
-                // Check if key is in form 'some_name[_$index]'
-//                if (key.matches("^(.)+([_](\\d)+)$")){
-////                     implies a list item
-//                    int last = key.lastIndexOf("_");
-//                    index = Integer.parseInt(key.substring(last) + 1);
-//                    key = key.substring(0, key.length() - (last-1));
-//                }
-
-                // Get element by id
-                Element element = XMLTools.lookup(rootElement, key);
-
-                //if Element found, then
-                if (element != null) {
-
-//                    if (element.getParent().getTag().equals("list")){
-//
-//                        // If element is a list, requiring special processing, create list if list not made, then add values to list
-//                        ArrayList<Object> list;
-//                        Object o = element.getValue();
-//                        if (o instanceof ArrayList) {
-//                            //TODO fix this ???
-//                            //noinspection unchecked
-//                            list = (ArrayList<Object>) o;
-//                        } else {
-//                            list = new ArrayList<>();
-//                        }
-//                        list.add(index, value);
-//                        element.setValue(list);
-//                    } else {
-                        //else assign the value
-                        element.getChildren().getLast().setValue(value);
-
-//                    }
-                }
-            });
-
-            // Create Entities from Root Element
-            try {
-                // Set application level
-                /*
-                 * 0 - None (should not appear)
-                 * 1 - Faculty review
-                 * 2 - Committee review
-                 */
-
-//                short appLevel = Short.parseShort(formApplication.get("application_level"));
-//                application.setApplicationLevel(appLevel);
-
-                // Get prp id from Elements
-                String prp_contact_email = XMLTools.lookup(rootElement, "prp_contact_email").getChildren().getLast().getValue().toString();
-                application.setPrpId(prp_contact_email.isEmpty() ? null : prp_contact_email);
-
-                application.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
-
-                // Update application
-                application.update();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return internalServerError();
-            }
-
-            // Create entities from Root Element
-            createEntities(application.applicationPrimaryKey(), rootElement);
+            fillinApplicationData(application.applicationPrimaryKey(), filteredData);
 
             flash("success", "Your application has been saved");
             return redirect(routes.ApplicationHandler.allApplications());
 
-        }, httpExecutionContext.current() );
-        /*jdbcExecutor*/
+        }, httpExecutionContext.current());
+    }
+
+    private void fillinApplicationData(EntityEthicsApplicationPK applicationId, Map<String, Object> data) {
+        EntityEthicsApplication application = EntityEthicsApplication.GetApplication(applicationId);
+
+        Element rootElement = EthicsApplication.lookupApplication(application.type()).getRootElement();
+
+        // Get prp id from Elements
+        String prpContactEmail = data.get("prp_contact_email").toString();
+        if (!prpContactEmail.isEmpty())
+            application.setPrpId(prpContactEmail);
+
+        if (application.getInternalStatus() == null ||
+                application.getInternalStatus() != ApplicationStatus.DRAFT.getStatus() ||
+                application.getInternalStatus() != ApplicationStatus.NOT_SUBMITTED.getStatus()) {
+            application.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
+        }
+
+        // Update application
+        application.update();
+
+        List<EntityComponent> entityComponents = EntityComponent.GetAllApplicationCompontents(applicationId);
+
+        // Get form data and add to root element
+        data.entrySet().stream()
+                .filter(stringObjectEntry -> !stringObjectEntry.getValue().toString().isEmpty())
+                .forEach(entry -> {
+                    System.out.print(entry.getKey() + ": ");
+                    Element componentElement = XMLTools.lookup(rootElement, entry.getKey());
+                    if (componentElement == null) {
+                        System.out.print("null\n");
+                    } else {
+                        EntityComponent component = getUpdatableComponent(entry, componentElement, applicationId, entityComponents);
+
+                        EntityComponentVersion entityComponentVersion = getUpdatableComponentVersion(component);
+                        // be able to compile a document with description, etc. possibly update each document but split string id  base on "_title _desc and _document" and update documnt component 3 times
+
+                        // insert component version value
+                        setComponentValue(entityComponentVersion, entry);
+                        System.out.print("Set\n");
+                    }
+                });
+    }
+
+    private void setComponentValue(EntityComponentVersion entityComponentVersion, Map.Entry<String, Object> entry) {
+//        switch () {
+//
+//        }
+    }
+
+    /**
+     * Gest the EntityComponent for a specific application. Creates the component if needed and returns the instance to be used by the component version.
+     *
+     * @param entry
+     * @param componentElement
+     * @param applicationId
+     * @param entityComponents
+     * @return
+     */
+    private EntityComponent getUpdatableComponent(Map.Entry<String, Object> entry, Element componentElement, EntityEthicsApplicationPK applicationId, List<EntityComponent> entityComponents) {
+        EntityComponent component = entityComponents.stream().filter(entityComponent -> entityComponent.getComponentId().equals(entry.getKey())).findAny().orElse(null);
+        if (component == null) {
+            component = new EntityComponent();
+            component.setApplicationId(applicationId);
+            component.setComponentId(entry.getKey());
+
+            Element question = componentElement.getChildren().stream()
+                    .filter(element -> element.getTag().toLowerCase().equals("question"))
+                    .findFirst()
+                    .orElse(null);
+            if (question != null) {
+                component.setQuestion(question.getValue().toString());
+            } else {
+                System.out.println("Application: " + applicationId.shortName() + "\nCould not find question value for content:\n\"" + entry.getValue().toString() + "\"");
+            }
+            component.insert();
+            // create new component version
+        }
+        return component;
+    }
+
+    private EntityComponentVersion getUpdatableComponentVersion(EntityComponent component) {
+        EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(component.componentPrimaryKey());
+
+        //check if component version exists
+        short previousVersion = (entityComponentVersion == null) ? -1 : (entityComponentVersion.getVersion());
+
+        if (entityComponentVersion != null) {
+            //  if it exists, check if it has been submitted
+
+            if (entityComponentVersion.getIsSubmitted()) {
+                // if component version has been submitted, create new component
+                entityComponentVersion = new EntityComponentVersion();
+                entityComponentVersion.setComponentPrimaryKey(component.componentPrimaryKey());
+                entityComponentVersion.setVersion(++previousVersion);
+            }
+
+        } else {
+            // if it doesnt exist, create new component version
+            entityComponentVersion = new EntityComponentVersion();
+            entityComponentVersion.setComponentPrimaryKey(component.componentPrimaryKey());
+            entityComponentVersion.setVersion(++previousVersion);
+        }
+
+        return entityComponentVersion;
     }
 
     /**
      * Duplicates a given application for a user.
      * This creates a new application, with all components having version 1 with the latest value associated with the original document
+     *
      * @param applicationId
      * @return
      */
     @RequireCSRFCheck
-    public Result duplicateApplication(Integer applicationId){
+    public Result duplicateApplication(Integer applicationId) {
         return TODO;
-    }
-
-    /**
-     * Recursively creates database entities from the rootElement
-     * @param applicationId application Id of the ethics application
-     * @param rootElement   root element containing all values
-     * @throws UnhandledElementException
-     * @throws IOException
-     */
-    private void createEntities(EntityEthicsApplicationPK applicationId, Element rootElement) {
-            if (rootElement != null) {
-                switch (rootElement.getTag()) {
-                    case "value":
-                    case "question":
-                    case "list":
-                    case "section":
-                    case "application": {
-                        //do nothing, just continue
-                        for (Element e : rootElement.getChildren()) {
-                            createEntities(applicationId, e);
-                        }
-                        break;
-                    }
-
-                    case "group": {
-                        try {
-                            //creates new group, do something only if group type = document
-                            if (rootElement.getType().equals("document")){
-                                // Title
-                                Element title = rootElement.getChildren().get(0);
-                                Element desc = rootElement.getChildren().get(1);
-                                Element file = rootElement.getChildren().get(2);
-
-                                EntityComponentVersion componentversion = new EntityComponentVersion();
-                                componentversion.setResponseType(rootElement.getType().toLowerCase());
-                                componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-
-                                // Set document details
-                                componentversion.setDocumentName(title.getValue().toString());
-                                componentversion.setDocumentDescription(desc.getValue().toString());
-                                if (file.getValue() instanceof File) {
-                                    File doc = (File) file.getValue();
-                                    String hashCode = String.valueOf(doc.hashCode());
-                                    componentversion.setDocumentLocationHash(hashCode);
-                                }
-
-                                // Create component entity
-                                EntityComponent component = new EntityComponent();
-                                component.setApplicationId(applicationId);
-                                component.setComponentId(rootElement.getId());
-                                String s = rootElement.getChildren().getFirst().getValue().toString();
-                                component.setQuestion(s);
-                                component.insert();
-
-                                // Set component Id in component version and add to database
-                                componentversion.setApplicationId(applicationId);
-                                componentversion.setComponentId(component.getComponentId());
-                                componentversion.insert();
-
-                                //TODO upload file
-    //                        saveDocumentToDirectory(rootElement.getId(), doc);
-                            } else {
-                                for (Element e : rootElement.getChildren()) {
-                                    createEntities(applicationId, e);
-                                }
-                            }
-                        } catch (Exception x){
-                            x.printStackTrace();
-                        }
-                        break;
-                    }
-
-                    case "extension": {
-                        try {
-                            //creates new component combination, depending on boolean value, adds a new component
-                            LinkedList<Element> children = rootElement.getChildren();
-                            Element childElement = children.pop();
-                            if (childElement.getValue() instanceof Boolean) {
-
-                                // Get boolean value associated with the element.
-                                EntityComponentVersion componentversion = new EntityComponentVersion();
-                                componentversion.setResponseType(childElement.getType().toLowerCase());
-                                componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                                componentversion.setIsSubmitted(false);
-                                componentversion.setResponseType(childElement.getType());
-                                Boolean b = (Boolean) childElement.getValue();
-                                componentversion.setBoolValue(b);
-
-                                // Create component entity
-                                EntityComponent component = new EntityComponent();
-                                component.setApplicationId(applicationId);
-                                component.setComponentId(childElement.getId());
-                                component.setQuestion(rootElement.getChildren().getFirst().getValue().toString());
-                                component.insert();
-
-                                // Set component Id in component version and add to database
-                                componentversion.setApplicationId(applicationId);
-                                componentversion.setComponentId(component.getComponentId());
-                                componentversion.insert();
-
-                                if (b) {
-                                    for (Element e : children) {
-                                        createEntities(applicationId, e);
-                                    }
-                                }
-                            }
-                        } catch (Exception x){
-                            x.printStackTrace();
-                        }
-                        break;
-                    }
-                    case "component": {
-                        try {
-                        //creates new basic component from children: question and value
-
-//                            if (rootElement.getValue() instanceof ArrayList) {
-//                                ArrayList list = (ArrayList) rootElement.getValue();
-//                                int size = list.size();
-//
-//                                // loop through all children $size amount of times
-//                                for (int i = 0; i < size; i++) {
-//                                    // Create version storing data
-                                    EntityComponentVersion componentversion = new EntityComponentVersion();
-
-                                    // Get value from list
-//                                    Object v = list.get(i);
-
-                                    // Switch statement early in processing to handle exceptions early before transactions have been done
-                                    switch (rootElement.getType().toLowerCase()) {
-                                        case "boolean": {
-                                            boolean b = Boolean.parseBoolean(rootElement.getChildren().getLast().getValue().toString());
-                                            componentversion.setBoolValue(b);
-                                            break;
-                                        }
-
-                                        case "text":
-                                        case "date":
-                                        case "number":
-                                        case "long_text": {
-                                            String s = rootElement.getChildren().getLast().getValue().toString();
-                                            if (s.isEmpty())
-                                                return;
-                                            componentversion.setTextValue(s);
-                                            break;
-                                        }
-
-                                        case "document": {
-                                            // This should never be triggered
-                                            throw new UnhandledElementException("Document " + rootElement.getId() + "(i=" /*+ String.valueOf(i)*/ + ") processed in case \"Document\" statement");
-                                        }
-
-                                        default:{
-                                            throw new UnhandledElementException(rootElement.toString());
-                                        }
-                                    }
-                                    componentversion.setResponseType(rootElement.getType().toLowerCase());
-                                    componentversion.setDateLastEdited(Timestamp.from(new Date().toInstant()));
-                                    componentversion.setIsSubmitted(false);
-
-                                    // Create component entity
-                                    EntityComponent component = new EntityComponent();
-                                    component.setComponentId(rootElement.getId());
-                                    component.setApplicationId(applicationId);
-                                    component.setQuestion(rootElement.getChildren().getFirst().getValue().toString());
-                                    component.insert();
-
-                                    // Set component Id in component version and add to database
-                                    componentversion.setComponentId(component.getComponentId());
-                                    componentversion.setApplicationId(applicationId);
-                                    componentversion.insert();
-//                                }
-//
-//                            } else {
-//                                // not a list or an empty list, do nothing
-//                                return;
-//                            }
-                        } catch (Exception x){
-                            x.printStackTrace();
-                        }
-                        break;
-                    }
-
-                    default:{
-                        try {
-                            throw new UnhandledElementException(rootElement.toString());
-                        } catch (UnhandledElementException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-
     }
 
     @RequireCSRFCheck
@@ -545,10 +380,11 @@ public class ApplicationHandler extends Controller {
 
     /**
      * Generates controller javascript routes
+     *
      * @return
      */
     @AddCSRFToken
-    public Result javascriptRoutes(){
+    public Result javascriptRoutes() {
         return ok(
                 JavaScriptReverseRouter.create("applicationRoutes",
                         routes.javascript.ApplicationHandler.createApplication()

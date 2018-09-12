@@ -90,7 +90,7 @@ public class EntityEthicsApplicationPK implements Serializable {
 
         EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(split[2]);
 
-        EntityDepartment dept = EntityDepartment.FromShortName(split[3]);
+        EntityDepartment dept = EntityDepartment.FromShortName(split[3] + "_" + split[4]);
 
         List<EntityEthicsApplication> all = EntityEthicsApplication.find.all();
         Optional<EntityEthicsApplicationPK> first = all.stream()
@@ -118,6 +118,7 @@ public class EntityEthicsApplicationPK implements Serializable {
             return null;
         }
 
-        return applicationNumber + "_" + applicationYear + "_" + applicationType + "_" + dept.shortName();
+        String s = applicationNumber + "_" + applicationYear + "_" + applicationType + "_" + dept.shortName();
+        return s;
     }
 }

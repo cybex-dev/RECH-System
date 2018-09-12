@@ -5,7 +5,10 @@ import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "componentversion", schema = "rech_system")
@@ -220,7 +223,7 @@ public class EntityComponentVersion extends Model {
     }
 
 
-    public static EntityComponentVersion getLatestComponent(EntityEthicsApplicationPK applicationId, String componentId) {
+    public static EntityComponentVersion GetLatestComponent(EntityEthicsApplicationPK applicationId, String componentId) {
         try {
             return find.all()
                     .stream()
@@ -233,6 +236,16 @@ public class EntityComponentVersion extends Model {
         } catch (Exception x){
             return null;
         }
+    }
+
+    public static EntityComponentVersion GetLatestComponent(EntityComponentPK pk){
+        EntityComponentVersion component = EntityComponentVersion.find.all().stream()
+                .filter(entityComponentVersion -> entityComponentVersion.componentPrimaryKey().equals(pk))
+                .findFirst().orElse(null);
+        if (component == null)
+            return null;
+        else
+            return GetLatestComponent(pk.applicationPrimaryKey(), component.getComponentId());
     }
 
     public dao.ApplicationSystem.EntityEthicsApplicationPK applicationPrimaryKey() {
@@ -251,5 +264,25 @@ public class EntityComponentVersion extends Model {
         this.departmentName = applicationId.getDepartmentName();
         this.facultyName = applicationId.getFacultyName();
         this.applicationNumber = applicationId.getApplicationNumber();
+    }
+
+    public EntityComponentPK componentPrimaryKey(){
+        EntityComponentPK pk = new EntityComponentPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        pk.setComponentId(componentId);
+        return pk;
+    }
+
+    public void setComponentPrimaryKey(EntityComponentPK entityComponentPK) {
+        this.applicationYear = entityComponentPK.getApplicationYear();
+        this.applicationType = entityComponentPK.getApplicationType();
+        this.departmentName = entityComponentPK.getDepartmentName();
+        this.facultyName = entityComponentPK.getFacultyName();
+        this.applicationNumber = entityComponentPK.getApplicationNumber();
+        this.componentId = entityComponentPK.getComponentId();
     }
 }

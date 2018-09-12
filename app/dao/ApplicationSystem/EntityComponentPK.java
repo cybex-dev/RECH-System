@@ -87,4 +87,14 @@ public class EntityComponentPK implements Serializable {
 
         return Objects.hash(componentId, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
     }
+
+    public dao.ApplicationSystem.EntityEthicsApplicationPK applicationPrimaryKey() {
+        dao.ApplicationSystem.EntityEthicsApplicationPK pk = new dao.ApplicationSystem.EntityEthicsApplicationPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        return pk;
+    }
 }

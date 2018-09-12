@@ -25,7 +25,11 @@ public class EntityDepartment extends Model {
     }
 
     public static EntityDepartment FromShortName(String dept_fac) {
-        List<EntityDepartment> collect = find.all().stream().filter(entityDepartment -> entityDepartment.shortName().equals(dept_fac)).collect(Collectors.toList());
+        List<EntityDepartment> collect = find.all().stream()
+                .filter(entityDepartment -> {
+                    String name = entityDepartment.shortName();
+                    return name.equals(dept_fac);
+                }).collect(Collectors.toList());
         if (collect.size() == 0)
             return null;
         else if (collect.size() > 1)
@@ -51,8 +55,7 @@ public class EntityDepartment extends Model {
     public static Finder<EntityDepartmentPK, dao.NMU.EntityDepartment> find = new Finder<>(dao.NMU.EntityDepartment.class);
 
     public static List<DepartmentContainer> getAllDepartmentNames() {
-        List<DepartmentContainer> collect = find.all().stream().map(entityDepartment -> DepartmentContainer.create(entityDepartment.departmentName, entityDepartment.facultyName)).collect(Collectors.toList());
-        return collect;
+        return find.all().stream().map(entityDepartment -> DepartmentContainer.create(entityDepartment.departmentName, entityDepartment.facultyName)).collect(Collectors.toList());
     }
 
     @Id
@@ -101,7 +104,22 @@ public class EntityDepartment extends Model {
 
     public String shortName() {
         EntityFaculty faculty = EntityFaculty.getFacultyByName(facultyName);
-        String dept = Arrays.stream(departmentName.split(" ")).map(s -> (s.length() > 3) ? s.substring(0, 3) : "").reduce((s, s2) -> s.concat("_").concat(s2)).orElse("Any");
-        return dept.concat("-").concat(faculty.shortName());
+        String dept = Arrays.stream(departmentName.split(" "))
+                .map(s -> {
+                    if (s.length() > 3) {
+                        return s.substring(0, 3);
+                    } else {
+                        return "";
+                    }
+                })
+                .reduce((s, s2) -> {
+                    if (s2.isEmpty()) {
+                        return s;
+                    } else {
+                        return s.concat("-").concat(s2);
+                    }
+                })
+                .orElse("Any");
+        return dept.concat("_").concat(faculty.shortName());
     }
 }

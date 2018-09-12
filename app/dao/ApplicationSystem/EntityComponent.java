@@ -21,7 +21,7 @@ public class EntityComponent extends Model {
     private String facultyName;
 
 
-    public static Finder<dao.ApplicationSystem.EntityComponentPK, dao.ApplicationSystem.EntityComponent> find = new Finder<>(dao.ApplicationSystem.EntityComponent.class);
+    public static Finder<EntityComponentPK, EntityComponent> find = new Finder<>(EntityComponent.class);
 
     @Id
     @Column(name = "component_id")
@@ -114,7 +114,7 @@ public class EntityComponent extends Model {
     }
 
 
-    public static List<dao.ApplicationSystem.EntityComponent> getAllApplicationCompontents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
+    public static List<dao.ApplicationSystem.EntityComponent> GetAllApplicationCompontents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
         return find.all()
                 .stream()
                 .filter(entityComponent -> entityComponent.isComponent(applicationId))
@@ -135,5 +135,16 @@ public class EntityComponent extends Model {
         this.departmentName = applicationId.getDepartmentName();
         this.facultyName = applicationId.getFacultyName();
         this.applicationNumber = applicationId.getApplicationNumber();
+    }
+
+    public EntityComponentPK componentPrimaryKey(){
+        EntityComponentPK pk = new EntityComponentPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        pk.setComponentId(componentId);
+        return pk;
     }
 }

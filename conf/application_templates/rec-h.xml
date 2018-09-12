@@ -723,22 +723,33 @@
                 </component>
                 <component id="feedback_method" name="" dropdown="true" text-enabled="true" type="text"
                            hint="Method of giving feedback e.g. Oral, Written">
+                    <data>
+                        <item>Written</item>
+                        <item>Oral</item>
+                    </data>
                     <question>Method of conveying feedback</question>
                     <value></value>
                 </component>
                 <component id="feedback_time" name="" dropdown="true" text-enabled="true" type="text"
                            hint="When feedback is given e.g. end of project, during project">
+                    <data>
+                        <item>Before</item>
+                        <item>During</item>
+                        <item>After</item>
+                    </data>
                     <question>When feedback is given</question>
                     <value></value>
                 </component>
                 <component id="feedback_manner" name="" dropdown="true" text-enabled="true" type="text"
                            hint="How feedback is given e.g. individual or group setting">
+                    <data>
+                        <item>Individual Setting</item>
+                        <item>Group Setting</item>
+                    </data>
                     <question>How feedback is given</question>
                     <value></value>
                 </component>
-                <component id="feedback_details" name="" dropdown="true" required="false" text-enabled="true"
-                           type="text"
-                           hint="Additional information when giving feedback">
+                <component id="feedback_details" name="" hint="Additional information when giving feedback">
                     <question>Additional details</question>
                     <value></value>
                 </component>

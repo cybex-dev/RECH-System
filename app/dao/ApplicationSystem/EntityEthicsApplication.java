@@ -1,5 +1,6 @@
 package dao.ApplicationSystem;
 
+import dao.NMU.EntityDepartment;
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
 import io.ebean.Model;
@@ -9,12 +10,9 @@ import models.UserSystem.UserType;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity
 @Table(name = "ethics_application", schema = "rech_system")
@@ -49,8 +47,30 @@ public class EntityEthicsApplication extends Model {
 
     public static Finder<dao.ApplicationSystem.EntityEthicsApplicationPK, dao.ApplicationSystem.EntityEthicsApplication> find = new Finder<>(dao.ApplicationSystem.EntityEthicsApplication.class);
 
-    public static int GetNextApplicationNumber() {
-        return find.all().stream().map(EntityEthicsApplication::getApplicationNumber).max(Integer::compareTo).map(integer -> integer + 1).orElse(0);
+    /**
+     * Checks if applcation department, faculty, application type and year are all the same, and gets the next available application number in with respect to these criteria
+     * @param dept
+     * @param type
+     * @param year
+     * @return
+     */
+    public static int GetNextApplicationNumber(EntityDepartment dept, EthicsApplication.ApplicationType type, int year) {
+        int i = find.all().stream()
+                .filter(app -> app.getApplicationYear() == year &&
+                        app.getApplicationType().equals(type.toString().toLowerCase()) &&
+                        dept.getFacultyName().equals(app.getFacultyName()) &&
+                        app.getDepartmentName().equals(dept.getDepartmentName()))
+                .mapToInt(EntityEthicsApplication::getApplicationNumber)
+                .max()
+                .orElse(-1);
+        int num = (i == -1) ? 0 : ++i;
+        return num;
+
+        //map(EntityEthicsApplication::getApplicationNumber).max(Integer::compareTo).map(integer -> integer + 1).orElse(0);
+    }
+
+    public static EntityEthicsApplication GetApplication(EntityEthicsApplicationPK applicationId) {
+        return find.byId(applicationId);
     }
 
     @Id
@@ -393,24 +413,22 @@ public class EntityEthicsApplication extends Model {
     }
 
     public static String GetTitle(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
-        List<EntityComponent> allApplicationCompontents = EntityComponent.getAllApplicationCompontents(applicationId);
-        Optional<EntityComponent> title = Optional.empty();
+        List<EntityComponent> allApplicationCompontents = EntityComponent.GetAllApplicationCompontents(applicationId);;
+        EntityComponent component = null;
         try {
-            List<EntityComponent> titleList = allApplicationCompontents
+            component = allApplicationCompontents
                     .stream()
-                    .filter(entityComponent -> entityComponent.getComponentId().equals("title")).collect(Collectors.toList());
-            title = Optional.ofNullable(titleList.get(0));
+                    .filter(entityComponent -> entityComponent.getComponentId().equals("title"))
+                    .findFirst()
+                    .orElse(null);
         } catch (NullPointerException x) {
             x.printStackTrace();
         }
-        if (!title.isPresent())
-            return "N/A";
+        if (component == null)
+            return "Title not set";
 
-        String componentId = title.get().getComponentId();
-
-        return EntityComponentVersion
-                .getLatestComponent(applicationId, componentId)
-                .getTextValue();
+        EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(applicationId, component.getComponentId());
+        return (entityComponentVersion == null) ? "Title not found" : entityComponentVersion.getTextValue();
 
     }
 
@@ -424,9 +442,9 @@ public class EntityEthicsApplication extends Model {
      */
     public static List<EntityComponentVersion> getLatestComponents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId){
         return EntityComponent
-                .getAllApplicationCompontents(applicationId)
+                .GetAllApplicationCompontents(applicationId)
                 .stream()
-                .map(entityComponent -> EntityComponentVersion.getLatestComponent(applicationId, entityComponent.getComponentId()))
+                .map(entityComponent -> EntityComponentVersion.GetLatestComponent(applicationId, entityComponent.getComponentId()))
                 .collect(Collectors.toList());
     }
 

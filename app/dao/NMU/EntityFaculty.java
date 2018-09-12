@@ -63,6 +63,6 @@ public class EntityFaculty extends Model {
     }
 
     public String shortName() {
-        return Arrays.stream(facultyName.split(" ")).map(s -> s.substring(0, 2)).reduce((s, s2) -> s.concat("_").concat(s2)).orElse("Any") ;
+        return Arrays.stream(facultyName.split(" ")).map(s -> s.substring(0, 3)).reduce((s, s2) -> s.concat("-").concat(s2)).orElse("Any") ;
     }
 }
