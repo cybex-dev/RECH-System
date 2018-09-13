@@ -27,16 +27,29 @@ public class RECEngine {
     }
 
     public void nextStep(EntityEthicsApplicationPK applicationId) {
+        System.out.print("[ENGINE] ");
+
+        EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
+        if (entityEthicsApplication == null) {
+            System.out.println("[ENGINE] nextStep: Application not found + " + applicationId.shortName());
+            return;
+        }
+        System.out.print(ApplicationStatus.parse(entityEthicsApplication.getInternalStatus()) + " -> ");
         Actionable nextAction = nextAction(applicationId);
         nextAction.doAction();
         nextAction.doNotify();
+
+        entityEthicsApplication.refresh();
+        System.out.print(ApplicationStatus.parse(entityEthicsApplication.getInternalStatus()) + "\n");
     }
 
     private Actionable nextAction(EntityEthicsApplicationPK applicationId) {
         EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
-
-        if (entityEthicsApplication == null)
+        if (entityEthicsApplication == null) {
+            System.out.println("[ENGINE] nextAction: Application not found + " + applicationId.shortName());
             return null;
+        }
+
         String applicationTitle = entityEthicsApplication.title();
         String piId = entityEthicsApplication.getPiId();
         String prpId = entityEthicsApplication.getPrpId();

@@ -21,6 +21,9 @@
                     <td>@application.status.name()</td>
                     <td>@application.date_approved</td>
                     <td>@application.date_submitted</td>
+                    <td><a href="@controllers.ReviewSystem.routes.ReviewHandler.reviewApplication(application.applicationID.shortName())">
+                        <button class="nmu-button table-button">Review Application</button>
+                    </a></td>
                 </tr>
             }
             </tbody>

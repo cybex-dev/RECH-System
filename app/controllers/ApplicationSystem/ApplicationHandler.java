@@ -1,5 +1,6 @@
 package controllers.ApplicationSystem;
 
+import com.typesafe.config.Config;
 import controllers.UserSystem.Secured;
 import dao.ApplicationSystem.EntityComponent;
 import dao.ApplicationSystem.EntityComponentVersion;
@@ -16,23 +17,22 @@ import models.ApplicationSystem.EthicsApplication.ApplicationType;
 
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
-import play.Play;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.RequireCSRFCheck;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.io.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
 import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
@@ -61,6 +61,13 @@ public class ApplicationHandler extends Controller {
         this.httpExecutionContext = ec;
     }
 
+    private Config config = null;
+
+    @Inject
+    public ApplicationHandler(Config config) {
+        this.config = config;
+    }
+
     // Uses XML document to create form, based in as Scala Squence type and processed in view
     public ApplicationHandler() {
 
@@ -81,7 +88,7 @@ public class ApplicationHandler extends Controller {
             return badRequest();
         }
 
-        Element element = populateRootElement(ethicsApplication);
+        Element element = PopulateRootElement(ethicsApplication);
         return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, true, routes.ApplicationHandler.submitEdit(), false));
     }
 
@@ -105,12 +112,12 @@ public class ApplicationHandler extends Controller {
         if (ApplicationStatus.parse(ethicsApplication.getInternalStatus()) == ApplicationStatus.DRAFT) {
             return editApplication(applicationID);
         } else {
-            Element element = populateRootElement(ethicsApplication);
+            Element element = PopulateRootElement(ethicsApplication);
             return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, false, routes.ApplicationHandler.submitRevision(), false));
         }
     }
 
-    private Element populateRootElement(EntityEthicsApplication application) {
+    public static Element PopulateRootElement(EntityEthicsApplication application) {
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
         Map<String, Object> entryMap = new HashMap<>();
@@ -139,8 +146,7 @@ public class ApplicationHandler extends Controller {
             }
 
         });
-        Element element = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
-        return element;
+        return EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
     }
 
     /**
@@ -249,7 +255,6 @@ public class ApplicationHandler extends Controller {
 
             flash("success", "Your application has been saved");
             return redirect(routes.ApplicationHandler.allApplications());
-
         }, httpExecutionContext.current());
     }
 
@@ -259,9 +264,17 @@ public class ApplicationHandler extends Controller {
         Element rootElement = EthicsApplication.lookupApplication(application.type()).getRootElement();
 
         // Get prp id from Elements
-        String prpContactEmail = data.get("prp_contact_email").toString();
-        if (!prpContactEmail.isEmpty())
-            application.setPrpId(prpContactEmail);
+        if (data.get("prp_contact_email") != null) {
+            String prpContactEmail = data.get("prp_contact_email").toString();
+            if (!prpContactEmail.isEmpty())
+                try {
+                    application.setPrpId(prpContactEmail);
+                    application.update();
+                } catch (Exception x){
+                    flash("danger", "Primary Responsible Person's email address was not found. Please use lookup feature or ensure that the email address is correct.");
+                    x.printStackTrace();
+                }
+        }
 
         if (application.getInternalStatus() == null ||
                 application.getInternalStatus() != ApplicationStatus.DRAFT.getStatus() ||
@@ -278,27 +291,91 @@ public class ApplicationHandler extends Controller {
         data.entrySet().stream()
                 .filter(stringObjectEntry -> !stringObjectEntry.getValue().toString().isEmpty())
                 .forEach(entry -> {
-                    System.out.print(entry.getKey() + ": ");
                     Element componentElement = XMLTools.lookup(rootElement, entry.getKey());
-                    if (componentElement == null) {
-                        System.out.print("null\n");
-                    } else {
+                    if (componentElement != null) {
                         EntityComponent component = getUpdatableComponent(entry, componentElement, applicationId, entityComponents);
 
-                        EntityComponentVersion entityComponentVersion = getUpdatableComponentVersion(component);
+                        String type = componentElement.getType();
+                        System.out.println("Type: " + type);
+                        EntityComponentVersion entityComponentVersion = getUpdatableComponentVersion(component, type);
                         // be able to compile a document with description, etc. possibly update each document but split string id  base on "_title _desc and _document" and update documnt component 3 times
 
-                        // insert component version value
-                        setComponentValue(entityComponentVersion, entry);
-                        System.out.print("Set\n");
+                        if (entityComponentVersion != null) {
+                            // insert component version value
+                            setComponentValue(entityComponentVersion, entry, type);
+                        }
+
+                        // if == null, means that the the component was submitted and is not meant to be changed, but it is being changed. This change will not be saved.
                     }
                 });
     }
 
-    private void setComponentValue(EntityComponentVersion entityComponentVersion, Map.Entry<String, Object> entry) {
-//        switch () {
-//
-//        }
+    private void setComponentValue(EntityComponentVersion entityComponentVersion, Map.Entry<String, Object> entry, String responseType) {
+        switch (responseType){
+
+            case "number": {
+                entityComponentVersion.setTextValue(String.valueOf((int) entry.getValue()));
+                break;
+            }
+
+            case "date": {
+                Timestamp ts = Timestamp.valueOf((String) entry.getValue());
+                entityComponentVersion.setTextValue(ts.toString());
+                break;
+            }
+
+            case "long_text":
+            case "text": {
+                if (entry.getKey().contains("doc_")){
+                    if (entry.getKey().contains("_title")){
+                        entityComponentVersion.setDocumentName((String) entry.getValue());
+                    } else {
+                        entityComponentVersion.setDocumentDescription((String) entry.getValue());
+                    }
+                } else {
+                    entityComponentVersion.setTextValue((String) entry.getValue());
+                }
+                break;
+            }
+
+            case "boolean":{
+                boolean b = Boolean.parseBoolean((String) entry.getValue());
+                entityComponentVersion.setBoolValue(b);
+                break;
+            }
+
+            case "document":{
+                // Check saving directory exists
+                String docDirectory = config.getString("documentLocation");
+                try {
+                    File dir = new File(docDirectory);
+                    if (!dir.exists()){
+                        dir.mkdirs();
+                    }
+                } catch (Exception x){
+                    x.printStackTrace();
+                }
+
+                // Save file
+                try {
+                    FilePart filePart = (FilePart) entry.getValue();
+                    File file = (File) filePart.getFile();
+                    File newFile = new File(docDirectory.concat(entityComponentVersion.applicationPrimaryKey().shortName()).concat("~" + entityComponentVersion.getVersion() + "~").concat(filePart.getFilename()));
+                    file.renameTo(newFile);
+                    entityComponentVersion.setDocumentLocationHash(newFile.getPath());
+                } catch (Exception x){
+                    x.printStackTrace();
+                }
+                break;
+            }
+
+            default:{
+                break;
+            }
+        }
+        entityComponentVersion.setDateLastEdited(Timestamp.from(Instant.now()));
+        entityComponentVersion.save();
+
     }
 
     /**
@@ -311,7 +388,19 @@ public class ApplicationHandler extends Controller {
      * @return
      */
     private EntityComponent getUpdatableComponent(Map.Entry<String, Object> entry, Element componentElement, EntityEthicsApplicationPK applicationId, List<EntityComponent> entityComponents) {
-        EntityComponent component = entityComponents.stream().filter(entityComponent -> entityComponent.getComponentId().equals(entry.getKey())).findAny().orElse(null);
+        String componentName = entry.getKey();
+        if (componentName.contains("doc_")){
+            if (componentName.contains("_title")){
+                componentName = componentName.replace("_title", "");
+            } else if (componentName.contains("_desc")){
+                componentName = componentName.replace("_desc", "");
+            } else {
+                componentName = componentName.replace("_document", "");
+            }
+        }
+
+        String finalComponentName = componentName;
+        EntityComponent component = entityComponents.stream().filter(entityComponent -> entityComponent.getComponentId().equals(finalComponentName)).findAny().orElse(null);
         if (component == null) {
             component = new EntityComponent();
             component.setApplicationId(applicationId);
@@ -332,7 +421,7 @@ public class ApplicationHandler extends Controller {
         return component;
     }
 
-    private EntityComponentVersion getUpdatableComponentVersion(EntityComponent component) {
+    private EntityComponentVersion getUpdatableComponentVersion(EntityComponent component, String responseType) {
         EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(component.componentPrimaryKey());
 
         //check if component version exists
@@ -342,10 +431,16 @@ public class ApplicationHandler extends Controller {
             //  if it exists, check if it has been submitted
 
             if (entityComponentVersion.getIsSubmitted()) {
-                // if component version has been submitted, create new component
-                entityComponentVersion = new EntityComponentVersion();
-                entityComponentVersion.setComponentPrimaryKey(component.componentPrimaryKey());
-                entityComponentVersion.setVersion(++previousVersion);
+                if (entityComponentVersion.wasFeedbackGiven()){
+                    // if component version has been submitted, create new component
+                    entityComponentVersion = new EntityComponentVersion();
+                    entityComponentVersion.setComponentPrimaryKey(component.componentPrimaryKey());
+                    entityComponentVersion.setVersion(++previousVersion);
+                    entityComponentVersion.setResponseType(responseType);
+                } else {
+                    // Means no feedback given i.e. no change required.
+                    return null;
+                }
             }
 
         } else {
@@ -353,6 +448,7 @@ public class ApplicationHandler extends Controller {
             entityComponentVersion = new EntityComponentVersion();
             entityComponentVersion.setComponentPrimaryKey(component.componentPrimaryKey());
             entityComponentVersion.setVersion(++previousVersion);
+            entityComponentVersion.setResponseType(responseType);
         }
 
         return entityComponentVersion;
@@ -368,14 +464,6 @@ public class ApplicationHandler extends Controller {
     @RequireCSRFCheck
     public Result duplicateApplication(Integer applicationId) {
         return TODO;
-    }
-
-    @RequireCSRFCheck
-    public Result upload(String id) {
-        File file = request().body().asRaw().asFile();
-        String uploadDir = Play.application().configuration().getString("documentLocation");
-        String hashcode = String.valueOf(file.hashCode());
-        return ok();
     }
 
     /**

@@ -175,7 +175,22 @@ function show(element) {
     try {
         if (element == null)
             return;
-        element.style.display = ""
+        if (element.nodeType === 1) {
+            if (element.tagName === "IC" ||
+                element.tagName === "LABEL")
+                element.style.display = "inline-block";
+            else {
+                if (element.tagName === "INPUT") {
+                    if (element.type === "checkbox") {
+                        element.style.display = "inline-block";
+                    } else {
+                        element.style.display = "block";
+                    }
+                } else {
+                    element.style.display = "block";
+                }
+            }
+        }
     } catch (e) {
     }
 }

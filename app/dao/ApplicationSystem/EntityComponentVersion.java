@@ -1,10 +1,13 @@
 package dao.ApplicationSystem;
 
+import dao.ReviewSystem.EntityLiaisonComponentFeedback;
+import dao.ReviewSystem.EntityReviewerComponentFeedback;
 import io.ebean.Finder;
 import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -277,6 +280,18 @@ public class EntityComponentVersion extends Model {
         return pk;
     }
 
+    public EntityComponentVersionPK componentVersionPrimaryKey(){
+        EntityComponentVersionPK pk = new EntityComponentVersionPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        pk.setComponentId(componentId);
+        pk.setVersion(version);
+        return pk;
+    }
+
     public void setComponentPrimaryKey(EntityComponentPK entityComponentPK) {
         this.applicationYear = entityComponentPK.getApplicationYear();
         this.applicationType = entityComponentPK.getApplicationType();
@@ -284,5 +299,31 @@ public class EntityComponentVersion extends Model {
         this.facultyName = entityComponentPK.getFacultyName();
         this.applicationNumber = entityComponentPK.getApplicationNumber();
         this.componentId = entityComponentPK.getComponentId();
+    }
+
+    /**
+     * Checks if feedback has been given on this component. Feedback given on a specific component implies it is not of good quality, i.e. it should be modifed
+     *
+     * It can be modified if:
+     * it is not submitted
+     * if feedback is given on the component
+     *
+     * It cannot be modified if it has been submitted, or
+     * feedback is not given on a submitted component.
+     * @return
+     */
+    public boolean canModify() {
+        if (isSubmitted) {
+            // Check if feedback is given
+            return wasFeedbackGiven();
+        }
+        return true;
+    }
+
+    public boolean wasFeedbackGiven(){
+        List<EntityLiaisonComponentFeedback> liaisonFeedback = EntityLiaisonComponentFeedback.GetFeedbackByComponent(componentVersionPrimaryKey());
+        List<EntityReviewerComponentFeedback> reviewerFeedback = EntityReviewerComponentFeedback.GetFeedbackByComponent(componentVersionPrimaryKey());
+
+        return (liaisonFeedback.size() > 0 || reviewerFeedback.size() > 0);
     }
 }

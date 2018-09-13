@@ -1,12 +1,15 @@
 package dao.ReviewSystem;
 
+import dao.ApplicationSystem.EntityComponentVersionPK;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import io.ebean.Finder;
 import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "liaisoncomponentfeedback", schema = "rech_system")
@@ -25,6 +28,10 @@ public class EntityLiaisonComponentFeedback extends Model {
 
 
     public static Finder<EntityLiaisonComponentFeedbackPK, EntityLiaisonComponentFeedback> find = new Finder<>(EntityLiaisonComponentFeedback.class);
+
+    public static List<EntityLiaisonComponentFeedback> GetFeedbackByComponent(EntityComponentVersionPK entityComponentVersionPK) {
+        return find.all().stream().filter(feedback -> feedback.componentVersionPrimaryKey().equals(entityComponentVersionPK)).collect(Collectors.toList());
+    }
 
     @Basic
     @Column(name = "change_satisfactory")
@@ -157,6 +164,18 @@ public class EntityLiaisonComponentFeedback extends Model {
         pk.setApplicationYear(applicationYear);
         pk.setDepartmentName(departmentName);
         pk.setFacultyName(facultyName);
+        return pk;
+    }
+
+    public EntityComponentVersionPK componentVersionPrimaryKey(){
+        EntityComponentVersionPK pk = new EntityComponentVersionPK();
+        pk.setApplicationNumber(applicationNumber);
+        pk.setApplicationType(applicationType);
+        pk.setApplicationYear(applicationYear);
+        pk.setDepartmentName(departmentName);
+        pk.setFacultyName(facultyName);
+        pk.setComponentId(componentId);
+        pk.setVersion(version);
         return pk;
     }
 }

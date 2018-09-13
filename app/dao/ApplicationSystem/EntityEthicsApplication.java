@@ -1,6 +1,7 @@
 package dao.ApplicationSystem;
 
 import dao.NMU.EntityDepartment;
+import dao.ReviewSystem.EntityReviewerApplications;
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
 import io.ebean.Model;
@@ -11,7 +12,6 @@ import models.UserSystem.UserType;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Entity
@@ -71,6 +71,10 @@ public class EntityEthicsApplication extends Model {
 
     public static EntityEthicsApplication GetApplication(EntityEthicsApplicationPK applicationId) {
         return find.byId(applicationId);
+    }
+
+    public static EntityEthicsApplication findByShortName(String shortname) {
+        return EntityEthicsApplication.find.byId(EntityEthicsApplicationPK.fromString(shortname));
     }
 
     @Id
@@ -467,5 +471,9 @@ public class EntityEthicsApplication extends Model {
 
     public EthicsApplication.ApplicationType type(){
         return EthicsApplication.ApplicationType.parse(applicationType);
+    }
+
+    public List<String> findAllReviewers() {
+        return EntityReviewerApplications.getApplicationReviewers(applicationPrimaryKey());
     }
 }

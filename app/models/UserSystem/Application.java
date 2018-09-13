@@ -1,6 +1,7 @@
 package models.UserSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplication;
+import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import models.ApplicationSystem.ApplicationStatus;
 import scala.App;
 
@@ -12,7 +13,7 @@ public class Application {
         INFO, ATTENTION, MESSAGE, ACCEPTED;
     }
 
-    public String applicationID;
+    public EntityEthicsApplicationPK applicationID;
     public String title;
     public Timestamp date_submitted;
     public Timestamp date_approved;
@@ -21,7 +22,7 @@ public class Application {
     public ApplicationStatus status;
     public int[] notifications;
 
-    public Application(String applicationID, String title, Timestamp date_submitted, Timestamp date_approved, ApplicationStatus status) {
+    public Application(EntityEthicsApplicationPK applicationID, String title, Timestamp date_submitted, Timestamp date_approved, ApplicationStatus status) {
         this.applicationID = applicationID;
         this.title = title;
         this.date_submitted = date_submitted;
@@ -31,15 +32,14 @@ public class Application {
 
     public static Application create(EntityEthicsApplication entityEthicsApplication) {
         ApplicationStatus status = ApplicationStatus.parse(entityEthicsApplication.getInternalStatus());
-        Application application = new Application(entityEthicsApplication.applicationPrimaryKey().toString(), entityEthicsApplication.title(), entityEthicsApplication.getDateSubmitted(), entityEthicsApplication.getDateApproved(), status);
-        return application;
+        return new Application(entityEthicsApplication.applicationPrimaryKey(), entityEthicsApplication.title(), entityEthicsApplication.getDateSubmitted(), entityEthicsApplication.getDateApproved(), status);
     }
 
-    public String getApplicationID() {
+    public EntityEthicsApplicationPK getApplicationID() {
         return applicationID;
     }
 
-    public void setApplicationID(String applicationID) {
+    public void setApplicationID(EntityEthicsApplicationPK applicationID) {
         this.applicationID = applicationID;
     }
 

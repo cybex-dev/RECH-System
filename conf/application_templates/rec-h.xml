@@ -749,7 +749,7 @@
                     <question>How feedback is given</question>
                     <value></value>
                 </component>
-                <component id="feedback_details" name="" hint="Additional information when giving feedback">
+                <component id="feedback_details" name="" hint="Additional information when giving feedback" type="text">
                     <question>Additional details</question>
                     <value></value>
                 </component>

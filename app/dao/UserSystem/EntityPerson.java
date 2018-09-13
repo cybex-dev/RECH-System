@@ -1,12 +1,15 @@
 package dao.UserSystem;
 
+import dao.ReviewSystem.EntityReviewerApplications;
 import io.ebean.Finder;
 import io.ebean.Model;
 import models.UserSystem.UserType;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "person", schema = "rech_system")
@@ -26,6 +29,13 @@ public class EntityPerson extends Model {
     private String facultyName;
 
     public static Finder<String, dao.UserSystem.EntityPerson> find = new Finder<>(dao.UserSystem.EntityPerson.class);
+
+    public static List<EntityPerson> findAllReviewers() {
+        return find.all().stream()
+                .filter(entityPerson -> entityPerson.userType().equals(UserType.Reviewer) ||
+                        entityPerson.userType().equals(UserType.Liaison))
+                .collect(Collectors.toList());
+    }
 
     @Id
     @Column(name = "user_email")

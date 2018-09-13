@@ -253,7 +253,7 @@ a:hover {
 }
 
 h2, h3, h4 {
-    padding: 0px !important;
+    padding: 0 !important;
 }
 
 .table-button {
@@ -270,4 +270,10 @@ th {
 
 tr {
     color: white;
+}
+
+.application-details{
+    padding: 10px !important;
+    background-color: #FFFFFF !important;
+    color: #061c2c !important;
 }

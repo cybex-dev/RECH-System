@@ -15,7 +15,7 @@
             <tbody>
             @for(application: Application <- applications) {
 
-                    <tr class="nmu-button" data-url="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationID)">
+                    <tr class="nmu-button" style="cursor: pointer;" data-url="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationID.shortName())">
                         <td>@application.title</td>
                         <td></td>
                         <td>@application.status.name()</td>
