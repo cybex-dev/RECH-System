@@ -60,7 +60,6 @@ public class RegistrationController extends Controller {
         person.setUserLastname(userRegistrationForm.getLastname());
         person.setCurrentDegreeLevel(userRegistrationForm.getDegreeLevel());
         person.setPersonType(UserType.PrimaryInvestigator.getType());
-        person.setUserGender(userRegistrationForm.getGender());
         person.setUserPasswordHash(BCrypt.hashpw(userRegistrationForm.getPassword(), BCrypt.gensalt(12)));
         person.setContactNumberMobile(userRegistrationForm.getMobile());
         person.setDepartmentName(userRegistrationForm.getDepartment());

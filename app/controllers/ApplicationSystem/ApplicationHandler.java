@@ -15,6 +15,7 @@ import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
 
+import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
@@ -78,7 +79,7 @@ public class ApplicationHandler extends Controller {
      * <p>
      * Should only be avialble if the is submitted property is true or {@link RECEngine} allows this.
      *
-     * @return
+     * @return result
      */
     @AddCSRFToken
     public Result editApplication(String applicationID) {
@@ -89,7 +90,10 @@ public class ApplicationHandler extends Controller {
         }
 
         Element element = PopulateRootElement(ethicsApplication);
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, true, routes.ApplicationHandler.submitEdit(), false));
+        Map<String, Boolean> editableMap = new HashMap<>();
+        XMLTools.flatten(element).forEach(s -> editableMap.put(s, true));
+
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, routes.ApplicationHandler.submitEdit(), false, entityEthicsApplicationPK.shortName(), false, false));
     }
 
     /**
@@ -101,19 +105,25 @@ public class ApplicationHandler extends Controller {
      * <li>Latest application as readonly (if accepted)</li>
      * </ul>
      *
-     * @param applicationID
-     * @return
+     * @param applicationID application short primary key
+     * @return result
      */
     @AddCSRFToken
     public Result reviewApplication(String applicationID) {
         EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(applicationID);
         EntityEthicsApplication ethicsApplication = EntityEthicsApplication.find.byId(entityEthicsApplicationPK);
+        if (ethicsApplication == null)
+            return badRequest();
 
-        if (ApplicationStatus.parse(ethicsApplication.getInternalStatus()) == ApplicationStatus.DRAFT) {
+        ApplicationStatus status = ApplicationStatus.parse(ethicsApplication.getInternalStatus());
+        if (status.equals(ApplicationStatus.DRAFT ) ||
+                status.equals(ApplicationStatus.NOT_SUBMITTED)) {
             return editApplication(applicationID);
         } else {
             Element element = PopulateRootElement(ethicsApplication);
-            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, false, routes.ApplicationHandler.submitRevision(), false));
+            Map<String, Boolean> editableMap = new HashMap<>();
+            XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
+            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, routes.ApplicationHandler.submitRevision(), false, entityEthicsApplicationPK.shortName(), false, false));
         }
     }
 
@@ -123,6 +133,7 @@ public class ApplicationHandler extends Controller {
         Map<String, Object> entryMap = new HashMap<>();
         latestComponents.forEach(entityComponentVersion -> {
             if (entityComponentVersion != null) {
+                System.out.println(entityComponentVersion.getComponentId() + " -> " + entityComponentVersion.getResponseType());
                 switch (entityComponentVersion.getResponseType()) {
                     case "boolean": {
                         entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getBoolValue());
@@ -135,11 +146,13 @@ public class ApplicationHandler extends Controller {
                     }
 
                     case "document": {
-                        String component = entityComponentVersion.getComponentId();
-                        String compString = component.substring(4, component.length());
-                        entryMap.put(compString + "_title", entityComponentVersion.getDocumentName());
-                        entryMap.put(compString + "_desc", entityComponentVersion.getDocumentName());
-                        entryMap.put(compString + "_document", entityComponentVersion.getDocumentName());
+                        entryMap.put(entityComponentVersion.getComponentId() + "_title", entityComponentVersion.getDocumentName());
+                        entryMap.put(entityComponentVersion.getComponentId() + "_desc", entityComponentVersion.getDocumentDescription());
+                        File file = new File(entityComponentVersion.getDocumentLocationHash());
+                        if (file.exists()) {
+                            String s = file.getName().split("~" + entityComponentVersion.getVersion() + "~")[1];
+                            entryMap.put(entityComponentVersion.getComponentId() + "_document", s);
+                        }
                         break;
                     }
                 }
@@ -152,7 +165,7 @@ public class ApplicationHandler extends Controller {
     /**
      * Submit revised application and component data only if {@link RECEngine} allows it
      *
-     * @return
+     * @return result
      */
     @RequireCSRFCheck
     public Result submitRevision() {
@@ -164,7 +177,7 @@ public class ApplicationHandler extends Controller {
     /**
      * Gets all applications associated with the user in a view
      *
-     * @return
+     * @return result
      */
     @AddCSRFToken
     public Result allApplications() {
@@ -181,8 +194,8 @@ public class ApplicationHandler extends Controller {
     /**
      * Provides a form to complete a new application depending on type
      *
-     * @param type
-     * @return
+     * @param type application type e.g. human
+     * @return result
      */
     @AddCSRFToken
     public Result newApplication(String type) {
@@ -193,7 +206,9 @@ public class ApplicationHandler extends Controller {
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
         Element rootElement = ethicsApplication.getRootElement();
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type.toString(), rootElement, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList(), true, routes.ApplicationHandler.createApplication(), true));
+        Map<String, Boolean> editableMap = new HashMap<>();
+        XMLTools.flatten(rootElement).forEach(s -> editableMap.put(s, true));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type, rootElement, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList(), editableMap, routes.ApplicationHandler.createApplication(), true, null, false, false));
     }
 
     @RequireCSRFCheck
@@ -201,8 +216,30 @@ public class ApplicationHandler extends Controller {
         DynamicForm form = formFactory.form().bindFromRequest();
         String id = form.get("application_id");
         EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(id);
+        //update all components
+        fill(form, applicationPK);
         new RECEngine().nextStep(applicationPK);
-        return ok();
+        return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
+    }
+
+    @RequireCSRFCheck
+    public Result forceSubmitApplication(){
+        DynamicForm form = formFactory.form().bindFromRequest();
+        String id = form.get("application_id");
+        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
+
+        new RECEngine().nextStep(entityEthicsApplicationPK);
+        EntityEthicsApplication application = EntityEthicsApplication.GetApplication(entityEthicsApplicationPK);
+        if (application == null){
+            return badRequest();
+        }
+
+        if (ApplicationStatus.parse(application.getInternalStatus()) != ApplicationStatus.AWAITING_PRP_APPROVAL) {
+            new RECEngine().nextStep(entityEthicsApplicationPK);
+        }
+
+        flash("success", "Application submitted");
+        return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 
     /**
@@ -223,11 +260,13 @@ public class ApplicationHandler extends Controller {
             // Handle form errors
             if (formApplication.hasErrors()) {
                 EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
-                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), true, routes.ApplicationHandler.submitEdit(), false));
+                Map<String, Boolean> editableMap = new HashMap<>();
+                XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
+                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), editableMap, routes.ApplicationHandler.submitEdit(), false, "", false, false));
 
             }
 
-            // Create basic Ethics Application
+        // Create basic Ethics Application
             int year = Calendar.getInstance().get(Calendar.YEAR);
             EntityEthicsApplication application = new EntityEthicsApplication();
             application.setApplicationType(application_type.name().toLowerCase());
@@ -244,18 +283,24 @@ public class ApplicationHandler extends Controller {
             application.insert();
 
 
-            Map<String, Object> filteredData = new HashMap<>();
-            formApplication.get().getData().entrySet().stream().filter(e -> e.getValue() != null && !e.getValue().toString().isEmpty()).forEach(e -> filteredData.put(e.getKey(), e.getValue()));
-            request().body().asMultipartFormData().getFiles().stream()
-                    .filter(o -> !o.getFilename().isEmpty())
-                    // containers FilePart which has file name, and key and actual file
-                    .forEach(e -> filteredData.put(e.getKey(), e));
+            fill(formApplication, application.applicationPrimaryKey());
 
-            fillinApplicationData(application.applicationPrimaryKey(), filteredData);
+            new RECEngine().nextStep(application.applicationPrimaryKey());
 
             flash("success", "Your application has been saved");
             return redirect(routes.ApplicationHandler.allApplications());
         }, httpExecutionContext.current());
+    }
+
+    public void fill(DynamicForm formApplication, EntityEthicsApplicationPK applicationId){
+        Map<String, Object> filteredData = new HashMap<>();
+        formApplication.get().getData().entrySet().stream().filter(e -> e.getValue() != null && !e.getValue().toString().isEmpty()).forEach(e -> filteredData.put(e.getKey(), e.getValue()));
+        request().body().asMultipartFormData().getFiles().stream()
+                .filter(o -> !o.getFilename().isEmpty())
+                // containers FilePart which has file name, and key and actual file
+                .forEach(e -> filteredData.put(e.getKey(), e));
+
+        fillinApplicationData(applicationId, filteredData);
     }
 
     private void fillinApplicationData(EntityEthicsApplicationPK applicationId, Map<String, Object> data) {
@@ -277,7 +322,7 @@ public class ApplicationHandler extends Controller {
         }
 
         if (application.getInternalStatus() == null ||
-                application.getInternalStatus() != ApplicationStatus.DRAFT.getStatus() ||
+                application.getInternalStatus() != ApplicationStatus.DRAFT.getStatus() &&
                 application.getInternalStatus() != ApplicationStatus.NOT_SUBMITTED.getStatus()) {
             application.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
         }
@@ -285,15 +330,13 @@ public class ApplicationHandler extends Controller {
         // Update application
         application.update();
 
-        List<EntityComponent> entityComponents = EntityComponent.GetAllApplicationCompontents(applicationId);
-
         // Get form data and add to root element
         data.entrySet().stream()
                 .filter(stringObjectEntry -> !stringObjectEntry.getValue().toString().isEmpty())
                 .forEach(entry -> {
                     Element componentElement = XMLTools.lookup(rootElement, entry.getKey());
                     if (componentElement != null) {
-                        EntityComponent component = getUpdatableComponent(entry, componentElement, applicationId, entityComponents);
+                        EntityComponent component = getUpdatableComponent(entry, componentElement, applicationId);
 
                         String type = componentElement.getType();
                         System.out.println("Type: " + type);
@@ -314,12 +357,13 @@ public class ApplicationHandler extends Controller {
         switch (responseType){
 
             case "number": {
-                entityComponentVersion.setTextValue(String.valueOf((int) entry.getValue()));
+                entityComponentVersion.setTextValue(entry.getValue().toString());
                 break;
             }
 
             case "date": {
-                Timestamp ts = Timestamp.valueOf((String) entry.getValue());
+                String time = entry.getValue().toString() + " " + Timestamp.from(Instant.now()).toString().split(" ")[1];
+                Timestamp ts = Timestamp.valueOf(time);
                 entityComponentVersion.setTextValue(ts.toString());
                 break;
             }
@@ -381,13 +425,12 @@ public class ApplicationHandler extends Controller {
     /**
      * Gest the EntityComponent for a specific application. Creates the component if needed and returns the instance to be used by the component version.
      *
-     * @param entry
-     * @param componentElement
-     * @param applicationId
-     * @param entityComponents
-     * @return
+     * @param entry object entry from result
+     * @param componentElement related component element
+     * @param applicationId applcation primary key
+     * @return EntityComponent to be updated
      */
-    private EntityComponent getUpdatableComponent(Map.Entry<String, Object> entry, Element componentElement, EntityEthicsApplicationPK applicationId, List<EntityComponent> entityComponents) {
+    private EntityComponent getUpdatableComponent(Map.Entry<String, Object> entry, Element componentElement, EntityEthicsApplicationPK applicationId) {
         String componentName = entry.getKey();
         if (componentName.contains("doc_")){
             if (componentName.contains("_title")){
@@ -400,11 +443,13 @@ public class ApplicationHandler extends Controller {
         }
 
         String finalComponentName = componentName;
-        EntityComponent component = entityComponents.stream().filter(entityComponent -> entityComponent.getComponentId().equals(finalComponentName)).findAny().orElse(null);
+        System.out.print("Searching for [ " + finalComponentName + " ]...");
+        EntityComponent component = EntityComponent.GetAllApplicationCompontents(applicationId).stream().filter(entityComponent -> entityComponent.getComponentId().equals(finalComponentName)).findAny().orElse(null);
         if (component == null) {
+            System.out.print("not Found!\nCreating [ " + finalComponentName + " ] as " + componentElement.getType());
             component = new EntityComponent();
             component.setApplicationId(applicationId);
-            component.setComponentId(entry.getKey());
+            component.setComponentId(finalComponentName);
 
             Element question = componentElement.getChildren().stream()
                     .filter(element -> element.getTag().toLowerCase().equals("question"))
@@ -417,6 +462,8 @@ public class ApplicationHandler extends Controller {
             }
             component.insert();
             // create new component version
+        } else {
+            System.out.print("Found!");
         }
         return component;
     }
@@ -437,6 +484,7 @@ public class ApplicationHandler extends Controller {
                     entityComponentVersion.setComponentPrimaryKey(component.componentPrimaryKey());
                     entityComponentVersion.setVersion(++previousVersion);
                     entityComponentVersion.setResponseType(responseType);
+                    entityComponentVersion.setIsSubmitted(false);
                 } else {
                     // Means no feedback given i.e. no change required.
                     return null;
@@ -449,6 +497,7 @@ public class ApplicationHandler extends Controller {
             entityComponentVersion.setComponentPrimaryKey(component.componentPrimaryKey());
             entityComponentVersion.setVersion(++previousVersion);
             entityComponentVersion.setResponseType(responseType);
+            entityComponentVersion.setIsSubmitted(false);
         }
 
         return entityComponentVersion;
@@ -458,18 +507,18 @@ public class ApplicationHandler extends Controller {
      * Duplicates a given application for a user.
      * This creates a new application, with all components having version 1 with the latest value associated with the original document
      *
-     * @param applicationId
-     * @return
+     * @param applicationId application short primary key
+     * @return result
      */
     @RequireCSRFCheck
-    public Result duplicateApplication(Integer applicationId) {
+    public Result duplicateApplication(String applicationId) {
         return TODO;
     }
 
     /**
      * Generates controller javascript routes
      *
-     * @return
+     * @return result
      */
     @AddCSRFToken
     public Result javascriptRoutes() {

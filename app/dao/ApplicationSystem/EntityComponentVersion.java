@@ -49,6 +49,10 @@ public class EntityComponentVersion extends Model {
     @Basic
     @Column(name = "is_submitted")
     public Boolean getIsSubmitted() {
+        if (isSubmitted == null){
+            isSubmitted = false;
+            update();
+        }
         return isSubmitted;
     }
 

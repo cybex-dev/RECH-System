@@ -16,6 +16,7 @@ import net.ddns.cyberstudios.Element;
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 
 public class RECEngine {
@@ -125,6 +126,7 @@ public class RECEngine {
                 actionable = new Actionable() {
                     @Override
                     public void doAction() {
+                        entityEthicsApplication.setPiApprovedDate(Timestamp.from(Instant.now()));
                         entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         entityEthicsApplication.update();
                     }
@@ -146,7 +148,8 @@ public class RECEngine {
                 boolean approved = (entityEthicsApplication.getPrpApprovedDate() == null);
 
                 actionable = new Actionable() {
-                    ApplicationStatus newStatus = (approved) ? ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL : ApplicationStatus.NOT_SUBMITTED;
+                    ApplicationStatus newStatus = (approved) ? ApplicationStatus.AWAITING_REVIEWER_ALLOCATION : ApplicationStatus.NOT_SUBMITTED;
+//                    ApplicationStatus newStatus = (approved) ? ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL : ApplicationStatus.NOT_SUBMITTED;
 
                     @Override
                     public void doAction() {
@@ -274,29 +277,51 @@ public class RECEngine {
 
                 // Determine application destination
                 // STEP -> FACULTY_REVIEW (Question -> Faculty)
-                // STEP -> PENDING_REVIEW_REVIEWER (Question -> Committee)
-
+                // STEP -> AWAITING_REVIEWER_ALLOCATION (Question -> Committee) //RCD needs to allocated reviewers
                 boolean isFacultyLevel = entityEthicsApplication.getApplicationLevel() == 0;
-                List<String> availableReviewers = getAvailableReviewers();
+                newStatus = (isFacultyLevel) ? ApplicationStatus.FACULTY_REVIEW : ApplicationStatus.AWAITING_REVIEWER_ALLOCATION;
 
                 actionable = new Actionable() {
+                    @Override
+                    public void doAction() {
+                        entityEthicsApplication.setInternalStatus(newStatus.getStatus());
+                        entityEthicsApplication.update();
+                    }
 
-                    ApplicationStatus newStatus = (isFacultyLevel) ? ApplicationStatus.FACULTY_REVIEW : ApplicationStatus.PENDING_REVIEW_REVIEWER;
+                    @Override
+                    public void doNotify() {
+                        if (isFacultyLevel) {
+                            Notifier.facultyReview(applicationId, applicationTitle, EntityPerson.getRCD(), entityEthicsApplication.getRtiId());
+                            Notifier.notifyStatus(applicationId, newStatus, applicationTitle, entityEthicsApplication.getHodId(), prpId);
+                        } else {
+                            Notifier.requireAttention(applicationId, newStatus, applicationTitle, EntityPerson.getRCD());
+                        }
+                    }
+                };
+
+                return actionable;
+
+
+            case AWAITING_REVIEWER_ALLOCATION:
+                List<String> availableReviewers = getAvailableReviewers();
+                newStatus = ApplicationStatus.PENDING_REVIEW_REVIEWER;
+
+                actionable = new Actionable() {
 
                     @Override
                     public void doAction() {
 
                         if (availableReviewers.size() == 4) {
-                            if (!isFacultyLevel) {
-                                Timestamp ts = Timestamp.from(new Date().toInstant());
-                                for (String reviewer : availableReviewers) {
-                                    EntityReviewerApplications reviewerApplications = new EntityReviewerApplications();
-                                    reviewerApplications.setDateAssigned(ts);
-                                    reviewerApplications.setReviewerEmail(reviewer);
-                                    reviewerApplications.setApplicationKey(applicationId);
-                                    reviewerApplications.insert();
-                                }
-                            }
+//                            if (!isFacultyLevel) {
+//                                Timestamp ts = Timestamp.from(new Date().toInstant());
+//                                for (String reviewer : availableReviewers) {
+//                                    EntityReviewerApplications reviewerApplications = new EntityReviewerApplications();
+//                                    reviewerApplications.setDateAssigned(ts);
+//                                    reviewerApplications.setReviewerEmail(reviewer);
+//                                    reviewerApplications.setApplicationKey(applicationId);
+//                                    reviewerApplications.insert();
+//                                }
+//                            }
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                             entityEthicsApplication.update();
                         }
@@ -305,21 +330,11 @@ public class RECEngine {
 
                     @Override
                     public void doNotify() {
-                        if (availableReviewers.size() < 4) {
-                            Notifier.systemNotification(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, SystemNotification.NOT_ENOUGH_REVIEWERS, EntityPerson.getRCD());
-                        } else if (availableReviewers.size() == 4) {
-                            if (isFacultyLevel) {
-                                Notifier.facultyReview(applicationId, applicationTitle, EntityPerson.getRCD(), entityEthicsApplication.getRtiId());
-                                Notifier.notifyStatus(applicationId, newStatus, applicationTitle, entityEthicsApplication.getHodId(), prpId);
-                            } else {
-                                List<String> reviewers = EntityReviewerApplications.getApplicationReviewers(applicationId);
-                                reviewers.forEach(s -> Notifier.requireAttention(applicationId, newStatus, applicationTitle, s));
-                            }
-                        }
+                        List<String> reviewers = EntityReviewerApplications.getApplicationReviewers(applicationId);
+                        reviewers.forEach(s -> Notifier.requireAttention(applicationId, newStatus, applicationTitle, s));
                     }
                 };
                 return actionable;
-
 
             case FACULTY_REVIEW:
                 // RCD notified of faculty level application
@@ -764,7 +779,7 @@ public class RECEngine {
                 case "document": {
                     m.put(latestComponent.getComponentId() + "_title", latestComponent.getDocumentName());
                     m.put(latestComponent.getComponentId() + "_desc", latestComponent.getDocumentDescription());
-                    m.put(latestComponent.getComponentId() + "_file", latestComponent.getDocumentLocationHash());
+                    m.put(latestComponent.getComponentId() + "_document", latestComponent.getDocumentLocationHash());
                     break;
                 }
             }
@@ -776,7 +791,10 @@ public class RECEngine {
         // Generate root Element with values attached
         Element rootWithValues = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), m);
 
-        return checkComplete(rootWithValues, true);
+        System.out.println("Missing Complete Check");
+        return true;
+//        return checkComplete(rootWithValues, true);
+        // grp_risks_benefits > extension > no children
     }
 
     private boolean checkComplete(Element rootWithValues, boolean isRequired) {

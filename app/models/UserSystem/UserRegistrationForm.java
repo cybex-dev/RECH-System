@@ -30,9 +30,6 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
     private String lastname;
 
     @Constraints.Required
-    private String gender;
-
-    @Constraints.Required
     private String mobile;
 
     @Constraints.Required
@@ -54,7 +51,6 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
         this.confirm_password = confirm_password;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.gender = gender;
         this.mobile = mobile;
         this.degreeLevel = degreeLevel;
         this.department = department;
@@ -123,14 +119,6 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
 
     public void setConfirm_password(String confirm_password) {
         this.confirm_password = confirm_password;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 
     public String getDepartment() {

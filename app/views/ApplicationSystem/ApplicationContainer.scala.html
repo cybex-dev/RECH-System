@@ -8,7 +8,8 @@
 @import views.html.ApplicationSystem.fragmentFilterQuestions
 @import views.html.Components._
 
-@(pageTitle: String)(applicationType: String)(root: Element)(status: ApplicationStatus)(questionList: util.List[Question])(editable: Boolean)(callback: play.api.mvc.Call)(showQuestions: Boolean)
+@import dao.ApplicationSystem.EntityEthicsApplicationPK
+@(pageTitle: String)(applicationType: String)(root: Element)(status: ApplicationStatus)(questionList: util.List[Question])(editableMap: Map[String, Boolean])(callback: play.api.mvc.Call)(showQuestions: Boolean)(applicationId: String)(approve: Boolean)(feedback: Boolean)
 
 
 
@@ -90,7 +91,7 @@
         } else {
             q = element.getChildren.getFirst.getValue.toString
         }
-        a = element.getChildren.getLast.getValue.toString
+        val editable = editableMap.get(id)
         elementType match {
             case "boolean" =>
                 /*creates checkbox*/
@@ -98,15 +99,16 @@
                 if(element.getAttributes.get("autofill_id") != null) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
+                a = element.getChildren.getLast.getValue.toString
                 var value = if(a.isEmpty){ autofill } else a
                 if (element.getAttributes().get("radiogroup") == null) {
-                    inputCheckbox.apply(id, q, value, hint, editable).toString()
+                    inputCheckbox.apply(id, q, value, hint, editable, feedback).toString()
                 } else {
                     if (element.getAttributes().get("radiogroup").equals("true")) {
                         var childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
-                        inputRadiobuttonGroup.apply(id, q, value, childItems, hint, editable).toString()
+                        inputRadiobuttonGroup.apply(id, q, value, childItems, hint, editable, feedback).toString()
                     } else {
-                        inputCheckbox.apply(id, q, value, hint, editable).toString()
+                        inputCheckbox.apply(id, q, value, hint, editable, feedback).toString()
                     }
                 }
 
@@ -115,28 +117,29 @@
                 if(element.getAttributes.get("autofill_id") != null) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
+                a = element.getChildren.getLast.getValue.toString
                 var value = if(a.isEmpty){ autofill } else a
 
                 if (element.getAttributes().get("dropdown") == null){
-                    inputText.apply(id, q, value, hint, editable).toString()
+                    inputText.apply(id, q, value, hint, editable, feedback).toString()
                 } else {
                     if (element.getAttributes().get("dropdown").equals("true")) {
                         if(element.getAttributes.get("db-mapping") == null) {
                             val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
-                            inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback).toString()
                         } else {
                             val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
-                            inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback).toString()
                         }
                     } else {
-                        inputText.apply(id, q, value, hint, editable).toString()
+                        inputText.apply(id, q, value, hint, editable, feedback).toString()
                     }
                 }
             /*creates text field with number specific*/
 
             case "long_text" =>
                 /*creates a multiline text field*/
-                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words"), editable).toString()
+                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words"), editable, feedback).toString()
 
             case "text" =>
                 /*creates text field*/
@@ -144,21 +147,22 @@
                 if(element.getAttributes.get("autofill_id") != null) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
+                a = element.getChildren.getLast.getValue.toString
                 var value = if(a.isEmpty){ autofill } else a
 
                 if (element.getAttributes().get("dropdown") == null){
-                    inputText.apply(id, q, value, hint, editable).toString()
+                    inputText.apply(id, q, value, hint, editable, feedback).toString()
                 } else {
                     if (element.getAttributes().get("dropdown").equals("true")) {
                         if(element.getAttributes.get("db-mapping") == null) {
                             val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
-                            inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback).toString()
                         } else {
                             val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
-                            inputDropdown.apply(id, q, value, childItems, hint, editable).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback).toString()
                         }
                     } else {
-                        inputText.apply(id, q, value, hint, editable).toString()
+                        inputText.apply(id, q, value, hint, editable, feedback).toString()
                     }
                 }
 
@@ -168,8 +172,9 @@
                 if(element.getAttributes.get("autofill_id") != null) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
+                a = element.getChildren.getLast.getValue.toString
                 var value = if(a.isEmpty){ autofill } else a
-                inputDate.apply(id, q, value, hint, editable).toString()
+                inputDate.apply(id, q, value, hint, editable, feedback).toString()
 
             case "document" =>
                 /*creates text field*/
@@ -178,7 +183,7 @@
                     req = "false"
                 }
                 val desc = element.getAttributes.get("desc")
-                inputFile.apply(id, q, a, hint, desc, req, editable).toString()
+                inputFile.apply(id, q, element.getChildren.getLast.getValue.toString, hint, desc, req, editable, feedback).toString()
 
             case "list" =>
                 "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
@@ -282,15 +287,45 @@
                             <input type="hidden" value="" id="application_level" name="application_level">
                             <input type="hidden" value="false" id="application_questions_shown" name="application_questions_shown">
                             <input type="hidden" value="@applicationType" id="application_type" name="application_type">
+                            <input type="hidden" value="@applicationId" id="application_id" name="application_id">
                             @application_content
                             <br>
-                            <div class="col-sm-6">
-                                <button type="submit" class="nmu-button" style="width: auto; float: left">@if(showQuestions){Save Application}else{Update Application}</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.">
-                                    <button type="submit" class="nmu-button" style="width: auto; float: right">Submit Application</button>
+                            @if(feedback){
+                                <script src="@routes.Assets.versioned("javascripts/reviewer.js")" type="text/javascript"></script>
+                            }
+
+                            @if(feedback){
+                                <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
+                                    <button type="submit" class="nmu-button" style="width: auto; float: left">Cancel</button>
                                 </a>
+                            } else {
+                                @if(approve) {
+                                    <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
+                                        <button type="submit" class="nmu-button" style="width: auto; float: left">Cancel</button>
+                                    </a>
+                                } else {
+                                    <div class="col-sm-6">
+                                        <button type="submit" class="nmu-button" style="width: auto;
+                                            float: left">@if(showQuestions) {Save Application} else {Update Application}</button>
+                                    </div>
+                                }
+                            }
+                            <div class="col-sm-6">
+                                @if(feedback){
+                                    <a href="@controllers.ReviewSystem.routes.ReviewHandler.submitReview()">
+                                        <button type="submit" class="nmu-button" style="width: auto; float: right">Submit Feedback</button>
+                                    </a>
+                                } else {
+                                    @if(approve){
+                                        <a href="@controllers.ReviewSystem.routes.ReviewHandler.doViewApprove()">
+                                            <button type="submit" class="nmu-button" style="width: auto; float: right">Approve Application</button>
+                                        </a>
+                                    } else {
+                                        <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.forceSubmitApplication">
+                                            <button type="submit" class="nmu-button" style="width: auto; float: right">Submit Application</button>
+                                        </a>
+                                    }
+                                }
                             </div>
                         }
                     </div>

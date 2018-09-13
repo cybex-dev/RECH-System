@@ -1,7 +1,14 @@
 @import views.html.Components.editable
+@import java.io.File
 
-@(id: String, label: String, value: String, hint: String, shortDesc: String, required: String, canEdit: Boolean)
+@(id: String, label: String, fileName: String, hint: String, shortDesc: String, required: String, canEdit: Boolean, feedback: Boolean)
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<input style="margin-left: 40px;" id="@id" value="@value" name="@id" type="file" desc="@shortDesc" file_required="@required" @editable.apply(canEdit)>
+<input style="margin-left: 40px;" id="@id" value="@fileName" name="@id" type="file" desc="@shortDesc" file_required="@required" @editable.apply(canEdit)>
+@if(!fileName.isEmpty) {
+    <p><span style="font-weight: bold;">Existing Document: </span>@fileName</p>
+}
+@if(feedback){
+    @inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false);
+}
 <br>

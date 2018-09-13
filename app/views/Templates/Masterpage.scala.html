@@ -47,18 +47,19 @@
         @nmu_stylesheets.apply()
     }
 } {
-    @DefaultBody.apply {
-            @{
-                //TODO fix
-                for(e <- Seq("danger", "warning", "info", "success")) {
-                    if(flash().containsKey(e)) {
-                            <div class="alert alert-@e alert-dismissible fade in">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            flash().get(e)
-                            </div>
-                    }
-                }
+    @{
+        for(e <- Seq("danger", "warning", "info", "success")) {
+            if(flash().containsKey(e)) {
+                        <input value="@flash().get(e)" type="checkbox" name="@e"/>
+                    <div class="alert alert-@e alert-dismissible fade in">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    flash().get(e)
+                    </div>
             }
+        }
+    }
+    @DefaultBody.apply {
+
             <form method="post" action="@routes.HomeController.postNMUSearch()" id="form">
                 @helper.CSRF.formField
                 @static_header.apply()

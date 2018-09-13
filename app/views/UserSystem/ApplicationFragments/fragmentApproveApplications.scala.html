@@ -15,12 +15,15 @@
             </thead>
             <tbody>
             @for(application: Application <- applications) {
-                <tr class="nmu-button" data-url="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.applicationID)">
+                <tr class="nmu-button" data-url=")">
                     <td>@application.title</td>
                     <td></td>
                     <td>@application.status.name()</td>
                     <td>@application.date_approved</td>
                     <td>@application.date_submitted</td>
+                    <td><a href="@controllers.ReviewSystem.routes.ReviewHandler.viewApprove(application.applicationID.shortName())">
+                        <button class="nmu-button table-button">View and Approve</button>
+                    </a></td>
                 </tr>
             }
             </tbody>

@@ -1,7 +1,11 @@
 @import views.html.Components.editable
+@import views.html.Components.inputTextArea
 
-@(id: String, label: String, value: String, hint: String, canEdit: Boolean)
+@(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean)
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>
 <input style="margin-left: 20px" id="@id" name="@id" value="@value" type="checkbox" @editable.apply(canEdit)>
+@if(feedback){
+    @inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false);
+}
 <br>

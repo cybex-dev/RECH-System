@@ -1,6 +1,6 @@
 @import views.html.Components.editable
 
-@(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean)
+@(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean, feedback: Boolean)
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
 <select id="@id" name="@id" @editable.apply(canEdit)>
@@ -12,4 +12,7 @@
         }
     }
 </select>
+@if(feedback){
+    @inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false);
+}
 <br>

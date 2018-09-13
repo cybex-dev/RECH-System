@@ -1,5 +1,6 @@
 @import models.UserSystem.Application
 @import dao.UserSystem.EntityPerson
+@import views.html.Templates.Masterpage
 
 @(application: Application)(reviewers: List[EntityPerson])
 
@@ -13,56 +14,58 @@
         Html(start + content + end)
 }
 
-@helper.form(action = controllers.ReviewSystem.routes.ReviewHandler.doAssignReviewer){
-    <h2>Assign Reviewers to Application</h2>
-    <br>
-    <div class="application-details">
-        <h4 style="margin: 0 auto;">Application Details</h4>
+@Masterpage.apply(":: Assign Reviewers"){
+    @helper.form(action = controllers.ReviewSystem.routes.ReviewHandler.doAssignReviewers()){
+        <h2>Assign Reviewers to Application</h2>
         <br>
-        <div class="row">
-            <div class="col-sm-4"><b>Application Title:</b></div>
-            <div class="col-sm-8">@application.title</div>
+        <div class="application-details">
+            <h4 style="margin: 0 auto;">Application Details</h4>
+            <br>
+            <div class="row">
+                <div class="col-sm-4"><b>Application Title:</b></div>
+                <div class="col-sm-8">@application.title</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-4"><b>Type</b></div>
+                <div class="col-sm-8">@application.applicationID.getApplicationType</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4"><b>Faculty</b></div>
+                <div class="col-sm-8">@application.applicationID.getFacultyName</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4"><b>Department</b></div>
+                <div class="col-sm-8">@application.applicationID.getDepartmentName</div>
+            </div>
+            <br>
+            <h4>Assign Reviewers</h4>
+            <br>
+            <div class="row">
+                <div class="col-sm-4"><b>Reviewer 1:</b></div>
+                <div class="col-sm-8">@selectReviewerBox(1)</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4"><b>Reviewer 2:</b></div>
+                <div class="col-sm-8">@selectReviewerBox(2)</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4"><b>Reviewer 3:</b></div>
+                <div class="col-sm-8">@selectReviewerBox(3)</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4"><b>Reviewer 4:</b></div>
+                <div class="col-sm-8">@selectReviewerBox(4)</div>
+            </div>
         </div>
-        <br>
-        <div class="row">
-            <div class="col-sm-4"><b>Type</b></div>
-            <div class="col-sm-8">@application.applicationID.getApplicationType</div>
+        <input hidden="hidden" name="application_id" id="application_id" value="@application.applicationID.shortName()">
+        <div class="col-sm-6">
+            <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
+                <button type="button" class="nmu-button" style="width: auto; float: right">Cancel</button>
+            </a>
         </div>
-        <div class="row">
-            <div class="col-sm-4"><b>Faculty</b></div>
-            <div class="col-sm-8">@application.applicationID.getFacultyName</div>
+        <div class="col-sm-6">
+            <button type="submit" class="nmu-button" style="width: auto; float: left">Save</button>
         </div>
-        <div class="row">
-            <div class="col-sm-4"><b>Department</b></div>
-            <div class="col-sm-8">@application.applicationID.getDepartmentName</div>
-        </div>
-        <br>
-        <h4>Assign Reviewers</h4>
-        <br>
-        <div class="row">
-            <div class="col-sm-4"><b>Reviewer 1:</b></div>
-            <div class="col-sm-8">@selectReviewerBox(1)</div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4"><b>Reviewer 2:</b></div>
-            <div class="col-sm-8">@selectReviewerBox(2)</div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4"><b>Reviewer 3:</b></div>
-            <div class="col-sm-8">@selectReviewerBox(3)</div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4"><b>Reviewer 4:</b></div>
-            <div class="col-sm-8">@selectReviewerBox(4)</div>
-        </div>
-    </div>
-    <input hidden="hidden" name="application_id" id="application_id" value="@application.applicationID.shortName()">
-    <div class="col-sm-6">
-        <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
-            <button type="submit" class="nmu-button" style="width: auto; float: right">Cancel</button>
-        </a>
-    </div>
-    <div class="col-sm-6">
-        <button type="submit" class="nmu-button" style="width: auto; float: left">Save</button>
-    </div>
+    }
 }

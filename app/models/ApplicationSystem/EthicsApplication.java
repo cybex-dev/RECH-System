@@ -208,7 +208,11 @@ public class EthicsApplication implements Serializable {
     public static Element addValuesToRootElement(Element root, Map<String, Object> values){
         values.forEach((key, value) -> {
             Element child = XMLTools.lookup(root, key);
-            child.getChildren().getLast().setValue(value);
+            if (child == null){
+                System.out.println("Value ignored");
+            } else {
+                child.getChildren().getLast().setValue(value);
+            }
         });
         return root;
     }

@@ -200,6 +200,10 @@ public class EntityEthicsApplication extends Model {
     @Basic
     @Column(name = "internal_status")
     public Short getInternalStatus() {
+        if (internalStatus == null){
+            internalStatus = ApplicationStatus.DRAFT.getStatus();
+            update();
+        }
         return internalStatus;
     }
 
@@ -394,21 +398,28 @@ public class EntityEthicsApplication extends Model {
                 .filter(ethicsApplicationEntity -> {
                     switch (userType) {
                         case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(personEmail);
-                        case PrimaryResponsiblePerson: return ethicsApplicationEntity.internalStatus != ApplicationStatus.DRAFT.getStatus() &&
-                                    ethicsApplicationEntity.getPrpId().equals(personEmail);
+                        case PrimaryResponsiblePerson: {
+                            Short internalStatus = ethicsApplicationEntity.getInternalStatus();
+                            return (
+                                    (internalStatus!= ApplicationStatus.DRAFT.getStatus() ||
+                                        internalStatus!= ApplicationStatus.NOT_SUBMITTED.getStatus())
+                                    &&
+                                    (ethicsApplicationEntity.getPrpId() != null &&
+                                        ethicsApplicationEntity.getPrpId().equals(personEmail))
+                            );
+                        }
                         case Liaison: return ethicsApplicationEntity.getLiaisonId() != null &&
                                 ethicsApplicationEntity.getLiaisonId().equals(personEmail);
-                        //TODO fix
-//                        case Reviewer: return EntityReviewerfeedback.find.all().stream()
-//                                .anyMatch(entityReviewercomponentfeedback -> entityReviewercomponentfeedback.applicationPrimaryKey().equals(ethicsApplicationEntity.applicationPrimaryKey()) && entityReviewercomponentfeedback.getReviewerEmail().equals(personEmail));
+                        case Reviewer: return EntityReviewerApplications.getApplicationReviewers(ethicsApplicationEntity.applicationPrimaryKey()).stream()
+                                .anyMatch(s -> s.equals(personEmail));
                         case FacultyRTI: return ethicsApplicationEntity.getRtiId() != null &&
                                 ethicsApplicationEntity.getRtiId().equals(personEmail);
                         case DepartmentHead: return ethicsApplicationEntity.getRtiId() != null &&
                                 ethicsApplicationEntity.getHodId().equals(personEmail);
-                        case RCD: return true;
-                    }
+                        case RCD: return ApplicationStatus.parse(ethicsApplicationEntity.getInternalStatus()) == ApplicationStatus.AWAITING_REVIEWER_ALLOCATION;
+                        }
                     return false;
-                })
+                    })
                 .collect(Collectors.toList());
     }
 

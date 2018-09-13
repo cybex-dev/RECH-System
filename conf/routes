@@ -34,7 +34,8 @@ GET     /user/applications              controllers.ApplicationSystem.Applicatio
 
 # New Application (application type passed as parameter)
 GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
-POST    /application/new/submit         controllers.ApplicationSystem.ApplicationHandler.createApplication
+POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
+POST    /application/new/submit         controllers.ApplicationSystem.ApplicationHandler.forceSubmitApplication
 
 GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: String)
 POST    /application/edit/submit        controllers.ApplicationSystem.ApplicationHandler.submitEdit
@@ -45,8 +46,16 @@ GET     /application/jsRoutes           controllers.ApplicationSystem.Applicatio
 
 ### ### Review System ###
 
+GET     /rcd/applications/assign/:id    controllers.ReviewSystem.ReviewHandler.assignReviewer(id: String)
++nocsrf
+POST    /rcd/applications/assign        controllers.ReviewSystem.ReviewHandler.doAssignReviewers
+
 GET     /review/application/:id         controllers.ReviewSystem.ReviewHandler.reviewApplication(id: String)
++nocsrf
 POST    /review/application/submit      controllers.ReviewSystem.ReviewHandler.submitReview
+
+GET     /review/application/approve/:id controllers.ReviewSystem.ReviewHandler.viewApprove(id: String)
+POST    /review/application/doApprove      controllers.ReviewSystem.ReviewHandler.doViewApprove
 
 ### ### Message System ###
 
@@ -56,10 +65,10 @@ GET     /messages/:appId                controllers.MessageSystem.MessageControl
 
 ### ### Meeting System ###
 
-GET     /meeting/applications           controllers.MeetingSystem.MeetingController.allApplications
+GET     /rcd/meeting/applications           controllers.MeetingSystem.MeetingController.allApplications
 
-GET     /meeting/application/:appId     controllers.MeetingSystem.MeetingController.getApplication(appId: Integer)
-POST    /meeting/application/submit     controllers.MeetingSystem.MeetingController.submitResolution
+GET     /rcd/meeting/application/:appId     controllers.MeetingSystem.MeetingController.getApplication(appId: Integer)
+POST    /rcd/meeting/application/submit     controllers.MeetingSystem.MeetingController.submitResolution
 
 
 ### ### API Controller ###

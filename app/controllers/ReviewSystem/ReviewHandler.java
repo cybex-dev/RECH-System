@@ -11,9 +11,13 @@ import engine.RECEngine;
 import helpers.CookieTags;
 import models.ApplicationSystem.ApplicationStatus;
 import models.UserSystem.Application;
+import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
+import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
 import play.data.FormFactory;
+import play.filters.csrf.AddCSRFToken;
+import play.filters.csrf.RequireCSRFCheck;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -21,14 +25,21 @@ import play.mvc.Security;
 import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static controllers.ApplicationSystem.ApplicationHandler.PopulateRootElement;
 
 @Security.Authenticated(Secured.class)
 public class ReviewHandler extends Controller {
 
     @Inject
     private FormFactory formFactory;
+
+    public ReviewHandler() {
+    }
 
     public ReviewHandler(FormFactory formFactory) {
         this.formFactory = formFactory;
@@ -53,8 +64,36 @@ public class ReviewHandler extends Controller {
             return unauthorized("You are not authorized to review this application");
         }
 
-        Element element = ApplicationHandler.PopulateRootElement(ethicsApplication);
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, false, controllers.ReviewSystem.routes.ReviewHandler.submitReview(), false));
+        Element element = PopulateRootElement(ethicsApplication);
+        Map<String, Boolean> editableMap = new HashMap<>();
+        XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review/Feedback Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, controllers.ReviewSystem.routes.ReviewHandler.submitReview(), false, ethicsApplication.applicationPrimaryKey().shortName(), false, true));
+    }
+
+    @AddCSRFToken
+    public Result viewApprove(String applicationID){
+        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(applicationID);
+        EntityEthicsApplication ethicsApplication = EntityEthicsApplication.find.byId(entityEthicsApplicationPK);
+        if (ethicsApplication == null) {
+            return badRequest();
+        }
+
+        Element element = PopulateRootElement(ethicsApplication);
+        Map<String, Boolean> editableMap = new HashMap<>();
+        XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
+
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, controllers.ReviewSystem.routes.ReviewHandler.doViewApprove(), false, entityEthicsApplicationPK.shortName(), true, false));
+    }
+
+    @RequireCSRFCheck
+    public Result doViewApprove(){
+        DynamicForm form = formFactory.form().bindFromRequest();
+        String id = form.get("application_id");
+        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
+
+        new RECEngine().nextStep(entityEthicsApplicationPK);
+        flash("success", "Application approved");
+        return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 
     /**
@@ -77,8 +116,11 @@ public class ReviewHandler extends Controller {
         String prp = application.getPrpId();
         String pi = application.getPiId();
         List<EntityPerson> reviewers = rawReviewers.stream()
-                .filter(entityPerson -> !entityPerson.getUserEmail().equals(prp) && !entityPerson.getUserEmail().equals(pi))
+                .filter(entityPerson -> entityPerson.userType() == UserType.Reviewer || entityPerson.userType() == UserType.Liaison)
                 .collect(Collectors.toList());
+//        List<EntityPerson> reviewers = rawReviewers.stream()
+//                .filter(entityPerson -> !entityPerson.getUserEmail().equals(prp) && !entityPerson.getUserEmail().equals(pi))
+//                .collect(Collectors.toList());
         return ok(views.html.ReviewSystem.AssignApplication.render(app, reviewers));
     }
 

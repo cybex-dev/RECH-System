@@ -17,8 +17,8 @@
                     <td>@application.title</td>
                     <td>@application.status.name()</td>
                     <td>@application.date_submitted</td>
-                    <td><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.editApplication(application.applicationPrimaryKey.shortName())">
-                        <button class="nmu-button table-button">Modify Application</button>
+                    <td><a href="@controllers.ReviewSystem.routes.ReviewHandler.assignReviewer(application.applicationID.shortName())">
+                        <button class="nmu-button table-button">Assign Reviewers</button>
                     </a></td>
                 </tr>
             }
@@ -26,5 +26,5 @@
         </table>
     </div>
 } else {
-    <p>No new applications</p>
+    <p>No new applications requiring reviewer allocation</p>
 }
