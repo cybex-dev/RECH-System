@@ -47,11 +47,9 @@ GET     /application/jsRoutes           controllers.ApplicationSystem.Applicatio
 ### ### Review System ###
 
 GET     /rcd/applications/assign/:id    controllers.ReviewSystem.ReviewHandler.assignReviewer(id: String)
-+nocsrf
 POST    /rcd/applications/assign        controllers.ReviewSystem.ReviewHandler.doAssignReviewers
 
 GET     /review/application/:id         controllers.ReviewSystem.ReviewHandler.reviewApplication(id: String)
-+nocsrf
 POST    /review/application/submit      controllers.ReviewSystem.ReviewHandler.submitReview
 
 GET     /review/application/approve/:id controllers.ReviewSystem.ReviewHandler.viewApprove(id: String)
@@ -77,6 +75,7 @@ GET     /api/jsRoutes                   controllers.APIController.javascriptRout
 GET     /api/getData                    controllers.APIController.getData
 GET     /api/searchPerson               controllers.APIController.searchPerson
 GET     /api/searchLocation             controllers.APIController.searchLocation
+GET     /api/allReviewers               controllers.APIController.findAllReviewers
 
 
 # An example controller showing how to use dependency injection

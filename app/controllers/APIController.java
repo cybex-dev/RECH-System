@@ -1,6 +1,9 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
@@ -10,6 +13,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.routing.JavaScriptReverseRouter;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -121,12 +125,18 @@ public class APIController extends Controller {
         return ok();
     }
 
+    public Result findAllReviewers(){
+        List<EntityPerson> allReviewers = EntityPerson.findAllReviewers();
+        return ok(Json.toJson(allReviewers));
+    }
+
     public Result javascriptRoutes(){
         return ok(
                 JavaScriptReverseRouter.create("apiRoutes",
                         controllers.routes.javascript.APIController.getData(),
                         controllers.routes.javascript.APIController.searchPerson(),
-                        controllers.routes.javascript.APIController.searchLocation()
+                        controllers.routes.javascript.APIController.searchLocation(),
+                        controllers.routes.javascript.APIController.findAllReviewers()
                 )
         ).as("text/javascript");
     }
