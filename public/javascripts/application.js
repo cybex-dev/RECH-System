@@ -11,9 +11,10 @@ function addSearchPerson() {
 
 function fixTables() {
     //Get all table rows, the element and index
-    document.querySelectorAll("table.list > tbody > tr").forEach(
+    document.querySelectorAll("table.list > thead > tr > ").forEach(
         function (value, index) {
             // Get all labels and helps from this table row
+
         }
     );
 }

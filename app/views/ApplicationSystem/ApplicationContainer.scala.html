@@ -80,6 +80,49 @@
 
 @application_content = @{
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def createComponent(element: Element): String = {
         val elementType = element.getType.toLowerCase
         var q = ""
@@ -212,7 +255,7 @@
                 if(isList) {
                     val pre = elem.getPreTag("table")
                     val post = elem.getPostTag("table")
-                    heading + pre + "<thead>" + innerText + "</thead>" + post
+                    heading + pre + "<thead><tr>" + innerText + "</tr></thead>" + post
                 } else {
                     val pre = elem.getPreTag("div")
                     val post = elem.getPostTag("div")
@@ -223,7 +266,7 @@
                 val isListItem = element.getTag.equals("list")
                 val value = createComponent(elem)
                 if(isListItem) {
-                    "<td>" + value + "</td>"
+                    "<th>" + value + "</th>"
                 } else {
                     value
                 }
