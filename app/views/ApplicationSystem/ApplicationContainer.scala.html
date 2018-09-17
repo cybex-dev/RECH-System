@@ -195,9 +195,9 @@
 
     def getHeading(tag: String, title: String): String = {
         tag match {
-            case "section" => "<h2>" + title + "</h3>"
-            case "group" => "<h3>" + title + "</h5>"
-            case "list" => "<h4>" + title + "</h5>"
+            case "section" => "<h2>" + title + "</h2>"
+            case "group" => "<h3>" + title + "</h3>"
+            case "list" => "<h4>" + title + "</h4>"
             case _ => ""
         }
     }
@@ -212,7 +212,7 @@
                 if(isList) {
                     val pre = elem.getPreTag("table")
                     val post = elem.getPostTag("table")
-                    heading + pre + "" + innerText + "" + post
+                    heading + pre + "<thead>" + innerText + "</thead>" + post
                 } else {
                     val pre = elem.getPreTag("div")
                     val post = elem.getPostTag("div")

@@ -22,16 +22,20 @@
             </component>
         </group>
         <group id="grp_prp" name="Primary Responsible Person"
-               hint="The PRP must be a permanent Nelson Mandela University staff member." autofill_id="">
-            <component name="" id="prp_firstname" type="text" hint="Firstname of PRP">
+               hint="The PRP must be a permanent Nelson Mandela University staff member.">
+            <component name="" id="prp_contact_email" type="text" hint="Email address of PRP (this will automatically populate the details of the PRP." searchable="true">
+                <question>Official Email Address</question>
+                <value></value>
+            </component>
+            <component name="" id="prp_firstname" type="text" hint="Firstname of PRP" auto-populate-from="prp_contact_email">
                 <question>Firstname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_lastname" type="text" hint="lastname of PRP">
+            <component name="" id="prp_lastname" type="text" hint="lastname of PRP" auto-populate-from="prp_contact_email">
                 <question>Lastname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found">
+            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found" auto-populate-from="prp_contact_email">
                 <data>
                     <item>George Campus</item>
                     <item>Missionvale Campus</item>
@@ -42,27 +46,23 @@
                 <question>Campus</question>
                 <value></value>
             </component>
-            <component name="" id="prp_address" type="text" hint="Address where PRP is found">
+            <component name="" id="prp_address" type="text" hint="Address where PRP is found" auto-populate-from="prp_contact_email">
                 <question>Office Address</question>
                 <value></value>
             </component>
-            <component name="" id="prp_contact_email" type="text" hint="Email address of PRP">
-                <question>Official Email Address</question>
-                <value></value>
-            </component>
-            <component name="" id="prp_contact_telephone" type="text" hint="Office Telephone number of PRP">
+            <component name="" id="prp_contact_telephone" type="text" hint="Office Telephone number of PRP" auto-populate-from="prp_contact_email">
                 <question>Office Telephone</question>
                 <value></value>
             </component>
-            <component name="" id="prp_contact_mobile" type="text" hint="Mobile number of PRP">
+            <component name="" id="prp_contact_mobile" type="text" hint="Mobile number of PRP" auto-populate-from="prp_contact_email">
                 <question>Mobile Number</question>
                 <value></value>
             </component>
-            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculties" b-mapping="faculties">
+            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculties" b-mapping="faculties" auto-populate-from="prp_contact_email">
                 <question>Faculty</question>
                 <value></value>
             </component>
-            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP" db-mapping="departments">
+            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP" db-mapping="departments" auto-populate-from="prp_contact_email">
                 <question>Department</question>
                 <value></value>
             </component>
@@ -504,27 +504,24 @@
                     <question>Describe institutional consent required</question>
                     <value></value>
                 </component>
-                <list id="list_permission_documents" name="All Permission Documents"
-                      hint="Any additional permission documents provided by Department of Education as permission to conduct the study">
-                    <group id="grp_doc_permission" type="document" popup="true" name="Permissions Document"
-                           hint="Provide the document given by the Dept. of Education or other giving permission for this research (if available)">
-                        <component id="doc_permission_title" type="text" required="false"
-                                   hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
-                            <question>Document File</question>
-                            <value></value>
-                        </component>
-                        <component id="doc_permission_desc" type="text" required="false"
-                                   hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
-                            <question>Document File</question>
-                            <value></value>
-                        </component>
-                        <component id="doc_permission_document" type="document" required="false" desc="Additional Permissions"
-                                   hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
-                            <question>Document File</question>
-                            <value></value>
-                        </component>
-                    </group>
-                </list>
+                <group id="grp_doc_permission" type="document" popup="true" name="Permissions Document"
+                       hint="Provide the document given by the Dept. of Education or other giving permission for this research (if available)">
+                    <component id="doc_permission_title" type="text" required="false"
+                               hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
+                        <question>Document File</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_permission_desc" type="text" required="false"
+                               hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
+                        <question>Document File</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_permission_document" type="document" required="false" desc="Additional Permissions"
+                               hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
+                        <question>Document File</question>
+                        <value></value>
+                    </component>
+                </group>
             </extension>
         </group>
     </section>

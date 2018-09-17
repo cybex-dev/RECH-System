@@ -110,6 +110,7 @@ function docReady() {
     // sectionList.forEach(function (e) {
     //     setHidden(e);
     // });
+
     // Initializes wizard
     initWizard();
 

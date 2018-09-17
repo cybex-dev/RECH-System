@@ -148,8 +148,7 @@ public class RECEngine {
                 boolean approved = (entityEthicsApplication.getPrpApprovedDate() == null);
 
                 actionable = new Actionable() {
-                    ApplicationStatus newStatus = (approved) ? ApplicationStatus.AWAITING_REVIEWER_ALLOCATION : ApplicationStatus.NOT_SUBMITTED;
-//                    ApplicationStatus newStatus = (approved) ? ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL : ApplicationStatus.NOT_SUBMITTED;
+                    ApplicationStatus newStatus = (approved) ? ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL : ApplicationStatus.NOT_SUBMITTED;
 
                     @Override
                     public void doAction() {
