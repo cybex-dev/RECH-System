@@ -23,46 +23,35 @@
         </group>
         <group id="grp_prp" name="Primary Responsible Person"
                hint="The PRP must be a permanent Nelson Mandela University staff member.">
-            <component name="" id="prp_contact_email" type="text" hint="Email address of PRP (this will automatically populate the details of the PRP." searchable="true">
+            <component name="" id="prp_contact_email" type="text" hint="Email address of PRP (this will automatically populate the details of the PRP." datalist="true">
                 <question>Official Email Address</question>
                 <value></value>
             </component>
-            <component name="" id="prp_firstname" type="text" hint="Firstname of PRP" auto-populate-from="prp_contact_email">
+            <component name="" id="prp_firstname" type="text" hint="Firstname of PRP" auto-populate-from="prp_contact_email" dataname="firstname">
                 <question>Firstname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_lastname" type="text" hint="lastname of PRP" auto-populate-from="prp_contact_email">
+            <component name="" id="prp_lastname" type="text" hint="lastname of PRP" auto-populate-from="prp_contact_email" dataname="lastname">
                 <question>Lastname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found" auto-populate-from="prp_contact_email">
-                <data>
-                    <item>George Campus</item>
-                    <item>Missionvale Campus</item>
-                    <item>North Campus</item>
-                    <item>Second Avenue Campus</item>
-                    <item>South Campus (Main Campus)</item>
-                </data>
-                <question>Campus</question>
-                <value></value>
-            </component>
-            <component name="" id="prp_address" type="text" hint="Address where PRP is found" auto-populate-from="prp_contact_email">
+            <component name="" id="prp_address" type="text" hint="Address where PRP is found" auto-populate-from="prp_contact_email" dataname="address">
                 <question>Office Address</question>
                 <value></value>
             </component>
-            <component name="" id="prp_contact_telephone" type="text" hint="Office Telephone number of PRP" auto-populate-from="prp_contact_email">
+            <component name="" id="prp_contact_telephone" type="text" hint="Office Telephone number of PRP" auto-populate-from="prp_contact_email" dataname="telephone">
                 <question>Office Telephone</question>
                 <value></value>
             </component>
-            <component name="" id="prp_contact_mobile" type="text" hint="Mobile number of PRP" auto-populate-from="prp_contact_email">
+            <component name="" id="prp_contact_mobile" type="text" hint="Mobile number of PRP" auto-populate-from="prp_contact_email" dataname="mobile">
                 <question>Mobile Number</question>
                 <value></value>
             </component>
-            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculties" b-mapping="faculties" auto-populate-from="prp_contact_email">
+            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculties" b-mapping="faculties" auto-populate-from="prp_contact_email" dataname="faculty">
                 <question>Faculty</question>
                 <value></value>
             </component>
-            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP" db-mapping="departments" auto-populate-from="prp_contact_email">
+                <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP" db-mapping="departments" auto-populate-from="prp_contact_email" dataname="department">
                 <question>Department</question>
                 <value></value>
             </component>

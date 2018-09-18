@@ -5,6 +5,7 @@ import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
+import models.UserSystem.UserType;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -12,7 +13,9 @@ import play.routing.JavaScriptReverseRouter;
 
 import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class APIController extends Controller {
@@ -73,48 +76,35 @@ public class APIController extends Controller {
                 break;
             }
 
+            case "prp_contact_email": {
+                list = EntityPerson.find.all()
+                        .stream()
+                        .filter(entityPerson -> entityPerson.userType() != UserType.RCD &&
+                                entityPerson.userType() != UserType.PrimaryInvestigator)
+                        .map(entityPerson -> entityPerson.getUserTitle().concat(" ").concat(entityPerson.getUserFirstname()).concat(" ").concat(entityPerson.getUserLastname()).concat(" [").concat(entityPerson.getUserEmail().concat("]")))
+                        .collect(Collectors.toList());
+            }
+
             default: break;
         }
         return list;
     }
 
-    public Result searchPerson() {
+    public Result searchPerson(String email) {
 
-        JsonNode criteriaNode = request().body().asJson();
-        final List<EntityPerson> entityPersonList = new ArrayList<>();
+        Map<String, String> map = new HashMap<>();
+        EntityPerson entityPerson1 = EntityPerson.find.all().stream().filter(entityPerson -> entityPerson.getUserEmail().equals(email)).findFirst().orElse(null);
+        if (entityPerson1 != null) {
+            map.put("firstname", entityPerson1.getUserFirstname());
+            map.put("lastname", entityPerson1.getUserLastname());
+            map.put("telephone", entityPerson1.getContactOfficeTelephone());
+            map.put("mobile", entityPerson1.getContactNumberMobile());
+            map.put("address", entityPerson1.getOfficeAddress());
+            map.put("faculty", entityPerson1.getFacultyName());
+            map.put("department", entityPerson1.getDepartmentName());
+        }
+        return ok(Json.toJson(map));
 
-        if (criteriaNode == null)
-            return badRequest();
-
-        criteriaNode.forEach(jsonNode -> {
-                    entityPersonList.addAll(EntityPerson.find.all().stream().filter(entityPerson -> {
-                        switch (jsonNode.textValue()) {
-                            case "name": {
-                                return entityPerson.getUserFirstname().contains(jsonNode.asText());
-                            }
-
-                            case "surname": {
-                                return entityPerson.getUserLastname().contains(jsonNode.asText());
-                            }
-
-                            case "email": {
-                                return entityPerson.getUserEmail().contains(jsonNode.asText());
-                            }
-
-                            case "phone": {
-                                return entityPerson.getContactOfficeTelephone().contains(jsonNode.asText());
-                            }
-
-                            case "office": {
-                                return entityPerson.getOfficeAddress().contains(jsonNode.asText());
-                            }
-
-                            default:
-                                return false;
-                        }
-                    }).collect(Collectors.toList()));
-                });
-        return ok(Json.toJson(entityPersonList));
 
     }
 

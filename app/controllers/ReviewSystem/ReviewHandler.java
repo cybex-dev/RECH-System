@@ -1,11 +1,13 @@
 package controllers.ReviewSystem;
 
 import controllers.ApplicationSystem.ApplicationHandler;
+import controllers.UserSystem.ProfileHandler;
 import controllers.UserSystem.Secured;
 import controllers.UserSystem.routes;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.ReviewSystem.EntityReviewerApplications;
+import dao.ReviewSystem.EntityReviewerComponentFeedback;
 import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
 import helpers.CookieTags;
@@ -101,7 +103,35 @@ public class ReviewHandler extends Controller {
      * @return
      */
     public Result submitReview() {
-        return TODO;
+        DynamicForm form = formFactory.form().bindFromRequest();
+        if (form.hasErrors()){
+            return badRequest();
+        }
+
+        Timestamp timestamp = Timestamp.from(Instant.now());
+        String reviewer = session(CookieTags.user_id);
+
+        EntityEthicsApplicationPK pk = EntityEthicsApplicationPK.fromString(form.get("application_id"));
+        HashMap<String, String> map = new HashMap<>();
+        form.get().getData().entrySet().stream()
+                .filter(stringObjectEntry -> stringObjectEntry.getKey().contains("feedback_"))
+                .forEach(stringObjectEntry -> {
+                    String id = stringObjectEntry.getKey().replace("feedback_", "");
+                    map.put(id, stringObjectEntry.getValue().toString());
+                });
+
+        map.forEach((key, value) -> {
+            EntityReviewerComponentFeedback feedback = new EntityReviewerComponentFeedback();
+            feedback.setApplicationId(pk);
+            feedback.setComponentId(key);
+            feedback.setReviewerEmail(reviewer);
+            feedback.setFeedbackDate(timestamp);
+            feedback.setComponentFeedback(value);
+            feedback.insert();
+        });
+
+        flash("success", "Feedback has been submitted");
+        return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 
     public Result assignReviewer(String applicationId){

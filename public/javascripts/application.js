@@ -6,15 +6,50 @@ function get(k) {
 
 _docReady(docReady());
 
-function docReady() {
-    if (document.getElementById("application_type") != null) {
-        fixTables();
-        addSearchPerson();
+function enablePopulatePRPFields() {
+    let prpEmail = document.getElementById("prp_contact_email");
+
+
+    function populateValues(data) {
+        document.getElementById("prp_firstname").value = data.firstname;
+        document.getElementById("prp_lastname").value = data.lastname;
+        document.getElementById("prp_contact_telephone").value = data.telephone;
+        document.getElementById("prp_contact_mobile").value = data.mobile;
+        document.getElementById("prp_address").value = data.address;
+        document.getElementById("prp_faculty").value = data.faculty;
+        document.getElementById("prp_department").value = data.department;
+    }
+
+    function requestPersonData(email) {
+        var searchPerson = apiRoutes.controllers.APIController.searchPerson(email);
+        $.ajax({
+            url: searchPerson.url
+        }).done(function(data) {
+            populateValues(data);
+        }).fail(function(error) {
+            alert(error)
+        });
+
+    }
+
+    prpEmail.oninput = function () {
+        let val = this.value;
+        let list = document.querySelectorAll("#list_prp_contact_email > option");
+        for(let i = 0; i < list.length; i++) {
+            if (list[i].value === val){
+                let email = val.split("[")[1].replace("]","");
+                requestPersonData(email);
+                break;
+            }
+        }
     }
 }
 
-function addSearchPerson() {
-
+function docReady() {
+    if (document.getElementById("application_type") != null) {
+        fixTables();
+        enablePopulatePRPFields();
+    }
 }
 
 function fixTables() {
@@ -77,9 +112,9 @@ function addEntryButton(id) {
     button.classList.add("nmu-button", "button-small", "col-lg-6");
     button.id = id + "_addrow";
     button.innerText = "Add";
-    button.onclick = function (event) {
+    button.type = "button";
+    button.onclick = function () {
         addRow(id, get(id));
-        event.preventDefault();
     };
     cell.appendChild(button)
 }
@@ -106,4 +141,18 @@ function addRow(tableId, elements) {
         }
         newCell.appendChild(e);
     }
+
+    let remove = newRow.insertCell(elements.length+1);
+    const button = document.createElement("BUTTON");
+    button.classList.add("col-lg-6", "fa", "fa-trash");
+    button.style.width = "auto";
+    button.type = "button";
+    button.onclick = function() {
+        removeRow(tableId, button.closest('tr').rowIndex);
+    };
+    remove.appendChild(button);
+}
+
+function removeRow(tableId, rowIndex) {
+    document.getElementById(tableId).deleteRow(rowIndex);
 }

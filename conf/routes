@@ -73,7 +73,7 @@ POST    /rcd/meeting/application/submit     controllers.MeetingSystem.MeetingCon
 GET     /api/jsRoutes                   controllers.APIController.javascriptRoutes
 
 GET     /api/getData                    controllers.APIController.getData
-GET     /api/searchPerson               controllers.APIController.searchPerson
+GET     /api/searchPerson/:email        controllers.APIController.searchPerson(email: String)
 GET     /api/searchLocation             controllers.APIController.searchLocation
 GET     /api/allReviewers               controllers.APIController.findAllReviewers
 

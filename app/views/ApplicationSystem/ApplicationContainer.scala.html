@@ -143,11 +143,13 @@
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
-                var value = if(a.isEmpty){ autofill } else a
-                if (element.getAttributes().get("radiogroup") == null) {
+                var value = if(a.isEmpty) {
+                    autofill
+                } else a
+                if(element.getAttributes().get("radiogroup") == null) {
                     inputCheckbox.apply(id, q, value, hint, editable, feedback).toString()
                 } else {
-                    if (element.getAttributes().get("radiogroup").equals("true")) {
+                    if(element.getAttributes().get("radiogroup").equals("true")) {
                         var childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
                         inputRadiobuttonGroup.apply(id, q, value, childItems, hint, editable, feedback).toString()
                     } else {
@@ -161,12 +163,14 @@
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
-                var value = if(a.isEmpty){ autofill } else a
+                var value = if(a.isEmpty) {
+                    autofill
+                } else a
 
-                if (element.getAttributes().get("dropdown") == null){
+                if(element.getAttributes().get("dropdown") == null) {
                     inputText.apply(id, q, value, hint, editable, feedback).toString()
                 } else {
-                    if (element.getAttributes().get("dropdown").equals("true")) {
+                    if(element.getAttributes().get("dropdown").equals("true")) {
                         if(element.getAttributes.get("db-mapping") == null) {
                             val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
                             inputDropdown.apply(id, q, value, childItems, hint, editable, feedback).toString()
@@ -191,13 +195,35 @@
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
-                var value = if(a.isEmpty){ autofill } else a
+                var value = if(a.isEmpty) {
+                    autofill
+                } else a
 
-                if (element.getAttributes().get("dropdown") == null){
-                    inputText.apply(id, q, value, hint, editable, feedback).toString()
+                var isDataList = false;
+                if(element.getAttributes().get("datalist") != null){
+                    if(element.getAttributes().get("datalist").equals("true")){
+                        isDataList = true
+                    }
+                }
+
+                var isDropdown = false;
+                if(element.getAttributes().get("dropdown") != null){
+                    if(element.getAttributes().get("dropdown").equals("true")){
+                        isDropdown = true
+                    }
+                }
+
+                var dbMapping: String = ""
+                if(element.getAttributes().get("db-mapping") != null){
+                    dbMapping = element.getAttributes().get("db-mapping")
+                }
+
+                if(isDataList) {
+                    val data: List[String] = APIController.getDataDirect(id)
+                    inputDatalist.apply(id, q, value, data, hint, editable, feedback).toString
                 } else {
-                    if (element.getAttributes().get("dropdown").equals("true")) {
-                        if(element.getAttributes.get("db-mapping") == null) {
+                    if (isDropdown) {
+                        if (!dbMapping){
                             val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
                             inputDropdown.apply(id, q, value, childItems, hint, editable, feedback).toString()
                         } else {

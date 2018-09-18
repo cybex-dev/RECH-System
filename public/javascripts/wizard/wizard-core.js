@@ -80,6 +80,7 @@ function _docReady(funcName, baseObj) {
             readyEventHandlersInstalled = true;
         }
     }
+
 }
 
 _docReady(docReady());

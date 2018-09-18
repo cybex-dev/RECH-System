@@ -5,7 +5,7 @@
 @(application: Application)(reviewers: List[EntityPerson])
 
 @selectReviewerBox(i: Int) = @{
-        val start = "<select id=\"" + "reviewer" + i + "\">"
+        val start = "<select id=\"reviewer" + i + "\" name=\"reviewer" + i + "\">"
         val end = "</select>"
         var content = ""
         for(person: EntityPerson <- reviewers) {
@@ -16,10 +16,11 @@
 
 @Masterpage.apply(":: Assign Reviewers"){
     @helper.form(action = controllers.ReviewSystem.routes.ReviewHandler.doAssignReviewers()){
+        @helper.CSRF.formField
         <h2>Assign Reviewers to Application</h2>
         <br>
         <div class="application-details">
-            <h4 style="margin: 0 auto;">Application Details</h4>
+            <h2 style="margin: 0 auto;">Application Details</h2>
             <br>
             <div class="row">
                 <div class="col-sm-4"><b>Application Title:</b></div>
@@ -39,33 +40,38 @@
                 <div class="col-sm-8">@application.applicationID.getDepartmentName</div>
             </div>
             <br>
-            <h4>Assign Reviewers</h4>
-            <br>
-            <div class="row">
+            <h2>Assign Reviewers</h2>
+            <br/>
+            <div class="row reviewer" id="reviewer1" style="display: none">
                 <div class="col-sm-4"><b>Reviewer 1:</b></div>
                 <div class="col-sm-8">@selectReviewerBox(1)</div>
+                <div class="col-sm-1"><button class="fa fa-trash" id="del_reviewe1" type="button"></button></div>
             </div>
-            <div class="row">
+            <div class="row reviewer" id="reviewer2" style="display: none">
                 <div class="col-sm-4"><b>Reviewer 2:</b></div>
                 <div class="col-sm-8">@selectReviewerBox(2)</div>
+                <div class="col-sm-1"><button class="fa fa-trash" id="del_reviewer2" type="button"></button></div>
             </div>
-            <div class="row">
+            <div class="row reviewer" id="reviewer3" style="display: none">
                 <div class="col-sm-4"><b>Reviewer 3:</b></div>
                 <div class="col-sm-8">@selectReviewerBox(3)</div>
+                <div class="col-sm-1"><button class="fa fa-trash" type="button" id="del_reviewer3"></button></div>
             </div>
-            <div class="row">
+            <div class="row reviewer" id="reviewer4" style="display: none">
                 <div class="col-sm-4"><b>Reviewer 4:</b></div>
-                <div class="col-sm-8">@selectReviewerBox(4)</div>
+                <div class="col-sm-7">@selectReviewerBox(4)</div>
+                <div class="col-sm-1"><button class="fa fa-trash" id="del_reviewer4" type="button"></button></div>
             </div>
+            <button class="nmu-button button-small" style="width: auto" id="btnAddReviewer" type="button">Add Reviewer</button>
         </div>
         <input hidden="hidden" name="application_id" id="application_id" value="@application.applicationID.shortName()">
         <div class="col-sm-6">
             <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
-                <button type="button" class="nmu-button" style="width: auto; float: right">Cancel</button>
+                <button type="button" class="nmu-button" style="min-width: 30%; width: auto; float: left">Cancel</button>
             </a>
         </div>
         <div class="col-sm-6">
-            <button type="submit" class="nmu-button" style="width: auto; float: left">Save</button>
+            <button type="submit" class="nmu-button" style="min-width: 30%; width: auto; float: right">Save</button>
         </div>
     }
 }
