@@ -1,3 +1,8 @@
 table {
     color: #061c2c !important;
 }
+
+td button {
+    width: 30%;
+    line-height: 50%;
+}

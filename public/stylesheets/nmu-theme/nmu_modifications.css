@@ -254,6 +254,7 @@ a:hover {
 
 h2, h3, h4 {
     padding: 0 !important;
+    margin: 10px 0;
 }
 
 .table-button {
@@ -264,8 +265,8 @@ h2, h3, h4 {
 }
 
 th {
-    color: white;
-    font-size: 1.1em;
+    color: #0A283F !important;
+    font-size: 1.4em;
 }
 
 tr {
@@ -276,4 +277,29 @@ tr {
     padding: 10px !important;
     background-color: #FFFFFF !important;
     color: #061c2c !important;
+}
+
+table label {
+    font-size: 0.7em;
+}
+
+h4 {
+    text-decoration: underline;
+    font-size: 1.1em;
+}
+
+label {
+    margin-left: 20px;
+}
+
+select {
+    margin: 8px 40px
+}
+
+table {
+    margin: 0 auto;
+}
+
+table > thead {
+    border-bottom: 3px solid #0A283F;
 }

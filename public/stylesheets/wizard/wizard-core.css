@@ -32,10 +32,6 @@
     border-bottom: 1px dashed #FFFFFF;
 }
 
-.group > * :not(.group)  {
-    padding-left: 20px !important;
-}
-
 .collapsible {
     cursor: pointer;
     border: none;
@@ -56,7 +52,7 @@
     display: none;
 }
 
-.section input {
+.section > .group > input {
     max-width: 50%;
 }
 
@@ -221,4 +217,10 @@ h3 {
 
 ic {
     margin-bottom: 8px;
+}
+
+textarea {
+    width: 80% !important;
+    height: 6em !important;
+    margin: 0 auto;
 }
