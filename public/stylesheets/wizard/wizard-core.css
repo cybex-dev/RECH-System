@@ -90,7 +90,12 @@ input {
 }
 
 .list {
+    color: #061c2c !important;
+}
 
+.list input {
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .extension {
@@ -223,4 +228,9 @@ textarea {
     width: 80% !important;
     height: 6em !important;
     margin: 0 auto;
+}
+
+th td {
+    color: #0A283F !important;
+    text-align: center;
 }

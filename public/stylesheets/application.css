@@ -5,4 +5,6 @@ table {
 td button {
     width: 30%;
     line-height: 50%;
+    margin: 10px;
 }
+
