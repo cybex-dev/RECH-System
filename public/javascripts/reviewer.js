@@ -1,7 +1,9 @@
 var numReviewers = 0;
 
-_docReady(
-    var button = document.getElementById("btnAddReviewer");
+_docReady(docReady());
+
+function docReady() {
+    let button = document.getElementById("btnAddReviewer");
     button.onclick = function () {
         if (document.querySelectorAll("reviewer").length >= 4){
             button.style.display = "none"
@@ -17,6 +19,4 @@ _docReady(
             };
         }
     }
-
-);
-
+}
