@@ -1,6 +1,8 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import dao.ApplicationSystem.EntityEthicsApplication;
+import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
@@ -112,9 +114,30 @@ public class APIController extends Controller {
         return ok();
     }
 
-    public Result findAllReviewers(){
-        List<EntityPerson> allReviewers = EntityPerson.findAllReviewers();
-        return ok(Json.toJson(allReviewers));
+    public Result findAllReviewers(String applicationId){
+        List<Map<String, String>> list = new ArrayList<>();
+        EntityEthicsApplication application = EntityEthicsApplication.GetApplication(EntityEthicsApplicationPK.fromString(applicationId));
+
+        if (application != null){
+            String pi = EntityPerson.getPersonById(application.getPiId()).getUserEmail();
+            String prp = EntityPerson.getPersonById(application.getPiId()).getUserEmail();
+
+            EntityPerson.findAllReviewers()
+                    .stream()
+                    .filter(entityPerson -> !entityPerson.getUserEmail().equals("") &&
+                            !entityPerson.getUserEmail().equals(""))
+                    .forEach(p -> {
+                        Map<String, String> map = new HashMap<>();
+                        map.put("title", p.getUserTitle());
+                        map.put("firstname", p.getUserFirstname());
+                        map.put("lastname", p.getUserLastname());
+                        map.put("dept", p.getDepartmentName());
+                        map.put("faculty", p.getFacultyName());
+                        map.put("email", p.getUserEmail());
+                        list.add(map);
+                    });
+        }
+        return ok(Json.toJson(list));
     }
 
     public Result javascriptRoutes(){

@@ -2,21 +2,12 @@
 @import dao.UserSystem.EntityPerson
 @import views.html.Templates.Masterpage
 
-@(application: Application)(reviewers: List[EntityPerson])
-
-@selectReviewerBox(i: Int) = @{
-        val start = "<select id=\"reviewer" + i + "\" name=\"reviewer" + i + "\">"
-        val end = "</select>"
-        var content = ""
-        for(person: EntityPerson <- reviewers) {
-            content += "<option id=\"" + person.getUserEmail + "\" name=\"" + person.getUserEmail + "\">" + person.getUserTitle + " " + person.getUserFirstname + " " + person.getUserLastname + " [" + person.getUserEmail + "]"+ "</option>"
-        }
-        Html(start + content + end)
-}
+@(application: Application)
 
 @Masterpage.apply(":: Assign Reviewers"){
     @helper.form(action = controllers.ReviewSystem.routes.ReviewHandler.doAssignReviewers()){
         @helper.CSRF.formField
+        <input type="hidden" id="application_id" value="@application.applicationID.shortName()">
         <h2>Assign Reviewers to Application</h2>
         <br>
         <div class="application-details">
@@ -24,45 +15,44 @@
             <br>
             <div class="row">
                 <div class="col-sm-4"><b>Application Title:</b></div>
-                <div class="col-sm-8">@application.title</div>
+                <div class="col-sm-7">@application.title</div>
             </div>
             <br>
             <div class="row">
                 <div class="col-sm-4"><b>Type</b></div>
-                <div class="col-sm-8">@application.applicationID.getApplicationType</div>
+                <div class="col-sm-7">@application.applicationID.getApplicationType</div>
             </div>
             <div class="row">
                 <div class="col-sm-4"><b>Faculty</b></div>
-                <div class="col-sm-8">@application.applicationID.getFacultyName</div>
+                <div class="col-sm-7">@application.applicationID.getFacultyName</div>
             </div>
             <div class="row">
                 <div class="col-sm-4"><b>Department</b></div>
-                <div class="col-sm-8">@application.applicationID.getDepartmentName</div>
+                <div class="col-sm-7">@application.applicationID.getDepartmentName</div>
             </div>
             <br>
             <h2>Assign Reviewers</h2>
             <br/>
-            <div class="row reviewer" id="reviewer1" style="display: none">
-                <div class="col-sm-4"><b>Reviewer 1:</b></div>
-                <div class="col-sm-8">@selectReviewerBox(1)</div>
-                <div class="col-sm-1"><button class="fa fa-trash" id="del_reviewe1" type="button"></button></div>
-            </div>
-            <div class="row reviewer" id="reviewer2" style="display: none">
-                <div class="col-sm-4"><b>Reviewer 2:</b></div>
-                <div class="col-sm-8">@selectReviewerBox(2)</div>
-                <div class="col-sm-1"><button class="fa fa-trash" id="del_reviewer2" type="button"></button></div>
-            </div>
-            <div class="row reviewer" id="reviewer3" style="display: none">
-                <div class="col-sm-4"><b>Reviewer 3:</b></div>
-                <div class="col-sm-8">@selectReviewerBox(3)</div>
-                <div class="col-sm-1"><button class="fa fa-trash" type="button" id="del_reviewer3"></button></div>
-            </div>
-            <div class="row reviewer" id="reviewer4" style="display: none">
-                <div class="col-sm-4"><b>Reviewer 4:</b></div>
-                <div class="col-sm-7">@selectReviewerBox(4)</div>
-                <div class="col-sm-1"><button class="fa fa-trash" id="del_reviewer4" type="button"></button></div>
-            </div>
-            <button class="nmu-button button-small" style="width: auto" id="btnAddReviewer" type="button">Add Reviewer</button>
+
+            <table id="table_reviewers">
+                <thead>
+                    <tr>
+                        <th class="col-sm-1">#</th>
+                        <th class="col-sm-3">Reviewer</th>
+                        <th class="col-sm-4">Email</th>
+                        <th class="col-sm-3">Department (Faculty)</th>
+                        <th class="col-sm-1"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            <button class="nmu-button action-button" id="btnAddReviewer" type="button">Add Reviewer</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
         <input hidden="hidden" name="application_id" id="application_id" value="@application.applicationID.shortName()">
         <div class="col-sm-6">

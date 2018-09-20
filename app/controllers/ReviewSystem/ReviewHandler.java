@@ -142,16 +142,10 @@ public class ReviewHandler extends Controller {
         }
 
         Application app = Application.create(application);
-        List<EntityPerson> rawReviewers = EntityPerson.findAllReviewers();
-        String prp = application.getPrpId();
-        String pi = application.getPiId();
-        List<EntityPerson> reviewers = rawReviewers.stream()
-                .filter(entityPerson -> entityPerson.userType() == UserType.Reviewer || entityPerson.userType() == UserType.Liaison)
-                .collect(Collectors.toList());
 //        List<EntityPerson> reviewers = rawReviewers.stream()
 //                .filter(entityPerson -> !entityPerson.getUserEmail().equals(prp) && !entityPerson.getUserEmail().equals(pi))
 //                .collect(Collectors.toList());
-        return ok(views.html.ReviewSystem.AssignApplication.render(app, reviewers));
+        return ok(views.html.ReviewSystem.AssignApplication.render(app));
     }
 
     public Result doAssignReviewers(){

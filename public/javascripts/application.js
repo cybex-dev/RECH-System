@@ -21,15 +21,13 @@ function enablePopulatePRPFields() {
     }
 
     function requestPersonData(email) {
-        var searchPerson = apiRoutes.controllers.APIController.searchPerson(email);
         $.ajax({
-            url: searchPerson.url
+            url: apiRoutes.controllers.APIController.searchPerson(email).url
         }).done(function(data) {
             populateValues(data);
         }).fail(function(error) {
             alert(error)
         });
-
     }
 
     prpEmail.oninput = function () {

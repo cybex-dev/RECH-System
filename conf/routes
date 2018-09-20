@@ -75,7 +75,7 @@ GET     /api/jsRoutes                   controllers.APIController.javascriptRout
 GET     /api/getData                    controllers.APIController.getData
 GET     /api/searchPerson/:email        controllers.APIController.searchPerson(email: String)
 GET     /api/searchLocation             controllers.APIController.searchLocation
-GET     /api/allReviewers               controllers.APIController.findAllReviewers
+GET     /api/allReviewers/:id           controllers.APIController.findAllReviewers(id: String)
 
 
 # An example controller showing how to use dependency injection
