@@ -139,7 +139,7 @@
             case "boolean" =>
                 /*creates checkbox*/
                 var autofill = ""
-                if(element.getAttributes.get("autofill_id") != null) {
+                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
@@ -159,7 +159,7 @@
 
             case "number" =>
                 var autofill = ""
-                if(element.getAttributes.get("autofill_id") != null) {
+                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
@@ -191,7 +191,7 @@
             case "text" =>
                 /*creates text field*/
                 var autofill = ""
-                if(element.getAttributes.get("autofill_id") != null) {
+                if(element.getAttributes.get("autofill_id") != null && !feedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
@@ -238,7 +238,7 @@
             case "date" =>
                 /*creates text field*/
                 var autofill = ""
-                if(element.getAttributes.get("autofill_id") != null) {
+                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
@@ -363,6 +363,7 @@
                                 <script src="@routes.Assets.versioned("javascripts/reviewer.js")" type="text/javascript"></script>
                             }
 
+                            <div class="col-sm-6">
                             @if(feedback){
                                 <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
                                     <button type="submit" class="nmu-button" style="width: auto; float: left">Cancel</button>
@@ -373,12 +374,11 @@
                                         <button type="submit" class="nmu-button" style="width: auto; float: left">Cancel</button>
                                     </a>
                                 } else {
-                                    <div class="col-sm-6">
-                                        <button type="submit" class="nmu-button" style="width: auto;
+                                    <button type="submit" class="nmu-button" style="width: auto;
                                             float: left">@if(showQuestions) {Save Application} else {Update Application}</button>
-                                    </div>
                                 }
                             }
+                            </div>
                             <div class="col-sm-6">
                                 @if(feedback){
                                     <a href="@controllers.ReviewSystem.routes.ReviewHandler.submitReview()">

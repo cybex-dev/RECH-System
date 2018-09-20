@@ -309,22 +309,8 @@ public class RECEngine {
 
                     @Override
                     public void doAction() {
-
-                        if (availableReviewers.size() == 4) {
-//                            if (!isFacultyLevel) {
-//                                Timestamp ts = Timestamp.from(new Date().toInstant());
-//                                for (String reviewer : availableReviewers) {
-//                                    EntityReviewerApplications reviewerApplications = new EntityReviewerApplications();
-//                                    reviewerApplications.setDateAssigned(ts);
-//                                    reviewerApplications.setReviewerEmail(reviewer);
-//                                    reviewerApplications.setApplicationKey(applicationId);
-//                                    reviewerApplications.insert();
-//                                }
-//                            }
-                            entityEthicsApplication.setInternalStatus(newStatus.getStatus());
-                            entityEthicsApplication.update();
-                        }
-
+                        entityEthicsApplication.setInternalStatus(newStatus.getStatus());
+                        entityEthicsApplication.update();
                     }
 
                     @Override

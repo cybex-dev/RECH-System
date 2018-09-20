@@ -1,26 +1,40 @@
 let list = [];
+let numReviewers = 0;
 
 _docReady(docReady());
 
 function docReady() {
+    if (document.getElementById("btnAddReviewer") == null)
+        return;
     getReviewers();
     document.getElementById("btnAddReviewer").onclick = function () {
+        numReviewers++;
+        if (numReviewers >= 4) {
+            document.getElementById("btnAddReviewer").style.display = "none";
+        }
         let tableRow = createTableRow("table_reviewers");
 
-        let tdIndex = createTableDataElement(tableRow);
-        let tdEmail = createTableDataElement(tableRow);
-        let tdReviewer = createTableDataElement(tableRow);
-        let tdFaculty = createTableDataElement(tableRow);
+        let tdIndex = createTableDataElement(tableRow, "nmu-color-dark");
+        let tdEmail = createTableDataElement(tableRow, "nmu-color-dark");
+        let tdReviewer = createTableDataElement(tableRow, "nmu-color-dark");
+        let tdFaculty = createTableDataElement(tableRow, "nmu-color-dark");
         let tdRemove = createTableDataElement(tableRow);
 
         let currentIndex = size("table_reviewers");
-
-        tdIndex.value = size("table_reviewers");
+        let delButton = createButton("btnReviewer" + currentIndex, "", "button", "", function () {
+            removeTableRow("table_reviewers", document.getElementById("btnReviewer" + currentIndex).closest('tr').rowIndex);
+            numReviewers--;
+            if (numReviewers < 4){
+                document.getElementById("btnAddReviewer").style.display = "inline-block";
+            }
+        }, "fa", "fa-trash", "nmu-button", "item-button");
+        delButton.style.paddingRight = "30px";
+        tdRemove.appendChild(delButton);
+        tdIndex.innerText = currentIndex;
         tdIndex.style.textAlign = "center";
         createInputDropdown(tdEmail, "reviewer" + currentIndex, "reviewer" + currentIndex, list);
         tdReviewer.innerText = "";
         tdFaculty.innerText = "";
-        tdRemove.appendChild(createButton("reviewer" + currentIndex, "reviewer" + currentIndex, "button", "", removeTableRow("table_reviewers", "table_reviewers", currentIndex), "fa", "fa-trash", "nmu-button", "item-button"));
     }
 }
 
@@ -34,19 +48,20 @@ function getReviewers() {
 }
 
 function updateRowIndexes(tableId) {
-    let trList = document.querySelectorAll("#" + tableId + " tr");
+    let trList = document.querySelectorAll("#" + tableId + " tbody > tr");
     for (let i = 0; i < trList.length; i++) {
-        trList.item(0).innerText = i+1
+        trList[i].children[0].innerText = i+1
     }
 }
 
 function removeTableRow(tableId, currentIndex) {
+    console.log("deleting row " + currentIndex + " in table " + tableId );
     document.getElementById(tableId).deleteRow(currentIndex);
     updateRowIndexes(tableId);
 }
 
 function size(tableId) {
-    return document.querySelectorAll("#" + tableId + " tr").length
+    return document.querySelectorAll("#" + tableId + " tbody > tr").length
 }
 
 function createDiv(id, name, ...classlist) {
@@ -57,7 +72,7 @@ function createElement(type, value, name, id, ...classList) {
     let element = document.createElement(type);
     if (classList.length !== 0)
         if (classList[0].length !== 0)
-            element.classList.add(classList[0]);
+            element.className = classList[0].join(" ");
     element.name = name  || "";
     element.id = id  || "";
     element.innerText = value  || "";
@@ -99,17 +114,21 @@ function createOption(parent, value) {
 function createInputDropdown(parent, id, name, dataItemsMap, ...classList) {
     let inputText = createElement("input", "", id, name, classList);
     inputText.type = "text";
-    inputText.list = id + "_datalist";
-    let datalist = createElement("datalist", "", inputText.list, "");
+    let datalist = createElement("datalist", "", inputText.list, id + '_datalist');
     list.forEach(function(e) {
         createOption(datalist, e.email)
     });
+    inputText.setAttribute('list', id + '_datalist');
     inputText.oninput = function(){
-        let p = list.get(this.value);
-
-        let tr = inputText.closest('tr');
-        tr.item(2).innerText = p.title + " " + p.firstname + " " + p.lastname;
-        tr.item(3).inner = p.dept + " (" + p.faculty + ") ";
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].email === this.value) {
+                let p = list[i];
+                let tr = inputText.closest('tr');
+                tr.children[2].innerText = p.title + " " + p.firstname + " " + p.lastname;
+                tr.children[3].innerText = p.dept + " (" + p.faculty + ") ";
+                break;
+            }
+        }
     };
     addChildren(parent, inputText, datalist)
 }

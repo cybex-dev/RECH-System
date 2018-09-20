@@ -54,12 +54,12 @@ public class ProfileHandler extends Controller {
         List<EntityEthicsApplication> entity_facultyApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.FacultyRTI);
 
         return ok(views.html.UserSystem.Dashboard.render(
-                entity_newApps.stream().map(Application::create).collect(Collectors.toList()),
-                entity_ownApplications.stream().map(Application::create).collect(Collectors.toList()),
-                entity_approveApps.stream().map(Application::create).collect(Collectors.toList()),
-                entity_reviewApps.stream().map(Application::create).collect(Collectors.toList()),
-                entity_liaiseApps.stream().map(Application::create).collect(Collectors.toList()),
-                entity_facultyApps.stream().map(Application::create).collect(Collectors.toList()))
+                entity_newApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
+                entity_ownApplications.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
+                entity_approveApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
+                entity_reviewApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
+                entity_liaiseApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
+                entity_facultyApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()))
         );
     }
 

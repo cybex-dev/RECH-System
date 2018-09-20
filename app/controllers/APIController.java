@@ -124,8 +124,8 @@ public class APIController extends Controller {
 
             EntityPerson.findAllReviewers()
                     .stream()
-                    .filter(entityPerson -> !entityPerson.getUserEmail().equals("") &&
-                            !entityPerson.getUserEmail().equals(""))
+                    .filter(entityPerson -> !entityPerson.getUserEmail().equals(pi) &&
+                            !entityPerson.getUserEmail().equals(prp))
                     .forEach(p -> {
                         Map<String, String> map = new HashMap<>();
                         map.put("title", p.getUserTitle());

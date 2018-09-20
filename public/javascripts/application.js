@@ -147,6 +147,7 @@ function addRow(tableId, elements) {
     button.type = "button";
     button.onclick = function() {
         removeRow(tableId, button.closest('tr').rowIndex);
+        updateRowIndexes(tableId)
     };
     remove.appendChild(button);
 }

@@ -267,8 +267,8 @@ h2, h3, h4 {
 }
 
 th {
-    color: #0A283F !important;
-    font-size: 1.4em;
+    color: #FFFFFF !important;
+    font-size: 1.1em;
 }
 
 tr {
@@ -308,4 +308,17 @@ table > thead {
 
 .item-button {
     margin: 0 !important;
+}
+
+.overview-title i {
+    margin-left: 20px;
+}
+
+.overview-title:hover {
+    background-color: #f9b42a !important;
+    cursor: pointer;
+}
+
+.table > tbody > tr > th {
+    border-bottom: 2px solid #ddd;
 }

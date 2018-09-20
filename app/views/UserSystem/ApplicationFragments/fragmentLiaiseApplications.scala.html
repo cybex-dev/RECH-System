@@ -2,26 +2,28 @@
 
 @(applications: List[Application])
 
-<h3>Applications Requiring Liaison Attention</h3>
+<div class="">
+    <h3 class="overview overview-title"><i class="fa fa-angle-right"></i> Applications Requiring Liaison Attention</h3>
 @if(applications.size() > 0) {
     <div class="row">
         <table class="table">
             <thead>
-                <th>Application Title</th>
+                <th class="col-sm-3">Application Title</th>
                 <th>Notifications</th>
                 <th>Status</th>
                 <th>Date Submitted</th>
                 <th>Date Approved</th>
+                <th class="col-sm-2"></th>
             </thead>
             <tbody>
             @for(application: Application <- applications) {
                 <tr>
-                    <td>@application.title</td>
+                    <td style="text-decoration: underline;">@application.getTitle</td>
                     <td></td>
-                    <td>@application.status.name()</td>
-                    <td>@application.date_approved</td>
-                    <td>@application.date_submitted</td>
-                    <td><a href="@controllers.ReviewSystem.routes.ReviewHandler.reviewApplication(application.applicationID.shortName())">
+                    <td>@application.getStatus.name()</td>
+                    <td>@application.getSubmittedDateSafe</td>
+                    <td>@application.getApprovedDateSafe</td>
+                    <td><a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.reviewApplication(application.getApplicationID.shortName())">
                         <button class="nmu-button table-button">Review Application</button>
                     </a></td>
                 </tr>
@@ -32,3 +34,5 @@
 } else {
     <p>No applications requiring approval</p>
 }
+</div>
+<br/>

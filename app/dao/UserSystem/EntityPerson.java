@@ -1,5 +1,6 @@
 package dao.UserSystem;
 
+import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ReviewSystem.EntityReviewerApplications;
 import io.ebean.Finder;
 import io.ebean.Model;
@@ -7,6 +8,7 @@ import models.UserSystem.UserType;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -214,11 +216,19 @@ public class EntityPerson extends Model {
     }
 
     public static String getHod(String departmentName) {
-        return find.all().stream()
-                .filter(entityPerson -> entityPerson.departmentName.equals(departmentName) && entityPerson.userType().equals(UserType.DepartmentHead))
-                .map(dao.UserSystem.EntityPerson::getUserEmail)
-                .findFirst()
-                .orElse("");
+        List<EntityPerson> personList = EntityPerson.find.all();
+        List<EntityPerson> filteredList = new ArrayList<>();
+        personList.forEach(entityPerson -> {
+            String departmentName1 = entityPerson.departmentName;
+            UserType userType = entityPerson.userType();
+            if (departmentName1.equals(departmentName) && userType.equals(UserType.DepartmentHead)){
+                filteredList.add(entityPerson);
+            }
+        });
+        EntityPerson entityPerson = filteredList.get(0);
+        if (entityPerson == null)
+            return null;
+        return entityPerson.getUserEmail();
     }
 
     public static boolean authenticate(String email, String password) {

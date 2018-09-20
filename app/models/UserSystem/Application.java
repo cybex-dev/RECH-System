@@ -2,10 +2,16 @@ package models.UserSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
+import dao.ReviewSystem.EntityReviewerApplications;
 import models.ApplicationSystem.ApplicationStatus;
 import scala.App;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Application {
 
@@ -13,26 +19,59 @@ public class Application {
         INFO, ATTENTION, MESSAGE, ACCEPTED;
     }
 
-    public EntityEthicsApplicationPK applicationID;
-    public String title;
-    public Timestamp date_submitted;
-    public Timestamp date_approved;
-    public Timestamp date_assigned;
-    public Timestamp due_date;
-    public ApplicationStatus status;
-    public int[] notifications;
+    private EntityEthicsApplicationPK applicationID;
+    private String title;
+    private Timestamp date_submitted;
+    private Timestamp date_approved;
+    private Timestamp date_assigned;
+    private Timestamp due_date;
+    private ApplicationStatus status;
+    private int[] notifications;
+
+    public Application(){}
 
     public Application(EntityEthicsApplicationPK applicationID, String title, Timestamp date_submitted, Timestamp date_approved, ApplicationStatus status) {
         this.applicationID = applicationID;
         this.title = title;
-        this.date_submitted = date_submitted;
-        this.date_approved = date_approved;
+        this.date_submitted = date_submitted == null ? Timestamp.from(Instant.now()) : date_submitted;
+        this.date_approved = date_approved  == null ? Timestamp.from(Instant.now()) : date_submitted;
+        this.date_assigned = Timestamp.from(Instant.now());
+        this.due_date = Timestamp.from(Instant.now());
         this.status = status;
     }
 
-    public static Application create(EntityEthicsApplication entityEthicsApplication) {
-        ApplicationStatus status = ApplicationStatus.parse(entityEthicsApplication.getInternalStatus());
-        return new Application(entityEthicsApplication.applicationPrimaryKey(), entityEthicsApplication.title(), entityEthicsApplication.getDateSubmitted(), entityEthicsApplication.getDateApproved(), status);
+    public static Application create(EntityEthicsApplication app, UserType userType) {
+        ApplicationStatus status = ApplicationStatus.parse(app.getInternalStatus());
+        Application application = new Application();
+        application.setApplicationID(app.applicationPrimaryKey());
+        application.setStatus(status);
+
+        application.setDate_submitted(app.getDateSubmitted());
+        application.setDate_approved(app.getDateApproved());
+        Timestamp dueDate = app.getDateSubmitted();
+        if (dueDate != null)
+            dueDate = addDays(dueDate, 14);
+        application.setDue_date(dueDate);
+
+        switch (userType) {
+            case Liaison:
+                application.setDate_assigned(app.getLiaisonAssignedDate());
+                break;
+            case Reviewer:
+                List<EntityReviewerApplications> collect = EntityReviewerApplications.find.all().stream()
+                        .filter(apps -> apps.applicationPrimaryKey().equals(app.applicationPrimaryKey()))
+                        .collect(Collectors.toList());
+                if (collect.size() > 0) {
+                    application.setDate_assigned(collect.get(0).getDateAssigned());
+                } else {
+                    application.setDate_assigned(null);
+                }
+                break;
+            default:
+                break;
+        }
+        return application;
+
     }
 
     public EntityEthicsApplicationPK getApplicationID() {
@@ -97,5 +136,29 @@ public class Application {
 
     public void setNotifications(int[] notifications) {
         this.notifications = notifications;
+    }
+
+    private static Timestamp addDays(Timestamp now, int days){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(now);
+        cal.add(Calendar.DAY_OF_WEEK, days);
+        now.setTime(cal.getTime().getTime()); // or
+        return new Timestamp(cal.getTime().getTime());
+    }
+
+    public String getAssignedDateSafe(){
+        return (date_assigned == null) ? "" : due_date.toString().split(" ")[0];
+    }
+
+    public String getDueDateSafe(){
+        return (due_date == null) ? "" : due_date.toString().split(" ")[0];
+    }
+
+    public String getApprovedDateSafe(){
+        return (date_approved == null) ? "" : due_date.toString().split(" ")[0];
+    }
+
+    public String getSubmittedDateSafe(){
+        return (date_submitted == null) ? "" : due_date.toString().split(" ")[0];
     }
 }

@@ -7,7 +7,7 @@
 @Masterpage.apply(":: Assign Reviewers"){
     @helper.form(action = controllers.ReviewSystem.routes.ReviewHandler.doAssignReviewers()){
         @helper.CSRF.formField
-        <input type="hidden" id="application_id" value="@application.applicationID.shortName()">
+        <input type="hidden" id="application_id" value="@application.getApplicationID().shortName()">
         <h2>Assign Reviewers to Application</h2>
         <br>
         <div class="application-details">
@@ -15,20 +15,20 @@
             <br>
             <div class="row">
                 <div class="col-sm-4"><b>Application Title:</b></div>
-                <div class="col-sm-7">@application.title</div>
+                <div class="col-sm-7">@application.getTitle</div>
             </div>
             <br>
             <div class="row">
                 <div class="col-sm-4"><b>Type</b></div>
-                <div class="col-sm-7">@application.applicationID.getApplicationType</div>
+                <div class="col-sm-7">@application.getApplicationID.getApplicationType</div>
             </div>
             <div class="row">
                 <div class="col-sm-4"><b>Faculty</b></div>
-                <div class="col-sm-7">@application.applicationID.getFacultyName</div>
+                <div class="col-sm-7">@application.getApplicationID.getFacultyName</div>
             </div>
             <div class="row">
                 <div class="col-sm-4"><b>Department</b></div>
-                <div class="col-sm-7">@application.applicationID.getDepartmentName</div>
+                <div class="col-sm-7">@application.getApplicationID.getDepartmentName</div>
             </div>
             <br>
             <h2>Assign Reviewers</h2>
@@ -38,8 +38,8 @@
                 <thead>
                     <tr>
                         <th class="col-sm-1">#</th>
-                        <th class="col-sm-3">Reviewer</th>
                         <th class="col-sm-4">Email</th>
+                        <th class="col-sm-3">Reviewer</th>
                         <th class="col-sm-3">Department (Faculty)</th>
                         <th class="col-sm-1"></th>
                     </tr>
@@ -54,14 +54,14 @@
                 </tfoot>
             </table>
         </div>
-        <input hidden="hidden" name="application_id" id="application_id" value="@application.applicationID.shortName()">
+        <input hidden="hidden" name="application_id" id="application_id" value="@application.getApplicationID.shortName()">
         <div class="col-sm-6">
             <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
                 <button type="button" class="nmu-button" style="min-width: 30%; width: auto; float: left">Cancel</button>
             </a>
         </div>
         <div class="col-sm-6">
-            <button type="submit" class="nmu-button" style="min-width: 30%; width: auto; float: right">Save</button>
+            <button type="submit" class="nmu-button" style="min-width: 30%; width: auto; float: right">Assign Reviewers</button>
         </div>
     }
 }

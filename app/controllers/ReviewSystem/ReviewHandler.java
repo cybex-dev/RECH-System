@@ -141,11 +141,13 @@ public class ReviewHandler extends Controller {
             return internalServerError();
         }
 
-        Application app = Application.create(application);
-//        List<EntityPerson> reviewers = rawReviewers.stream()
-//                .filter(entityPerson -> !entityPerson.getUserEmail().equals(prp) && !entityPerson.getUserEmail().equals(pi))
-//                .collect(Collectors.toList());
-        return ok(views.html.ReviewSystem.AssignApplication.render(app));
+        UserType type = UserType.parse(session().get(CookieTags.user_id));
+        if (type == null)
+            return redirect(routes.ProfileHandler.overview());
+        else {
+            Application app = Application.create(application, type);
+            return ok(views.html.ReviewSystem.AssignApplication.render(app));
+        }
     }
 
     public Result doAssignReviewers(){
@@ -157,19 +159,19 @@ public class ReviewHandler extends Controller {
         }
 
         EntityEthicsApplicationPK application_id = EntityEthicsApplicationPK.fromString(form.get("application_id"));
-        String reviewer1 = form.get("reviewer1");
-        String reviewer2 = form.get("reviewer2");
-        String reviewer3 = form.get("reviewer3");
-        String reviewer4 = form.get("reviewer4");
-
         Timestamp ts = Timestamp.from(Instant.now());
-        for (String reviewer: new String[]{reviewer1, reviewer2, reviewer3, reviewer4}){
-            EntityReviewerApplications reviewerApplications = new EntityReviewerApplications();
-            reviewerApplications.setApplicationKey(application_id);
-            reviewerApplications.setReviewerEmail(reviewer);
-            reviewerApplications.setDateAssigned(ts);
-            reviewerApplications.insert();
-        }
+
+        // Assign reviewers to applications
+        form.get().getData()
+                .entrySet().stream()
+                .filter(entry -> entry.getKey().matches("^reviewer\\d*$"))
+                .forEach(entry -> {
+                    EntityReviewerApplications reviewerApplications = new EntityReviewerApplications();
+                    reviewerApplications.setApplicationKey(application_id);
+                    reviewerApplications.setReviewerEmail(entry.getValue().toString());
+                    reviewerApplications.setDateAssigned(ts);
+                    reviewerApplications.insert();
+                });
 
         new RECEngine().nextStep(application_id);
 
