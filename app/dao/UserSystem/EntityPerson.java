@@ -20,7 +20,6 @@ public class EntityPerson extends Model {
     private String userPasswordHash;
     private String userFirstname;
     private String userLastname;
-    private String userGender;
     private String userTitle;
     private String currentDegreeLevel;
     private String contactNumberMobile;
@@ -29,6 +28,7 @@ public class EntityPerson extends Model {
     private String officeAddress;
     private String departmentName;
     private String facultyName;
+    private String officeCampus;
 
     public static Finder<String, dao.UserSystem.EntityPerson> find = new Finder<>(dao.UserSystem.EntityPerson.class);
 
@@ -77,16 +77,6 @@ public class EntityPerson extends Model {
 
     public void setUserLastname(String userLastname) {
         this.userLastname = userLastname;
-    }
-
-    @Basic
-    @Column(name = "user_gender")
-    public String getUserGender() {
-        return userGender;
-    }
-
-    public void setUserGender(String userGender) {
-        this.userGender = userGender;
     }
 
     @Basic
@@ -140,6 +130,16 @@ public class EntityPerson extends Model {
     }
 
     @Basic
+    @Column(name = "office_campus")
+    public String getOfficeCampus() {
+        return officeCampus;
+    }
+
+    public void setOfficeCampus(String officeCampus) {
+        this.officeCampus = officeCampus;
+    }
+
+    @Basic
     @Column(name = "office_address")
     public String getOfficeAddress() {
         return officeAddress;
@@ -178,7 +178,6 @@ public class EntityPerson extends Model {
                 Objects.equals(userPasswordHash, that.userPasswordHash) &&
                 Objects.equals(userFirstname, that.userFirstname) &&
                 Objects.equals(userLastname, that.userLastname) &&
-                Objects.equals(userGender, that.userGender) &&
                 Objects.equals(userTitle, that.userTitle) &&
                 Objects.equals(currentDegreeLevel, that.currentDegreeLevel) &&
                 Objects.equals(contactNumberMobile, that.contactNumberMobile) &&
@@ -186,13 +185,14 @@ public class EntityPerson extends Model {
                 Objects.equals(contactOfficeTelephone, that.contactOfficeTelephone) &&
                 Objects.equals(officeAddress, that.officeAddress) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName);
+                Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(officeCampus, that.officeCampus);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userGender, userTitle, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName);
+        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userTitle, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName, officeCampus);
     }
 
     public static dao.UserSystem.EntityPerson getPersonById(String userEmail){
@@ -236,6 +236,10 @@ public class EntityPerson extends Model {
         if (entityPerson == null)
             return false;
         return BCrypt.checkpw(password, entityPerson.getUserPasswordHash());
+    }
+
+    public boolean authenticate(String password) {
+        return authenticate(userEmail, password);
     }
 
     public static String getPersonType(String email) {

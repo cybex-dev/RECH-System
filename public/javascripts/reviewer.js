@@ -44,7 +44,7 @@ function getReviewers() {
         url: apiRoutes.controllers.APIController.findAllReviewers(id).url
     }).done(function(data) {
         list = data;
-    });
+    });l
 }
 
 function updateRowIndexes(tableId) {

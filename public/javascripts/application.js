@@ -15,6 +15,7 @@ function enablePopulatePRPFields() {
         document.getElementById("prp_lastname").value = data.lastname;
         document.getElementById("prp_contact_telephone").value = data.telephone;
         document.getElementById("prp_contact_mobile").value = data.mobile;
+        document.getElementById("prp_campus").value = data.campus;
         document.getElementById("prp_address").value = data.address;
         document.getElementById("prp_faculty").value = data.faculty;
         document.getElementById("prp_department").value = data.department;

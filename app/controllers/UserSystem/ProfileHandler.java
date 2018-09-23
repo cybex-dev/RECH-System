@@ -1,13 +1,20 @@
 package controllers.UserSystem;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import controllers.APIController;
+import controllers.NotificationSystem.Notifier;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
 import helpers.FileScanner;
 import models.UserSystem.Application;
 import models.UserSystem.UserType;
+import net.ddns.cyberstudios.Element;
+import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
 import play.data.FormFactory;
+import play.filters.csrf.RequireCSRFCheck;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -16,18 +23,20 @@ import play.routing.JavaScriptReverseRouter;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Security.Authenticated(Secured.class)
 public class ProfileHandler extends Controller {
 
-    static Map<UserType, String> enrolmentKeys = new HashMap<>();
+    static Map<UserType, String> enrolmentMap = new HashMap<>();
 
     @Inject
     private FormFactory formFactory;
 
-    public ProfileHandler(){}
+    public ProfileHandler() {
+    }
 
     public ProfileHandler(FormFactory formFactory) {
         this.formFactory = formFactory;
@@ -37,14 +46,15 @@ public class ProfileHandler extends Controller {
      * Gets an overview of applications dependant on user type
      *
      * <ul>
-     *     <li>PI: all application statuses</li>
-     *     <li>PRP : all own applications and related PI's applications</li>
-     *     <li>Reviewer|Liaison|HOD|RTI : all own applications, related PI applications and applications to review</li>
-     *     <li>No applications shown. Shown data such as meeting dates, quanity applications to be reviewed with title, etc</li>
+     * <li>PI: all application statuses</li>
+     * <li>PRP : all own applications and related PI's applications</li>
+     * <li>Reviewer|Liaison|HOD|RTI : all own applications, related PI applications and applications to review</li>
+     * <li>No applications shown. Shown data such as meeting dates, quanity applications to be reviewed with title, etc</li>
      * </ul>
+     *
      * @return
      */
-    public Result overview(){
+    public Result overview() {
         EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
         List<EntityEthicsApplication> entity_newApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.RCD);
         List<EntityEthicsApplication> entity_ownApplications = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryInvestigator);
@@ -65,25 +75,117 @@ public class ProfileHandler extends Controller {
 
     /**
      * Retrieves all profile information about an individual
+     *
      * @return
      */
-    public Result settings(){
-        return ok(views.html.UserSystem.Settings.render());
+    public Result settings() {
+        EntityPerson personById = EntityPerson.getPersonById(session(CookieTags.user_id));
+        if (personById == null) {
+            flash("info", "Please login again");
+            return redirect(routes.LoginController.logout());
+        }
+        return ok(views.html.UserSystem.Settings.render(personById));
     }
 
     /**
-     * Modifies information provided
      * @return
      */
-    public Result modifySettings(){
-        return TODO;
+    @RequireCSRFCheck
+    public Result updateBasicInfo() {
+        JsonNode json = request().body().asJson();
+        String userId = json.findPath("user_id").textValue();
+        if (userId == null || userId.isEmpty()) {
+            flash("info", "User not found, please login again");
+            return badRequest();
+        }
+        EntityPerson personById = EntityPerson.getPersonById(userId);
+        if (personById == null) {
+            flash("info", "User not found, please login again");
+            return notFound();
+        }
+
+        String title = json.findPath("title").textValue();
+        String firstname = json.findPath("firstname").textValue();
+        String lastname = json.findPath("lastname").textValue();
+        String mobile = json.findPath("mobile").textValue();
+        String degree = json.findPath("degree").textValue();
+        String faculty = json.findPath("faculty").textValue();
+        String department = json.findPath("department").textValue();
+
+        personById.setUserTitle(title);
+        personById.setUserFirstname(firstname);
+        personById.setUserLastname(lastname);
+        personById.setContactNumberMobile(mobile);
+        personById.setCurrentDegreeLevel(degree);
+        personById.setFacultyName(faculty);
+        personById.setDepartmentName(department);
+        personById.update();
+
+        flash("success", "Basic information updated");
+        return ok();
+    }
+
+    @RequireCSRFCheck
+    public Result updateAcademicInfo() {
+        JsonNode json = request().body().asJson();
+        String userId = json.findPath("user_id").textValue();
+        if (userId == null || userId.isEmpty()) {
+            flash("info", "User not found, please login again");
+            return badRequest();
+        }
+        EntityPerson personById = EntityPerson.getPersonById(userId);
+        if (personById == null) {
+            flash("info", "User not found, please login again");
+            return notFound();
+        }
+
+        String telephone = json.findPath("telephone").textValue();
+        String address = json.findPath("address").textValue();
+        String campus = json.findPath("campus").textValue();
+
+        personById.setOfficeCampus(campus);
+        personById.setContactOfficeTelephone(telephone);
+        personById.setOfficeAddress(address);
+        personById.update();
+
+        flash("success", "Academic information updated");
+        return ok();
+    }
+
+    @RequireCSRFCheck
+    public Result updatePassword() {
+        JsonNode json = request().body().asJson();
+        String userId = json.findPath("user_id").textValue();
+        if (userId == null || userId.isEmpty())
+            return badRequest();
+        EntityPerson personById = EntityPerson.getPersonById(userId);
+        if (personById == null)
+            return notFound();
+
+        String old_password = json.findPath("old_password").textValue();
+        if (!personById.authenticate(old_password)) {
+            flash("danger", "Incorrect existing password");
+            return notFound();
+        }
+
+        String newPassword = json.findPath("new_password").textValue();
+        String confirmPassword = json.findPath("confirm_password").textValue();
+        if (!newPassword.equals(confirmPassword)) {
+            flash("danger", "Passwords mismatch, try again");
+            return badRequest();
+        }
+
+        Notifier.changedPassword(personById);
+        flash("success", "Password changed");
+        return ok();
     }
 
     /**
      * Generates controller javascript routes
+     *
      * @return
      */
-    public Result javascriptRoutes(){
+    public Result javascriptRoutes() {
         return ok(
                 JavaScriptReverseRouter.create("userRoutes",
                         routes.javascript.ProfileHandler.overview(),
@@ -93,60 +195,56 @@ public class ProfileHandler extends Controller {
         ).as("text/javascript");
     }
 
-    public Result enrol(){
+    public Result enrol() {
         return ok(views.html.UserSystem.Enrol.render());
     }
 
-    public Result doEnrol(){
-        DynamicForm form = formFactory.form().bindFromRequest();
+    @RequireCSRFCheck
+    public Result doEnrol() {
+        JsonNode json = request().body().asJson();
+        String userId = json.findPath("user_id").textValue();
+        if (userId == null || userId.isEmpty())
+            return badRequest();
+        EntityPerson personById = EntityPerson.getPersonById(userId);
+        if (personById == null)
+            return notFound();
 
-        EntityPerson p = EntityPerson.getPersonById(session(CookieTags.user_id));
-        if (p == null){
-            return redirect(routes.LoginController.logout());
+        String type = json.findPath("position").textValue();
+        String code = json.findPath("code").textValue();
+        if (type == null || type.isEmpty() ||
+                code == null || code.isEmpty()) {
+            flash("info", "User not found, please login again");
+            return badRequest();
         }
 
-        if (form.hasGlobalErrors()) {
-            flash("danger", "Invalid enrolment key");
-            return badRequest(views.html.UserSystem.Enrol.render());
-        }
+        UserType userType = UserType.parse(type);
 
-        if (enrolmentKeys.size() == 0) {
+        if (enrolmentMap.isEmpty()) {
             try {
-                List<File> resourceFiles = new FileScanner().getResourceFiles("/enrolment/");
-                if (resourceFiles.size() > 0) {
-                    File enrolmentFile = resourceFiles.get(0);
-                    if (enrolmentFile.exists()) {
-                        Scanner s = new Scanner(enrolmentFile);
+                Element keysXml = XMLTools.parseDocument(new File(APIController.class.getResource("enrolment.xml").toURI()));
+                XMLTools.flatten(keysXml, false).forEach(s -> {
+                    Element lookup = XMLTools.lookup(keysXml, s);
+                    UserType t = UserType.parse(s);
+                    enrolmentMap.put(t, lookup.getValue().toString());
+                });
 
-                        String line = "";
-                        while (s.hasNext()) {
-                            line = s.nextLine();
-                            String[] split = line.split("=");
-                            enrolmentKeys.put(UserType.parse(split[0]), split[1]);
-                        }
-                    }
-                }
-            } catch (IOException e) {
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
         }
 
-        Map.Entry<UserType, String> enrol_code = enrolmentKeys.entrySet().stream()
-                .filter(userTypeStringEntry -> {
-                    String value = userTypeStringEntry.getValue();
-                    String enrol_code1 = form.get("enrol_code");
-                    return value.equals(enrol_code1);
-                }).findFirst()
+        Map.Entry<UserType, String> enrol_code = enrolmentMap.entrySet().stream()
+                .filter(entry -> entry.getKey().equals(userType) && entry.getValue().equals(code))
+                .findFirst()
                 .orElse(null);
         if (enrol_code == null) {
             flash("danger", "Invalid enrolment key");
-            return badRequest(views.html.UserSystem.Enrol.render());
+            return notFound();
         }
 
-        EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
-        if (personById.userType().equals(enrol_code.getKey())){
-            flash("danger", "You are already a " + personById.userType().toString());
-            return badRequest(views.html.UserSystem.Enrol.render());
+        if (personById.userType().equals(enrol_code.getKey())) {
+            flash("danger", "You are already a " + userType.getDescription());
+            return badRequest();
         }
 
         personById.setPersonType(enrol_code.getKey().toString());
@@ -154,7 +252,13 @@ public class ProfileHandler extends Controller {
         session().remove(CookieTags.user_type);
         session(CookieTags.user_type, enrol_code.getKey().toString());
 
-        flash("success", "You are now a " + enrol_code.getKey());
-        return redirect(routes.ProfileHandler.overview());
+        Notifier.enrolledUser(enrol_code.getKey(), personById.getUserEmail());
+
+        flash("success", "You are now a " + enrol_code.getKey().getDescription());
+        return ok();
+    }
+
+    public static List<String> getEnrolmentPositions(){
+        return enrolmentMap.entrySet().stream().map(entry -> entry.getKey().toString()).collect(Collectors.toList());
     }
 }

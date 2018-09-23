@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import controllers.UserSystem.ProfileHandler;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.NMU.EntityDepartment;
@@ -8,12 +9,17 @@ import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
 import models.UserSystem.UserType;
+import net.ddns.cyberstudios.Element;
+import net.ddns.cyberstudios.XMLTools;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.routing.JavaScriptReverseRouter;
 
 import javax.swing.text.html.parser.Entity;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +27,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class APIController extends Controller {
+
+
     public Result getData() {
 
         String data = request().body().asJson().asText();
@@ -101,12 +109,16 @@ public class APIController extends Controller {
             map.put("lastname", entityPerson1.getUserLastname());
             map.put("telephone", entityPerson1.getContactOfficeTelephone());
             map.put("mobile", entityPerson1.getContactNumberMobile());
+            map.put("campus", entityPerson1.getOfficeCampus());
             map.put("address", entityPerson1.getOfficeAddress());
             map.put("faculty", entityPerson1.getFacultyName());
             map.put("department", entityPerson1.getDepartmentName());
         }
         return ok(Json.toJson(map));
+    }
 
+    public static List<String> getEnrolPositions(){
+        return ProfileHandler.getEnrolmentPositions();
 
     }
 

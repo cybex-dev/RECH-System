@@ -366,6 +366,7 @@ public class ApplicationHandler extends Controller {
                         if (entityComponentVersion != null) {
                             // insert component version value
                             setComponentValue(entityComponentVersion, entry, type);
+                            data.remove(entry.getKey());
                         }
 
                         // if == null, means that the the component was submitted and is not meant to be changed, but it is being changed. This change will not be saved.

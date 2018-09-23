@@ -1,17 +1,19 @@
 @*When a person has enrolled into the system (for privilledges), the RCD is notified per message *@
 @import views.html.Templates.Masterpage
+@import views.html.Components._
 
 @()
 
 @Masterpage.apply(" :: Enrollment"){
     <br/>
-    @helper.form( action = controllers.UserSystem.routes.ProfileHandler.doEnrol()) {
+    @helper.form( action = controllers.UserSystem.routes.ProfileHandler.doEnrol())
         @helper.CSRF.formField
 
-        <label>Please enter the enrolment key you have been given</label>
-        <input type="text" id="enrol_code" name="enrol_code"/>
+        @inputDatalist.apply("enrol_type", "Select role:", "", APIController.getEnrolPositions, "", true, false)
+        @inputText.apply("enrol_code", "Enrol Code", "", "", true, false);
+        <br/>
         <span style="font-style: italic;">Please note: the department / faculty associated with your profile is used when registering for a specific role</span>
 
-        <button type="submit" class="nmu-button" style="width: auto">Enrol</button>
+        <button type="submit" class="nmu-button action-button" style="width: auto">Enrol</button>
     }
 }

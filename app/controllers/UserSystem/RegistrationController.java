@@ -42,14 +42,19 @@ public class RegistrationController extends Controller {
     public Result submitRegistration(){
         Form<UserRegistrationForm> userRegistrationFormForm = formFactory.form(UserRegistrationForm.class).bindFromRequest();
         if (userRegistrationFormForm.hasErrors()) {
-            flash("danger", "Check input fields");
+            flash("warning", "Check input fields");
             return badRequest(views.html.UserSystem.Register.render(userRegistrationFormForm, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
         }
 
         UserRegistrationForm userRegistrationForm = userRegistrationFormForm.get();
 
         if (EntityPerson.getPersonById(userRegistrationForm.getEmail()) != null) {
-            flash("danger", "Account with email " + userRegistrationForm.getEmail() + " already exists!");
+            flash("warning", "Account with email " + userRegistrationForm.getEmail() + " already exists!");
+            return badRequest(views.html.UserSystem.Register.render(userRegistrationFormForm, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
+        }
+
+        if (!userRegistrationForm.getConfirm_password().equals(userRegistrationForm.getPassword())){
+            flash("warning", "Passwords do not match.");
             return badRequest(views.html.UserSystem.Register.render(userRegistrationFormForm, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
         }
 

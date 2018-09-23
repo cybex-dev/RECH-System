@@ -1,9 +1,11 @@
 package controllers.NotificationSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
+import dao.UserSystem.EntityPerson;
 import engine.SystemNotification;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
+import models.UserSystem.UserType;
 
 public class Notifier {
     /**
@@ -25,8 +27,10 @@ public class Notifier {
 
     /**
      * Used to notify RCD of a message, a new user enrolled for a privileged position on the system
+     *
+     * ALso notifies the new user
      */
-    public static void enrolledUser(String user_email) {
+    public static void enrolledUser(UserType newUserType, String user_email) {
 
     }
 
@@ -44,6 +48,10 @@ public class Notifier {
     }
 
     public static void systemNotification(EntityEthicsApplicationPK applicationId, ApplicationStatus status, String title, SystemNotification notification, String...emails) {
+
+    }
+
+    public static void changedPassword(EntityPerson personById) {
 
     }
 }

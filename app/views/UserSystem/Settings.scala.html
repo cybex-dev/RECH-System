@@ -1,10 +1,106 @@
 @import views.html.Templates.Masterpage
+@import views.html.Components._
+@import dao.UserSystem.EntityPerson
+@import models.UserSystem.UserType
 
-@()
+@import java.util
+@import java.util.Arrays
+@(entityPerson: EntityPerson)
 
 @Masterpage.apply(" :: Settings"){
     <br/>
     <h2>Profile Settings</h2>
+    <div class="row tbsRow">
+        <div class="col-sm-6 tbsColFirst">
+            <div class="col-sm-12 rowSizer BoxDarkRed TextWhite  tbsVpad ">
+                <div class="sp-tab-panel">
+                    <ul class="nav nav-tabs" role="tablist">
+                        @if(entityPerson.userType() != UserType.RCD) {
+                            <li class="active" role="presentation">
+                                <a aria-controls="basic_info" data-toggle="tab" href="#basic_info" role="tab" aria-expanded="true">Basic Information</a></li>
+                        }
+                        <li class="active" role="presentation">
+                            <a aria-controls="password" data-toggle="tab" href="#change_password" role="tab" aria-expanded="false">Change Password</a></li>
+                        @if(entityPerson.userType() != UserType.PrimaryInvestigator) {
+                            <li role="presentation" class="">
+                                <a aria-controls="academic_info" data-toggle="tab" href="#academic_info" role="tab" aria-expanded="false">Academic Information</a></li>
+                        }
+                        @if(entityPerson.userType() != UserType.RCD) {
+                            <li role="presentation" class="">
+                                <a aria-controls="enrol" data-toggle="tab" href="#enrol" role="tab" aria-expanded="false">Enrol</a></li>
+                        }
 
-    <a href="@controllers.UserSystem.routes.ProfileHandler.enrol()"><button>Enrol as reviewer</button></a>
+                    </ul>
+                    <div class="tab-content">
+                        @if(entityPerson.userType() != UserType.RCD) {
+                            <div class="tab-pane active" id="basic_info" role="tabpanel">
+                                <h4>Basic Information</h4>
+                                @inputDropdown.apply("title", "Title", entityPerson.getUserTitle, new util.ArrayList[String]()("Mr","Mrs","Ms","Dr","Prof"), "Your preferred title", true, false)
+                                @inputText.apply("firstname", "First name", entityPerson.getUserFirstname, "Your firstname", true, false)
+                                @inputText.apply("lastname", "Last name", entityPerson.getUserLastname, "Your lastname", true, false)
+                                @inputText.apply("mobile", "Your mobile name", entityPerson.getUserLastname, "Your mobile number", true, false)
+                                <br/>
+                                @inputDatalist.apply("degree", "Current Degree", entityPerson.getCurrentDegreeLevel, new util.ArrayList[String]()("High-School","Diploma","Degree","Honours","Masters","Doctorate"), "Your current degree", true, false)
+                                @inputDatalist.apply("faculty", "Faculty", entityPerson.getFacultyName, APIController.getDataDirect("faculties"), "Your current faculty", true, false)
+                                @inputDatalist.apply("department", "Department", entityPerson.getDepartmentName, APIController.getDataDirect("departments"), "Your current department", true, false)
+                                <br/>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <button class="nmu-button action-button" type="button" id="btnHome">Cancel</button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button class="nmu-button action-button" type="button" id="btnUpdateBasic">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="tab-pane" id="change_password" role="tabpanel">
+                            <h4>Change Password</h4>
+                            @inputText.apply("old_password", "Old password", "", "Your current password", true, false)
+                            <br/>
+                            @inputText.apply("new_password", "New password", "", "Your new password", true, false)
+                            @inputText.apply("confirm_password", "Confirm password", "", "Confirm your new password", true, false)
+                            <br/>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <button class="nmu-button action-button" type="button" id="btnHome">Cancel</button>
+                                </div>
+                                <div class="col-sm-6">
+                                    <button class="nmu-button action-button" type="button" id="btnChangePassword">Change Password</button>
+                                </div>
+                            </div>
+                        </div>
+                        @if(entityPerson.userType() != UserType.RCD) {
+                            <div class="tab-pane" id="academic_info" role="tabpanel">
+                                <h4>Academic Information</h4>
+                                @inputText.apply("telephone", "Office Telephone Number", entityPerson.getContactOfficeTelephone, "Your office telephone number", true, false)
+                                @inputDatalist.apply("campus", "Campus", entityPerson.getCampus, new ArrayList[String]()("South Campus", "North Campus", "Missionvale Campus", "Second Avenue (2nd) Campus", "Goerge Campus"), true, false)
+                                @inputText.apply("address", "Office Address", entityPerson.getContactOfficeTelephone, "Your office location", true, false)
+                                <br/>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <button class="nmu-button action-button" type="button" id="btnHome">Cancel</button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button class="nmu-button action-button" type="button" id="btnUpdateAcademic">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if(entityPerson.userType() != UserType.RCD) {
+                            <div class="tab-pane" id="enrol" role="tabpanel">
+                                <h4>Enrol</h4>
+                                @inputDatalist.apply("enrol_type", "Position:", "", APIController.getEnrolPositions, "The position to enrol for:", true, false)
+                                @inputText.apply("enrol_code", "Enrolment code", "", "The enrolment code provided to you", true, false)
+                                <br/>
+                                <button class="nmu-button action-button" type="button" id="btnEnrol">Enrol Now</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
 }
