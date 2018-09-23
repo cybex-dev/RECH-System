@@ -322,3 +322,12 @@ table > thead {
 .table > tbody > tr > th {
     border-bottom: 2px solid #ddd;
 }
+
+.alert {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.close {
+    color: #111 !important;
+}

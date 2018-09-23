@@ -1,9 +1,11 @@
-@()
+@import views.html.Templates.Flasher
 
+@()
 
 <div class="container">
     <div class="row">
-
+        <br/>
+        @Flasher.apply()
         <div class="MegaDropDownDiv pad-top-10">
             <div id="divLogo" class="col-xs-2 col-sm-3 tbsHnopad">
                 <a href="@routes.HomeController.redirectMandela("#")" id="aLogo">
