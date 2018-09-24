@@ -10,22 +10,25 @@ GET     /jsRoutes                       controllers.HomeController.javascriptRou
 
 ### ### Application System ###
 
-GET     /user/register                  controllers.UserSystem.RegistrationController.register
-POST    /user/register/submit           controllers.UserSystem.RegistrationController.submitRegistration
+GET     /user/register                  controllers.UserSystem.RegistrationController.registerInitial
+POST    /user/register/submit           controllers.UserSystem.RegistrationController.doRegisterInitial
+GET     /user/verify/:token             controllers.UserSystem.RegistrationController.verify(token: String)
+GET     /user/register/step2            controllers.UserSystem.RegistrationController.registerFinal
+POST    /user/register/step2/submit     controllers.UserSystem.RegistrationController.submitRegistration
 
 GET     /user/login                     controllers.UserSystem.LoginController.login
 POST    /user/login                     controllers.UserSystem.LoginController.doLogin
 GET     /user/logout                    controllers.UserSystem.LoginController.logout
 GET     /user/forgetPassword            controllers.UserSystem.LoginController.forgotPassword
+POST    /user/forgetPassword            controllers.UserSystem.ProfileHandler.sendForgotPassword
 
 GET     /user/overview                  controllers.UserSystem.ProfileHandler.overview
 
-GET     /user/profile                   controllers.UserSystem.ProfileHandler.settings
-POST    /user/profile                   controllers.UserSystem.ProfileHandler.modifySettings
-GET     /user/jsRoutes                  controllers.UserSystem.ProfileHandler.javascriptRoutes
+GET     /user/changePassword/:token     controllers.UserSystem.ProfileHandler.changePassword(token: String)
+POST    /user/changePassword            controllers.UserSystem.ProfileHandler.doChangePassword
 
-GET     /user/enrol                     controllers.UserSystem.ProfileHandler.enrol
-POST    /user/enrol                     controllers.UserSystem.ProfileHandler.doEnrol
+GET     /user/profile                   controllers.UserSystem.ProfileHandler.settings
+GET     /user/jsRoutes                  controllers.UserSystem.ProfileHandler.javascriptRoutes
 
 ### ### Application System ###
 
@@ -53,7 +56,7 @@ GET     /review/application/:id         controllers.ReviewSystem.ReviewHandler.r
 POST    /review/application/submit      controllers.ReviewSystem.ReviewHandler.submitReview
 
 GET     /review/application/approve/:id controllers.ReviewSystem.ReviewHandler.viewApprove(id: String)
-POST    /review/application/doApprove      controllers.ReviewSystem.ReviewHandler.doViewApprove
+POST    /review/application/doApprove   controllers.ReviewSystem.ReviewHandler.doViewApprove
 
 ### ### Message System ###
 
@@ -76,6 +79,11 @@ GET     /api/getData                    controllers.APIController.getData
 GET     /api/searchPerson/:email        controllers.APIController.searchPerson(email: String)
 GET     /api/searchLocation             controllers.APIController.searchLocation
 GET     /api/allReviewers/:id           controllers.APIController.findAllReviewers(id: String)
+
+POST    /api/updateBasicInfo            controllers.UserSystem.ProfileHandler.updatePassword
+POST    /api/updateAcademicInfo         controllers.UserSystem.ProfileHandler.updateAcademicInfo
+POST    /api/changePassword             controllers.UserSystem.ProfileHandler.updateBasicInfo
+POST    /api/doEnrol                    controllers.UserSystem.ProfileHandler.doEnrol
 
 
 # An example controller showing how to use dependency injection

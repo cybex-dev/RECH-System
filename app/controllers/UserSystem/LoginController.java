@@ -4,6 +4,7 @@ import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
+import models.UserSystem.BasicRegistrationForm;
 import models.UserSystem.UserLoginForm;
 import models.UserSystem.UserRegistrationForm;
 import play.data.Form;
@@ -90,10 +91,10 @@ public class LoginController extends Controller{
      * @return
      */
     public Result register() {
-        Form<UserRegistrationForm> form = formFactory.form(UserRegistrationForm.class);
+        Form<BasicRegistrationForm> form = formFactory.form(BasicRegistrationForm.class);
         if (!isLoggedIn()) {
             flash("info", "You are already logged in");
-            return ok(views.html.UserSystem.Register.render(form, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
+            return ok(views.html.UserSystem.RegisterBasic.render(form));
         } else {
             return redirect(routes.ProfileHandler.overview());
         }

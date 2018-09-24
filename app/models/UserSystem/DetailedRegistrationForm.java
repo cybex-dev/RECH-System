@@ -1,25 +1,13 @@
 package models.UserSystem;
 
 import dao.UserSystem.EntityPerson;
-import org.mindrot.jbcrypt.BCrypt;
 import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRegistrationForm implements Constraints.Validatable<List<ValidationError>> {
-    @Constraints.Email
-    @Constraints.Required
-    private String email;
-
-    @Constraints.Required
-    @Constraints.MinLength(8)
-    private String password;
-
-    @Constraints.Required
-    @Constraints.MinLength(8)
-    private String confirm_password;
+public class DetailedRegistrationForm {
 
     @Constraints.Required
     private String title;
@@ -42,14 +30,11 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
     @Constraints.Required
     private String faculty;
 
-    public UserRegistrationForm() {
+    public DetailedRegistrationForm() {
     }
 
-    public UserRegistrationForm(String title, String email, String password, String confirm_password, String firstname, String lastname, String gender, String mobile, String degreeLevel, String department, String facutly) {
+    public DetailedRegistrationForm(String title, String firstname, String lastname, String gender, String mobile, String degreeLevel, String department, String facutly) {
         this.title = title;
-        this.email = email;
-        this.password = password;
-        this.confirm_password = confirm_password;
         this.firstname = firstname;
         this.lastname = lastname;
         this.mobile = mobile;
@@ -64,22 +49,6 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getFirstname() {
@@ -114,14 +83,6 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
         this.degreeLevel = degreeLevel;
     }
 
-    public String getConfirm_password() {
-        return confirm_password;
-    }
-
-    public void setConfirm_password(String confirm_password) {
-        this.confirm_password = confirm_password;
-    }
-
     public String getDepartment() {
         return department;
     }
@@ -138,18 +99,4 @@ public class UserRegistrationForm implements Constraints.Validatable<List<Valida
         this.faculty = faculty;
     }
 
-    @Override
-    public List<ValidationError> validate() {
-        List<ValidationError> errors = new ArrayList<>();
-
-        if (EntityPerson.getPersonById(email) == null) {
-            errors.add(new ValidationError("email", "Email address already exists"));
-        }
-
-        if (!password.equals(confirm_password)) {
-            errors.add(new ValidationError("confirm_password", "Passwords do not match"));
-        }
-
-        return (errors.size() > 0 ? errors : null);
-    }
 }

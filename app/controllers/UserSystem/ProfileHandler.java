@@ -12,6 +12,7 @@ import models.UserSystem.Application;
 import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
+import org.mindrot.jbcrypt.BCrypt;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.filters.csrf.RequireCSRFCheck;
@@ -21,6 +22,7 @@ import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
 
 import javax.inject.Inject;
+import javax.swing.text.html.parser.Entity;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -180,6 +182,59 @@ public class ProfileHandler extends Controller {
         return ok();
     }
 
+    public Result sendForgotPassword(){
+        JsonNode node = request().body().asJson();
+        node.findPath("email");
+
+        flash("success", "Password reset sent");
+        return ok();
+    }
+
+    public Result changePassword(String token){
+        session("change", token);
+        return ok(views.html.UserSystem.ResetPassword.render());
+    }
+
+    @RequireCSRFCheck
+    public Result doChangePassword(){
+        if (session().get("change").isEmpty()){
+            flash("danger", "Invalid session, please try again!");
+            return badRequest();
+        }
+
+        JsonNode node = request().body().asJson();
+        String password = node.findPath("password").textValue();
+        String confirmPassword = node.findPath("confirm_password").textValue();
+
+        if (!confirmPassword.equals(password)) {
+            flash("danger", "Passwords do not match, please try again");
+            return badRequest();
+        }
+
+        String token = session().get("token");
+
+        List<EntityPerson> collect = EntityPerson.find.all()
+                .stream()
+                .filter(person -> person.getUserPasswordHash().substring(12).equals(token))
+                .collect(Collectors.toList());
+        if (collect.isEmpty()) {
+            flash("danger", "No user found, please register again");
+            return notFound();
+        }
+
+        if (collect.size() > 2) {
+            flash("danger", "An error occurred, please register again!");
+            return badRequest();
+        }
+
+        EntityPerson person = collect.get(0);
+        String newPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        person.setUserPasswordHash(newPassword);
+
+        flash("succcess", "New password updated, please login in.");
+        return redirect(routes.LoginController.login());
+    }
+
     /**
      * Generates controller javascript routes
      *
@@ -189,14 +244,14 @@ public class ProfileHandler extends Controller {
         return ok(
                 JavaScriptReverseRouter.create("userRoutes",
                         routes.javascript.ProfileHandler.overview(),
-                        routes.javascript.ProfileHandler.modifySettings(),
-                        routes.javascript.ProfileHandler.settings()
+                        routes.javascript.ProfileHandler.settings(),
+
+                        routes.javascript.ProfileHandler.updatePassword(),
+                        routes.javascript.ProfileHandler.updateAcademicInfo(),
+                        routes.javascript.ProfileHandler.updateBasicInfo(),
+                        routes.javascript.ProfileHandler.doEnrol()
                 )
         ).as("text/javascript");
-    }
-
-    public Result enrol() {
-        return ok(views.html.UserSystem.Enrol.render());
     }
 
     @RequireCSRFCheck

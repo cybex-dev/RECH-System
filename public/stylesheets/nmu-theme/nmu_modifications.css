@@ -40,7 +40,7 @@ input[type=password] {
 }
 
 input[type=checkbox] {
-    transform: scale(1.2);
+    transform: scale(1.4);
     margin: 10px;
 }
 
@@ -251,7 +251,12 @@ a:hover {
 .action-button {
     margin: 0;
     width: auto;
-    transform: scale(0.7);
+    transform: scale(0.8);
+    background-color: #f9b42a !important;
+}
+
+.action-button:hover {
+    transform: scale(0.85);
 }
 
 h2, h3, h4 {

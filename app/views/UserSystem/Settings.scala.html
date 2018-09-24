@@ -1,6 +1,8 @@
 @import views.html.Templates.Masterpage
-@import views.html.Components._
 @import dao.UserSystem.EntityPerson
+@import views.html.Components.inputDropdown
+@import views.html.Components.inputDatalist
+@import views.html.Components.inputText
 @import models.UserSystem.UserType
 
 @import java.util
@@ -35,12 +37,12 @@
                         @if(entityPerson.userType() != UserType.RCD) {
                             <div class="tab-pane active" id="basic_info" role="tabpanel">
                                 <h4>Basic Information</h4>
-                                @inputDropdown.apply("title", "Title", entityPerson.getUserTitle, new util.ArrayList[String]()("Mr","Mrs","Ms","Dr","Prof"), "Your preferred title", true, false)
+                                @inputDropdown.apply("title", "Title", entityPerson.getUserTitle, APIController.getTitles, "Your preferred title", true, false)
                                 @inputText.apply("firstname", "First name", entityPerson.getUserFirstname, "Your firstname", true, false)
                                 @inputText.apply("lastname", "Last name", entityPerson.getUserLastname, "Your lastname", true, false)
                                 @inputText.apply("mobile", "Your mobile name", entityPerson.getUserLastname, "Your mobile number", true, false)
                                 <br/>
-                                @inputDatalist.apply("degree", "Current Degree", entityPerson.getCurrentDegreeLevel, new util.ArrayList[String]()("High-School","Diploma","Degree","Honours","Masters","Doctorate"), "Your current degree", true, false)
+                                @inputDatalist.apply("degree", "Current Degree", entityPerson.getCurrentDegreeLevel, APIController.getDegreeLevels, "Your current degree", true, false)
                                 @inputDatalist.apply("faculty", "Faculty", entityPerson.getFacultyName, APIController.getDataDirect("faculties"), "Your current faculty", true, false)
                                 @inputDatalist.apply("department", "Department", entityPerson.getDepartmentName, APIController.getDataDirect("departments"), "Your current department", true, false)
                                 <br/>
@@ -49,7 +51,8 @@
                                         <button class="nmu-button action-button" type="button" id="btnHome">Cancel</button>
                                     </div>
                                     <div class="col-sm-6">
-                                        <button class="nmu-button action-button" type="button" id="btnUpdateBasic">Update</button>
+                                        <button class="nmu-button action-button" type="button" id="btnUpdateBasic">
+                                            Update</button>
                                     </div>
                                 </div>
                             </div>
@@ -66,7 +69,8 @@
                                     <button class="nmu-button action-button" type="button" id="btnHome">Cancel</button>
                                 </div>
                                 <div class="col-sm-6">
-                                    <button class="nmu-button action-button" type="button" id="btnChangePassword">Change Password</button>
+                                    <button class="nmu-button action-button" type="button" id="btnChangePassword">
+                                        Change Password</button>
                                 </div>
                             </div>
                         </div>
@@ -74,7 +78,7 @@
                             <div class="tab-pane" id="academic_info" role="tabpanel">
                                 <h4>Academic Information</h4>
                                 @inputText.apply("telephone", "Office Telephone Number", entityPerson.getContactOfficeTelephone, "Your office telephone number", true, false)
-                                @inputDatalist.apply("campus", "Campus", entityPerson.getCampus, new ArrayList[String]()("South Campus", "North Campus", "Missionvale Campus", "Second Avenue (2nd) Campus", "Goerge Campus"), true, false)
+                                @inputDatalist.apply("campus", "Campus", entityPerson.getOfficeCampus, APIController.getAllCampus, "", true, false)
                                 @inputText.apply("address", "Office Address", entityPerson.getContactOfficeTelephone, "Your office location", true, false)
                                 <br/>
                                 <div class="row">
@@ -82,7 +86,8 @@
                                         <button class="nmu-button action-button" type="button" id="btnHome">Cancel</button>
                                     </div>
                                     <div class="col-sm-6">
-                                        <button class="nmu-button action-button" type="button" id="btnUpdateAcademic">Update</button>
+                                        <button class="nmu-button action-button" type="button" id="btnUpdateAcademic">
+                                            Update</button>
                                     </div>
                                 </div>
                             </div>

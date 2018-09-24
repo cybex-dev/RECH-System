@@ -6,6 +6,7 @@ import engine.SystemNotification;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
 import models.UserSystem.UserType;
+import play.libs.mailer.Email;
 
 public class Notifier {
     /**
@@ -43,15 +44,47 @@ public class Notifier {
 
     }
 
+    /**
+     * Uses the Messenger to send new messages between a PI, PRP, Liaison and Reviewer
+     * @param applicationId
+     * @param applicationTitle
+     * @param sendername
+     * @param receiver
+     */
     public static void newMessage(EntityEthicsApplicationPK applicationId, String applicationTitle, String sendername, String receiver) {
 
     }
 
+    /**
+     * System notification to notifiy about statuses or results of applications' submissions/
+     * @param applicationId
+     * @param status
+     * @param title
+     * @param notification
+     * @param emails
+     */
     public static void systemNotification(EntityEthicsApplicationPK applicationId, ApplicationStatus status, String title, SystemNotification notification, String...emails) {
 
     }
 
+    /**
+     * Notifies the person that their password has changed.
+     * @param personById
+     */
     public static void changedPassword(EntityPerson personById) {
 
+    }
+
+    /**
+     * Notifies the RCD and the person that the new user has registered
+     * @param person
+     */
+    public static void newUser(EntityPerson person) {
+        // Send welcome email
+        Mailer.SendWelcome(person.getUserFirstname(), person.getUserEmail());
+    }
+
+    public static void sendVerification(EntityPerson person, String token) {
+        Mailer.SendVerificationEmail(person, token);
     }
 }

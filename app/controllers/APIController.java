@@ -1,6 +1,5 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import controllers.UserSystem.ProfileHandler;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
@@ -9,21 +8,12 @@ import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
 import models.UserSystem.UserType;
-import net.ddns.cyberstudios.Element;
-import net.ddns.cyberstudios.XMLTools;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.routing.JavaScriptReverseRouter;
 
-import javax.swing.text.html.parser.Entity;
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class APIController extends Controller {
@@ -162,4 +152,17 @@ public class APIController extends Controller {
                 )
         ).as("text/javascript");
     }
+
+    public static List<String> getAllCampus() {
+        return Arrays.asList("South Campus", "North Campus", "Missionvale Campus", "Second Avenue (2nd) Campus", "Goerge Campus");
+    }
+
+    public static List<String> getTitles(){
+        return Arrays.asList("Mr","Mrs","Ms","Dr","Prof");
+    }
+
+    public static List<String> getDegreeLevels(){
+        return Arrays.asList("High-School","Diploma","Degree","Honours","Masters","Doctorate");
+    }
+
 }

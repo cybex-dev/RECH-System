@@ -1,0 +1,17 @@
+@import views.html.Templates.Masterpage
+@import views.html.Components.inputEmail
+@import views.html.Components.inputPassword
+@import views.html.UserSystem.registerBasic
+@import models.UserSystem.BasicRegistrationForm
+
+@(login: play.data.Form[BasicRegistrationForm])
+
+@Masterpage.apply(" :: Register "){
+    <div class="BoxMediumBlue" style="padding: 20px;">
+    @helper.form(action = controllers.UserSystem.routes.RegistrationController.doRegisterInitial()) {
+        @helper.CSRF.formField
+        @registerBasic.apply(login)
+        <button class="nmu-button action-button">Register</button>
+    }
+    </div>
+}

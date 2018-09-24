@@ -2,10 +2,10 @@
 @import views.html.UserSystem._
 @import play.data.Form
 @import helper._
-@import models.UserSystem.UserRegistrationForm
+@import models.UserSystem.DetailedRegistrationForm
 
 @import dao.NMU.EntityDepartment.DepartmentContainer
-@(registrationForm: Form[UserRegistrationForm], departmentList: List[DepartmentContainer], facultyList: List[String])
+@(registrationForm: Form[DetailedRegistrationForm], departmentList: List[DepartmentContainer], facultyList: List[String])
 
 @Masterpage.apply(" :: Register"){
     <br/>
@@ -15,7 +15,6 @@
         @helper.form(action = controllers.UserSystem.routes.RegistrationController.submitRegistration()) {
             @CSRF.formField
             <div class="fragment-container border">
-                @registerBasic.apply(registrationForm)
                 @registerUserInfo.apply(registrationForm)
                 @registerAcademic.apply(registrationForm, departmentList, facultyList)
                 <br/>

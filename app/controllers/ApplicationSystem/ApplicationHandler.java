@@ -11,6 +11,7 @@ import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
 import helpers.CookieTags;
 import helpers.JDBCExecutor;
+import models.App;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
@@ -412,7 +413,7 @@ public class ApplicationHandler extends Controller {
 
             case "document": {
                 // Check saving directory exists
-                String docDirectory = config.getString("documentLocation");
+                String docDirectory = App.getInstance().getDocumentDirectory();
                 try {
                     File dir = new File(docDirectory);
                     if (!dir.exists()) {

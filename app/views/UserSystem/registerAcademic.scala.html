@@ -1,10 +1,10 @@
 @import play.data.Form
-@import models.UserSystem.UserRegistrationForm
+@import models.UserSystem.DetailedRegistrationForm
 @import java.util.List
 
 @import dao.NMU.EntityDepartment.DepartmentContainer
 
-@(loginForm: Form[UserRegistrationForm], departmentList: List[DepartmentContainer], facultyList: List[String])
+@(loginForm: Form[DetailedRegistrationForm], departmentList: List[DepartmentContainer], facultyList: List[String])
 
 <div class="step">
     <h3>Academic Information</h3>

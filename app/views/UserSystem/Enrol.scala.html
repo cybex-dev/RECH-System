@@ -6,7 +6,7 @@
 
 @Masterpage.apply(" :: Enrollment"){
     <br/>
-    @helper.form( action = controllers.UserSystem.routes.ProfileHandler.doEnrol())
+    @helper.form( action = controllers.UserSystem.routes.ProfileHandler.doEnrol()) {
         @helper.CSRF.formField
 
         @inputDatalist.apply("enrol_type", "Select role:", "", APIController.getEnrolPositions, "", true, false)

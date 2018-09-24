@@ -248,4 +248,8 @@ public class EntityPerson extends Model {
             return "";
         return entityPerson.getPersonType();
     }
+
+    public String getFullName() {
+        return userTitle.concat(" ").concat(userFirstname).concat(" ").concat(userLastname);
+    }
 }
