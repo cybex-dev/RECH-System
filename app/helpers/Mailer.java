@@ -81,6 +81,7 @@ public class Mailer {
 
     public static CompletableFuture<Boolean> SendVerificationEmail(EntityPerson person, String token) {
         String verificationUrl = App.getInstance().getBaseUrl() + routes.RegistrationController.verify(token).url();
+        System.out.println(verificationUrl);
         Email verificationEmail = Mailer.StandardEmail()
                 .setTo(Collections.singletonList(person.getUserEmail()))
                 .setSubject("NMU Research & Ethics Committee: Account Verification")

@@ -1,5 +1,6 @@
 package controllers.UserSystem;
 
+import controllers.NotificationSystem.Notifier;
 import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
@@ -65,6 +66,12 @@ public class LoginController extends Controller{
         }
 
         EntityPerson person = EntityPerson.getPersonById(loginData.getEmail());
+        if (!person.getIsVerified()) {
+            flash("warning", "Please verify your account before logging in. New verification email sent to " + person.getUserEmail());
+            String code = person.getUserPasswordHash().replace("/", "").replace(".", "").substring(12);
+            Notifier.sendVerification(person, code);
+            return unauthorized(Login.render(loginFormForm));
+        }
 
         session().clear();
         session(CookieTags.user_id, loginData.getEmail());

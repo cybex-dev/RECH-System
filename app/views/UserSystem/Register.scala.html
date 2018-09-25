@@ -10,15 +10,15 @@
 @Masterpage.apply(" :: Register"){
     <br/>
     <div class="container">
-        <h2>REC Registration</h2>
-        <div class="nmu-content-background-dark padding-all-30">
+        <h2>Complete your Registration</h2>
+        <div class="nmu-content-background-dark" style="padding: 20px">
         @helper.form(action = controllers.UserSystem.routes.RegistrationController.submitRegistration()) {
             @CSRF.formField
             <div class="fragment-container border">
                 @registerUserInfo.apply(registrationForm)
                 @registerAcademic.apply(registrationForm, departmentList, facultyList)
                 <br/>
-                <input type="submit" class="nmu-button action-button" value="Register" style="background-color: #f9b42a !important;">
+                <button class="nmu-button action-button">Complete Registration</button>
             </div>
         }
         </div>

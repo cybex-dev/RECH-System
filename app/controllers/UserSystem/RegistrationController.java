@@ -73,7 +73,7 @@ public class RegistrationController extends Controller {
         String code = hashpw.replace("/", "").replace(".", "").substring(12);
 
         Notifier.sendVerification(person, code);
-        flash("info", "Please verify your email. Check your mail.");
+        flash("info", "An verification email has been sent to " + basicRegistrationForm.getEmail() + ". Please check your mail and verify your email address.");
         return redirect(routes.LoginController.login());
     }
 
@@ -92,8 +92,12 @@ public class RegistrationController extends Controller {
             return badRequest();
         }
 
-        session().put(CookieTags.user_id, collect.get(0).getUserEmail());
-        session().put(CookieTags.token, collect.get(0).getUserPasswordHash());
+        EntityPerson p = collect.get(0);
+        session().put(CookieTags.user_id, p.getUserEmail());
+        session().put(CookieTags.token, p.getUserPasswordHash());
+        session().put(CookieTags.user_type, p.getPersonType());
+        p.setIsVerified(true);
+        p.update();
 
         return redirect(routes.RegistrationController.registerFinal());
     }
@@ -106,12 +110,14 @@ public class RegistrationController extends Controller {
         String userId = session().get(CookieTags.user_id);
         String token = session().get(CookieTags.token);
         EntityPerson personById = EntityPerson.getPersonById(userId);
-        if (!personById.authenticate(token)){
-            flash("danger", "An error occured, please login again.");
+        if (!personById.getUserPasswordHash().equals(token)){
+            flash("danger", "An error occurred, please login again.");
             return redirect(routes.LoginController.login());
         }
 
         Form<DetailedRegistrationForm> form = formFactory.form(DetailedRegistrationForm.class);
+
+        session().clear();
 
         return ok(views.html.UserSystem.Register.render(form, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
     }

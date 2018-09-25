@@ -29,6 +29,7 @@ public class EntityPerson extends Model {
     private String departmentName;
     private String facultyName;
     private String officeCampus;
+    private Boolean isVerified;
 
     public static Finder<String, dao.UserSystem.EntityPerson> find = new Finder<>(dao.UserSystem.EntityPerson.class);
 
@@ -169,6 +170,16 @@ public class EntityPerson extends Model {
         this.facultyName = facultyName;
     }
 
+    @Basic
+    @Column(name = "is_verified")
+    public Boolean getIsVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -186,13 +197,14 @@ public class EntityPerson extends Model {
                 Objects.equals(officeAddress, that.officeAddress) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(isVerified, that.isVerified) &&
                 Objects.equals(officeCampus, that.officeCampus);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userTitle, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName, officeCampus);
+        return Objects.hash(userEmail, userPasswordHash, userFirstname, userLastname, userTitle, currentDegreeLevel, contactNumberMobile, personType, contactOfficeTelephone, officeAddress, departmentName, facultyName, officeCampus, isVerified);
     }
 
     public static dao.UserSystem.EntityPerson getPersonById(String userEmail){

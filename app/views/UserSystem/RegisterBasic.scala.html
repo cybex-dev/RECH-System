@@ -1,7 +1,7 @@
 @import views.html.Templates.Masterpage
 @import views.html.Components.inputEmail
 @import views.html.Components.inputPassword
-@import views.html.UserSystem.registerBasic
+@import views.html.UserSystem.registrationBasic
 @import models.UserSystem.BasicRegistrationForm
 
 @(login: play.data.Form[BasicRegistrationForm])
@@ -10,7 +10,7 @@
     <div class="BoxMediumBlue" style="padding: 20px;">
     @helper.form(action = controllers.UserSystem.routes.RegistrationController.doRegisterInitial()) {
         @helper.CSRF.formField
-        @registerBasic.apply(login)
+        @registrationBasic.apply(login)
         <button class="nmu-button action-button">Register</button>
     }
     </div>
