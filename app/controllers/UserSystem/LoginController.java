@@ -37,7 +37,6 @@ public class LoginController extends Controller{
      */
     public Result login(){
         if (isLoggedIn()) {
-            flash("warning", "You are already logged in");
             return redirect(routes.ProfileHandler.overview());
         }
         Form<UserLoginForm> loginFormForm = formFactory.form(UserLoginForm.class);

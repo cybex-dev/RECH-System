@@ -80,9 +80,9 @@ GET     /api/searchPerson/:email        controllers.APIController.searchPerson(e
 GET     /api/searchLocation             controllers.APIController.searchLocation
 GET     /api/allReviewers/:id           controllers.APIController.findAllReviewers(id: String)
 
-POST    /api/updateBasicInfo            controllers.UserSystem.ProfileHandler.updatePassword
+POST    /api/updateBasicInfo            controllers.UserSystem.ProfileHandler.updateBasicInfo
 POST    /api/updateAcademicInfo         controllers.UserSystem.ProfileHandler.updateAcademicInfo
-POST    /api/changePassword             controllers.UserSystem.ProfileHandler.updateBasicInfo
+POST    /api/changePassword             controllers.UserSystem.ProfileHandler.updatePassword
 POST    /api/doEnrol                    controllers.UserSystem.ProfileHandler.doEnrol
 
 

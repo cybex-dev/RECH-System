@@ -73,6 +73,10 @@ public class EntityPerson extends Model {
     @Basic
     @Column(name = "user_lastname")
     public String getUserLastname() {
+        if (userLastname == null){
+            setUserLastname("");
+            save();
+        }
         return userLastname;
     }
 
@@ -103,6 +107,10 @@ public class EntityPerson extends Model {
     @Basic
     @Column(name = "contact_number_mobile")
     public String getContactNumberMobile() {
+        if (contactNumberMobile == null){
+            setContactNumberMobile("");
+            save();
+        }
         return contactNumberMobile;
     }
 
@@ -123,6 +131,10 @@ public class EntityPerson extends Model {
     @Basic
     @Column(name = "contact_office_telephone")
     public String getContactOfficeTelephone() {
+        if (contactOfficeTelephone == null){
+            setContactOfficeTelephone("");
+            save();
+        }
         return contactOfficeTelephone;
     }
 
@@ -133,6 +145,10 @@ public class EntityPerson extends Model {
     @Basic
     @Column(name = "office_campus")
     public String getOfficeCampus() {
+        if (officeCampus == null){
+            setOfficeCampus("");
+            save();
+        }
         return officeCampus;
     }
 
@@ -143,6 +159,10 @@ public class EntityPerson extends Model {
     @Basic
     @Column(name = "office_address")
     public String getOfficeAddress() {
+        if (officeAddress == null){
+            setOfficeAddress("");
+            save();
+        }
         return officeAddress;
     }
 
@@ -173,6 +193,11 @@ public class EntityPerson extends Model {
     @Basic
     @Column(name = "is_verified")
     public Boolean getIsVerified() {
+        if (isVerified == null) {
+            setIsVerified(false);
+            save();
+            return false;
+        }
         return isVerified;
     }
 
@@ -228,19 +253,11 @@ public class EntityPerson extends Model {
     }
 
     public static String getHod(String departmentName) {
-        List<EntityPerson> personList = EntityPerson.find.all();
-        List<EntityPerson> filteredList = new ArrayList<>();
-        personList.forEach(entityPerson -> {
-            String departmentName1 = entityPerson.departmentName;
-            UserType userType = entityPerson.userType();
-            if (departmentName1.equals(departmentName) && userType.equals(UserType.DepartmentHead)){
-                filteredList.add(entityPerson);
-            }
-        });
-        EntityPerson entityPerson = filteredList.get(0);
-        if (entityPerson == null)
-            return null;
-        return entityPerson.getUserEmail();
+        return EntityPerson.find.all().stream()
+                .filter(entityPerson -> (entityPerson.departmentName.equals(departmentName) && entityPerson.userType().equals(UserType.DepartmentHead)))
+                .map(EntityPerson::getUserEmail)
+                .findFirst()
+                .orElse(null);
     }
 
     public static boolean authenticate(String email, String password) {

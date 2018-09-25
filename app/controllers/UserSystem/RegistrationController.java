@@ -68,6 +68,8 @@ public class RegistrationController extends Controller {
         String hashpw = BCrypt.hashpw(basicRegistrationForm.getPassword(), BCrypt.gensalt(12));
         person.setUserPasswordHash(hashpw);
         person.setPersonType(UserType.PrimaryInvestigator.getType());
+        person.setUserFirstname("New");
+        person.setUserLastname("User");
         person.insert();
 
         String code = hashpw.replace("/", "").replace(".", "").substring(12);
@@ -93,12 +95,19 @@ public class RegistrationController extends Controller {
         }
 
         EntityPerson p = collect.get(0);
+
+        if (p.getIsVerified()) {
+            flash("info", "Your account has already been verified. Please login in.");
+            return redirect(routes.LoginController.login());
+        }
+
         session().put(CookieTags.user_id, p.getUserEmail());
         session().put(CookieTags.token, p.getUserPasswordHash());
         session().put(CookieTags.user_type, p.getPersonType());
         p.setIsVerified(true);
         p.update();
 
+        flash("info", "Please complete your registration");
         return redirect(routes.RegistrationController.registerFinal());
     }
 
@@ -116,8 +125,6 @@ public class RegistrationController extends Controller {
         }
 
         Form<DetailedRegistrationForm> form = formFactory.form(DetailedRegistrationForm.class);
-
-        session().clear();
 
         return ok(views.html.UserSystem.Register.render(form, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
     }
@@ -149,8 +156,12 @@ public class RegistrationController extends Controller {
         person.update();
 
         Notifier.newUser(person);
-        flash("success", "Please login to proceed");
+        session().clear();
+        session(CookieTags.user_id, person.getUserEmail());
+        session(CookieTags.fullname, person.getUserFirstname() + " " + person.getUserLastname());
+        session(CookieTags.user_type, person.getPersonType());
 
-        return redirect(routes.LoginController.login());
+        flash("success", "Registration complete");
+        return redirect(routes.ProfileHandler.overview());
     }
 }

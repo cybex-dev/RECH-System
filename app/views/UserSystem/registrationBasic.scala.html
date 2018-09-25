@@ -7,6 +7,8 @@
 <div class="step">
     <h3>Create Account</h3>
     @helper.inputText(loginForm("email"), '_label -> "Email", '_class -> "input-text-short")
+    <p style="font-style: italic;">Note: if you are an employee of Nelson Mandela University, please register with your official NMU email address</p>
+    <br/>
     @helper.inputPassword(loginForm("password"), '_label -> "Password", '_class -> "input-text-short")
     @helper.inputPassword(loginForm("confirm_password"), '_label -> "Confirm Password", '_class -> "input-text-short")
 </div>

@@ -2,6 +2,7 @@ package controllers.UserSystem;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.APIController;
 import controllers.NotificationSystem.Notifier;
 import dao.ApplicationSystem.EntityEthicsApplication;
@@ -16,6 +17,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.filters.csrf.RequireCSRFCheck;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -38,6 +40,26 @@ public class ProfileHandler extends Controller {
     private FormFactory formFactory;
 
     public ProfileHandler() {
+
+    }
+
+    private void loadEnrolmentKeys() {
+        if (enrolmentMap.isEmpty()) {
+            try {
+                List<File> resourceFiles = new FileScanner().getResourceFiles("/enrolment/");
+                if (resourceFiles.size() == 1){
+                    File file = resourceFiles.get(0);
+                    Element keysXml = XMLTools.parseDocument(file);
+                    XMLTools.flatten(keysXml, false).forEach(s -> {
+                        Element lookup = XMLTools.lookup(keysXml, s);
+                        UserType t = UserType.parse(s);
+                        enrolmentMap.put(t, lookup.getValue().toString());
+                    });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public ProfileHandler(FormFactory formFactory) {
@@ -58,6 +80,11 @@ public class ProfileHandler extends Controller {
      */
     public Result overview() {
         EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
+        if (person == null){
+            flash("danger", "An error occurred, please login again");
+            session().clear();
+            return redirect(routes.LoginController.login());
+        }
         List<EntityEthicsApplication> entity_newApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.RCD);
         List<EntityEthicsApplication> entity_ownApplications = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryInvestigator);
         List<EntityEthicsApplication> entity_approveApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryResponsiblePerson);
@@ -94,15 +121,18 @@ public class ProfileHandler extends Controller {
      */
     @RequireCSRFCheck
     public Result updateBasicInfo() {
+        ObjectNode result = Json.newObject();
         JsonNode json = request().body().asJson();
-        String userId = json.findPath("user_id").textValue();
+        String userId = session().get("user_id");
         if (userId == null || userId.isEmpty()) {
-            flash("info", "User not found, please login again");
+            flash("danger", "Invalid session, please login again!");
+            result.put("danger", "Invalid session, please login again!");
             return badRequest();
         }
         EntityPerson personById = EntityPerson.getPersonById(userId);
         if (personById == null) {
-            flash("info", "User not found, please login again");
+            flash("danger", "An error occurred, please login again!");
+            result.put("danger", "An error occurred, please login again!");
             return notFound();
         }
 
@@ -124,20 +154,24 @@ public class ProfileHandler extends Controller {
         personById.update();
 
         flash("success", "Basic information updated");
+        result.put("success", "Basic information updated");
         return ok();
     }
 
     @RequireCSRFCheck
     public Result updateAcademicInfo() {
+        ObjectNode result = Json.newObject();
         JsonNode json = request().body().asJson();
-        String userId = json.findPath("user_id").textValue();
+        String userId = session().get("user_id");
         if (userId == null || userId.isEmpty()) {
-            flash("info", "User not found, please login again");
+            flash("danger", "Invalid session, please login again!");
+            result.put("danger", "Invalid session, please login again!");
             return badRequest();
         }
         EntityPerson personById = EntityPerson.getPersonById(userId);
         if (personById == null) {
-            flash("info", "User not found, please login again");
+            flash("danger", "An error occurred, please login again!");
+            result.put("danger", "An error occurred, please login again!");
             return notFound();
         }
 
@@ -151,22 +185,30 @@ public class ProfileHandler extends Controller {
         personById.update();
 
         flash("success", "Academic information updated");
+        result.put("success", "Academic information updated");
         return ok();
     }
 
     @RequireCSRFCheck
     public Result updatePassword() {
+        ObjectNode result = Json.newObject();
         JsonNode json = request().body().asJson();
-        String userId = json.findPath("user_id").textValue();
-        if (userId == null || userId.isEmpty())
-            return badRequest();
+        String userId = session().get("user_id");
+        if (userId == null || userId.isEmpty()) {
+            flash("danger", "Invalid session, please login again!");
+            result.put("danger", "Invalid session, please login again!");
+            return badRequest(result);
+        }
         EntityPerson personById = EntityPerson.getPersonById(userId);
-        if (personById == null)
+        if (personById == null) {
+            flash("danger", "An error occurred, please login again!");
+            result.put("danger", "An error occurred, please login again!");
             return notFound();
-
+        }
         String old_password = json.findPath("old_password").textValue();
         if (!personById.authenticate(old_password)) {
             flash("danger", "Incorrect existing password");
+            result.put("danger", "Incorrect existing password");
             return notFound();
         }
 
@@ -174,11 +216,15 @@ public class ProfileHandler extends Controller {
         String confirmPassword = json.findPath("confirm_password").textValue();
         if (!newPassword.equals(confirmPassword)) {
             flash("danger", "Passwords mismatch, try again");
+            result.put("danger", "Passwords mismatch, try again");
             return badRequest();
         }
+        personById.setUserPasswordHash(BCrypt.hashpw(newPassword, BCrypt.gensalt(12)));
+        personById.update();
 
         Notifier.changedPassword(personById);
         flash("success", "Password changed");
+        result.put("success", "Password changed");
         return ok();
     }
 
@@ -203,7 +249,7 @@ public class ProfileHandler extends Controller {
         }
 
         JsonNode node = request().body().asJson();
-        String password = node.findPath("password").textValue();
+        String password = node.findPath("new_password").textValue();
         String confirmPassword = node.findPath("confirm_password").textValue();
 
         if (!confirmPassword.equals(password)) {
@@ -256,37 +302,31 @@ public class ProfileHandler extends Controller {
 
     @RequireCSRFCheck
     public Result doEnrol() {
+        ObjectNode result = Json.newObject();
         JsonNode json = request().body().asJson();
-        String userId = json.findPath("user_id").textValue();
-        if (userId == null || userId.isEmpty())
+        String userId = session().get("user_id");
+        if (userId == null || userId.isEmpty()) {
+            flash("danger", "Invalid session, please login again!");
+            result.put("danger", "Invalid session, please login again!");
             return badRequest();
+        }
         EntityPerson personById = EntityPerson.getPersonById(userId);
-        if (personById == null)
+        if (personById == null) {
+            flash("danger", "An error occurred, please login again!");
+            result.put("danger", "An error occurred, please login again!");
             return notFound();
+        }
 
-        String type = json.findPath("position").textValue();
-        String code = json.findPath("code").textValue();
+        String type = json.findPath("enrol_type").textValue();
+        String code = json.findPath("enrol_code").textValue();
         if (type == null || type.isEmpty() ||
                 code == null || code.isEmpty()) {
             flash("info", "User not found, please login again");
+            result.put("info", "User not found, please login again");
             return badRequest();
         }
 
         UserType userType = UserType.parse(type);
-
-        if (enrolmentMap.isEmpty()) {
-            try {
-                Element keysXml = XMLTools.parseDocument(new File(APIController.class.getResource("enrolment.xml").toURI()));
-                XMLTools.flatten(keysXml, false).forEach(s -> {
-                    Element lookup = XMLTools.lookup(keysXml, s);
-                    UserType t = UserType.parse(s);
-                    enrolmentMap.put(t, lookup.getValue().toString());
-                });
-
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        }
 
         Map.Entry<UserType, String> enrol_code = enrolmentMap.entrySet().stream()
                 .filter(entry -> entry.getKey().equals(userType) && entry.getValue().equals(code))
@@ -294,11 +334,13 @@ public class ProfileHandler extends Controller {
                 .orElse(null);
         if (enrol_code == null) {
             flash("danger", "Invalid enrolment key");
+            result.put("danger", "Invalid enrolment key");
             return notFound();
         }
 
         if (personById.userType().equals(enrol_code.getKey())) {
             flash("danger", "You are already a " + userType.getDescription());
+            result.put("danger", "You are already a " + userType.getDescription());
             return badRequest();
         }
 
@@ -310,10 +352,13 @@ public class ProfileHandler extends Controller {
         Notifier.enrolledUser(enrol_code.getKey(), personById.getUserEmail());
 
         flash("success", "You are now a " + enrol_code.getKey().getDescription());
+        result.put("success", "You are now a " + enrol_code.getKey().getDescription());
         return ok();
     }
 
     public static List<String> getEnrolmentPositions(){
+        ProfileHandler profileHandler = new ProfileHandler();
+        profileHandler.loadEnrolmentKeys();
         return enrolmentMap.entrySet().stream().map(entry -> entry.getKey().toString()).collect(Collectors.toList());
     }
 }

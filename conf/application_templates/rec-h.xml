@@ -35,14 +35,7 @@
                 <question>Lastname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found" auto-populate-from="prp_contact_email">
-                <data>
-                    <item>George Campus</item>
-                    <item>Missionvale Campus</item>
-                    <item>North Campus</item>
-                    <item>Second Avenue Campus</item>
-                    <item>South Campus (Main Campus)</item>
-                </data>
+            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found" autofill_id="campus">
                 <question>Campus</question>
                 <value></value>
             </component>
@@ -525,42 +518,6 @@
         </group>
     </section>
     <section id="sct_participant_info" name="Information to Participants" hint="">
-        <popup id="grp_doc_prior_consent_written" type="document" popup="true" name="Written Consent Document"
-               hint="A detailed document containing written consent received from participants">
-            <component id="doc_prior_consent_written_title" name="" type="text"
-                       hint="Written information presented to participants prior to their consent given">
-                <question>Written information provided Title</question>
-                <value></value>
-            </component>
-            <component id="doc_prior_consent_written_desc" name="" type="text"
-                       hint="Written information presented to participants prior to their consent given">
-                <question>Written information provided Description</question>
-                <value></value>
-            </component>
-            <component id="doc_prior_consent_written_document" name="" type="document" desc="Written Consent"
-                       hint="Written information presented to participants prior to their consent given">
-                <question>Written information provided file</question>
-                <value></value>
-            </component>
-        </popup>
-        <popup id="grp_doc_prior_consent_oral" type="document" popup="true" name="Oral Consent Document"
-               hint="A fully detailed document containing research methodology protocol and information - previously known as Appendix 1">
-            <component id="doc_prior_consent_oral_title" name="" type="text"
-                       hint="Oral information presented to participants prior to their consent given">
-                <question>Oral information provided Title</question>
-                <value></value>
-            </component>
-            <component id="doc_prior_consent_oral_desc" name="" type="text"
-                       hint="Oral information presented to participants prior to their consent given">
-                <question>Oral information provided Description</question>
-                <value></value>
-            </component>
-            <component id="doc_prior_consent_oral_document" name="" type="document" desc="Oral Consent"
-                       hint="Oral information presented to participants prior to their consent given">
-                <question>Oral information provided file</question>
-                <value></value>
-            </component>
-        </popup>
         <group name="Information Provider" id="grp_information_provider"
                hint="The individual who will provide the prior consent information to participants">
             <component id="info_prov_firstname" name="" type="text" hint="Information Provider firstname">
@@ -587,6 +544,44 @@
                     <value></value>
                 </component>
             </extension>
+        </group>
+        <group id="grp_written_oral_information_documents" name="Written and Oral Information Documents" hint="Information provided to the participants of your study, written or oral information">
+            <popup id="grp_doc_prior_consent_written" type="document" popup="true" name="Written Consent Document"
+                   hint="A detailed document containing written consent received from participants">
+                <component id="doc_prior_consent_written_title" name="" type="text"
+                           hint="Written information presented to participants prior to their consent given">
+                    <question>Written information provided Title</question>
+                    <value></value>
+                </component>
+                <component id="doc_prior_consent_written_desc" name="" type="text"
+                           hint="Written information presented to participants prior to their consent given">
+                    <question>Written information provided Description</question>
+                    <value></value>
+                </component>
+                <component id="doc_prior_consent_written_document" name="" type="document" desc="Written Consent"
+                           hint="Written information presented to participants prior to their consent given">
+                    <question>Written information provided file</question>
+                    <value></value>
+                </component>
+            </popup>
+            <popup id="grp_doc_prior_consent_oral" type="document" popup="true" name="Oral Consent Document"
+                   hint="A fully detailed document containing research methodology protocol and information - previously known as Appendix 1">
+                <component id="doc_prior_consent_oral_title" name="" type="text"
+                           hint="Oral information presented to participants prior to their consent given">
+                    <question>Oral information provided Title</question>
+                    <value></value>
+                </component>
+                <component id="doc_prior_consent_oral_desc" name="" type="text"
+                           hint="Oral information presented to participants prior to their consent given">
+                    <question>Oral information provided Description</question>
+                    <value></value>
+                </component>
+                <component id="doc_prior_consent_oral_document" name="" type="document" desc="Oral Consent"
+                           hint="Oral information presented to participants prior to their consent given">
+                    <question>Oral information provided file</question>
+                    <value></value>
+                </component>
+            </popup>
         </group>
     </section>
     <section id="sct_priv_anon_conf" name="Privacy, Anonymity and Confidentiality of Data" hint="">

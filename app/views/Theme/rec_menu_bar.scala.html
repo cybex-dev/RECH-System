@@ -1,4 +1,5 @@
 @import helpers.CookieTags
+@import models.UserSystem.UserType
 @()
 
 @getName = @{
@@ -24,6 +25,11 @@
             <div class="portal-icon portal-icon-extend-margin">
                 <a disabled="true" href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
                     <span>Message</span></a></div>
+            }
+            @if(session().get(CookieTags.user_type) == UserType.RCD.getType) {
+                <div class="portal-icon portal-icon-extend-margin">
+                    <a href="@controllers.MeetingSystem.routes.MeetingController.allApplications()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-comments drop-bottom-5"></ic><br>
+                        <span>Meeting Manager</span></a></div>
             }
             <div class="portal-icon portal-icon-extend-margin">
                 <a href="@routes.HomeController.about()" id="IconMenuBarAbout"><ic class="fa fa-3x fa-users drop-bottom-5"></ic><br>

@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <keys>
-    <key user="Reviewer">Employee</key>
-    <key user="HOD">Supervisor</key>
-    <key user="RTI">Manager</key>
-    <key user="RCD">BigBoss</key>
+    <key id="Reviewer">JustJoe</key>
+    <key id="Liaison">TeamLeader</key>
+    <key id="HOD">Supervisor</key>
+    <key id="RTI">Manager</key>
+    <key id="RCD">BigBoss</key>
 </keys>

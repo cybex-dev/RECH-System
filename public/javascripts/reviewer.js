@@ -71,10 +71,13 @@ function createDiv(id, name, ...classlist) {
 function createElement(type, value, name, id, ...classList) {
     let element = document.createElement(type);
     if (classList.length !== 0)
-        if (classList[0].length !== 0)
+        if (classList[0] instanceof Array) {
             element.className = classList[0].join(" ");
-    element.name = name  || "";
-    element.id = id  || "";
+        } else {
+            element.className = classList[0];
+        }
+    element.name = name.trim()  || "";
+    element.id = id.trim()  || "";
     element.innerText = value  || "";
     return element;
 }

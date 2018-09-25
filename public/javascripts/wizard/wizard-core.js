@@ -2,6 +2,48 @@
 var numSections = 0;
 var indexSections = -1;
 
+function hidePopup(id) {
+    document.getElementById(id).style.display = 'none';
+}
+
+function openPopup(id, isModal) {
+    let modal = document.getElementById(id);
+    if (modal !== null) {
+
+        // Display popup
+        modal.style.display = 'block';
+
+        // Add event handler for click anywhere else on screen
+        if (isModal) {
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+        }
+    }
+}
+
+function createElement(type, value, name, id, ...classList) {
+    let element = document.createElement(type);
+    if (classList.length !== 0)
+        if (classList[0] instanceof Array) {
+            element.className = classList[0].join(" ");
+        } else {
+            element.className = classList[0];
+        }
+    element.name = name.trim()  || "";
+    element.id = id.trim()  || "";
+    element.innerText = value  || "";
+    return element;
+}
+
+function createButton(id, name, type, value, callback, ...classlist) {
+    let button = createElement("button", value, name, id, classlist);
+    button.type = type;
+    button.onclick = callback;
+    return button;
+}
 
 // Runs functions when document has loaded
 function _docReady(funcName, baseObj) {
@@ -89,10 +131,11 @@ function findParentGroup(input) {
 
 }
 
+// TODO
 function reaccess(parentGroup) {
-    parentGroup.querySelectorAll("input").forEach(function (input) {
-
-    })
+    // parentGroup.querySelectorAll("input").forEach(function (input) {
+    //
+    // })
 }
 
 function assignInputListeners() {
@@ -180,7 +223,7 @@ function show(element) {
         if (element.nodeType === 1) {
             if (element.tagName === "IC" ||
                 element.tagName === "LABEL")
-                element.style.display = "inline-block";
+                element.style.display = "block";
             else {
                 if (element.tagName === "INPUT") {
                     if (element.type === "checkbox") {
@@ -189,7 +232,8 @@ function show(element) {
                         element.style.display = "block";
                     }
                 } else {
-                    element.style.display = "block";
+                    if (child.tagName !== "DATALIST")
+                        element.style.display = "block";
                 }
             }
         }
@@ -197,8 +241,56 @@ function show(element) {
     }
 }
 
+/**
+ * Function to take <div class="popup"...> and create Model dialogs from them
+ */
+function createDocumentPopups() {
+    document.querySelectorAll(".popup").forEach(function (e) {
+        // Hack fix for forEach loop not retaining the content of the element. e.parentNode == null at times.
+        let element = document.getElementById(e.id);
+
+        // Create copy of element content
+        let copy = element.cloneNode(true);
+
+        // Get element parent, where the popup will be placed
+        let parent = element.parentElement;
+
+        let name = copy.getAttribute("name");
+
+        let divContainer = createElement("div", "", "", "", 'row');
+
+        // Create button to open popup window
+        let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", "Add " + name, function () {
+            openPopup(copy.id, true);
+        }, "nmu-button", "action-button", "action-alternative");
+        btn.style.marginLeft = "20px";
+
+        // Insert Heading
+        let heading = createElement("h4", name, "", "");
+        heading.style.marginLeft = "50px";
+
+        // Add heading to container
+        divContainer.appendChild(heading);
+        divContainer.appendChild(btn);
+        divContainer.appendChild(document.createElement("BR"));
+
+        // Insert Show Popup button before current element
+        parent.insertBefore(divContainer, element);
+
+        // Remove the element, i.e. all content from the form
+        element.remove();
+
+        // Create popup window
+        createPopup(copy.id, name, copy, parent);
+    })
+}
+
 // initialize Wizard
 function initWizard() {
+
+    // Add document popups
+    createDocumentPopups();
+
     //Add collapsible to each section header and collapsible-child to each of the children
     function addCollapsibleSections() {
         document.querySelectorAll(".section").forEach(e => e.firstChild.classList.add("section-title", "collapsible"));
@@ -250,6 +342,7 @@ function initWizard() {
         e.firstChild.onclick = function () {
             document.querySelectorAll("#" + e.id)[0].childNodes.forEach(function (child) {
                 if (child.tagName !== "H3" &&
+                    child.tagName !== "DATALIST" &&
                     child.nodeType === Node.ELEMENT_NODE) {
                     if (child.tagName === "IC" ||
                         child.tagName === "LABEL"){
@@ -271,6 +364,7 @@ function initWizard() {
 
     // Add collapsible functionality to wizard groups (this includes document groups)
     addCollapsibleGroups();
+
 
     // // Deprecated
     // addDocumentOverview();
@@ -344,4 +438,8 @@ function createLists(listDiv) {
     document.querySelectorAll("#listDiv").forEach(function (div) {
         div.classList.add("")
     })
+}
+
+function createPopup(id, title, dialogContent, position) {
+    position.innerHTML += "<div id=\"" + id + "\" class=\"modal\" style=\"display: none;\"><div class=\"modal-content animate nmu-theme-darkbackground\"><div class=\"popup-header\"><span onclick=\"hidePopup('" +  id + "')\" class=\"close\" title=\"Close PopUp\">×</span><h2>" + title + "</h2></div><div class=\"lessen-top-margin\" id=\"" + id + "_content" + "\">" + dialogContent + "</div></div>";
 }

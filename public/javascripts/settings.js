@@ -77,26 +77,100 @@ function _docReady(funcName, baseObj) {
     }
 }
 
-function docReady(){
-    document.getElementById("btnEnrol").click = doEnrol();
-    document.getElementById("btnEnrol").click = doEnrol();
-    document.getElementById("btnEnrol").click = doEnrol();
-    document.getElementById("btnEnrol").click = doEnrol();
+function docReady() {
+    // Add enrol AJAX request and callback
+    let btnEnrol = document.getElementById("btnEnrol");
+    if (btnEnrol !== null) {
+        btnEnrol.onclick = function () {
+            let data = {
+                "enrol_type": $('#enrol_type').val(),
+                "enrol_code": $('#enrol_code').val()
+            };
+            sendRequest(btnEnrol, data, userRoutes.controllers.UserSystem.ProfileHandler.doEnrol(), "Unable to enrol you for the selected position. Please contact the Research and Ethics Committee if this issue persists.", function (data) {
+                alert("Enrolled");
+            })
+        };
+    }
+
+    // Add basic information update AJAX request and callback
+    let btnBasic = document.getElementById("btnUpdateBasic");
+    if (btnBasic !== null) {
+        btnBasic.onclick = function () {
+            let data = {
+                "title": $('#title').val(),
+                "firstname": $('#firstname').val(),
+                "lastname": $('#lastname').val(),
+                "mobile": $('#mobile').val(),
+                "degree": $('#degree').val(),
+                "faculty": $('#faculty').val(),
+                "department": $('#department').val()
+            };
+            sendRequest(btnBasic, data, userRoutes.controllers.UserSystem.ProfileHandler.updateBasicInfo(), "Unable to update your personal information. Please contact the Research and Ethics Committee if this issue persists.", function (data) {
+                alert("Updated personal information");
+            })
+        };
+    }
+
+    // Add academic information update AJAX request and callback
+    let btnAcademic = document.getElementById("btnUpdateAcademic");
+    if (btnAcademic !== null) {
+        btnAcademic.onclick = function () {
+            let data = {
+                "campus": $('#campus').val(),
+                "telephone": $('#telephone').val(),
+                "address": $('#address').val()
+            };
+            sendRequest(btnAcademic, data, userRoutes.controllers.UserSystem.ProfileHandler.updateAcademicInfo(), "Unable to update your academic information. Please contact the Research and Ethics Committee if this issue persists.", function (data) {
+                alert("Updated academic information");
+            })
+        };
+    }
+
+    // Add update password AJAX request and callback
+    let btnPassword = document.getElementById("btnChangePassword");
+    if (btnPassword !== null) {
+        btnPassword.onclick = function () {
+            let data = {
+                "old_password": $('#old_password').val(),
+                "new_password": $('#new_password').val(),
+                "confirm_password": $('#confirm_password').val()
+            };
+            sendRequest(btnPassword, data, userRoutes.controllers.UserSystem.ProfileHandler.updatePassword(), "Unable to update password, your old password is still active. Please contact the Research and Ethics Committee if this issue persists.", function (data) {
+                alert("Password updated");
+            })
+        };
+    }
 }
-_docReady();
 
-function changePassword() {
-
+function setButtonBusy(senderId, isBusy) {
+    if (isBusy) {
+        senderId.classList.add("busy");
+    } else {
+        senderId.classList.remove("busy");
+    }
 }
 
-function changeBasicInfo() {
-
+function sendRequest(sender, data, requestUrl, err_message, callback) {
+    setButtonBusy(sender, true);
+    sender.disabled = true;
+    let token = document.getElementsByName("csrfToken")[0].value;
+    $.ajax({
+        url: requestUrl.url,
+        cache: false,
+        contentType: 'application/json',
+        method: 'POST',
+        headers: {
+            'Csrf-Token': token
+        },
+        data: JSON.stringify(data),
+    }).done(function (data) {
+        callback(data);
+        window.location.reload();
+    }).error(function (error) {
+        console.log(error);
+        window.location.reload();
+    });
 }
 
-function changeAdacemicInfo() {
+docReady();
 
-}
-
-function doEnrol(){
-
-}

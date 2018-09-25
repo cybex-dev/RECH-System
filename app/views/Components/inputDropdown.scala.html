@@ -4,8 +4,8 @@
 
 @(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean, feedback: Boolean)
 
-<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<select id="@id" name="@id" @editable.apply(canEdit)>
+<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint" ></ic><br>
+<select id="@id" name="@id" @editable.apply(canEdit) style="width: auto !important;">
     @for(option <- options) {
         @if(value.equals(option)) {
             <option id="@option.toString.replace(" ", "")" name="@option.toString.replace(" ", "")" selected="selected">@option</option>

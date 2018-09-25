@@ -85,6 +85,10 @@ public class APIController extends Controller {
                         .collect(Collectors.toList());
             }
 
+            case "campus": {
+                return getAllCampus();
+            }
+
             default: break;
         }
         return list;
