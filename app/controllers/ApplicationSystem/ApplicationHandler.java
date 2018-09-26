@@ -151,7 +151,7 @@ public class ApplicationHandler extends Controller {
                         entryMap.put(entityComponentVersion.getComponentId() + "_desc", entityComponentVersion.getDocumentDescription());
                         File file = new File(entityComponentVersion.getDocumentLocationHash());
                         if (file.exists()) {
-                            String s = file.getName().split("~" + entityComponentVersion.getVersion() + "~")[1];
+                            String s = file.getName();
                             entryMap.put(entityComponentVersion.getComponentId() + "_document", s);
                         }
                         break;
@@ -267,14 +267,14 @@ public class ApplicationHandler extends Controller {
             }
 
             EntityEthicsApplication application = null;
-
-            if (formApplication.get("prp_contact_email") == null || formApplication.get("prp_contact_email").toString().isEmpty()) {
-                // Handle form errors
-                EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
-                Map<String, Boolean> editableMap = new HashMap<>();
-                XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
-                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), editableMap, routes.ApplicationHandler.submitEdit(), false, "", false, false));
-            }
+//
+//            if (formApplication.get("prp_contact_email") == null || formApplication.get("prp_contact_email").toString().isEmpty()) {
+//                // Handle form errors
+//                EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
+//                Map<String, Boolean> editableMap = new HashMap<>();
+//                XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
+//                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), editableMap, routes.ApplicationHandler.submitEdit(), false, "", false, false));
+//            }
 
             // Create basic Ethics Application
             if (formApplication.get("application_id") == null ||
@@ -291,18 +291,27 @@ public class ApplicationHandler extends Controller {
 
                 // Get pi id from session
                 String pi_id = session(CookieTags.user_id);
-                // Get prp id from Elements
-                String prpContactEmail = formApplication.get("prp_contact_email").toString()
-                        .split("\\[")[1]
-                        .replace("]", "");
-                String hodId = EntityPerson.getHod(application.getDepartmentName());
-                String facultyRTI = EntityPerson.getRTI(application.getFacultyName());
-
                 // Set hod, rti, prp & pi ids
                 application.setPiId(pi_id);
-                application.setPrpId(prpContactEmail);
-                application.setHodId(hodId);
-                application.setRtiId(facultyRTI);
+
+                // Get prp id from Elements
+                String prpContactEmail = formApplication.get("prp_contact_email");
+                if (prpContactEmail == null) {
+                    prpContactEmail = prpContactEmail.toString()
+                            .split("\\[")[1]
+                            .replace("]", "");
+                    application.setPrpId(prpContactEmail);
+
+                }
+
+                String hodId = EntityPerson.getHod(application.getDepartmentName());
+                if (hodId != null) {
+                    application.setHodId(hodId);
+                }
+                String facultyRTI = EntityPerson.getRTI(application.getFacultyName());
+                if (facultyRTI != null) {
+                    application.setRtiId(facultyRTI);
+                }
 
                 application.insert();
             } else {
@@ -367,7 +376,7 @@ public class ApplicationHandler extends Controller {
                         if (entityComponentVersion != null) {
                             // insert component version value
                             setComponentValue(entityComponentVersion, entry, type);
-                            data.remove(entry.getKey());
+//                            data.remove(entry.getKey());
                         }
 
                         // if == null, means that the the component was submitted and is not meant to be changed, but it is being changed. This change will not be saved.

@@ -182,6 +182,29 @@ function completeQuestionnaire() {
 
 }
 
+
+// - sets the 'state' to visible
+// - increments the index
+// - sets the new index to active
+
+function nextSection() {
+    // Set first section active
+    var nodelistSections = document.querySelectorAll(".section");
+    setHidden(nodelistSections[indexSections]);
+    setVisible(nodelistSections[++indexSections]);
+}
+
+// - sets the 'state' to hidden
+// - decrements the index
+// - sets the new index to active
+
+function previousSection() {
+    // Set first section active
+    var nodelistSections = document.querySelectorAll(".section");
+    setHidden(nodelistSections[indexSections]);
+    setVisible(nodelistSections[--indexSections]);
+}
+
 function setHidden(element) {
     if (element == null)
         return;

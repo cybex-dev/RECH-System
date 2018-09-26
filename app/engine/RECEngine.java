@@ -9,9 +9,12 @@ import dao.Meeting.EntityAgendaItem;
 import dao.ReviewSystem.EntityLiaisonComponentFeedback;
 import dao.ReviewSystem.EntityReviewerApplications;
 import dao.UserSystem.EntityPerson;
+import helpers.CookieTags;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
+import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
+import play.mvc.Controller;
 
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
@@ -19,7 +22,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 
-public class RECEngine {
+public class RECEngine extends Controller {
 
     @Inject
     private MessageProvider messageProvider;
@@ -27,21 +30,149 @@ public class RECEngine {
     public RECEngine() {
     }
 
-    public void nextStep(EntityEthicsApplicationPK applicationId) {
+    public boolean nextStep(EntityEthicsApplicationPK applicationId) {
         System.out.print("[ENGINE] ");
 
         EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
         if (entityEthicsApplication == null) {
             System.out.println("[ENGINE] nextStep: Application not found + " + applicationId.shortName());
-            return;
+            return false;
         }
+
+        EntityPerson person = EntityPerson.getPersonById(session(CookieTags.user_id));
+        if (person == null) {
+            flash("danger", "Unknown error occured, please logout and login again.");
+            return false;
+        }
+
+        Permission permission = checkAuthorized(person, entityEthicsApplication);
+        if (permission != Permission.MODIFY) {
+            System.out.println("Unauthorized to perform action on application");
+            return false;
+        }
+
         System.out.print(ApplicationStatus.parse(entityEthicsApplication.getInternalStatus()) + " -> ");
         Actionable nextAction = nextAction(applicationId);
-        nextAction.doAction();
+        boolean b = nextAction.doAction();
         nextAction.doNotify();
 
         entityEthicsApplication.refresh();
         System.out.print(ApplicationStatus.parse(entityEthicsApplication.getInternalStatus()) + "\n");
+        return b;
+    }
+
+    private Permission checkAuthorized(EntityPerson person, EntityEthicsApplication entityEthicsApplication) {
+        if (person.userType() == UserType.RCD)
+            return Permission.MODIFY;
+        switch (ApplicationStatus.parse(entityEthicsApplication.getInternalStatus())) {
+
+            case FEEDBACK_GIVEN_LIAISON:
+            case REJECTED:
+            case APPROVED:
+            case UNKNOWN:
+            case DRAFT:
+            case READY_FOR_SUBMISSION:
+            case NOT_SUBMITTED: {
+                return (person.getUserEmail().equals(entityEthicsApplication.getPiId())) ? Permission.MODIFY : Permission.NONE;
+            }
+
+            case TEMPORARILY_APPROVED:
+            case FACULTY_REVIEW:
+                return person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
+                                person.getUserEmail().equals(entityEthicsApplication.getRtiId()) ? Permission.VIEW : Permission.NONE;
+
+            case AWAITING_REVIEWER_ALLOCATION:
+                return (person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPrpId())) ? Permission.VIEW : Permission.NONE;
+
+            case PENDING_REVIEW_REVIEWER:
+                return (person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPrpId()))
+                        ? Permission.VIEW
+                        : EntityReviewerApplications.getApplicationReviewers(entityEthicsApplication.applicationPrimaryKey()).stream().anyMatch(s -> s.equals(person.getUserEmail()))
+                            ? Permission.MODIFY
+                            : Permission.NONE;
+
+            case PENDING_REVIEW_MEETING:
+                return (person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
+                        EntityReviewerApplications.getApplicationReviewers(entityEthicsApplication.applicationPrimaryKey()).stream().anyMatch(s -> s.equals(person.getUserEmail())))
+                        ? Permission.VIEW
+                        : Permission.NONE;
+
+            case TEMPORARILY_APPROVED_EDITS:
+            case PENDING_REVIEW_LIAISON:
+                return (person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPrpId()))
+                        ? Permission.VIEW
+                        : person.getUserEmail().equals(entityEthicsApplication.getLiaisonId())
+                        ? Permission.MODIFY
+                        : Permission.NONE;
+
+
+            case AWAITING_PRP_APPROVAL:
+                return person.getUserEmail().equals(entityEthicsApplication.getPiId())
+                        ? Permission.VIEW
+                        : person.getUserEmail().equals(entityEthicsApplication.getPrpId())
+                        ? Permission.MODIFY
+                        : Permission.NONE;
+
+            case AWAITING_PRE_HOD_RTI_APPROVAL:
+                return person.getUserEmail().equals(entityEthicsApplication.getHodId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getRtiId())
+                        ? Permission.MODIFY
+                        : (person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPiId()))
+                        ? Permission.VIEW
+                        : Permission.NONE;
+
+            case AWAITING_PRE_HOD_APPROVAL:
+                return person.getUserEmail().equals(entityEthicsApplication.getHodId())
+                        ? Permission.MODIFY
+                        : (person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPiId()))
+                        ? Permission.VIEW
+                        : Permission.NONE;
+
+            case AWAITING_PRE_RTI_APPROVAL:
+                return person.getUserEmail().equals(entityEthicsApplication.getRtiId())
+                        ? Permission.MODIFY
+                        : (person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPiId()))
+                        ? Permission.VIEW
+                        : Permission.NONE;
+
+            case AWAITING_POST_HOD_RTI_APPROVAL: {
+                return person.getUserEmail().equals(entityEthicsApplication.getHodId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getRtiId())
+                        ? Permission.MODIFY
+                        : (person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPiId()))
+                        ? Permission.VIEW
+                        : Permission.NONE;
+            }
+
+            case AWAITING_POST_HOD_APPROVAL:
+                return person.getUserEmail().equals(entityEthicsApplication.getHodId())
+                        ? Permission.MODIFY
+                        : (person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPiId()))
+                        ? Permission.VIEW
+                        : Permission.NONE;
+
+            case AWAITING_POST_RTI_APPROVAL:
+                return person.getUserEmail().equals(entityEthicsApplication.getRtiId())
+                        ? Permission.MODIFY
+                        : (person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
+                        person.getUserEmail().equals(entityEthicsApplication.getPiId()))
+                        ? Permission.VIEW
+                        : Permission.NONE;
+
+
+        }
+        return Permission.NONE;
+
     }
 
     private Actionable nextAction(EntityEthicsApplicationPK applicationId) {
@@ -59,8 +190,8 @@ public class RECEngine {
 
         Actionable actionable = new Actionable() {
             @Override
-            public void doAction() {
-
+            public boolean doAction() {
+                return false;
             }
 
             @Override
@@ -94,19 +225,19 @@ public class RECEngine {
 
                 // Check if application is ready to be submitted
                 applicationComplete = isComplete(entityEthicsApplication.applicationPrimaryKey());
-                checkoutLatestApplication(applicationId);
 
                 actionable = new Actionable() {
 
                     ApplicationStatus newStatus = ApplicationStatus.NOT_SUBMITTED;
 
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         if (applicationComplete) {
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
-                            entityEthicsApplication.setPiApprovedDate(Timestamp.from(new Date().toInstant()));
                             entityEthicsApplication.update();
+                            return true;
                         }
+                        return false;
                     }
 
                     @Override
@@ -122,19 +253,27 @@ public class RECEngine {
                 // Action: Applicant clicks next step: Request PRP Approval
 
                 ApplicationStatus newStatus = ApplicationStatus.AWAITING_PRP_APPROVAL;
+                applicationComplete = isComplete(entityEthicsApplication.applicationPrimaryKey());
 
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
-                        entityEthicsApplication.setPiApprovedDate(Timestamp.from(Instant.now()));
-                        entityEthicsApplication.setInternalStatus(newStatus.getStatus());
-                        entityEthicsApplication.update();
+                    public boolean doAction() {
+                        if (applicationComplete) {
+                            checkoutLatestApplication(applicationId);
+                            entityEthicsApplication.setPiApprovedDate(Timestamp.from(Instant.now()));
+                            entityEthicsApplication.setInternalStatus(newStatus.getStatus());
+                            entityEthicsApplication.update();
+                            return true;
+                        }
+                        return false;
                     }
 
                     @Override
                     public void doNotify() {
-                        Notifier.notifyStatus(applicationId, newStatus, piId);
-                        Notifier.requireAttention(applicationId, newStatus, applicationTitle, prpId);
+                        if (applicationComplete) {
+                            Notifier.notifyStatus(applicationId, newStatus, piId);
+                            Notifier.requireAttention(applicationId, newStatus, applicationTitle, prpId);
+                        }
                     }
                 };
                 return actionable;
@@ -151,9 +290,13 @@ public class RECEngine {
                     ApplicationStatus newStatus = (approved) ? ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL : ApplicationStatus.NOT_SUBMITTED;
 
                     @Override
-                    public void doAction() {
-                        entityEthicsApplication.setInternalStatus(newStatus.getStatus());
-                        entityEthicsApplication.update();
+                    public boolean doAction() {
+                        if (approved){
+                            entityEthicsApplication.setInternalStatus(newStatus.getStatus());
+                            entityEthicsApplication.update();
+                            return true;
+                        }
+                        return false;
                     }
 
                     @Override
@@ -178,42 +321,48 @@ public class RECEngine {
                 // PI/PRP notified
 
                 // Get RTI & HOD ids
-                hod = EntityPerson.getHod(entityEthicsApplication.getDepartmentName());
-                rti = EntityPerson.getRTI(entityEthicsApplication.getFacultyName());
+                boolean hodAccepted = entityEthicsApplication.getHodApplicationReviewApproved();
+                boolean rtiAccepted = entityEthicsApplication.getRtiApplicationReviewApproved();
 
                 actionable = new Actionable() {
 
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
 
-                        if (hod.isEmpty() ||
-                                rti.isEmpty()) {
-                            return;
+                        if (hodAccepted && rtiAccepted) {
+                            entityEthicsApplication.setInternalStatus(ApplicationStatus.READY_FOR_SUBMISSION.getStatus());
+                        } else {
+                            if (hodAccepted) {
+                                entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_PRE_RTI_APPROVAL.getStatus());
+                            } else {
+                                if (rtiAccepted) {
+                                    entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_PRE_HOD_APPROVAL.getStatus());
+                                } else {
+                                    return false;
+                                }
+                            }
                         }
-
-                        // Assign HOD to application
-                        entityEthicsApplication.setHodId(hod);
-
-                        // Assign RTI to application
-                        entityEthicsApplication.setRtiId(rti);
 
                         entityEthicsApplication.update();
 
+                        return true;
                     }
 
                     @Override
                     public void doNotify() {
-                        if (hod.isEmpty() ||
-                                rti.isEmpty()) {
-                            if (hod.isEmpty()) {
-                                Notifier.systemNotification(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, SystemNotification.NO_HOD_AVAILABLE, piId, prpId, EntityPerson.getRCD());
-                            }
-                            if (rti.isEmpty()) {
-                                Notifier.systemNotification(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, SystemNotification.NO_RTI_AVAILABLE, piId, prpId, EntityPerson.getRCD());
-                            }
 
+                        if (hodAccepted && rtiAccepted) {
+                            Notifier.requireAttention(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, piId, prpId);
                         } else {
-                            Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, entityEthicsApplication.getHodId(), entityEthicsApplication.getRtiId());
+                            if (hodAccepted) {
+                                Notifier.requireAttention(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, entityEthicsApplication.getHodId());
+                            } else {
+                                if (rtiAccepted) {
+                                    Notifier.requireAttention(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, entityEthicsApplication.getHodId());
+                                } else {
+                                    Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, entityEthicsApplication.getHodId(), entityEthicsApplication.getRtiId());
+                                }
+                            }
                         }
                     }
                 };
@@ -244,9 +393,10 @@ public class RECEngine {
                             : ApplicationStatus.UNKNOWN;
 
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         entityEthicsApplication.update();
+                        return true;
                     }
 
                     @Override
@@ -282,9 +432,10 @@ public class RECEngine {
 
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         entityEthicsApplication.update();
+                        return true;
                     }
 
                     @Override
@@ -302,21 +453,25 @@ public class RECEngine {
 
 
             case AWAITING_REVIEWER_ALLOCATION:
-                List<String> availableReviewers = getAvailableReviewers();
-                newStatus = ApplicationStatus.PENDING_REVIEW_REVIEWER;
+                List<String> applicationReviewers = EntityReviewerApplications.getApplicationReviewers(entityEthicsApplication.applicationPrimaryKey());
 
                 actionable = new Actionable() {
 
                     @Override
-                    public void doAction() {
-                        entityEthicsApplication.setInternalStatus(newStatus.getStatus());
-                        entityEthicsApplication.update();
+                    public boolean doAction() {
+                        if (applicationReviewers.size() > 0) {
+                            entityEthicsApplication.setInternalStatus(ApplicationStatus.PENDING_REVIEW_REVIEWER.getStatus());
+                            entityEthicsApplication.update();
+                            return true;
+                        }
+                        return false;
                     }
 
                     @Override
                     public void doNotify() {
-                        List<String> reviewers = EntityReviewerApplications.getApplicationReviewers(applicationId);
-                        reviewers.forEach(s -> Notifier.requireAttention(applicationId, newStatus, applicationTitle, s));
+                        if (applicationReviewers.size() > 0) {
+                            applicationReviewers.forEach(s -> Notifier.requireAttention(applicationId, ApplicationStatus.PENDING_REVIEW_REVIEWER, applicationTitle, s));
+                        }
                     }
                 };
                 return actionable;
@@ -335,18 +490,23 @@ public class RECEngine {
                 // PI/PRP notified of application review applicationComplete, notify of next stage
 
                 int size = EntityReviewerApplications.getApplicationReviewers(applicationId).size();
-                newStatus = (size == 4) ? ApplicationStatus.PENDING_REVIEW_MEETING : ApplicationStatus.PENDING_REVIEW_REVIEWER;
 
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
-                        entityEthicsApplication.setInternalStatus(newStatus.getStatus());
-                        entityEthicsApplication.update();
+                    public boolean doAction() {
+                        if (size > 0) {
+                            entityEthicsApplication.setInternalStatus(ApplicationStatus.PENDING_REVIEW_MEETING.getStatus());
+                            entityEthicsApplication.update();
+                            return true;
+                        }
+                        return false;
                     }
 
                     @Override
                     public void doNotify() {
-                        Notifier.requireAttention(applicationId, newStatus, applicationTitle, piId, prpId);
+                        if (size > 0 ) {
+                            Notifier.requireAttention(applicationId, ApplicationStatus.PENDING_REVIEW_MEETING, applicationTitle, piId, prpId);
+                        }
                     }
                 };
                 return actionable;
@@ -366,21 +526,8 @@ public class RECEngine {
 
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
-                        if (latestMeetingStatus == ApplicationStatus.TEMPORARILY_APPROVED ||
-                                latestMeetingStatus == ApplicationStatus.TEMPORARILY_APPROVED_EDITS) {
-                            String liaisonId = getAvailableLiaison();
-
-                            if (liaisonId.isEmpty()) {
-                                return;
-                            }
-
-                            entityEthicsApplication.setLiaisonId(liaisonId);
-                            entityEthicsApplication.setLiaisonAssignedDate(Timestamp.from(new Date().toInstant()));
-                        }
-
-                        entityEthicsApplication.setInternalStatus(latestMeetingStatus.getStatus());
-                        entityEthicsApplication.update();
+                    public boolean doAction() {
+                        return true;
                     }
 
                     @Override
@@ -407,9 +554,10 @@ public class RECEngine {
                 actionable = new Actionable() {
 
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         entityEthicsApplication.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
                         entityEthicsApplication.update();
+                        return true;
                     }
 
                     @Override
@@ -432,9 +580,10 @@ public class RECEngine {
 
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         entityEthicsApplication.update();
+                        return true;
                     }
 
                     @Override
@@ -459,12 +608,14 @@ public class RECEngine {
 
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         if (applicationComplete) {
                             checkoutLatestApplication(applicationId);
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                             entityEthicsApplication.update();
+                            return true;
                         }
+                        return false;
                     }
 
                     @Override
@@ -494,13 +645,14 @@ public class RECEngine {
 
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         if (requiresEdits) {
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         } else {
                             entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_POST_HOD_RTI_APPROVAL.getStatus());
                         }
                         entityEthicsApplication.update();
+                        return !requiresEdits;
                     }
 
                     @Override
@@ -544,9 +696,10 @@ public class RECEngine {
                 actionable = new Actionable() {
 
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         entityEthicsApplication.update();
+                        return true;
                     }
 
                     @Override
@@ -581,8 +734,9 @@ public class RECEngine {
                 actionable = new Actionable() {
 
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         // No action to perform
+                        return true;
                     }
 
                     @Override
@@ -598,8 +752,9 @@ public class RECEngine {
                 // PI/PRP notified of this
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         // No action to perform
+                        return true;
                     }
 
                     @Override
@@ -614,8 +769,9 @@ public class RECEngine {
             default: {
                 actionable = new Actionable() {
                     @Override
-                    public void doAction() {
+                    public boolean doAction() {
                         // Do nothing
+                        return false;
                     }
 
                     @Override
@@ -736,13 +892,16 @@ public class RECEngine {
      * Traverses through all application elements, checking if all elements contain the required data -> this should match the appropriate XML file
      *
      * @param pk
-     * @return
+     * @return TODO not completed
      */
     public boolean isComplete(EntityEthicsApplicationPK pk) {
         EntityEthicsApplication application = EntityEthicsApplication.find.byId(pk);
         if (application == null) {
             return false;
         }
+
+        // Get EthicsApplication object
+        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
 
         // Get latest components of an application
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(pk);
@@ -770,15 +929,10 @@ public class RECEngine {
             }
         }
 
-        // Get EthicsApplication object
-        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
-
         // Generate root Element with values attached
         Element rootWithValues = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), m);
-
-        System.out.println("Missing Complete Check");
         return true;
-//        return checkComplete(rootWithValues, true);
+//        return XMLTools.checkComplete(rootWithValues);
         // grp_risks_benefits > extension > no children
     }
 

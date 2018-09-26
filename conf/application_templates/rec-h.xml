@@ -35,7 +35,7 @@
                 <question>Lastname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found" autofill_id="campus">
+            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found" dataname="campus" db-mapping="campus">
                 <question>Campus</question>
                 <value></value>
             </component>
@@ -404,19 +404,19 @@
                     <question>Describe the necessity of minors in study.</question>
                     <value></value>
                 </component>
-            </extension>
+            </extension>e
         </group>
     </section>
     <section id="sct_participant_consent" name="Consent of Particpants" hint="">
         <group id="grp_participant_consent" name="Consent of Participants">
             <extension orientation="vertical">
-                <component id="written_consent" name="" type="boolean" hint="Is participant consent given in writing">
-                    <question></question>
+                <component id="written_consent" name="" type="boolean" hint="Is participant consent given in writing of any kind, document or otherwise">
+                    <question>Is participant consent given in writing</question>
                     <value></value>
                 </component>
                 <extension orientation="vertical">
                     <component id="written_consent_desc" name="" type="text" hint="Motivate why no consent will be necessary.">
-                    <question>Motivate</question>
+                    <question>Motivatation</question>
                     <value></value>
                 </component>
                     <popup id="grp_doc_consent" type="document" popup="true" name="Written Consent Document"

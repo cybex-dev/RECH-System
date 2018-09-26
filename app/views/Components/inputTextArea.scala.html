@@ -3,7 +3,7 @@
 @(id: String, label: String, value: String, hint: String, maxwords: String, canEdit: Boolean, feedback: Boolean)
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<textarea style="margin-left: 40px; width: 70%; height: 3em;" id="@id" value="@value" name="@id"  type="text" maxlength="@maxwords" @editable.apply(canEdit)></textarea>
+<textarea style="margin-left: 40px; width: 80%; height: 3em; margin-bottom: 10px;" id="@id" value="@value" name="@id"  type="text" maxlength="@maxwords" @editable.apply(canEdit)></textarea>
 @if(feedback){
     @inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false)
 }

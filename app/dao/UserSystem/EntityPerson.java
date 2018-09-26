@@ -249,11 +249,11 @@ public class EntityPerson extends Model {
                 .filter(entityPerson -> entityPerson.facultyName.equals(facultyName) && entityPerson.userType().equals(UserType.FacultyRTI))
                 .map(dao.UserSystem.EntityPerson::getUserEmail)
                 .findFirst()
-                .orElse("");
+                .orElse(null);
     }
 
     public static String getHod(String departmentName) {
-        return EntityPerson.find.all().stream()
+        return find.all().stream()
                 .filter(entityPerson -> (entityPerson.departmentName.equals(departmentName) && entityPerson.userType().equals(UserType.DepartmentHead)))
                 .map(EntityPerson::getUserEmail)
                 .findFirst()

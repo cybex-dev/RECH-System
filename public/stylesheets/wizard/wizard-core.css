@@ -99,8 +99,12 @@ input {
 }
 
 .extension {
-    border-left: 2px solid #061c20 !important;
-    padding-left: 10px;
+    margin-left: 5px;
+    border-left: 5px solid #061c20 !important;
+}
+
+.extension > .extension-container {
+    padding: 0px 10px !important;
     margin: 5px 0px;
 }
 
@@ -200,23 +204,27 @@ h3 {
 
 
 .section-title {
-    background-color: #0A283F !important;
+    background-color: #0A283F;
     padding: 15px !important;
     margin: 0 !important;
+    border-bottom: 1px dashed #FFFFFF;
 }
 
 .section-title:hover {
     background-color: #f9b42a !important;
+    padding-left: 20px !important;
 }
 
 .group-title {
-    background-color: #0A283F !important;
+    background-color: #0c2f4a;
     padding: 10px !important;
     margin: 0 !important;
     line-height: 1em !important;
+    border-left: 2px solid #f9b42a;
 }
 
 .group-title:hover {
+    padding-left: 15px !important;
     background-color: #f9b42a !important;
 }
 
@@ -233,4 +241,56 @@ textarea {
 th td {
     color: #0A283F !important;
     text-align: center;
+}
+
+thead > tr > th > label {
+    color: #061c2c !important;
+    font-size: 0.9em;
+}
+
+.extension > h4 {
+    font-size: 1.5em;
+}
+
+.group-active {
+    background-color: #f9b42a !important;
+}
+
+.section-active {
+    background-color: #f9b42a !important;
+}
+
+.group-container > h3 {
+    padding-left: 30px !important;
+}
+
+.group-container > group {
+    padding-left: 30px !important;
+}
+
+label {
+    font-size: 16px;
+}
+
+.extension-header {
+    padding: 10px 0 !important
+}
+
+.extension-header > label:hover {
+    font-style: italic;;
+}
+
+.extension-data > extension-active {
+    background-color: #efefef;
+    color: #061c2c !important;
+}
+
+.extension-active {
+    background-color: #fcdc9c !important;
+}
+
+.group-data {
+    background-color: #ffffff;
+    color: #061c2c !important;
+    border-left: 2px solid #f9b42a;
 }

@@ -350,3 +350,7 @@ table > thead {
     background-color: #5f5b52 !important;
     cursor: pointer !important;
 }
+
+.portal-icon a {
+    #color: #FFFFFF !important;
+}

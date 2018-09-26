@@ -1,7 +1,7 @@
 @(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean)
 
 <label>@label</label><ic title="@hint"  style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<input style="margin-left: 40px" id="@id" name="@id" value="@value" placeholder="Select @label" type="date" @editable.apply(canEdit)>
+<input style="margin-left: 40px; padding-left: 10px" id="@id" name="@id" value="@value" placeholder="Select @label" type="date" @editable.apply(canEdit)>
 @if(feedback){
     @inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false)
 }

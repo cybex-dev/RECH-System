@@ -21,8 +21,8 @@
                         <td style="text-decoration: underline;">@application.getTitle</td>
                         <td></td>
                         <td>@application.getStatus.name()</td>
-                        <td>@application.getDate_submitted.toString.split(" ")[0]</td>
-                        <td>@application.getDate_approved.toString.split(" ")[0]</td>
+                        <td>@application.getSubmittedDateSafe</td>
+                        <td>@application.getApprovedDateSafe</td>
                         <td><a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
                             <button class="nmu-button table-button">View Application</button>
                         </a></td>

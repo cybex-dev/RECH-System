@@ -252,7 +252,13 @@
                     req = "false"
                 }
                 val desc = element.getAttributes.get("desc")
-                inputFile.apply(id, q, element.getChildren.getLast.getValue.toString, hint, desc, req, editable, feedback).toString()
+                val id = element.getChildren.getLast.getValue.toString
+                if(id.isEmpty) {
+                    inputFile.apply(id, q, "", "", hint, desc, req, editable, feedback).toString()
+                } else {
+                    val shortName = id.split("~\\d+~").lift(1).get
+                    inputFile.apply(id, q, id, shortName, hint, desc, req, editable, feedback).toString()
+                }
 
             case "list" =>
                 "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"

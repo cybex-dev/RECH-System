@@ -24,10 +24,7 @@ function openPopup(id, isModal) {
     }
 }
 
-function createElement(type, value, name, id,
-                       ...
-                           classList
-) {
+function createElement(type, value, name, id, ...classList) {
     let element = document.createElement(type);
     if (classList.length !== 0)
         if (classList[0] instanceof Array) {
@@ -41,14 +38,15 @@ function createElement(type, value, name, id,
     return element;
 }
 
-function createButton(id, name, type, value, callback,
-                      ...
-                          classlist
-) {
+function createButton(id, name, type, value, callback, ...classlist) {
     let button = createElement("button", value, name, id, classlist);
     button.type = type;
     button.onclick = callback;
     return button;
+}
+
+function createDiv(id, name, ...classlist) {
+    return createElement("div", "", id, name, classlist);
 }
 
 // Runs functions when document has loaded
@@ -164,37 +162,16 @@ function docReady() {
     // Initializes wizard
     initWizard();
 
-    // TODO Fix
-    document.querySelectorAll(".group > h3").forEach(e => {
-        e.click();
-        e.click();
-    })
-    ;
+    // // TODO Fix
+    // document.querySelectorAll(".group > h3").forEach(e => {
+    //     e.click();
+    //     e.click();
+    // })
+    // ;
 
     assignInputListeners();
 }
 
-// - sets the 'state' to visible
-// - increments the index
-// - sets the new index to active
-
-function nextSection() {
-    // Set first section active
-    var nodelistSections = document.querySelectorAll(".section");
-    setHidden(nodelistSections[indexSections]);
-    setVisible(nodelistSections[++indexSections]);
-}
-
-// - sets the 'state' to hidden
-// - decrements the index
-// - sets the new index to active
-
-function previousSection() {
-    // Set first section active
-    var nodelistSections = document.querySelectorAll(".section");
-    setHidden(nodelistSections[indexSections]);
-    setVisible(nodelistSections[--indexSections]);
-}
 
 // hides an element
 function setHidden(element) {
@@ -270,6 +247,10 @@ function createDocumentPopups() {
         let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", "Add " + name, null, "nmu-button", "action-button", "action-alternative");
         btn.style.marginLeft = "20px";
 
+        let textNode = createElement("p", "", "", copy.id + "_filename");
+        textNode.style.marginLeft = "50px";
+        textNode.style.fontWeight = "bold";
+
         // Insert Heading
         let heading = createElement("h4", name, "", "");
         heading.style.marginLeft = "50px";
@@ -277,6 +258,7 @@ function createDocumentPopups() {
         // Add heading to container
         divContainer.appendChild(heading);
         divContainer.appendChild(btn);
+        divContainer.appendChild(textNode);
         divContainer.appendChild(document.createElement("BR"));
 
         // Insert Show Popup button before current element
@@ -287,39 +269,247 @@ function createDocumentPopups() {
 
         // Create popup window
         createPopup(copy.id, name, copy, divContainer);
+        let inputFile = parent.querySelectorAll("input[type=file]")[0];
+        inputFile.onchange = function(){
+            // let filename = val.split('\\').pop().split('/').pop();
+            // filename = filename.substring(0, filename.lastIndexOf('.'));
+            textNode.innerText = inputFile.value;
+        };
 
         // Set onclick event
         document.getElementById("btnPopup_" + copy.id).onclick = function () {
             openPopup(copy.id, true);
         };
+
+        // Set onDownload button click handlers
+        document.querySelectorAll("button .downloadfile").forEach(function(button) {
+            button.onclick = function () {
+                let data = {
+                    "application_id": $('#application_id').val(),
+                    "new_password": $('#new_password').val(),
+                    "confirm_password": $('#confirm_password').val()
+                };
+                sendRequest(btnPassword, data, userRoutes.controllers.UserSystem.ProfileHandler.getDocument(), "Unable to update password, your old password is still active. Please contact the Research and Ethics Committee if this issue persists.", function (data) {
+                    alert("Password updated");
+                })
+            }
+        })
+    });
+}
+
+function createCollapsibleGroupHeadings() {
+    document.querySelectorAll(".section .group").forEach(function (e) {
+        e.firstChild.onclick = function () {
+            document.querySelectorAll("#" + e.id)[0].childNodes.forEach(function (child) {
+                if (child.tagName !== "H3" &&
+                    child.tagName !== "DATALIST" &&
+                    child.nodeType === Node.ELEMENT_NODE) {
+                    if (!child.classList.contains("modal")) {
+                        if (child.tagName === "IC" ||
+                            child.tagName === "LABEL") {
+                            child.style.display = (child.style.display === "none" || child.style.display === "") ? "inline-block" : "none";
+                        } else {
+                            child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
+                        }
+                    }
+                }
+
+            })
+        }
+    });
+
+}
+
+function createCollapsibleSectionHeadings() {
+    document.querySelectorAll(".section").forEach(function (e) {
+        e.firstChild.onclick = function () {
+            document.querySelectorAll("#" + e.id + ".section .group").forEach(function (child) {
+                child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
+            })
+        }
     });
 }
 
 // initialize Wizard
 function initWizard() {
 
+    document.querySelectorAll(".section > h2").forEach(e => e.classList.add("section-title", "collapsible"));
+
+    // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
+    document.querySelectorAll(".group > h3").forEach(e => e.classList.add("group-title","collapsible"));
+
+    // Add groups for each h3 within a group div
+    document.querySelectorAll(".group > h3").forEach(function (element) {
+
+        let p = element.parentNode;
+
+        // Duplicate heading
+        let heading = element.cloneNode(true);
+
+        // Remove element content from parent
+        element.remove();
+
+        // Create extension data div
+        let data = createDiv("", "", "group-data");
+
+        //Add the rest of all extension group children to extension-data container
+        let count = p.children.length;
+        for (let i = 0; i < count; i++) {
+            data.appendChild(p.children[i].cloneNode(true));
+        }
+
+        // Create div container
+        let div = createDiv(parent.id + "_container", "", "");
+        div.classList.add("group-container");
+
+        // Add content to div
+        div.appendChild(heading);
+        div.appendChild(data);
+
+        // Add div to parent node extension/section
+        p.parentNode.insertBefore(div, p);
+
+        // Remove group placeholder
+        p.remove();
+    });
+
+    // Add extension groups for each extension div
+    document.querySelectorAll(".extension").forEach(function (element) {
+
+        //Get first three children.
+        let label = element.firstElementChild;
+        let ic = label.nextElementSibling;
+        let input = ic.nextElementSibling;
+
+        // Deep clone the header children
+        let headerLabel = label.cloneNode(true);
+        let headerIC = ic.cloneNode(true);
+        let headerInput = input.cloneNode(true);
+
+        // Remove the children from the extension
+        label.remove();
+        ic.remove();
+        input.remove();
+
+        //create extension-container div containing header and data
+        let container = createDiv(parent.id + "_container", "", "extension", "extension-container");
+
+        //create extension-header div containing header
+        let header = createDiv("", "", "extension-header");
+
+        // Add header children
+        header.appendChild(headerLabel);
+        header.appendChild(headerIC);
+        header.appendChild(headerInput);
+
+        // Create extension data div
+        let data = createDiv("", "", "extension-data");
+
+        //Add the rest of all extension group children to extension-data container
+        let count = element.children.length;
+        for (let i = 0; i < count; i++) {
+            data.appendChild(element.children[i].cloneNode(true));
+        }
+
+        // Add content to div
+        container.appendChild(header);
+        container.appendChild(data);
+
+        // Add div to parent node extension/section
+        element.parentNode.insertBefore(container, element);
+
+        // Remove group placeholder
+        element.remove();
+    });
+
+    // Add onclick section-groups showing and hiding all child groups
+    document.querySelectorAll("div.section > h2").forEach(function(e) {
+
+        let p = e.parentNode;
+
+        // Duplicate heading
+        let heading = e.cloneNode(true);
+
+        // Remove element content from parent
+        e.remove();
+
+        // Get parent div i.e. div group and clone
+        let sectionData = createDiv(parent.id + "_data", "", "section-content");
+
+        // Add all group-containers to section-data
+        let count = p.children.length;
+        for (let i = 0; i < count; i++) {
+            sectionData.appendChild(p.children[i].cloneNode(true));
+        }
+
+        // Create div container
+        let sectionContainer = createDiv(parent.id + "_container", "", "section-container");
+
+        // Add content to div
+        sectionContainer.appendChild(heading);
+        sectionContainer.appendChild(sectionData);
+
+        // Add div to parent node extension/section
+        p.parentNode.insertBefore(sectionContainer, p);
+
+        // Remove group placeholder
+        p.remove();
+    });
+
+    // Add onclick group-titles showing and hiding all child groups
+    document.querySelectorAll("div.group-container > h3").forEach(function(e) {
+        e.onclick = function() {
+            if (e.nextSibling.style.display === "none") {
+                e.nextSibling.style.display = "block";
+                e.classList.add("group-active");
+                e.parentElement.parentElement.parentElement.firstElementChild.classList.add("section-active")
+            } else {
+                e.nextSibling.style.display = "none";
+                e.classList.remove("group-active");
+                e.parentElement.parentElement.parentElement.firstElementChild.classList.remove("section-active")
+            }
+        };
+        e.nextSibling.style.display = "none";
+    });
+
+    // Add onclick section-titles showing and hiding group data
+    document.querySelectorAll(".section-title.collapsible").forEach(function(e) {
+        e.onclick = function() {
+            if (e.nextSibling.style.display === "none") {
+                e.nextSibling.style.display = "block";
+                e.classList.add("section-active");
+            } else {
+                e.nextSibling.style.display = "none";
+                e.classList.remove("section-active");
+            }
+        };
+        e.nextSibling.style.display = "none";
+    });
+
+    // Add extension-header input hooks to show and hide extension-data containers
+    document.querySelectorAll(".extension-header > input").forEach(function(e) {
+        e.onclick = function() {
+            if (e.parentElement.nextElementSibling.style.display === "none") {
+                e.parentElement.classList.add("extension-active");
+                e.parentElement.nextElementSibling.style.display = "block"
+            } else {
+                e.parentElement.classList.remove("extension-active");
+                e.parentElement.nextElementSibling.style.display = "none"
+            }
+        };
+        e.classList.remove("extension-active");
+        e.parentElement.nextElementSibling.style.display = "none";
+    });
+
     // Add document popups
     createDocumentPopups();
-
-    //Add collapsible to each section header and collapsible-child to each of the children
-    function addCollapsibleSections() {
-        document.querySelectorAll(".section").forEach(e => e.firstChild.classList.add("section-title", "collapsible")
-        )
-        ;
-
-        // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
-        document.querySelectorAll(".section .group").forEach(e => e.classList.add("collapsible-child")
-        )
-        ;
-    }
 
     function addCollapsibleGroups() {
         // Add collapsible groups
         document.querySelectorAll(".group > *").forEach(function (e) {
             if (e.tagName !== "BR") {
                 e.classList.add("collapsible-child")
-            }
-            ;
+            };
         });
 
         // Add collabsible group heading
@@ -346,43 +536,19 @@ function initWizard() {
     }
 
     // Link each section heading to group collapbsible, adding an onclick event which collapses or expands a section when clicked
-    document.querySelectorAll(".section").forEach(function (e) {
-        e.firstChild.onclick = function () {
-            document.querySelectorAll("#" + e.id + ".section .group").forEach(function (child) {
-                child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
-            })
-        }
-    });
+    // createCollapsibleSectionHeadings();
 
     // Link each group heading to subcomponents collapbsible, adding an onclick event which collapses or expands a group when clicked
-    document.querySelectorAll(".section .group").forEach(function (e) {
-        e.firstChild.onclick = function () {
-            document.querySelectorAll("#" + e.id)[0].childNodes.forEach(function (child) {
-                if (child.tagName !== "H3" &&
-                    child.tagName !== "DATALIST" &&
-                    child.nodeType === Node.ELEMENT_NODE) {
-                    if (!child.classList.contains("modal")) {
-                        if (child.tagName === "IC" ||
-                            child.tagName === "LABEL") {
-                            child.style.display = (child.style.display === "none" || child.style.display === "") ? "inline-block" : "none";
-                        } else {
-                            child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
-                        }
-                    }
-                }
+    // createCollapsibleGroupHeadings();
 
-            })
-        }
-    });
-
-    let list = document.querySelectorAll(".section");
-    list.item(list.length - 1).style.border = "0";
+    // let list = document.querySelectorAll(".section");
+    // list.item(list.length - 1).style.border = "0";
 
     // Add collapsible functionality to wizard sections
-    addCollapsibleSections();
+    //addCollapsibleSections();
 
     // Add collapsible functionality to wizard groups (this includes document groups)
-    addCollapsibleGroups();
+    //addCollapsibleGroups();
 
 
     // // Deprecated
@@ -392,15 +558,23 @@ function initWizard() {
     // addApplicationOverview();
 
     // Set hooks to expand an extension when checked
-    setExtensionHooks();
+    // setExtensionHooks();
 
     // Adds checkboxes to right side of section indicating if a section is completed or not, etc.
-    addSectionStatus();
+    // addSectionStatus();
 
-    addGroupStatus();
+    // addGroupStatus();
 
     // Completes the application form by getting the db-mapping elements from the form and filling in the application
     // getDataFromServer();
+
+    // Check if application has an ID, if so, remove the fields that form part of the primary key
+    if(document.getElementById("application_id").value !== "") {
+        document.getElementById("app_faculty").disabled = true;
+        document.getElementById("app_faculty").style.cursor = "not-allowed";
+        document.getElementById("app_department").disabled = true;
+        document.getElementById("app_department").style.cursor = "not-allowed";
+    }
 }
 
 function addSectionStatus() {
@@ -464,3 +638,16 @@ function createPopup(id, title, dialogContent, position) {
     position.innerHTML += final;
     document.getElementById(id + "_content").appendChild(dialogContent)
 }
+
+
+
+/**
+
+ // Set section h2 title hover effect, background and collapsible state
+ document.querySelectorAll(".section > h2").forEach(e => e.classList.add("section-title", "collapsible"));
+
+ // Set group h3 title hover effect, background and collapsible state
+ document.querySelectorAll(".group > h3").forEach(e => e.classList.add("group-title","collapsible"));
+
+
+ */

@@ -487,4 +487,15 @@ public class EntityEthicsApplication extends Model {
     public List<String> findAllReviewers() {
         return EntityReviewerApplications.getApplicationReviewers(applicationPrimaryKey());
     }
+
+    public boolean canAccessApplicationComponents(EntityPerson person) {
+        boolean pi = person.getUserEmail().equals(getPiId());
+        boolean prp = person.getUserEmail().equals(getPrpId());
+        boolean rti = person.getUserEmail().equals(getRtiId());
+        boolean hod = person.getUserEmail().equals(getHodId());
+        boolean liaison = person.getUserEmail().equals(getLiaisonId());
+        boolean reviewers = findAllReviewers().stream().anyMatch(s -> s.equals(person.getUserEmail()));
+
+        return (pi || prp || hod || rti || liaison || reviewers);
+    }
 }

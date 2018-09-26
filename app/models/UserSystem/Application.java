@@ -45,6 +45,7 @@ public class Application {
         Application application = new Application();
         application.setApplicationID(app.applicationPrimaryKey());
         application.setStatus(status);
+        application.setTitle(app.title());
 
         application.setDate_submitted(app.getDateSubmitted());
         application.setDate_approved(app.getDateApproved());
@@ -147,18 +148,18 @@ public class Application {
     }
 
     public String getAssignedDateSafe(){
-        return (date_assigned == null) ? "" : due_date.toString().split(" ")[0];
+        return (date_assigned == null) ? "-" : due_date.toString().split(" ")[0];
     }
 
     public String getDueDateSafe(){
-        return (due_date == null) ? "" : due_date.toString().split(" ")[0];
+        return (due_date == null) ? "-" : due_date.toString().split(" ")[0];
     }
 
     public String getApprovedDateSafe(){
-        return (date_approved == null) ? "" : due_date.toString().split(" ")[0];
+        return (date_approved == null) ? "-" : due_date.toString().split(" ")[0];
     }
 
     public String getSubmittedDateSafe(){
-        return (date_submitted == null) ? "" : due_date.toString().split(" ")[0];
+        return (date_submitted == null) ? "Not submitted" : due_date.toString().split(" ")[0];
     }
 }

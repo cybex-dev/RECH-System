@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import controllers.UserSystem.ProfileHandler;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
@@ -7,12 +8,18 @@ import dao.NMU.EntityDepartment;
 import dao.NMU.EntityFaculty;
 import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
+import helpers.FileScanner;
+import models.App;
 import models.UserSystem.UserType;
+import play.api.mvc.MultipartFormData;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.routing.JavaScriptReverseRouter;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,10 +90,12 @@ public class APIController extends Controller {
                                 entityPerson.userType() != UserType.PrimaryInvestigator)
                         .map(entityPerson -> entityPerson.getUserTitle().concat(" ").concat(entityPerson.getUserFirstname()).concat(" ").concat(entityPerson.getUserLastname()).concat(" [").concat(entityPerson.getUserEmail().concat("]")))
                         .collect(Collectors.toList());
+                break;
             }
 
             case "campus": {
-                return getAllCampus();
+                list = getAllCampus();
+                break;
             }
 
             default: break;
@@ -152,7 +161,8 @@ public class APIController extends Controller {
                         controllers.routes.javascript.APIController.getData(),
                         controllers.routes.javascript.APIController.searchPerson(),
                         controllers.routes.javascript.APIController.searchLocation(),
-                        controllers.routes.javascript.APIController.findAllReviewers()
+                        controllers.routes.javascript.APIController.findAllReviewers(),
+                        controllers.routes.javascript.APIController.getDocument()
                 )
         ).as("text/javascript");
     }
@@ -167,6 +177,30 @@ public class APIController extends Controller {
 
     public static List<String> getDegreeLevels(){
         return Arrays.asList("High-School","Diploma","Degree","Honours","Masters","Doctorate");
+    }
+
+    public Result getDocument(String documentId){
+        JsonNode jsonNode = request().body().asJson();
+        String shortName = jsonNode.findPath("application_id").textValue();
+        EntityEthicsApplication application = EntityEthicsApplication.findByShortName(shortName);
+        String userId = session().get(CookieTags.user_id);
+        EntityPerson personById = EntityPerson.getPersonById(userId);
+        if (!application.canAccessApplicationComponents(personById)){
+            return unauthorized("You are not allowed to view this file");
+        }
+        File file = null;
+        try {
+            List<File> resourceFiles = new FileScanner().getResourceFiles(App.getInstance().getDocumentDirectory());
+            file = resourceFiles.stream().filter(f -> f.getName().contains(documentId)).findFirst().orElse(null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (file == null) {
+            return internalServerError("The file could not be located. Please contact the Research and Ethics committee to help.");
+        }
+        response().setContentType("application/x-download");
+        response().setHeader("Content-disposition","attachment; filename=" + file.getName());
+        return ok(file);
     }
 
 }
