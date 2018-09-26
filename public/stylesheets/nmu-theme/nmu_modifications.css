@@ -113,12 +113,12 @@ button-small {
     position: absolute;
     right: 25px;
     top: 0;
-    color: #000;
+    color: #fff !important;
     font-size: 35px;
     font-weight: bold;
 }
 .close:hover,.close:focus {
-    color: red;
+    color: #e7e7e7 !important;
     cursor: pointer;
 }
 
@@ -178,10 +178,6 @@ button-small {
 
 .container {
     color: #FFFFFF;
-}
-
-.close {
-    color: #FFFFFF !important;
 }
 
 a:hover {
@@ -344,10 +340,6 @@ table > thead {
 .alert {
     margin-top: 10px !important;
     margin-bottom: 10px !important;
-}
-
-.close {
-    color: #111 !important;
 }
 
 .busy {

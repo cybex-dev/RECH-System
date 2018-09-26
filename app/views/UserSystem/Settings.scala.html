@@ -20,12 +20,12 @@
                     <div class="sp-tab-panel">
                         <ul class="nav nav-tabs" role="tablist">
                             @if(entityPerson.userType() != UserType.RCD) {
-                                <li class="active" role="presentation">
-                                    <a aria-controls="basic_info" data-toggle="tab" href="#basic_info" role="tab" aria-expanded="true">
+                                <li class="" role="presentation">
+                                    <a aria-controls="basic_info" data-toggle="tab" href="#basic_info" role="tab" aria-expanded="false">
                                         Basic Information</a></li>
                             }
-                            <li class="" role="presentation">
-                                <a aria-controls="password" data-toggle="tab" href="#change_password" role="tab" aria-expanded="false">
+                            <li class="active" role="presentation">
+                                <a aria-controls="password" data-toggle="tab" href="#change_password" role="tab" aria-expanded="true">
                                     Change Password</a></li>
                             @if(entityPerson.userType() != UserType.PrimaryInvestigator &&
                                     entityPerson.userType() != UserType.RCD) {

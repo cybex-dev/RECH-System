@@ -24,7 +24,10 @@ function openPopup(id, isModal) {
     }
 }
 
-function createElement(type, value, name, id, ...classList) {
+function createElement(type, value, name, id,
+                       ...
+                           classList
+) {
     let element = document.createElement(type);
     if (classList.length !== 0)
         if (classList[0] instanceof Array) {
@@ -32,13 +35,16 @@ function createElement(type, value, name, id, ...classList) {
         } else {
             element.className = classList[0];
         }
-    element.name = name.trim()  || "";
-    element.id = id.trim()  || "";
-    element.innerText = value  || "";
+    element.name = name.trim() || "";
+    element.id = id.trim() || "";
+    element.innerText = value || "";
     return element;
 }
 
-function createButton(id, name, type, value, callback, ...classlist) {
+function createButton(id, name, type, value, callback,
+                      ...
+                          classlist
+) {
     let button = createElement("button", value, name, id, classlist);
     button.type = type;
     button.onclick = callback;
@@ -162,7 +168,8 @@ function docReady() {
     document.querySelectorAll(".group > h3").forEach(e => {
         e.click();
         e.click();
-    });
+    })
+    ;
 
     assignInputListeners();
 }
@@ -223,7 +230,7 @@ function show(element) {
         if (element.nodeType === 1) {
             if (element.tagName === "IC" ||
                 element.tagName === "LABEL")
-                element.style.display = "block";
+                element.style.display = "inline-block";
             else {
                 if (element.tagName === "INPUT") {
                     if (element.type === "checkbox") {
@@ -260,9 +267,7 @@ function createDocumentPopups() {
         let divContainer = createElement("div", "", "", "", 'row');
 
         // Create button to open popup window
-        let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", "Add " + name, function () {
-            openPopup(copy.id, true);
-        }, "nmu-button", "action-button", "action-alternative");
+        let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", "Add " + name, null, "nmu-button", "action-button", "action-alternative");
         btn.style.marginLeft = "20px";
 
         // Insert Heading
@@ -281,8 +286,13 @@ function createDocumentPopups() {
         element.remove();
 
         // Create popup window
-        createPopup(copy.id, name, copy, parent);
-    })
+        createPopup(copy.id, name, copy, divContainer);
+
+        // Set onclick event
+        document.getElementById("btnPopup_" + copy.id).onclick = function () {
+            openPopup(copy.id, true);
+        };
+    });
 }
 
 // initialize Wizard
@@ -293,10 +303,14 @@ function initWizard() {
 
     //Add collapsible to each section header and collapsible-child to each of the children
     function addCollapsibleSections() {
-        document.querySelectorAll(".section").forEach(e => e.firstChild.classList.add("section-title", "collapsible"));
+        document.querySelectorAll(".section").forEach(e => e.firstChild.classList.add("section-title", "collapsible")
+        )
+        ;
 
         // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
-        document.querySelectorAll(".section .group").forEach(e => e.classList.add("collapsible-child"));
+        document.querySelectorAll(".section .group").forEach(e => e.classList.add("collapsible-child")
+        )
+        ;
     }
 
     function addCollapsibleGroups() {
@@ -304,17 +318,20 @@ function initWizard() {
         document.querySelectorAll(".group > *").forEach(function (e) {
             if (e.tagName !== "BR") {
                 e.classList.add("collapsible-child")
-            };
+            }
+            ;
         });
 
         // Add collabsible group heading
         document.querySelectorAll(".group > h3").forEach(function (e) {
-                e.classList.add("group-title", "collapsible", );
+                e.classList.add("group-title", "collapsible",);
                 e.classList.remove("collapsible-child");
             }
         );
 
-        document.querySelectorAll(".group .group").forEach(e => e.classList.add("collapsible-child"));
+        document.querySelectorAll(".group .group").forEach(e => e.classList.add("collapsible-child")
+        )
+        ;
 
         // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
         // document.querySelectorAll(".group").forEach(e => e.childNodes.forEach(ee => {
@@ -344,11 +361,13 @@ function initWizard() {
                 if (child.tagName !== "H3" &&
                     child.tagName !== "DATALIST" &&
                     child.nodeType === Node.ELEMENT_NODE) {
-                    if (child.tagName === "IC" ||
-                        child.tagName === "LABEL"){
-                        child.style.display = (child.style.display === "none" || child.style.display === "") ? "inline-block" : "none";
-                    } else {
-                        child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
+                    if (!child.classList.contains("modal")) {
+                        if (child.tagName === "IC" ||
+                            child.tagName === "LABEL") {
+                            child.style.display = (child.style.display === "none" || child.style.display === "") ? "inline-block" : "none";
+                        } else {
+                            child.style.display = (child.style.display === "none" || child.style.display === "") ? "block" : "none";
+                        }
                     }
                 }
 
@@ -441,5 +460,7 @@ function createLists(listDiv) {
 }
 
 function createPopup(id, title, dialogContent, position) {
-    position.innerHTML += "<div id=\"" + id + "\" class=\"modal\" style=\"display: none;\"><div class=\"modal-content animate nmu-theme-darkbackground\"><div class=\"popup-header\"><span onclick=\"hidePopup('" +  id + "')\" class=\"close\" title=\"Close PopUp\">×</span><h2>" + title + "</h2></div><div class=\"lessen-top-margin\" id=\"" + id + "_content" + "\">" + dialogContent + "</div></div>";
+    let final = "<div id=\"" + id + "\" class=\"modal\" style=\"display: none;\"><div class=\"modal-content animate nmu-theme-darkbackground\"><div class=\"popup-header\"><span onclick=\"hidePopup('" + id + "')\" class=\"close\" title=\"Close PopUp\">×</span><h2 style=\"color: #fff;\">" + title + "</h2></div><div class=\"lessen-top-margin\" style=\"padding-top: 20px; background-color: #FFF;\" id=\"" + id + "_content" + "\"></div><div class=\"\" style=\"background-color: #061c2c;padding: 10px 20px;\"><button class=\"nmu-button action-button\" type=\"button\" style=\"min-width: 10em !important;\" onclick=\"hidePopup('" + id + "')\">Close</button></div></div></div>";
+    position.innerHTML += final;
+    document.getElementById(id + "_content").appendChild(dialogContent)
 }
