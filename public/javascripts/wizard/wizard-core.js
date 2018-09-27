@@ -46,7 +46,7 @@ function createButton(id, name, type, value, callback, ...classlist) {
 }
 
 function createDiv(id, name, ...classlist) {
-    return createElement("div", "", id, name, classlist);
+    return createElement("div", "", name, id, classlist);
 }
 
 // Runs functions when document has loaded
@@ -247,9 +247,10 @@ function createDocumentPopups() {
         let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", "Add " + name, null, "nmu-button", "action-button", "action-alternative");
         btn.style.marginLeft = "20px";
 
-        let textNode = createElement("p", "", "", copy.id + "_filename");
+        let textNode = createElement("label", "", "", copy.id + "_filename");
         textNode.style.marginLeft = "50px";
         textNode.style.fontWeight = "bold";
+        textNode.style.display = "block";
 
         // Insert Heading
         let heading = createElement("h4", name, "", "");
@@ -270,10 +271,9 @@ function createDocumentPopups() {
         // Create popup window
         createPopup(copy.id, name, copy, divContainer);
         let inputFile = parent.querySelectorAll("input[type=file]")[0];
-        inputFile.onchange = function(){
-            // let filename = val.split('\\').pop().split('/').pop();
-            // filename = filename.substring(0, filename.lastIndexOf('.'));
-            textNode.innerText = inputFile.value;
+        inputFile.onchange = function () {
+            let last = inputFile.value.lastIndexOf("\\");
+            document.getElementById(textNode.id).innerText = inputFile.value.substr(last+1);
         };
 
         // Set onclick event
@@ -282,7 +282,7 @@ function createDocumentPopups() {
         };
 
         // Set onDownload button click handlers
-        document.querySelectorAll("button .downloadfile").forEach(function(button) {
+        document.querySelectorAll("button .downloadfile").forEach(function (button) {
             button.onclick = function () {
                 let data = {
                     "application_id": $('#application_id').val(),
@@ -336,7 +336,7 @@ function initWizard() {
     document.querySelectorAll(".section > h2").forEach(e => e.classList.add("section-title", "collapsible"));
 
     // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
-    document.querySelectorAll(".group > h3").forEach(e => e.classList.add("group-title","collapsible"));
+    document.querySelectorAll(".group > h3").forEach(e => e.classList.add("group-title", "collapsible"));
 
     // Add groups for each h3 within a group div
     document.querySelectorAll(".group > h3").forEach(function (element) {
@@ -423,7 +423,7 @@ function initWizard() {
     });
 
     // Add onclick section-groups showing and hiding all child groups
-    document.querySelectorAll("div.section > h2").forEach(function(e) {
+    document.querySelectorAll("div.section > h2").forEach(function (e) {
 
         let p = e.parentNode;
 
@@ -457,8 +457,8 @@ function initWizard() {
     });
 
     // Add onclick group-titles showing and hiding all child groups
-    document.querySelectorAll("div.group-container > h3").forEach(function(e) {
-        e.onclick = function() {
+    document.querySelectorAll("div.group-container > h3").forEach(function (e) {
+        e.onclick = function () {
             if (e.nextSibling.style.display === "none") {
                 e.nextSibling.style.display = "block";
                 e.classList.add("group-active");
@@ -473,8 +473,8 @@ function initWizard() {
     });
 
     // Add onclick section-titles showing and hiding group data
-    document.querySelectorAll(".section-title.collapsible").forEach(function(e) {
-        e.onclick = function() {
+    document.querySelectorAll(".section-title.collapsible").forEach(function (e) {
+        e.onclick = function () {
             if (e.nextSibling.style.display === "none") {
                 e.nextSibling.style.display = "block";
                 e.classList.add("section-active");
@@ -487,8 +487,8 @@ function initWizard() {
     });
 
     // Add extension-header input hooks to show and hide extension-data containers
-    document.querySelectorAll(".extension-header > input").forEach(function(e) {
-        e.onclick = function() {
+    document.querySelectorAll(".extension-header > input").forEach(function (e) {
+        e.onclick = function () {
             if (e.parentElement.nextElementSibling.style.display === "none") {
                 e.parentElement.classList.add("extension-active");
                 e.parentElement.nextElementSibling.style.display = "block"
@@ -504,12 +504,40 @@ function initWizard() {
     // Add document popups
     createDocumentPopups();
 
+    //Create 2 div containers. Outer container is the new 'textarea' container and inner is the editor itself
+    function createTextAreaEditors() {
+        document.querySelectorAll("textarea").forEach(value => {
+            let id = value.id;
+            let name = value.getAttribute("name");
+
+            let editorDiv = createDiv(id, name, "");
+            editorDiv.style.minHeight = "10em";
+
+            let outerId = id + "_outer";
+            let outer = createDiv(outerId, "", "");
+            outer.style.marginLeft = "5%";
+            outer.style.marginRight = "5%";
+            outer.style.marginTop = "20px";
+
+            outer.appendChild(editorDiv);
+            value.parentElement.insertBefore(outer, value);
+            value.remove();
+
+            var quill = new Quill('#' + id, {theme: 'snow'});
+
+            outer.firstElementChild.style.maxHeight = "5em";
+        })
+    }
+
+    createTextAreaEditors();
+
     function addCollapsibleGroups() {
         // Add collapsible groups
         document.querySelectorAll(".group > *").forEach(function (e) {
             if (e.tagName !== "BR") {
                 e.classList.add("collapsible-child")
-            };
+            }
+            ;
         });
 
         // Add collabsible group heading
@@ -569,11 +597,14 @@ function initWizard() {
     // getDataFromServer();
 
     // Check if application has an ID, if so, remove the fields that form part of the primary key
-    if(document.getElementById("application_id").value !== "") {
-        document.getElementById("app_faculty").disabled = true;
-        document.getElementById("app_faculty").style.cursor = "not-allowed";
-        document.getElementById("app_department").disabled = true;
-        document.getElementById("app_department").style.cursor = "not-allowed";
+    let existingApp = document.getElementById("application_id");
+    if (existingApp !== null) {
+        if (existingApp.value !== "") {
+            document.getElementById("app_faculty").disabled = true;
+            document.getElementById("app_faculty").style.cursor = "not-allowed";
+            document.getElementById("app_department").disabled = true;
+            document.getElementById("app_department").style.cursor = "not-allowed";
+        }
     }
 }
 
@@ -638,7 +669,6 @@ function createPopup(id, title, dialogContent, position) {
     position.innerHTML += final;
     document.getElementById(id + "_content").appendChild(dialogContent)
 }
-
 
 
 /**

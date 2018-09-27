@@ -65,7 +65,7 @@ function size(tableId) {
 }
 
 function createDiv(id, name, ...classlist) {
-    return createElement("div", "", id, name, classlist);
+    return createElement("div", "", name, id, classlist);
 }
 
 function createElement(type, value, name, id, ...classList) {

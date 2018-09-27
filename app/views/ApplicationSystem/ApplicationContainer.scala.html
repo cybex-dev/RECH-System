@@ -5,7 +5,7 @@
 @import play.data.DynamicForm
 @import play.twirl.api.Html
 @import views.html.Templates.Masterpage
-@import views.html.ApplicationSystem.fragmentFilterQuestions
+@import views.html.ApplicationSystem._
 @import views.html.Components._
 
 @import dao.ApplicationSystem.EntityEthicsApplicationPK
@@ -252,12 +252,12 @@
                     req = "false"
                 }
                 val desc = element.getAttributes.get("desc")
-                val id = element.getChildren.getLast.getValue.toString
-                if(id.isEmpty) {
+                val v = element.getChildren.getLast.getValue.toString
+                if(v.isEmpty) {
                     inputFile.apply(id, q, "", "", hint, desc, req, editable, feedback).toString()
                 } else {
-                    val shortName = id.split("~\\d+~").lift(1).get
-                    inputFile.apply(id, q, id, shortName, hint, desc, req, editable, feedback).toString()
+                    val shortName = v.split("~\\d+~").lift(1).get
+                    inputFile.apply(id, q, v, shortName, hint, desc, req, editable, feedback).toString()
                 }
 
             case "list" =>
@@ -423,4 +423,5 @@
     @if(showQuestions) {
         @fragmentFilterQuestions.apply(questionList)
     } else {}
+
 }
