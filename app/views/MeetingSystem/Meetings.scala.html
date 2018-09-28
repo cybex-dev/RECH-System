@@ -1,6 +1,8 @@
 @import views.html.Templates.Masterpage
+@import dao.Meeting.EntityMeeting
+@import java.util
 
-@()
+@(allMeetings: util.List[EntityMeeting])
 
 @Masterpage.apply(" :: All Meetings"){
     <br/>

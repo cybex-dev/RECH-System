@@ -62,14 +62,18 @@ POST    /review/application/doApprove   controllers.ReviewSystem.ReviewHandler.d
 
 GET     /messages                       controllers.MessageSystem.MessageController.allMessages
 # Application ID passed as parameter
-GET     /messages/:appId                controllers.MessageSystem.MessageController.applicationMessages(appId: Integer)
+GET     /messages/:appId                controllers.MessageSystem.MessageController.applicationMessages(appId: String)
 
 ### ### Meeting System ###
 
-GET     /rcd/meeting/applications           controllers.MeetingSystem.MeetingController.allApplications
+GET     /rcd/meeting/overview           controllers.MeetingSystem.MeetingController.meetingHome
+GET     /rcd/meeting/applications/:id   controllers.MeetingSystem.MeetingController.allApplications(id: String)
+GET     /rcd/meeting/setup              controllers.MeetingSystem.MeetingController.setupMeeting
+POST    /rcd/meeting/setup              controllers.MeetingSystem.MeetingController.doSetupMeeting
 
-GET     /rcd/meeting/application/:appId     controllers.MeetingSystem.MeetingController.getApplication(appId: Integer)
-POST    /rcd/meeting/application/submit     controllers.MeetingSystem.MeetingController.submitResolution
+GET     /rcd/meeting/application/:appId controllers.MeetingSystem.MeetingController.getApplication(appId: String)
+POST    /rcd/meeting/application/submit controllers.MeetingSystem.MeetingController.submitResolution
+POST    /rcd/meeting/complete/:id       controllers.MeetingSystem.MeetingController.completeMeeting(id: String)
 
 
 ### ### API Controller ###

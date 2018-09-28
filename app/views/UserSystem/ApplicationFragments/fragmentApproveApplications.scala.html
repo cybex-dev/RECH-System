@@ -1,5 +1,7 @@
 @import models.UserSystem.Application
+@import engine.Permission
 
+@import controllers.UserSystem.UserInfo
 @(applications: List[Application])
 
 <div class="">
@@ -18,9 +20,21 @@
                     <td style="text-decoration: underline;">@application.getTitle</td>
                     <td></td>
                     <td>@application.getDueDateSafe</td>
-                    <td><a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.viewApprove(application.getApplicationID.shortName())">
-                        <button class="nmu-button table-button">View and Approve</button>
-                    </a></td>
+                    <td>
+                        @if(application.getPermission == Permission.NONE) {
+                            <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">Not authorized</button></a>
+                        } else {
+                            @if(application.getPermission == Permission.VIEW) {
+                                <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
+                                    <button class="nmu-button table-button">View and Approve</button>
+                                </a>
+                            } else {
+                                <a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.viewApprove(application.getApplicationID.shortName())">
+                                    <button class="nmu-button table-button">View and Approve</button>
+                                </a>
+                            }
+                        }
+                    </td>
                 </tr>
             }
             </tbody>

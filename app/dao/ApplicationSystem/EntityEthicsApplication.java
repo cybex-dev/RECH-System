@@ -1,13 +1,16 @@
 package dao.ApplicationSystem;
 
 import dao.NMU.EntityDepartment;
+import dao.ReviewSystem.EntityLiaisonComponentFeedback;
 import dao.ReviewSystem.EntityReviewerApplications;
+import dao.ReviewSystem.EntityReviewerComponentFeedback;
 import dao.UserSystem.EntityPerson;
 import io.ebean.Finder;
 import io.ebean.Model;
 import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.UserSystem.UserType;
+import net.ddns.cyberstudios.Element;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -75,6 +78,14 @@ public class EntityEthicsApplication extends Model {
 
     public static EntityEthicsApplication findByShortName(String shortname) {
         return EntityEthicsApplication.find.byId(EntityEthicsApplicationPK.fromString(shortname));
+    }
+
+    public static List<EntityEthicsApplication> getAllApplicationsByStatus(ApplicationStatus status) {
+        short appStatus = status.getStatus();
+        return find.all()
+                .stream()
+                .filter(application -> application.getInternalStatus() == appStatus)
+                .collect(Collectors.toList());
     }
 
     @Id
@@ -498,4 +509,45 @@ public class EntityEthicsApplication extends Model {
 
         return (pi || prp || hod || rti || liaison || reviewers);
     }
+
+    public static Map<String, List<String>> getLatestComponentFeedback(EntityEthicsApplicationPK pk){
+        HashMap<String, List<String>> reviewData = new HashMap<>();
+
+        EntityEthicsApplication.getLatestComponents(pk)
+                .forEach(component -> {
+                    List<String> reviewerFeedback = EntityReviewerComponentFeedback
+                            .GetFeedbackByComponent(component.componentVersionPrimaryKey())
+                            .stream()
+                            .map(EntityReviewerComponentFeedback::getComponentFeedback)
+                            .collect(Collectors.toList());
+
+                    List<String> liaisonFeedback = EntityLiaisonComponentFeedback
+                            .GetFeedbackByComponent(component.componentVersionPrimaryKey())
+                            .stream()
+                            .map(EntityLiaisonComponentFeedback::getFeedback)
+                            .collect(Collectors.toList());
+
+                    reviewerFeedback.addAll(liaisonFeedback);
+
+                    if (reviewerFeedback.size() == 0){
+                        reviewData.put(component.getComponentId(), new ArrayList<>());
+                    } else {
+                        reviewData.put(component.getComponentId(), reviewerFeedback);
+                    }
+                });
+        return reviewData;
+    }
+
+    public static Element GetPopulatedElement(EntityEthicsApplication application){
+        return EthicsApplication.PopulateRootElement(application);
+    }
+
+    public Element getPopulatedElement(){
+        return GetPopulatedElement(this);
+    }
+
+    public Map<String, List<String>> getLatestComponentFeedback(){
+        return EntityEthicsApplication.getLatestComponentFeedback(applicationPrimaryKey());
+    }
+
 }

@@ -1,0 +1,58 @@
+@import dao.ApplicationSystem.EntityEthicsApplication
+@import java.util
+@import views.html.Templates.Masterpage
+@import views.html.Components._
+
+@(allApplications: List[EntityEthicsApplication])
+
+@Masterpage.apply(" :: All Applications") {
+    <h2>Setup REC meeting</h2>
+    <br/>
+    @helper.form(action = controllers.MeetingSystem.routes.MeetingController.setupMeeting()) {
+        @helper.CSRF.formField
+        <div class="row">
+            @inputDate.apply("meeting_date", "Date of Meeting", "", "Date when the meeting will occur", true, true, true, null: util.List[String])
+            @inputTextArea.apply("announcements", "Meeting Announcements", "", "Announcements or notifications made for the meeting", "", true, false, false, null: List[String])
+        </div>
+        <h3>Available Applications for REC meeting</h3>
+        <br/>
+        <div class="table-responsive">
+            <div class="application-details"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Application Title</th>
+                        <th># Revision</th>
+                        <th>Faculty</th>
+                        <th>Department</th>
+                        <th>Year</th>
+                        <th>Date Submitted</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(app: EntityEthicsApplication <- allApplications) {
+                    <td><input type="checkbox" style="transform: scale(1.5);" id="@app.applicationPrimaryKey.shortName"></td>
+                    <td>@app.title</td>
+                    <td>@app.getApplicationRevision</td>
+                    <td>@app.getFacultyName</td>
+                    <td>@app.getDepartmentName</td>
+                    <td>@app.getApplicationYear</td>
+                    <td>@app.getDateSubmitted</td>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+    <div class="row">
+        <div class="col-sm-6">
+            <button style="margin: 0 auto;" type="button" href="@controllers.MeetingSystem.routes.MeetingController.meetingHome()" class="nmu-button action-button action-alternative">
+                Cancel</button>
+        </div>
+        <div class="col-sm-6">
+            <button style="margin: 0 auto;" href="" class="nmu-button action-button">Schedule Meeting</button>
+        </div>
+    </div>
+}
+

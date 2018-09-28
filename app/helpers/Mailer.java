@@ -47,7 +47,7 @@ public class Mailer {
 //    public static CompletableFuture<Boolean> NotifyApplicationSubmitted(String name, String email_address, String applicationTitle) {
 //        Email email = Mailer.StandardEmail()
 //                .setTo(Collections.singletonList(email_address))
-//                .setSubject("Ethics Application \'" + applicationTitle + "\' submitted for review")
+//                .setSubject("Ethics Application \'" + applicationTitle + "\' submitted for reviewable")
 //                .setBodyHtml("Hi, " + name + "<br/><br/>"
 //                        + "Your ethics application titled: <br/><br/>"
 //                        + "<h2>" + applicationTitle + "</h2><br/><br/>"

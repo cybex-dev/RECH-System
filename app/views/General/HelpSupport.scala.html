@@ -1,7 +1,40 @@
 @import views.html.Templates.Masterpage
+@import views.html.Components.TabList
+@import views.html.Components.TabContent
+@import views.html.Components.TabHeading
 
 @()
 
-@Masterpage.apply(" :: Help & Support"){
-    <br/>
-}
+    @Masterpage.apply(" :: Help & Support"){
+        <div class="BoxMediumBlue" style="padding: 20px;">
+            <div class="container-heading">
+                <h1>Help & Support</h1>
+            </div>
+            <br>
+            @TabList.apply("tablist_help_support")(false){
+                @TabHeading.apply("FAQs")("tab_faqs")(true)
+                @TabHeading.apply("Application Process")("tab_process")(false)
+            }{
+                @TabContent.apply("Frequently Asked Questions")("tab_faqs")(true){
+                    <ol style="margin-left: 15px">
+                        <li>
+                            <h3>Should I get ethics approval?</h3>
+                            <p style="margin-left: 10px; margin-top: 5px">Ethics approval is not always necessary. To find out if you need ethics approval from the central ethics committee, take the test.</p>
+                            <button type="submit" class="nmu-button action-button" href="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")">Take the test</button>
+                        </li>
+                        <li>
+                            <h3>How long does can I expect to wait?</h3>
+                            <p style="margin-left: 10px; margin-top: 5px">6 - 8 weeks, if the application is satisfactory</p>
+                        </li>
+                    </ol>
+                }
+                @TabContent.apply("Application Process")("tab_process")(false){
+                    <p>Your ethics application will flow through the review and approval process as demonstrated below</p>
+                    <br/>
+                    <div class="container">
+                        <img src="@routes.Assets.versioned("images/committee/human/process_flowchart.png")">
+                    </div>
+                }
+            }
+        </div>
+    }

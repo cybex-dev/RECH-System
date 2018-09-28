@@ -1,0 +1,203 @@
+@import java.util
+@import models.ApplicationSystem.{ApplicationStatus, Question}
+@import net.ddns.cyberstudios.Element
+@import play.data.DynamicForm
+@import play.twirl.api.Html
+@import views.html.Templates.Masterpage
+@import views.html.ApplicationSystem._
+@import views.html.Components._
+@import dao.ApplicationSystem.EntityEthicsApplicationPK
+@import controllers.APIController
+
+@(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: Map[String, List[String]])
+
+@application_content = @{
+    def createComponent(element: Element): String = {
+        val elementType = element.getType.toLowerCase
+        var q = ""
+        val hint = element.getHint
+        val id = element.getId
+        var a = ""
+        if(element.getChildren.size()==3){
+            q = element.getChildren.get(1).getValue.toString
+        } else {
+            q = element.getChildren.getFirst.getValue.toString
+        }
+        val reviewFeedback = reviewDataMap.get(id)
+        val editable = editableMap.get(id)
+        elementType match {
+            case "boolean" =>
+                /*creates checkbox*/
+                var autofill = ""
+                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
+                    autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
+                }
+                a = element.getChildren.getLast.getValue.toString
+                var value = if(a.isEmpty) {
+                    autofill
+                } else a
+                if(element.getAttributes().get("radiogroup") == null) {
+                    inputCheckbox.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                } else {
+                    if(element.getAttributes().get("radiogroup").equals("true")) {
+                        var childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
+                        inputRadiobuttonGroup.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                    } else {
+                        inputCheckbox.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                    }
+                }
+
+            case "number" =>
+                var autofill = ""
+                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
+                    autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
+                }
+                a = element.getChildren.getLast.getValue.toString
+                var value = if(a.isEmpty) {
+                    autofill
+                } else a
+
+                if(element.getAttributes().get("dropdown") == null) {
+                    inputText.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                } else {
+                    if(element.getAttributes().get("dropdown").equals("true")) {
+                        if(element.getAttributes.get("db-mapping") == null) {
+                            val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                        } else {
+                            val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                        }
+                    } else {
+                        inputText.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                    }
+                }
+            /*creates text field with number specific*/
+
+            case "long_text" =>
+                /*creates a multiline text field*/
+                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words"), editable, feedback, review, reviewFeedback).toString()
+
+            case "text" =>
+                /*creates text field*/
+                var autofill = ""
+                if(element.getAttributes.get("autofill_id") != null && !feedback) {
+                    autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
+                }
+                a = element.getChildren.getLast.getValue.toString
+                var value = if(a.isEmpty) {
+                    autofill
+                } else a
+
+                var isDataList = false;
+                if(element.getAttributes().get("datalist") != null){
+                    if(element.getAttributes().get("datalist").equals("true")){
+                        isDataList = true
+                    }
+                }
+
+                var isDropdown = false;
+                if(element.getAttributes().get("dropdown") != null){
+                    if(element.getAttributes().get("dropdown").equals("true")){
+                        isDropdown = true
+                    }
+                }
+
+                var dbMapping: String = ""
+                if(element.getAttributes().get("db-mapping") != null){
+                    dbMapping = element.getAttributes().get("db-mapping")
+                }
+
+                if(isDataList) {
+                    val data: List[String] = APIController.getDataDirect(id)
+                    inputDatalist.apply(id, q, value, data, hint, editable, feedback, review, reviewFeedback).toString
+                } else {
+                    if (isDropdown) {
+                        if (!dbMapping){
+                            val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                        } else {
+                            val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                        }
+                    } else {
+                        inputText.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                    }
+                }
+
+            case "date" =>
+                /*creates text field*/
+                var autofill = ""
+                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
+                    autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
+                }
+                a = element.getChildren.getLast.getValue.toString
+                var value = if(a.isEmpty){ autofill } else a
+                inputDate.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+
+            case "document" =>
+                /*creates text field*/
+                var req = element.getAttributes.get("required")
+                if (req == null) {
+                    req = "false"
+                }
+                val desc = element.getAttributes.get("desc")
+                val v = element.getChildren.getLast.getValue.toString
+                if(v.isEmpty) {
+                    inputFile.apply(id, q, "", "", hint, desc, req, editable, feedback, review, reviewFeedback).toString()
+                } else {
+                    val shortName = v.split("~\\d+~").lift(1).get
+                    inputFile.apply(id, q, v, shortName, hint, desc, req, editable, feedback, review, reviewFeedback).toString()
+                }
+
+            case "list" =>
+                "<p>List Here</p><ul><li>list item 1</li><li>list item 2</li><li>list item 3</li></ul>"
+
+            case _ =>
+                "<p>Unhandled Tag : " + element.getType.toLowerCase() + "</p>"
+        }
+    }
+
+    def getHeading(tag: String, title: String): String = {
+        tag match {
+            case "section" => "<h2>" + title + "</h2>"
+            case "group" => "<h3>" + title + "</h3>"
+            case "list" => "<h4>" + title + "</h4>"
+            case _ => ""
+        }
+    }
+
+    def parseElement(element: Element): String = {
+        val innerText = for(elem: Element <- element.getChildren) yield {
+            if(!elem.isComponent) {
+                /*this creates a container element which consumes some html type text*/
+                val innerText = parseElement(elem)
+                val isList = elem.getTag.equals("list")
+                val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
+                if(isList) {
+                    val pre = elem.getPreTag("table")
+                    val post = elem.getPostTag("table")
+                    heading + pre + "<thead><tr>" + innerText + "</tr></thead>" + post
+                } else {
+                    val pre = elem.getPreTag("div")
+                    val post = elem.getPostTag("div")
+                    pre + heading + innerText + post
+                }
+            } else {
+                /*this creates a component of type a specific type*/
+                val isListItem = element.getTag.equals("list")
+                val value = createComponent(elem)
+                if(isListItem) {
+                    "<th>" + value + "</th>"
+                } else {
+                    value
+                }
+            }
+        }
+        innerText.mkString("")
+    }
+
+    Html(parseElement(root))
+}
+
+    @application_content

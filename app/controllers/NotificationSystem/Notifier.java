@@ -36,7 +36,7 @@ public class Notifier {
     }
 
     /**
-     * Notifies the RCD and RTI that an application has been saved to the database requiring a faculty level review
+     * Notifies the RCD and RTI that an application has been saved to the database requiring a faculty level reviewable
      * @param applicationId
      * @param applicationTitle
      */

@@ -1,17 +1,25 @@
 @import views.html.Templates.Masterpage
 @import views.html.Components.inputEmail
 @import views.html.Components.inputPassword
-@import views.html.UserSystem.registrationBasic
 @import models.UserSystem.BasicRegistrationForm
 
-@(login: play.data.Form[BasicRegistrationForm])
+@(loginForm: play.data.Form[BasicRegistrationForm])
 
 @Masterpage.apply(" :: Register "){
     <div class="BoxMediumBlue" style="padding: 20px;">
     @helper.form(action = controllers.UserSystem.routes.RegistrationController.doRegisterInitial()) {
         @helper.CSRF.formField
-        @registrationBasic.apply(login)
+        <div class="container-heading">
+            <h1>Register Account</h1>
+        </div>
+        <div class="nmu-content-background-dark standard-padding-20">
+        @helper.inputText(loginForm("email"), '_label -> "Email", '_class -> "input-text-short")
+        <p style="font-style: italic;">Note: if you are an employee of Nelson Mandela University, please register with your official NMU email address</p>
+        <br/>
+        @helper.inputPassword(loginForm("password"), '_label -> "Password", '_class -> "input-text-short")
+        @helper.inputPassword(loginForm("confirm_password"), '_label -> "Confirm Password", '_class -> "input-text-short")
         <button class="nmu-button action-button">Register</button>
+        </div>
     }
     </div>
 }

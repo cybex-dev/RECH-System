@@ -24,7 +24,6 @@ import javax.swing.text.html.parser.Entity;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static views.html.UserSystem.Register.*;
 
 public class RegistrationController extends Controller {
 
@@ -126,7 +125,7 @@ public class RegistrationController extends Controller {
 
         Form<DetailedRegistrationForm> form = formFactory.form(DetailedRegistrationForm.class);
 
-        return ok(views.html.UserSystem.Register.render(form, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
+        return ok(views.html.UserSystem.RegisterStep2.render(form, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
     }
 
     /**
@@ -137,7 +136,7 @@ public class RegistrationController extends Controller {
         Form<DetailedRegistrationForm> userRegistrationFormForm = formFactory.form(DetailedRegistrationForm.class).bindFromRequest();
         if (userRegistrationFormForm.hasErrors()) {
             flash("warning", "Check input fields");
-            return badRequest(views.html.UserSystem.Register.render(userRegistrationFormForm, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
+            return badRequest(views.html.UserSystem.RegisterStep2.render(userRegistrationFormForm, EntityDepartment.getAllDepartmentNames(), EntityFaculty.getAllFacultyNames()));
         }
 
         DetailedRegistrationForm registrationForm = userRegistrationFormForm.get();

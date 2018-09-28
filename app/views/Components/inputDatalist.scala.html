@@ -1,6 +1,9 @@
+@import views.html.Components.feedback_container
+@import views.html.Components.reviewable
 @import views.html.Components.editable
+@import java.util
 
-@(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean, feedback: Boolean)
+@(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
 <input list="list_@id" style="margin-left: 40px; width: 50% !important;" id="@id" value="@value"name="@id" placeholder="Enter @label" type="text" @editable.apply(canEdit)>
@@ -13,7 +16,7 @@
         }
     }
 </datalist>
-@if(feedback){
-    @inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false)
-}
+
+    @feedback_container.apply(id, feedback)
+    @reviewable.apply(review, reviewData)
     <br/>

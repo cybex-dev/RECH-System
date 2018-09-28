@@ -3,6 +3,9 @@ package models.UserSystem;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.ReviewSystem.EntityReviewerApplications;
+import dao.UserSystem.EntityPerson;
+import engine.Permission;
+import engine.RECEngine;
 import models.ApplicationSystem.ApplicationStatus;
 import scala.App;
 
@@ -26,6 +29,7 @@ public class Application {
     private Timestamp date_assigned;
     private Timestamp due_date;
     private ApplicationStatus status;
+    private Permission permission;
     private int[] notifications;
 
     public Application(){}
@@ -40,9 +44,16 @@ public class Application {
         this.status = status;
     }
 
-    public static Application create(EntityEthicsApplication app, UserType userType) {
-        ApplicationStatus status = ApplicationStatus.parse(app.getInternalStatus());
+    public static Application create(EntityEthicsApplication app, EntityPerson person) {
+
+        Permission permission = RECEngine.checkAuthorized(person, app);
         Application application = new Application();
+        application.setPermission(permission);
+
+        if (permission == Permission.NONE)
+            return application;
+
+        ApplicationStatus status = ApplicationStatus.parse(app.getInternalStatus());
         application.setApplicationID(app.applicationPrimaryKey());
         application.setStatus(status);
         application.setTitle(app.title());
@@ -53,6 +64,8 @@ public class Application {
         if (dueDate != null)
             dueDate = addDays(dueDate, 14);
         application.setDue_date(dueDate);
+
+        UserType userType = person.userType();
 
         switch (userType) {
             case Liaison:
@@ -161,5 +174,13 @@ public class Application {
 
     public String getSubmittedDateSafe(){
         return (date_submitted == null) ? "Not submitted" : due_date.toString().split(" ")[0];
+    }
+
+    public Permission getPermission() {
+        return permission;
+    }
+
+    public void setPermission(Permission permission) {
+        this.permission = permission;
     }
 }

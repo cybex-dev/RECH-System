@@ -1,0 +1,8 @@
+@import views.html.Components.inputTextArea
+@import java.util
+
+@(id: String, feedback: Boolean)
+
+@if(feedback){
+    @inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false, false, null: util.List[String])
+}

@@ -1,0 +1,46 @@
+@import dao.ApplicationSystem.EntityEthicsApplication
+@import views.html.Templates.Masterpage
+@import views.html.ApplicationSystem.fragmentApplicationContainer
+@import views.html.Components.inputTextArea
+@import views.html.Components.inputDatalist
+@import net.ddns.cyberstudios.Element
+@import controllers.APIController
+
+@import java.util
+@(entityEthicsApplication: EntityEthicsApplication)(root: Element)(editableMap: Map[String, Boolean])(feedbackMap: Map[String, List[String]])
+
+@Masterpage(" :: Application Meeting Review") {
+    <br>
+    <h2>Review of Ethics Application:</h2>
+    <h3 style="text-align: center">@entityEthicsApplication.title()</h3>
+    <br>
+    <h3>Application Details</h3>
+    <div class="nmu-content-background">
+        <div class="row">
+            <div class="application-details">
+            @fragmentApplicationContainer.apply(root)(editableMap)(false)(true)(feedbackMap)
+            </div>
+        </div>
+        @helper.form(action = controllers.MeetingSystem.routes.MeetingController.submitResolution()){
+            @helper.CSRF.formField
+            <input type="hidden" value="@entityEthicsApplication.applicationPrimaryKey().shortName()" id="application_id" name="application_id">
+            <div class="row">
+                <div class="feedback">
+                    @inputTextArea.apply("resolution", "Committee Feedback", "", "The feedback which is given by the ethics committee for the specific application", "100000", true, false, false, null: util.List[String]);
+                    <br/>
+                    @inputDatalist.apply("status", "Application Status", "", APIController.getApplicationStatuses, "The application status determined by the committee, if approved, needs editing or is rejected", true, false, false, null: util.List[String])
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <button style="margin: 0 auto;" type="button" href="@controllers.MeetingSystem.routes.MeetingController.meetingHome()" class="nmu-button action-button action-alternative">
+                        Cancel</button>
+                </div>
+                <div class="col-sm-6">
+                    <button style="margin: 0 auto;" href="" class="nmu-button action-button">Send Feedback</button>
+                </div>
+            </div>
+        }
+    </div>
+}
+

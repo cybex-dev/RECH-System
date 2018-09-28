@@ -5,7 +5,9 @@
 <div class="container">
     <div class="row">
         <br/>
-        @Flasher.apply()
+        <div class="flash-content">
+            @Flasher.apply()
+        </div>
         <div class="MegaDropDownDiv pad-top-10">
             <div id="divLogo" class="col-xs-2 col-sm-3 tbsHnopad">
                 <a href="@routes.HomeController.redirectMandela("#")" id="aLogo">
@@ -16,17 +18,14 @@
             <div id="divText" class="col-xs-10 col-sm-9">
                 <div class="row">
                     <div id="divStrapLine" class="col-xs-12 tbsHnopad">
-                        <div id="StrapLine" class="StrapLine">
-                            <div class="row">
-                                <p style="float: right">Research & Ethics Committee</p>
-                            </div>
-                            <div class="row">
-                                <p style="float: right; display: block" class="EntityHeader">Human & Animal Research</p>
-                            </div>
-                        </div>
+                        <p id="StrapLine" class="StrapLine" style="display: block;">Research & Ethics Committee</p>
+                    </div>
+                    <div id="DepartmentEntity" class="col-xs-12 tbsHnopad" style="padding-left: 15px; margin-top: 5px;">
+                        <p class="EntityHeader" style="margin-top: -20px !important;">Human & Animal Research</p>
                     </div>
                 </div>
             </div>
+            <div id="divSearchOnMobile" class="col-xs-4 hidden-md hidden-lg" style="display: block;"></div>
         </div>
         <div id="divSearchOnMobile" class="col-xs-4 hidden-md hidden-lg">
         </div>

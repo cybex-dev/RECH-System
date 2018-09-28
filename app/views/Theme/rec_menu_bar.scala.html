@@ -7,7 +7,12 @@
     if (v == null || v.isEmpty) {
         Nil
     } else {
-        session().get(CookieTags.fullname)
+        val name = session().get(CookieTags.fullname)
+        if (name == null || name.isEmpty) {
+            "User"
+        } else {
+            name
+        }
     }
 }
 
@@ -28,7 +33,7 @@
             }
             @if(session().get(CookieTags.user_type) == UserType.RCD.getType) {
                 <div class="portal-icon portal-icon-extend-margin">
-                    <a href="@controllers.MeetingSystem.routes.MeetingController.allApplications()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-comments drop-bottom-5"></ic><br>
+                    <a href="@controllers.MeetingSystem.routes.MeetingController.meetingHome()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-comments drop-bottom-5"></ic><br>
                         <span>Meeting Manager</span></a></div>
             }
             <div class="portal-icon portal-icon-extend-margin">
@@ -38,29 +43,23 @@
                 <a disabled="true" href="@routes.HomeController.helpSupport()" id="IconMenuBarHelpSupport"><ic class="fa fa-3x fa-question-circle-o drop-bottom-5"></ic><br>
                     <span>Help & Support</span></a></div>
 
-            @*TODO fix the drop down feature*@
-
             @if(getName == Nil) {
-                <div class="pull-right portal-icon larger-width" style="transform: translateY(45%); padding: 5px !important;">
-                <div class="row">
-                    <div class="col-sm-4"></div>
-                    <div class="col-sm-8">
-                        <div class="col-sm-4">
-                            <button-small onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button button-small">Login</button-small></a>
+                <div class="col-sm-10">
+                    <div class="row" style="margin-top: 15px;">
+                        <div class="col-sm-2 pull-right vertical-separator" style="padding: auto 5px !important;">
+                            <button onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button action-button button-menu">Login</button></a>
                         </div>
-                        <div class="col-sm-1"><p style="margin-left: 10px"> OR </p></div>
-                        <div class="col-sm-5">
-                            <button-small onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.registerInitial()'" id="btnRegister" class="nmu-button button-small">Register</button-small></a>
+                        <div class="col-sm-2 pull-right">
+                            <button onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.registerInitial()'" id="btnRegister" class="nmu-button action-alternative button-menu">Register</button></a>
                         </div>
                     </div>
-                </div>
                 </div>
             } else {
                 <div class="pull-right portal-icon larger-width">
                 <ic class="fa fa-3x fa-user-circle-o drop-bottom-5"></ic>
                     <br/>
                     <ul id="profile-menu" class="sm sm-clean-vertical dropdown-menu-right profile-name-header">
-                        <li><a href="#" id="IconMenuBarProfile">@getName <span class="caret"></span> </a>
+                        <li><a href="#" style="color: #FFFFFF !important;" id="IconMenuBarProfile">@getName <span class="caret"></span> </a>
                         <ul id="MailDropDown" class="dropdown-menu">
                             <li><a href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
                             <li><a href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>

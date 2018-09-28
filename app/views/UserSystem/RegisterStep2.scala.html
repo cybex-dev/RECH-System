@@ -3,15 +3,18 @@
 @import play.data.Form
 @import helper._
 @import models.UserSystem.DetailedRegistrationForm
-
 @import dao.NMU.EntityDepartment.DepartmentContainer
-@(registrationForm: Form[DetailedRegistrationForm], departmentList: List[DepartmentContainer], facultyList: List[String])
+@import java.util
 
-@Masterpage.apply(" :: Register"){
-    <br/>
-    <div class="container">
-        <h2>Complete your Registration</h2>
-        <div class="nmu-content-background-dark" style="padding: 20px">
+@(registrationForm: Form[DetailedRegistrationForm], departmentList: util.List[DepartmentContainer], facultyList: List[String])
+
+<div class="BoxMediumBlue" style="padding: 20px;">
+    @Masterpage.apply(" :: Register") {
+        <br/>
+        <div class="container-heading">
+            <h1>Complete your Registration</h1>
+        </div>
+        <div class="nmu-content-background-dark standard-padding-20">
         @helper.form(action = controllers.UserSystem.routes.RegistrationController.submitRegistration()) {
             @CSRF.formField
             <div class="fragment-container border">
@@ -22,5 +25,5 @@
             </div>
         }
         </div>
-    </div>
-}
+    }
+</div>

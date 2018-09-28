@@ -1,4 +1,6 @@
 @import models.UserSystem.Application
+@import engine.Permission
+
 @(applications: List[Application])
 
 <div>
@@ -23,9 +25,14 @@
                         <td>@application.getStatus.name()</td>
                         <td>@application.getSubmittedDateSafe</td>
                         <td>@application.getApprovedDateSafe</td>
-                        <td><a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
-                            <button class="nmu-button table-button">View Application</button>
-                        </a></td>
+                        <td>@if(application.getPermission == Permission.NONE) {
+                            <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">Not authorized</button></a>
+                        } else {
+                            <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
+                                <button class="nmu-button table-button">View Application</button>
+                            </a>
+                        }
+                        </td>
                     </tr>
             }
             </tbody>

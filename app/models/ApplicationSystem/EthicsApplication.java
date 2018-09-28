@@ -1,5 +1,7 @@
 package models.ApplicationSystem;
 
+import dao.ApplicationSystem.EntityComponentVersion;
+import dao.ApplicationSystem.EntityEthicsApplication;
 import helpers.FileScanner;
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
@@ -223,5 +225,40 @@ public class EthicsApplication implements Serializable {
 
     public void setQuestionList(List<Question> questionList) {
         this.questionList = questionList;
+    }
+
+    public static Element PopulateRootElement(EntityEthicsApplication application) {
+        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
+        List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
+        Map<String, Object> entryMap = new HashMap<>();
+        latestComponents.forEach(entityComponentVersion -> {
+            if (entityComponentVersion != null) {
+                System.out.println(entityComponentVersion.getComponentId() + " -> " + entityComponentVersion.getResponseType());
+                switch (entityComponentVersion.getResponseType()) {
+                    case "boolean": {
+                        entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getBoolValue());
+                        break;
+                    }
+
+                    case "text": {
+                        entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getTextValue());
+                        break;
+                    }
+
+                    case "document": {
+                        entryMap.put(entityComponentVersion.getComponentId() + "_title", entityComponentVersion.getDocumentName());
+                        entryMap.put(entityComponentVersion.getComponentId() + "_desc", entityComponentVersion.getDocumentDescription());
+                        File file = new File(entityComponentVersion.getDocumentLocationHash());
+                        if (file.exists()) {
+                            String s = file.getName();
+                            entryMap.put(entityComponentVersion.getComponentId() + "_document", s);
+                        }
+                        break;
+                    }
+                }
+            }
+
+        });
+        return EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
     }
 }

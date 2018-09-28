@@ -149,8 +149,7 @@ input {
 }
 
 .standard-padding-20 {
-    padding-top: 20px;
-    margin: -20px;
+    padding: 20px;
 }
 
 .conditions {

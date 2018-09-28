@@ -22,7 +22,7 @@ public class MessageController {
      * @param id
      * @return
      */
-    public Result applicationMessages(Integer id){
+    public Result applicationMessages(String id){
         return TODO;
     }
 

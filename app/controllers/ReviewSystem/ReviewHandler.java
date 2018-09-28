@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static controllers.ApplicationSystem.ApplicationHandler.PopulateRootElement;
 
 @Security.Authenticated(Secured.class)
 public class ReviewHandler extends Controller {
@@ -62,14 +61,14 @@ public class ReviewHandler extends Controller {
         }
         List<String> allReviewers = ethicsApplication.findAllReviewers();
         if (allReviewers.stream().filter(s -> s.equals(email)).collect(Collectors.toList()).size() != 1) {
-            flash("danger", "You are not authorized to review this application");
-            return unauthorized("You are not authorized to review this application");
+            flash("danger", "You are not authorized to reviewable this application");
+            return unauthorized("You are not authorized to reviewable this application");
         }
 
-        Element element = PopulateRootElement(ethicsApplication);
+        Element element = ethicsApplication.getPopulatedElement();
         Map<String, Boolean> editableMap = new HashMap<>();
         XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review/Feedback Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, controllers.ReviewSystem.routes.ReviewHandler.submitReview(), false, ethicsApplication.applicationPrimaryKey().shortName(), false, true));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review/Feedback Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, controllers.ReviewSystem.routes.ReviewHandler.submitReview(), false, ethicsApplication.applicationPrimaryKey().shortName(), false, true, false, new HashMap<>()));
     }
 
     @AddCSRFToken
@@ -80,11 +79,12 @@ public class ReviewHandler extends Controller {
             return badRequest();
         }
 
-        Element element = PopulateRootElement(ethicsApplication);
+        Element element =  ethicsApplication.getPopulatedElement();
         Map<String, Boolean> editableMap = new HashMap<>();
         XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
+        Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.getLatestComponentFeedback(entityEthicsApplicationPK);
 
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, controllers.ReviewSystem.routes.ReviewHandler.doViewApprove(), false, entityEthicsApplicationPK.shortName(), true, false));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, controllers.ReviewSystem.routes.ReviewHandler.doViewApprove(), false, entityEthicsApplicationPK.shortName(), true, true, true, latestComponentFeedback));
     }
 
     @RequireCSRFCheck
@@ -141,11 +141,11 @@ public class ReviewHandler extends Controller {
             return internalServerError();
         }
 
-        UserType type = UserType.parse(session().get(CookieTags.user_id));
-        if (type == null)
+        EntityPerson personById = EntityPerson.getPersonById(session().get(CookieTags.user_id));
+        if (personById == null)
             return redirect(routes.ProfileHandler.overview());
         else {
-            Application app = Application.create(application, type);
+            Application app = Application.create(application, personById);
             return ok(views.html.ReviewSystem.AssignApplication.render(app));
         }
     }

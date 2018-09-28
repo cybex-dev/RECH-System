@@ -25,6 +25,7 @@ public class EntityLiaisonComponentFeedback extends Model {
     private String applicationType;
     private String departmentName;
     private String facultyName;
+    private String feedback;
 
 
     public static Finder<EntityLiaisonComponentFeedbackPK, EntityLiaisonComponentFeedback> find = new Finder<>(EntityLiaisonComponentFeedback.class);
@@ -133,6 +134,15 @@ public class EntityLiaisonComponentFeedback extends Model {
         this.facultyName = facultyName;
     }
 
+    @Column(name = "feedback")
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -147,13 +157,14 @@ public class EntityLiaisonComponentFeedback extends Model {
                 Objects.equals(componentId, that.componentId) &&
                 Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName);
+                Objects.equals(facultyName, that.facultyName) &&
+                Objects.equals(feedback, that.feedback);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(changeSatisfactory, feedbackDate, liaisonEmail, version, componentId, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
+        return Objects.hash(changeSatisfactory, feedbackDate, liaisonEmail, version, componentId, applicationYear, applicationNumber, applicationType, departmentName, facultyName, feedback);
     }
 
 

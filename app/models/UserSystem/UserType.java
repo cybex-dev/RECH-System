@@ -21,12 +21,16 @@ public enum UserType {
 
     public static UserType parse(String personType) {
         switch (personType) {
+            case "PrimaryInvestigator":
             case "PI": return PrimaryInvestigator;
+            case "PrimaryResponsiblePerson":
             case "PRP": return PrimaryResponsiblePerson;
             case "Liaison": return Liaison;
             case "Reviewer": return Reviewer;
+            case "FacultyRTI":
             case "RTI": return FacultyRTI;
-            case "HOD": return DepartmentHead;
+            case "HOD":
+            case "DepartmentHead": return DepartmentHead;
             case "RCD": return RCD;
         }
         return null;

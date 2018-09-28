@@ -1,10 +1,13 @@
+@import views.html.Components.feedback_container
+@import views.html.Components.reviewable
 @import views.html.Components.editable
+@import java.util
 
-@(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean)
+@(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
 <input style="margin-left: 40px" id="@id" value="@value"name="@id"  class="input-text-short" type="text" @editable.apply(canEdit) placeholder="Enter @label">
-@if(feedback){
-    @inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false)
-}
+
+    @feedback_container.apply(id, feedback)
+    @reviewable.apply(review, reviewData)
 <br>

@@ -1,0 +1,6 @@
+@(heading: String)(id: String)(active: Boolean)(content: Html)
+
+<div class="tab-pane @if(active){active}else{}" id="@id" role="tabpanel">
+    <h2>@heading</h2>
+    @content
+</div>

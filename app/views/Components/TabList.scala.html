@@ -1,0 +1,18 @@
+@(tablistId: String)(small: Boolean)(tabHeaders: Html)(tabContent: Html)
+
+<div class="@if(small){col-sm-6}else{col-sm-12} tbsColLast">
+    <div class="col-sm-12 rowSizer BoxLightBlue TextWhite  tbsVpad " style="height: auto;">
+        <div id="@tablistId" class="sp-tab-panel">
+            <ul class="nav nav-tabs" role="tablist">
+            @tabHeaders
+            </ul>
+            <div class="tab-content">
+            @tabContent
+            </div>
+            <br/>
+            <br/>
+        </div>
+    </div>
+</div>
+<br/>
+<br/>

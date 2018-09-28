@@ -10,6 +10,7 @@ import dao.UserSystem.EntityPerson;
 import helpers.CookieTags;
 import helpers.FileScanner;
 import models.App;
+import models.ApplicationSystem.ApplicationStatus;
 import models.UserSystem.UserType;
 import play.api.mvc.MultipartFormData;
 import play.libs.Json;
@@ -201,6 +202,10 @@ public class APIController extends Controller {
         response().setContentType("application/x-download");
         response().setHeader("Content-disposition","attachment; filename=" + file.getName());
         return ok(file);
+    }
+
+    public static List<String> getApplicationStatuses(){
+        return Arrays.asList(ApplicationStatus.TEMPORARILY_APPROVED.name(), ApplicationStatus.TEMPORARILY_APPROVED_EDITS.name(), ApplicationStatus.REJECTED.name());
     }
 
 }

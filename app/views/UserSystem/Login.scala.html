@@ -5,10 +5,13 @@
 
 @(loginForm: Form[UserLoginForm])
 
-@content = {
-    <h1>REC Login</h1>
-    <div class="nmu-content-background-dark padding-all-30">
+@Masterpage.apply(" :: Login"){
+    <div class="BoxMediumBlue" style="padding: 20px;">
     @form(action = controllers.UserSystem.routes.LoginController.doLogin()) {
+        <div class="container-heading">
+            <h1>Login</h1>
+        </div>
+        <div class="nmu-content-background-dark standard-padding-20">
         @CSRF.formField
         @inputText(loginForm("email"), '_label -> "Email", '_class -> "input-text-short")
         @inputPassword(loginForm("password"), '_label -> "Password", '_class -> "input-text-short")
@@ -18,12 +21,11 @@
         <div class="row">
             <button type="submit" class="nmu-button action-button" value="Login" style="background-color: #f9b42a !important;">Login</button>
         </div>
+        <br/>
+        <a href="@controllers.UserSystem.routes.LoginController.forgotPassword()">I forgot my password?</a>
+        </div>
     }
-    <br/>
-    <a href="@controllers.UserSystem.routes.LoginController.forgotPassword()">I forgot my password?</a>
     </div>
 }
-
-@Masterpage.apply(" :: Login")(content)
 
 

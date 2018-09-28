@@ -72,7 +72,7 @@ public class ProfileHandler extends Controller {
      * <ul>
      * <li>PI: all application statuses</li>
      * <li>PRP : all own applications and related PI's applications</li>
-     * <li>Reviewer|Liaison|HOD|RTI : all own applications, related PI applications and applications to review</li>
+     * <li>Reviewer|Liaison|HOD|RTI : all own applications, related PI applications and applications to reviewable</li>
      * <li>No applications shown. Shown data such as meeting dates, quanity applications to be reviewed with title, etc</li>
      * </ul>
      *
@@ -92,14 +92,14 @@ public class ProfileHandler extends Controller {
         List<EntityEthicsApplication> entity_liaiseApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.Liaison);
         List<EntityEthicsApplication> entity_facultyApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.FacultyRTI);
 
-        return ok(views.html.UserSystem.Dashboard.render(
-                entity_newApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
-                entity_ownApplications.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
-                entity_approveApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
-                entity_reviewApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
-                entity_liaiseApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()),
-                entity_facultyApps.stream().map(app -> Application.create(app, person.userType())).collect(Collectors.toList()))
-        );
+        List<Application> collect = entity_newApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
+        List<Application> collect1 = entity_ownApplications.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
+        List<Application> collect2 = entity_approveApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
+        List<Application> collect3 = entity_reviewApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
+        List<Application> collect4 = entity_liaiseApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
+        List<Application> collect5 = entity_facultyApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
+
+        return ok(views.html.UserSystem.Dashboard.render(collect, collect1, collect2, collect3, collect4, collect5));
     }
 
     /**

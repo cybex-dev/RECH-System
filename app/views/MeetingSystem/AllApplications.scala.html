@@ -1,0 +1,49 @@
+@import dao.ApplicationSystem.EntityEthicsApplication
+@import views.html.Templates.Masterpage
+@import dao.Meeting.EntityAgendaItem
+@import dao.Meeting.EntityMeeting
+@import java.util
+
+@(meeting: EntityMeeting, allApplications: util.Map[EntityAgendaItem, EntityEthicsApplication])
+
+    @Masterpage(" :: All Meeting Applications") {
+        <h2>All Applications</h2>
+        <br/>
+        <p><span style="font-weight: bold">Meeting Date: </span>@meeting.getMeetingDate</p>
+        <br/>
+        <p style="font-weight: bold;">Meeting Announcements</p>
+        <ul>
+            @meeting.getAnnouncements
+        </ul>
+        <p style="font-style: italic;">Applications are ready for REC meeting scrutiny</p>
+        <br/>
+            <div class="application-details"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Application Title</th>
+                        <th># Revision</th>
+                        <th>Faculty</th>
+                        <th>Department</th>
+                        <th>Year</th>
+                        <th>Date Submitted</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for((item,app) <- allApplications){
+                    <td>@app.title</td>
+                    <td>@app.getApplicationRevision</td>
+                    <td>@app.getFacultyName</td>
+                    <td>@app.getDepartmentName</td>
+                    <td>@app.getApplicationYear</td>
+                    <td>@app.getDateSubmitted</td>
+                    <td><button class="nmu-button action-button" href="@controllers.MeetingSystem.routes.MeetingController.getApplication(app.applicationPrimaryKey().shortName())">
+                    Review Application
+                    </button> </td>
+                }
+            </tbody>
+        </table>
+        </div>
+    }
+

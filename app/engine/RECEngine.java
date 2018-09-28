@@ -31,7 +31,7 @@ public class RECEngine extends Controller {
     }
 
     public boolean nextStep(EntityEthicsApplicationPK applicationId) {
-        System.out.print("[ENGINE] ");
+        System.out.print("[ENGINE] NextStep");
 
         EntityEthicsApplication entityEthicsApplication = EntityEthicsApplication.find.byId(applicationId);
         if (entityEthicsApplication == null) {
@@ -61,11 +61,10 @@ public class RECEngine extends Controller {
         return b;
     }
 
-    private Permission checkAuthorized(EntityPerson person, EntityEthicsApplication entityEthicsApplication) {
+    public static Permission checkAuthorized(EntityPerson person, EntityEthicsApplication entityEthicsApplication) {
         if (person.userType() == UserType.RCD)
             return Permission.MODIFY;
         switch (ApplicationStatus.parse(entityEthicsApplication.getInternalStatus())) {
-
             case FEEDBACK_GIVEN_LIAISON:
             case REJECTED:
             case APPROVED:
@@ -429,6 +428,7 @@ public class RECEngine extends Controller {
                 // STEP -> AWAITING_REVIEWER_ALLOCATION (Question -> Committee) //RCD needs to allocated reviewers
                 boolean isFacultyLevel = entityEthicsApplication.getApplicationLevel() == 0;
                 newStatus = (isFacultyLevel) ? ApplicationStatus.FACULTY_REVIEW : ApplicationStatus.AWAITING_REVIEWER_ALLOCATION;
+                entityEthicsApplication.setApplicationRevision(entityEthicsApplication.getApplicationRevision() + 1);
 
                 actionable = new Actionable() {
                     @Override
@@ -478,16 +478,16 @@ public class RECEngine extends Controller {
 
             case FACULTY_REVIEW:
                 // RCD notified of faculty level application
-                // Application is stored in database for review (printing)
+                // Application is stored in database for reviewable (printing)
 
                 break;
 
 
-            // Reviewer review
+            // Reviewer reviewable
             case PENDING_REVIEW_REVIEWER:
                 // Action: System randomly picks 4 reviewers, notifies them of a pending application
                 // Reviewer reviews application, leaves feedback and submits feedback
-                // PI/PRP notified of application review applicationComplete, notify of next stage
+                // PI/PRP notified of application reviewable applicationComplete, notify of next stage
 
                 int size = EntityReviewerApplications.getApplicationReviewers(applicationId).size();
 
@@ -511,7 +511,7 @@ public class RECEngine extends Controller {
                 };
                 return actionable;
 
-            // Meeting review and feedback
+            // Meeting reviewable and feedback
             case PENDING_REVIEW_MEETING:
                 // System: when application feedback is all given for all reviewers, application becomes available for a meeting
                 // Each meeting assumes all outstanding applications will be discussed
@@ -573,7 +573,7 @@ public class RECEngine extends Controller {
                 // Action: Assign Liaison to application
                 // Liaison is notified
 
-                // STEP -> (Optional Liaison review / feedback)
+                // STEP -> (Optional Liaison reviewable / feedback)
                 // STEP -> AWAITING_HOD_RTI_APPROVAL (liaison approved - application is satisfactory)
 
                 newStatus = ApplicationStatus.AWAITING_POST_HOD_RTI_APPROVAL;
@@ -850,7 +850,7 @@ public class RECEngine extends Controller {
      * Strategy for assigning applications goes as follows:
      * - Sort all reviewers by latest date
      * - Add all reviewers to list, with distinct selection criteria
-     * i.e. each reviewer who has review an application will be sorted by last reviewed, most recently reviewed first
+     * i.e. each reviewer who has reviewable an application will be sorted by last reviewed, most recently reviewed first
      *
      * @return
      */

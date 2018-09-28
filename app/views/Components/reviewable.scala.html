@@ -1,0 +1,17 @@
+@import java.util
+
+@(review: Boolean, reviewData: util.List[String])
+
+
+@if(review)  {
+    <h4>Review Feedback</h4>
+    @if(reviewData.size > 0){
+        <p style="font-weight: bold;">No feedback available.</p>
+    } else {
+        <ul>
+        @for(r <- reviewData) {
+            <li>@r</li>
+        }
+        </ul>
+    }
+}

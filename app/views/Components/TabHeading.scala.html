@@ -1,0 +1,7 @@
+@(heading: String)(tabId: String)(active: Boolean)
+
+<li class="@if(active){active}else{}" role="presentation">
+    <a aria-controls="@tabId" data-toggle="tab" href="#@tabId" role="tab">
+        @heading
+    </a>
+</li>
