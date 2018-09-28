@@ -9,75 +9,82 @@
     @Masterpage.apply(" :: About the Committee") {
         <div class="BoxMediumBlue" style="padding: 20px;">
             <div class="container-heading">
-                <h1>About the Research and Ethics Committee</h1>
+                <h1>About the Ethics Committee</h1>
             </div>
             <br/>
-            <div class="col-sm-12 BoxDarkRed TextWhite tbsVpad ">
-                <h2 style="font-style: italic">Next ethics committee meeting <span id="next_meeting_date">is not set</span></h2>
+            <div class="row">
+                <div class="col-sm-12 announcement">
+                    <div class="BoxDarkRed TextWhite tbsVpad ">
+                        <h2 style="font-style: italic">Next ethics committee meeting <span id="next_meeting_date">
+                            is not set</span></h2>
+                    </div>
+                </div>
             </div>
             <br/>
-            <br/>
-
-            @TabList.apply("tablist_rec_info")(false){
-                @TabHeading.apply("Announcements")("tabheading_announcements")(true)
-                @TabHeading.apply("Mission & Vision")("tabheading_mission_vision")(false)
-                @TabHeading.apply("Members")("tabheading_members")(false)
-            }{
-                @TabContent.apply("Announcements")("tabheading_announcements")(true){
-                    <span style="font-style: italic;">No announcements</span>
+            <div class="row">
+                <div class="col-sm-12">
+                @TabList.apply("tablist_rec_info")(false) {
+                    @TabHeading.apply("Announcements")("tabheading_announcements")(true)
+                    @TabHeading.apply("Mission & Vision")("tabheading_mission_vision")(false)
+                    @TabHeading.apply("Members")("tabheading_members")(false)
+                } {
+                    @TabContent.apply("Announcements")("tabheading_announcements")(true) {
+                        <span style="font-style: italic;">No announcements</span>
+                    }
+                    @TabContent.apply("Mission & Vision")("tabheading_mission_vision")(false) {
+                        <p>To be added</p>
+                    }
+                    @TabContent.apply("Members")("tabheading_members")(false) {
+                        <div class="row nmu-content-background nmu-content-text nmu-content-border">
+                            <div class="col-sm-2">
+                                <img src="@routes.Assets.versioned("images/profiles/charmain_cilliers.jpg")">
+                            </div>
+                            <div class="col-sm-10">
+                                <ul><h3>Prof. Charmain Cilliers</h3>
+                                    <li>Position:    Associate Professor</li>
+                                    <li>Department:    Computing Sciences</li>
+                                    <li>Location:    South Campus</li>
+                                    <li>Phone:    27 41 504 2235</li>
+                                    <li>Fax:    27 41 504 2831</li>
+                                    <li>Email:    charmain.cilliers@@mandela.ac.za</li>
+                                    <li>Qualifications:    PhD</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row nmu-content-background nmu-content-text nmu-content-border">
+                            <div class="col-sm-2">
+                                <img src="@routes.Assets.versioned("images/profiles/imtiaz_khan.jpg")">
+                            </div>
+                            <div class="col-sm-10">
+                                <ul><h3>Mr Imtiaz Khan</h3>
+                                    <li>Position:    External Postgraduate Scholarship Co-ordinator</li>
+                                    <li>Department:    Research Capacity Development</li>
+                                    <li>Location:    South Campus</li>
+                                    <li>Phone:    27 41 504 4329</li>
+                                    <li>Fax:    27 41 504 2778</li>
+                                    <li>Email:    Imtiaz.Khan@@mandela.ac.za</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row nmu-content-background nmu-content-text nmu-content-border">
+                            <div class="col-sm-2">
+                                <img src="@routes.Assets.versioned("images/profiles/ursula_spies.jpg")">
+                            </div>
+                            <div class="col-sm-10">
+                                <ul><h3>Ms Ursula Spies</h3>
+                                    <li>Position:    Committee Officer</li>
+                                    <li>Department:    Governance Administration</li>
+                                    <li>Room:    101</li>
+                                    <li>Location:    Second Avenue Campus</li>
+                                    <li>Phone:    27 41 504 3140</li>
+                                    <li>Email:    Ursula.Spies@@mandela.ac.za</li>
+                                    <li>Qualifications:    N Dip: Commercial Administration</li>
+                                </ul>
+                            </div>
+                        </div>
+                    }
                 }
-                @TabContent.apply("Mission & Vision")("tabheading_mission_vision")(false){
-                    <p>To be added</p>
-                }
-                @TabContent.apply("Members")("tabheading_members")(false){
-                    <div class="row nmu-content-background nmu-content-text nmu-content-border">
-                        <div class="col-sm-2">
-                            <img src="@routes.Assets.versioned("images/profiles/charmain_cilliers.jpg")">
-                        </div>
-                        <div class="col-sm-10">
-                            <ul><h3>Prof. Charmain Cilliers</h3>
-                                <li>Position:    Associate Professor</li>
-                                <li>Department:    Computing Sciences</li>
-                                <li>Location:    South Campus</li>
-                                <li>Phone:    27 41 504 2235</li>
-                                <li>Fax:    27 41 504 2831</li>
-                                <li>Email:    charmain.cilliers@@mandela.ac.za</li>
-                                <li>Qualifications:    PhD</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row nmu-content-background nmu-content-text nmu-content-border">
-                        <div class="col-sm-2">
-                            <img src="@routes.Assets.versioned("images/profiles/imtiaz_khan.jpg")">
-                        </div>
-                        <div class="col-sm-10">
-                            <ul><h3>Mr Imtiaz Khan</h3>
-                                <li>Position:    External Postgraduate Scholarship Co-ordinator</li>
-                                <li>Department:    Research Capacity Development</li>
-                                <li>Location:    South Campus</li>
-                                <li>Phone:    27 41 504 4329</li>
-                                <li>Fax:    27 41 504 2778</li>
-                                <li>Email:    Imtiaz.Khan@@mandela.ac.za</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row nmu-content-background nmu-content-text nmu-content-border">
-                        <div class="col-sm-2">
-                            <img src="@routes.Assets.versioned("images/profiles/ursula_spies.jpg")">
-                        </div>
-                        <div class="col-sm-10">
-                            <ul><h3>Ms Ursula Spies</h3>
-                                <li>Position:    Committee Officer</li>
-                                <li>Department:    Governance Administration</li>
-                                <li>Room:    101</li>
-                                <li>Location:    Second Avenue Campus</li>
-                                <li>Phone:    27 41 504 3140</li>
-                                <li>Email:    Ursula.Spies@@mandela.ac.za</li>
-                                <li>Qualifications:    N Dip: Commercial Administration</li>
-                            </ul>
-                        </div>
-                    </div>
-                }
-            }
+                </div>
+            </div>
         </div>
     }

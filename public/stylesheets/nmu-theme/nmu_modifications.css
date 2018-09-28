@@ -380,3 +380,13 @@ dd.info {
 .flash-content {
     margin-top: 20px !important;
 }
+
+.sm.sm-clean-vertical.dropdown-menu-left.profile-name-header {
+    padding-left: 5px !important;
+    padding-top: 5px  !important;
+}
+
+.announcement {
+    text-align: center;
+    margin: 10px 0;
+}

@@ -183,6 +183,8 @@ $(document).ready(function () {
 
     $('#profile-menu').smartmenus({ subIndicators: false, subIndicatorsText: '', keepHighlighted:false, rightToLeftSubMenus: true});
 
+    $('#applications-menu').smartmenus({ subIndicators: false, subIndicatorsText: '', keepHighlighted:false, });
+
 });
 
 $(document).ready(function () {

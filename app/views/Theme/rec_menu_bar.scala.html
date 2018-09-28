@@ -24,8 +24,17 @@
                 <a href="@controllers.UserSystem.routes.ProfileHandler.overview()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-reorder drop-bottom-5"></ic><br>
                     <span>Overview</span></a></div>
             <div class="portal-icon portal-icon-extend-margin">
-                <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()" id="IconMenuBarApplications" onmouseenter="openPopup('application_dropdown-menu')"><ic class="fa fa-3x fa-book drop-bottom-5" ></ic><br>
-                    <span>Applications</span></a>
+                <ul id="applications-menu" class="sm sm-clean-vertical dropdown-menu-left profile-name-header">
+                    <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()" style="color: #FFFFFF !important;" id="ApplicationMenuBarDropDown">
+                        <ic class="fa fa-3x fa-book drop-bottom-5" ></ic>
+                        <br/>
+                        <span>Applications</span></a>
+                        <ul id="MailDropDown" class="dropdown-menu dropdown-menu-left">
+                            <li><a href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
+                            <li><a href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
             <div class="portal-icon portal-icon-extend-margin">
                 <a disabled="true" href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
