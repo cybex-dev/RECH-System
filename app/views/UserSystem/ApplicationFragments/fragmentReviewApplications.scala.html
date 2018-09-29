@@ -1,43 +1,45 @@
 @import models.UserSystem.Application
 @import engine.Permission
+@import java.util
 
-@(applications: List[Application])
+@(applications: util.List[Application])
 
-<div>
-    <h3 class="overview overview-title"><i class="fa fa-angle-right"></i> Assigned Applications</h3>
-@if(applications.size() > 0) {
-    <div class="row">
-        <table class="table">
-            <thead>
-                <th class="col-sm-3">Application Title</th>
-                <th class="col-sm-3">Date Assigned</th>
-                <th class="col-sm-3">Due Date</th>
-                <th class="col-sm-2"></th>
-            </thead>
-            <tbody>
-            @for(application: Application <- applications) {
-                <tr class="nmu-button">
+<h3 class="overview overview-title"><i class="fa fa-angle-right"></i> Assigned Applications</h3>
+    @if(applications.size() > 0) {
+        <div class="row">
+            <table class="table">
+                <thead>
+                    <th class="col-sm-3">Application Title</th>
+                    <th class="col-sm-3">Date Assigned</th>
+                    <th class="col-sm-3">Due Date</th>
+                    <th class="col-sm-2"></th>
+                </thead>
+                <tbody>
+                @for(application: Application <- applications) {
                     <tr class="nmu-button">
-                        <td style="text-decoration: underline;">@application.getTitle</td>
-                        <td>@application.getAssignedDateSafe</td>
-                        <td>@application.getDueDateSafe</td>
-                        <td>
-                        @if(application.getPermission == Permission.NONE) {
-                            <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">Not authorized</button></a>
-                        } else {
-                            <a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.reviewApplication(application.getApplicationID.shortName())">
-                                <button class="nmu-button table-button">Review Application</button>
-                            </a>
-                        }
-                        </td>
-                    </tr>
-                </a>
-            }
-            </tbody>
-        </table>
-    </div>
-} else {
-    <p>No applications to reviewable</p>
-}
-</div>
-<br/>
+                <tr class="nmu-button">
+                    <td style="text-decoration: underline;">@application.getTitle</td>
+                    <td>@application.getAssignedDateSafe</td>
+                    <td>@application.getDueDateSafe</td>
+                    <td>
+                    @if(application.getPermission == Permission.NONE) {
+                        <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">
+                            Not authorized</button></a>
+                    } else {
+                        <a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.reviewApplication(application.getApplicationID.shortName())">
+                            <button class="nmu-button table-button">Review Application</button>
+                        </a>
+                    }
+                    </td>
+                </tr>
+                    </a>
+                }
+                </tbody>
+            </table>
+        </div>
+    } else {
+        <div class="row">
+            <p>No applications to reviewable</p>
+        </div>
+    }
+    <br/>

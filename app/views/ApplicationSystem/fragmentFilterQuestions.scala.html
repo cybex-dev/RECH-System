@@ -8,21 +8,23 @@
     <div id="questionnaire_popup" class="modal-content animate popup-header" style="height: auto">
         <div class="row" style="height: auto">
             <div class="header-panel">
+                <div class="row" style="margin-top: 10px">
+                    <span id="popup_questionnaire_close" class="close" title="Close PopUp">&times;</span>
+                </div>
                 <div class="row">
-                    <div class="col-sm-7">
+                    <div class="col-sm-6">
                         <h2 style="text-align: left">A couple of questions first</h2>
                         <h5 style="text-align: left; font-style: italic !important;">This will help us determine if you study does require ethics approval</h5>
                     </div>
-                    <div class="col-sm-5">
+                    <div class="col-sm-6">
                         <h4 id="risk_eval" style="text-align: center; margin: 20px"></h4>
-                        <span onclick="hidePopup('filter_question_form')" class="close" title="Close PopUp">&times;</span>
                     </div>
                     <br>
                 </div>
             </div>
         </div>
         <div class="row hidden" style="height: auto" id="row-question-content">
-            <div class="standard-padding-20" style="height: auto">
+            <div class="" style="height: auto">
                 <div class="question-content nmu-color-very-dark" style="height: auto">
                     @{
                         var questionId = 0;
@@ -31,7 +33,7 @@
                             var list = ""
                             for(c <- conditionList) {
                                 questionId += 1
-                                list += "<input class=\"condition\" type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\">" + c.getConditionText + "<br>"
+                                list += "<div class=\"condition\"><input type=\"checkbox\" id=\"question_" + questionId + "\" risk=\"" + c.getRisk.name + "\"><label for=\"question_" + questionId + "\">" + c.getConditionText + "</label><br/></div>"
                             }
                             list
                         }
@@ -50,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" style="height: auto; margin-top: 30px;" id="question_button_bar">
+        <div class="row" id="question_button_bar">
             <button class="nmu-button" type="button" href="#" id="btnStartQuestions">Start</button>
             <div class="col-sm-6">
                 <button id="btnPreviousQuestion" class="nmu-button hidden" style="float: left; ">Previous</button>

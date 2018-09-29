@@ -1,10 +1,7 @@
 @import views.html.UserSystem.ApplicationFragments.fragmentNewApplications
 @import models.UserSystem.Application
+@import java.util
 
-@(newApps: List[Application])
+@(newApps: util.List[Application])
 
-<div class="container">
-        <h2>Overview</h2>
-        <br/>
-        @fragmentNewApplications.apply(newApps)
-</div>
+@fragmentNewApplications.apply(newApps)

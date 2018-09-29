@@ -273,7 +273,7 @@ function createDocumentPopups() {
         let inputFile = parent.querySelectorAll("input[type=file]")[0];
         inputFile.onchange = function () {
             let last = inputFile.value.lastIndexOf("\\");
-            document.getElementById(textNode.id).innerText = inputFile.value.substr(last+1);
+            document.getElementById(textNode.id).innerHTML = "<b>File: </b>" + inputFile.value.substr(last+1);
         };
 
         // Set onclick event

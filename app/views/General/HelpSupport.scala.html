@@ -18,14 +18,14 @@
                     @TabHeading.apply("Application Process")("tab_process")(false)
                 } {
                     @TabContent.apply("Frequently Asked Questions")("tab_faqs")(true) {
-                        <ol style="margin-left: 15px">
+                        <ol style="margin-top: 10px; margin-left: 15px">
                             <li>
                                 <h3>Should I get ethics approval?</h3>
                                 <p style="margin-left: 10px;
                                     margin-top: 5px">
                                     Ethics approval is not always necessary. To find out if you need ethics approval from the central ethics committee, take the test.</p>
-                                <button type="submit" class="nmu-button action-button" href="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")">
-                                    Take the test</button>
+                                <a class="button-link" href="@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")"><button type="submit" class="nmu-button action-button">
+                                    Take the test</button></a>
                             </li>
                             <li>
                                 <h3>How long does can I expect to wait?</h3>

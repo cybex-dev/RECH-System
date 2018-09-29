@@ -1,12 +1,9 @@
 @import models.UserSystem.Application
 @import java.util.List
 @import views.html.UserSystem.ApplicationFragments.{fragmentSubmittedApplications, fragmentApproveApplications}
+@import java.util
 
-@(applications: List[Application], approveApps: List[Application])
+@(applications: util.List[Application], approveApps: util.List[Application])
 
-<div class="">
-    <h2>Overview</h2>
-    <br>
-        @fragmentSubmittedApplications.apply(applications)
-        @fragmentApproveApplications.apply(approveApps)
-</div>
+@fragmentSubmittedApplications.apply(applications)
+@fragmentApproveApplications.apply(approveApps)

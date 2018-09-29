@@ -8,7 +8,7 @@
 @(id: String, label: String, fileName: String, nameId: String, hint: String, shortDesc: String, required: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<input id="@id" value="@fileName" name="@id" type="file" style="margin-left: 40px;" desc="@shortDesc" file_required="@required" @editable.apply(canEdit)>
+<input id="@id" value="@{if(fileName != null) {fileName} else {}}" name="@id" type="file" style="margin-left: 40px;" desc="@shortDesc" file_required="@required" @editable.apply(canEdit)>
 @if(!fileName.isEmpty) {
     <br/>
     <p><span style="font-weight: bold; margin-left: 20px">Existing Document: </span>@fileName</p>

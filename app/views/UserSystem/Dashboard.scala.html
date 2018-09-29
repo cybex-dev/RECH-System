@@ -16,7 +16,7 @@
     }
 }
 
-@getDashboard() = @{
+@getDashboard = @{
     UserType.parse(session().get(CookieTags.user_type)) match {
         case UserType.PrimaryResponsiblePerson => fragmentOverviewPRP.apply(ownApplications, approveApps)
         case UserType.Reviewer => fragmentOverviewReviewers.apply(ownApplications, approveApps, reviewApps)
@@ -30,5 +30,16 @@
 }
 
 @Masterpage.apply(" :: Overview"){
-    @getDashboard
+    <div class="BoxMediumBlue" style="padding: 20px;">
+        <div class="container-heading">
+            <h1>Account Overview</h1>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" >
+                <div style="margin: 0 auto">
+                @getDashboard
+                </div>
+            </div>
+        </div>
+    </div>
 }

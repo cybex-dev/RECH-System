@@ -1,6 +1,13 @@
 $(function() {
     $('#application-dropdown-menu').smartmenus({ subIndicators: false, subIndicatorsText: 'test', keepHighlighted:false });
 
+    var menuOption = document.getElementById("menu_application_type");
+    if (menuOption != null){
+        menuOption.onclick = function () {
+            openPopup("select_application_type_popup", true)
+        }
+    }
+
     // Shows the filter question form when creating a new application
     openPopup('filter_question_form', false);
 

@@ -1,10 +1,10 @@
 @import models.UserSystem.Application
 @import engine.Permission
+@import java.util
 
-@(applications: List[Application])
+@(applications: util.List[Application])
 
-<div>
-    <h3 class="overview overview-title"><i class="fa fa-angle-right"></i> My Applications</h3>
+<h3 class="overview overview-title"><i class="fa fa-angle-right"></i> My Applications</h3>
 @if(applications.size() > 0) {
     <div class="row">
         <table class="table">
@@ -19,28 +19,30 @@
             <tbody>
             @for(application: Application <- applications) {
 
-                    <tr class="nmu-button">
-                        <td style="text-decoration: underline;">@application.getTitle</td>
-                        <td></td>
-                        <td>@application.getStatus.name()</td>
-                        <td>@application.getSubmittedDateSafe</td>
-                        <td>@application.getApprovedDateSafe</td>
-                        <td>@if(application.getPermission == Permission.NONE) {
-                            <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">Not authorized</button></a>
-                        } else {
-                            <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
-                                <button class="nmu-button table-button">View Application</button>
-                            </a>
-                        }
-                        </td>
-                    </tr>
+                <tr class="nmu-button">
+                    <td style="text-decoration: underline;">@application.getTitle</td>
+                    <td></td>
+                    <td>@application.getStatus.name()</td>
+                    <td>@application.getSubmittedDateSafe</td>
+                    <td>@application.getApprovedDateSafe</td>
+                    <td>@if(application.getPermission == Permission.NONE) {
+                        <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">
+                            Not authorized</button></a>
+                    } else {
+                        <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
+                            <button class="nmu-button table-button">View Application</button>
+                        </a>
+                    }
+                    </td>
+                </tr>
             }
             </tbody>
         </table>
     </div>
 } else {
-    <p>No applications associated with this account</p>
+    <div class="row">
+        <p>No applications associated with this account</p>
+    </div>
 }
 
 <br/>
-</div>

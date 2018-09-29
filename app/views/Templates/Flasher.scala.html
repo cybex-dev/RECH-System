@@ -2,23 +2,23 @@
 
 @if(flash().containsKey("success")) {
     <div class="alert alert-success alert-dismissible fade in">@flash().get("success")
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <span href="#" class="close" data-dismiss="alert" aria-label="close">&times;</span>
     </div>
 }
 @if(flash().containsKey("warning")) {
     <div class="alert alert-warning alert-dismissible fade in">@flash().get("warning")
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <span href="#" class="close" data-dismiss="alert" aria-label="close">&times;</span>
     </div>
 }
 
 @if(flash().containsKey("info")) {
     <div class="alert alert-info alert-dismissible fade in">@flash().get("info")
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <span href="#" class="close" data-dismiss="alert" aria-label="close">&times;</span>
     </div>
 }
 
 @if(flash().containsKey("danger")) {
     <div class="alert alert-danger alert-dismissible fade in">@flash().get("danger")
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <span href="#" class="close" data-dismiss="alert" aria-label="close">&times;</span>
     </div>
 }

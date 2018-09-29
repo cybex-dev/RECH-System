@@ -1,7 +1,7 @@
 var numQuestions = 0;
 var indexQuestions = -1;
 
-var risk = 0;
+var risk = -1;
 
 // Runs functions when document has loaded
 function _docReady(funcName, baseObj) {
@@ -80,6 +80,13 @@ function _docReady(funcName, baseObj) {
             readyEventHandlersInstalled = true;
         }
     }
+
+    document.getElementById("popup_questionnaire_close").onclick = function(){
+        hidePopup('complete_popup');
+        setHidden(document.getElementById('filter_question_form'));
+        risk = 3;
+        completeQuestionnaire();
+    };
 }
 
 _docReady(docReady());
@@ -87,7 +94,7 @@ _docReady(docReady());
 
 function checkRisk() {
     var r = 0;
-    document.querySelectorAll(".condition").forEach(function (element) {
+    document.querySelectorAll(".condition > input[type=checkbox]").forEach(function (element) {
         if (element.checked) {
             var v = element.attributes.getNamedItem("risk");
             switch (v.nodeValue) {

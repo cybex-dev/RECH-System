@@ -1,13 +1,10 @@
 @import views.html.UserSystem.ApplicationFragments.{fragmentSubmittedApplications, fragmentApproveApplications, fragmentReviewApplications, fragmentLiaiseApplications}
 @import models.UserSystem.Application
+@import java.util
 
-@(ownApplications: List[Application], approveApplications: List[Application], reviewApplications: List[Application], liaiseApplications: List[Application])
+@(ownApplications: util.List[Application], approveApplications: util.List[Application], reviewApplications: util.List[Application], liaiseApplications: List[Application])
 
-<div class="">
-    <h2>Overview</h2>
-    <br>
-    @fragmentSubmittedApplications.apply(ownApplications)
-    @fragmentApproveApplications.apply(approveApplications)
-    @fragmentReviewApplications.apply(reviewApplications)
-    @fragmentLiaiseApplications.apply(liaiseApplications)
-</div>
+@fragmentSubmittedApplications.apply(ownApplications)
+@fragmentApproveApplications.apply(approveApplications)
+@fragmentReviewApplications.apply(reviewApplications)
+@fragmentLiaiseApplications.apply(liaiseApplications)

@@ -112,7 +112,25 @@ input {
 }
 
 .condition {
-    font-size: 1em;
+    margin: 5px 5px 8px;
+    font-style: normal;
+}
+
+.condition label {
+    display: unset !important;
+}
+
+.condition:hover > *{
+    cursor: pointer !important;
+}
+
+.condition:hover label {
+    font-size: 0.8em !important;
+    font-style: italic;
+}
+
+.condition input:hover {
+    transform: scale(1.5);
 }
 
 .question-content {
@@ -154,10 +172,6 @@ input {
 
 .conditions {
     font-size: 15pt;
-}
-
-.condition {
-    margin: 10px;
 }
 
 h3 {
@@ -292,4 +306,17 @@ label {
     background-color: #ffffff;
     color: #061c2c !important;
     border-left: 2px solid #f9b42a;
+}
+
+
+#title{
+    width: 70% !important;
+}
+
+td input[type=text] {
+    width: 90%;
+}
+
+.section-container {
+    margin-left: 10px;
 }

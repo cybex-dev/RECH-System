@@ -121,8 +121,8 @@ button-small {
     cursor: pointer;
 }
 
-.alert a.close {
-    color: #111111;
+.alert span.close  {
+    color: #111111 !important;
 }
 
 /* Add Zoom Animation */
@@ -189,6 +189,7 @@ a:hover {
 
 .header-panel {
     padding-bottom: 10px;
+    padding-left: 15px;
 }
 
 .lessen-top-margin {
@@ -245,7 +246,7 @@ a:hover {
 }
 
 .input-text-short {
-    width: 30em !important;
+    width: 50% !important;
 }
 
 .action-button {
@@ -389,4 +390,17 @@ dd.info {
 .announcement {
     text-align: center;
     margin: 10px 0;
+}
+
+#ApplicationMenuBarDropDown {
+
+}
+
+ol > li > h3 {
+    padding-left: 10px;
+    font-style: italic;
+}
+
+.button-link {
+    border: 0 !important;
 }

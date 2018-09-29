@@ -7,7 +7,7 @@
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>
 @for(item <- items){
-    @item<input style="margin-left: 20px" id="@id" name="@id" value="@value" type="radio" @editable.apply(canEdit)>
+    @item<input style="margin-left: 20px" id="@id" name="@id" value="@{if(value!=null){value}else{}}" type="radio" @editable.apply(canEdit)>
 }
 
     @feedback_container.apply(id, feedback)

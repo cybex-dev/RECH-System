@@ -47,7 +47,7 @@ public class ProfileHandler extends Controller {
         if (enrolmentMap.isEmpty()) {
             try {
                 List<File> resourceFiles = new FileScanner().getResourceFiles("/enrolment/");
-                if (resourceFiles.size() == 1){
+                if (resourceFiles.size() == 1) {
                     File file = resourceFiles.get(0);
                     Element keysXml = XMLTools.parseDocument(file);
                     XMLTools.flatten(keysXml, false).forEach(s -> {
@@ -80,11 +80,18 @@ public class ProfileHandler extends Controller {
      */
     public Result overview() {
         EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
-        if (person == null){
+        if (person == null) {
             flash("danger", "An error occurred, please login again");
             session().clear();
             return redirect(routes.LoginController.login());
         }
+
+        String username = session().get(CookieTags.fullname);
+        if ((username == null || username.isEmpty()) &&
+                !session().get(CookieTags.user_type).equals(UserType.RCD.getType())) {
+            flash("warning", "Please complete your account information. Go to Settings > Personal & Academic Information");
+        }
+
         List<EntityEthicsApplication> entity_newApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.RCD);
         List<EntityEthicsApplication> entity_ownApplications = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryInvestigator);
         List<EntityEthicsApplication> entity_approveApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryResponsiblePerson);
@@ -144,13 +151,20 @@ public class ProfileHandler extends Controller {
         String faculty = json.findPath("faculty").textValue();
         String department = json.findPath("department").textValue();
 
-        personById.setUserTitle(title);
-        personById.setUserFirstname(firstname);
-        personById.setUserLastname(lastname);
-        personById.setContactNumberMobile(mobile);
-        personById.setCurrentDegreeLevel(degree);
-        personById.setFacultyName(faculty);
-        personById.setDepartmentName(department);
+        if (!title.isEmpty())
+            personById.setUserTitle(title);
+        if (!firstname.isEmpty())
+            personById.setUserFirstname(firstname);
+        if (!lastname.isEmpty())
+            personById.setUserLastname(lastname);
+        if (!mobile.isEmpty())
+            personById.setContactNumberMobile(mobile);
+        if (!degree.isEmpty())
+            personById.setCurrentDegreeLevel(degree);
+        if (!faculty.isEmpty())
+            personById.setFacultyName(faculty);
+        if (!department.isEmpty())
+            personById.setDepartmentName(department);
         personById.update();
 
         flash("success", "Basic information updated");
@@ -179,9 +193,12 @@ public class ProfileHandler extends Controller {
         String address = json.findPath("address").textValue();
         String campus = json.findPath("campus").textValue();
 
-        personById.setOfficeCampus(campus);
-        personById.setContactOfficeTelephone(telephone);
-        personById.setOfficeAddress(address);
+        if (!telephone.isEmpty())
+            personById.setContactOfficeTelephone(telephone);
+        if (!address.isEmpty())
+            personById.setOfficeAddress(address);
+        if (!campus.isEmpty())
+            personById.setOfficeCampus(campus);
         personById.update();
 
         flash("success", "Academic information updated");
@@ -228,7 +245,7 @@ public class ProfileHandler extends Controller {
         return ok();
     }
 
-    public Result sendForgotPassword(){
+    public Result sendForgotPassword() {
         JsonNode node = request().body().asJson();
         node.findPath("email");
 
@@ -236,14 +253,14 @@ public class ProfileHandler extends Controller {
         return ok();
     }
 
-    public Result changePassword(String token){
+    public Result changePassword(String token) {
         session("change", token);
         return ok(views.html.UserSystem.ResetPassword.render());
     }
 
     @RequireCSRFCheck
-    public Result doChangePassword(){
-        if (session().get("change").isEmpty()){
+    public Result doChangePassword() {
+        if (session().get("change").isEmpty()) {
             flash("danger", "Invalid session, please try again!");
             return badRequest();
         }
@@ -356,7 +373,7 @@ public class ProfileHandler extends Controller {
         return ok();
     }
 
-    public static List<String> getEnrolmentPositions(){
+    public static List<String> getEnrolmentPositions() {
         ProfileHandler profileHandler = new ProfileHandler();
         profileHandler.loadEnrolmentKeys();
         return enrolmentMap.entrySet().stream().map(entry -> entry.getKey().toString()).collect(Collectors.toList());

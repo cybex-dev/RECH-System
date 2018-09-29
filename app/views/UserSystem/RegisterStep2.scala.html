@@ -6,10 +6,10 @@
 @import dao.NMU.EntityDepartment.DepartmentContainer
 @import java.util
 
-@(registrationForm: Form[DetailedRegistrationForm], departmentList: util.List[DepartmentContainer], facultyList: List[String])
+@(registrationForm: Form[DetailedRegistrationForm], departmentList: util.List[DepartmentContainer], facultyList: util.List[String])
 
-<div class="BoxMediumBlue" style="padding: 20px;">
     @Masterpage.apply(" :: Register") {
+    <div class="BoxMediumBlue" style="padding: 20px;">
         <br/>
         <div class="container-heading">
             <h1>Complete your Registration</h1>
@@ -25,5 +25,5 @@
             </div>
         }
         </div>
+    </div>
     }
-</div>

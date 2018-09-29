@@ -6,10 +6,10 @@
 @(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<input list="list_@id" style="margin-left: 40px; width: 50% !important;" id="@id" value="@value"name="@id" placeholder="Enter @label" type="text" @editable.apply(canEdit)>
+<input list="list_@id" style="margin-left: 40px; width: 50% !important;" id="@id" value="@{if(value != null) {value} else {}}" name="@id" placeholder="Enter @label" type="text" @editable.apply(canEdit)>
 <datalist id="list_@id" name="@id" @editable.apply(canEdit) style="display: none">
     @for(option <- options) {
-        @if(value.equals(option)) {
+        @if(value != null && value.equals(option)) {
             <option value="@option" id="@option.toString.replace(" ", "")" name="@option.toString.replace(" ", "")" selected="selected"></option>
         } else {
             <option value="@option" id="@option.toString.replace(" ", "")" name="@option.toString.replace(" ", "")"></option>

@@ -4,8 +4,7 @@
 @import controllers.UserSystem.UserInfo
 @(applications: List[Application])
 
-<div class="">
-    <h3 class="overview overview-title"><i class="fa fa-angle-right"></i> Applications Requiring Approval</h3>
+<h3 class="overview overview-title"><i class="fa fa-angle-right"></i> Applications Requiring Approval</h3>
 @if(applications.size() > 0) {
     <div class="row">
         <table class="table">
@@ -21,19 +20,20 @@
                     <td></td>
                     <td>@application.getDueDateSafe</td>
                     <td>
-                        @if(application.getPermission == Permission.NONE) {
-                            <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">Not authorized</button></a>
+                    @if(application.getPermission == Permission.NONE) {
+                        <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">
+                            Not authorized</button></a>
+                    } else {
+                        @if(application.getPermission == Permission.VIEW) {
+                            <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
+                                <button class="nmu-button table-button">View and Approve</button>
+                            </a>
                         } else {
-                            @if(application.getPermission == Permission.VIEW) {
-                                <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
-                                    <button class="nmu-button table-button">View and Approve</button>
-                                </a>
-                            } else {
-                                <a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.viewApprove(application.getApplicationID.shortName())">
-                                    <button class="nmu-button table-button">View and Approve</button>
-                                </a>
-                            }
+                            <a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.viewApprove(application.getApplicationID.shortName())">
+                                <button class="nmu-button table-button">View and Approve</button>
+                            </a>
                         }
+                    }
                     </td>
                 </tr>
             }
@@ -41,7 +41,8 @@
         </table>
     </div>
 } else {
-    <p>No applications requiring approval</p>
+    <div class="row">
+        <p>No applications requiring approval</p>
+    </div>
 }
-</div>
-    <br/>
+<br/>
