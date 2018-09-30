@@ -1,6 +1,4 @@
-@import views.html.Components.feedback_container
-@import views.html.Components.reviewable
-@import views.html.Components.editable
+@import views.html.Components
 @import java.util
 
 @import java.io.File
@@ -8,14 +6,14 @@
 @(id: String, label: String, fileName: String, nameId: String, hint: String, shortDesc: String, required: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<input id="@id" value="@{if(fileName != null) {fileName} else {}}" name="@id" type="file" style="margin-left: 40px;" desc="@shortDesc" file_required="@required" @editable.apply(canEdit)>
+<input id="@id" value="@{if(fileName != null) {fileName} else {}}" name="@id" type="file" style="margin-left: 40px;" desc="@shortDesc" file_required="@required" @Components.editable.apply(canEdit)>
 @if(!fileName.isEmpty) {
     <br/>
     <p><span style="font-weight: bold; margin-left: 20px">Existing Document: </span>@fileName</p>
     <button data="@nameId" class="nmu-button action-button downloadFile" type="button" style="transform: scale(0.7)">Download @fileName</button>
 }
 
-@feedback_container.apply(id, feedback)
-@reviewable.apply(review, reviewData)
+@Components.feedback_container.apply(id, feedback)
+@Components.reviewable.apply(review, reviewData)
 
 <br>

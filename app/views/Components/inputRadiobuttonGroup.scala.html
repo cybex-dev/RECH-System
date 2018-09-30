@@ -1,15 +1,13 @@
-@import views.html.Components.feedback_container
-@import views.html.Components.reviewable
-@import views.html.Components.editable
+@import views.html.Components
 @import java.util
 
 @(id: String, label: String, value: String, items: List[String], hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>
 @for(item <- items){
-    @item<input style="margin-left: 20px" id="@id" name="@id" value="@{if(value!=null){value}else{}}" type="radio" @editable.apply(canEdit)>
+    @item<input style="margin-left: 20px" id="@id" name="@id" value="@{if(value!=null){value}else{}}" type="radio" @Components.editable.apply(canEdit)>
 }
 
-    @feedback_container.apply(id, feedback)
-    @reviewable.apply(review, reviewData)
+    @Components.feedback_container.apply(id, feedback)
+    @Components.reviewable.apply(review, reviewData)
 <br>

@@ -68,7 +68,7 @@ public class RECEngine extends Controller {
         return b;
     }
 
-    private static Permission checkAuthorized(EntityPerson person, EntityEthicsApplication entityEthicsApplication) {
+    public static Permission checkAuthorized(EntityPerson person, EntityEthicsApplication entityEthicsApplication) {
         if (person.userType() == UserType.RCD)
             return Permission.MODIFY;
         switch (ApplicationStatus.parse(entityEthicsApplication.getInternalStatus())) {

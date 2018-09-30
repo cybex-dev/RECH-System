@@ -85,7 +85,7 @@ public class ReviewHandler extends Controller {
         XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
         Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.getLatestComponentFeedback(entityEthicsApplicationPK);
 
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, controllers.ReviewSystem.routes.ReviewHandler.doViewApprove(), false, entityEthicsApplicationPK.shortName(), true, true, true, latestComponentFeedback));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.type(), element, editableMap, false, entityEthicsApplicationPK.shortName(), false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posApproveApplication, GuiButton.netRejectApplication));
     }
 
     @RequireCSRFCheck
@@ -94,7 +94,7 @@ public class ReviewHandler extends Controller {
         String id = form.get("application_id");
         EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
 
-        new RECEngine().nextStep(entityEthicsApplicationPK);
+        RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
         flash("success", "Application approved");
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
@@ -174,7 +174,7 @@ public class ReviewHandler extends Controller {
                     reviewerApplications.insert();
                 });
 
-        new RECEngine().nextStep(application_id);
+        RECEngine.getInstance().nextStep(application_id);
 
         flash("success", "Application assigned");
         return redirect(routes.ProfileHandler.overview());

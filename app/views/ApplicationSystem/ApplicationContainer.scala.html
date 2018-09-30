@@ -4,10 +4,8 @@
 @import play.data.DynamicForm
 @import play.twirl.api.Html
 @import views.html.Templates.Masterpage
-@import views.html.ApplicationSystem.fragmentFilterQuestions
-@import views.html.ApplicationSystem.fragmentApplicationContainer
-@import views.html.Components.ActionButton
-@import views.html.Components.ActionButtons
+@import views.html.ApplicationSystem
+@import views.html.Components
 @import dao.ApplicationSystem.EntityEthicsApplicationPK
 @import controllers.APIController
 @import helpers._
@@ -39,7 +37,7 @@
                 <input type="hidden" value="false" id="application_questions_shown" name="application_questions_shown">
                 <input type="hidden" value="@applicationType.name()" id="application_type" name="application_type">
                 <input type="hidden" value="@applicationId" id="application_id" name="application_id">
-                @fragmentApplicationContainer.apply(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])
+                @ApplicationSystem.fragmentApplicationContainer.apply(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])
                 <br>
                 @if(feedback) {
                     <script src="@routes.Assets.versioned("javascripts/reviewer.js")" type="text/javascript"></script>
@@ -48,7 +46,7 @@
             </div>
         </div>
         <div class="row">
-            @ActionButtons.apply{
+            @Components.ActionButtons.apply{
                 ActionButton.apply(negativeButton)(false)()()
             } {
                 ActionButton.apply(neutralButton)(true)()()
@@ -57,7 +55,7 @@
             }
         </div>
         @if(showQuestions) {
-            @fragmentFilterQuestions.apply(EthicsApplication.GetQuestionList(applicationType))
+            @ApplicationSystem.fragmentFilterQuestions.apply(EthicsApplication.GetQuestionList(applicationType))
         } else {}
     </div>
 

@@ -1,13 +1,10 @@
 @import java.util
-@import views.html.Components.inputTextArea
-@import views.html.Components.feedback_container
-@import views.html.Components.reviewable
-@import views.html.Components.editable
+@import views.html.Components
 
 @(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint" ></ic><br>
-<select id="@id" value="@{if(value != null) {value} else {}}" name="@id" @editable.apply(canEdit) style="width: auto !important;">
+<select id="@id" value="@{if(value != null) {value} else {}}" name="@id" @Components.editable.apply(canEdit) style="width: auto !important;">
     @for(option <- options) {
         @if(value != null && value.equals(option)) {
             <option id="@option.toString.replace(" ", "")" name="@option.toString.replace(" ", "")" selected="selected">@option</option>
@@ -17,6 +14,6 @@
     }
 </select>
 
-    @feedback_container.apply(id, feedback)
-    @reviewable.apply(review, reviewData)
+    @Components.feedback_container.apply(id, feedback)
+    @Components.reviewable.apply(review, reviewData)
 <br>

@@ -21,27 +21,32 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Application ID</th>
                         <th>Application Title</th>
                         <th># Revision</th>
-                        <th>Faculty</th>
-                        <th>Department</th>
-                        <th>Year</th>
-                        <th>Date Submitted</th>
+                        <th>PRP</th>
+                        <th>PI</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                @for((item,app) <- allApplications){
-                    <td>@app.title</td>
-                    <td>@app.getApplicationRevision</td>
-                    <td>@app.getFacultyName</td>
-                    <td>@app.getDepartmentName</td>
-                    <td>@app.getApplicationYear</td>
-                    <td>@app.getDateSubmitted</td>
-                    <td><button class="nmu-button action-button" href="@controllers.MeetingSystem.routes.MeetingController.getApplication(app.applicationPrimaryKey().shortName())">
+                    @if(allApplications.size() > 0) {
+                        @for((item, app) <- allApplications) {
+                            <td>@app.getOfficialID</td>
+                            <td>@app.title</td>
+                            <td>@app.getApplicationRevision</td>
+                            <td>@app.getPrpId</td>
+                            <td>@app.getPiId</td>
+                            <td><button class="nmu-button action-button" href="@controllers.MeetingSystem.routes.MeetingController.getApplication(app.applicationPrimaryKey().shortName())">
                     Review Application
-                    </button> </td>
-                }
+                            </button>
+                            </td>
+                        }
+                    } else {
+                        <td colspan="5">
+                            <p>No applications assigned to meeting</p>
+                        </td>
+                    }
             </tbody>
         </table>
         </div>

@@ -25,7 +25,7 @@ public class GuiButton {
     public static GuiButton posPrintApplication = new GuiButton("Print Application", "btnPrintApplication", routes.ProfileHandler.overview());
 
     public static GuiButton posApproveApplication = new GuiButton("Approve Application", "btnApproveApplication", routes.ProfileHandler.overview());
-    public static GuiButton posRejectApplication = new GuiButton("Reject Application", "btnRejectApplication", routes.ProfileHandler.overview());
+    public static GuiButton netRejectApplication = new GuiButton("Reject Application", "btnRejectApplication", routes.ProfileHandler.overview());
 
 
     private Call callBack;
