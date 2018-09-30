@@ -1,40 +1,25 @@
 @import java.util
-@import models.ApplicationSystem.{ApplicationStatus, Question}
+@import models.ApplicationSystem.Question
 @import net.ddns.cyberstudios.Element
 @import play.data.DynamicForm
 @import play.twirl.api.Html
 @import views.html.Templates.Masterpage
-@import views.html.ApplicationSystem._
-@import views.html.Components._
+@import views.html.ApplicationSystem.fragmentFilterQuestions
+@import views.html.ApplicationSystem.fragmentApplicationContainer
+@import views.html.Components.ActionButton
+@import views.html.Components.ActionButtons
 @import dao.ApplicationSystem.EntityEthicsApplicationPK
 @import controllers.APIController
 @import helpers._
+@import play.api.mvc.Call
+@import models.ApplicationSystem.EthicsApplication.ApplicationType
+@import models.ApplicationSystem.EthicsApplication
+@import net.ddns.cyberstudios.Element
 
-@(pageTitle: String)(applicationType: String)(root: Element)(status: ApplicationStatus)(questionList: util.List[Question])(editableMap: util.Map[String, Boolean])(callback: play.api.mvc.Call)(showQuestions: Boolean)(applicationId: String)(approve: Boolean)(feedback: Boolean)(review: Boolean)(reviewDataMap: Map[String, List[String]])
-
-
+@(pageTitle: String)(applicationType: ApplicationType)(root: Element)(editableMap: util.Map[String, Boolean])(showQuestions: Boolean)(applicationId: String)(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])(negativeButton: GuiButton, positiveButton: GuiButton, neutralButton: GuiButton)
 
 @upper(txt: String) = @{
     txt.substring(0, 1).toUpperCase() + txt.substring(1).toLowerCase()
-}
-
-@bodyBlock = {
-
-        @*<div class="col-sm-9">*@
-        <div class="col-sm-12">
-        @helper.form(action = callback, 'enctype -> "multipart/form-data", 'id -> "application_form") {
-            @helper.CSRF.formField
-            <input type="hidden" value="" id="application_level" name="application_level">
-            <input type="hidden" value="false" id="application_questions_shown" name="application_questions_shown">
-            <input type="hidden" value="@applicationType" id="application_type" name="application_type">
-            <input type="hidden" value="@applicationId" id="application_id" name="application_id">
-            @fragmentApplicationContainer.apply(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: Map[String, List[String]])
-            <br>
-            @if(feedback) {
-                <script src="@routes.Assets.versioned("javascripts/reviewer.js")" type="text/javascript"></script>
-            }
-        }
-        </div>
 }
 
 @Masterpage.apply(pageTitle) {
@@ -42,66 +27,37 @@
     <div class="BoxMediumBlue" style="padding: 20px;">
         <div class="row">
             <div class="container-heading">
-                <h1>Create Ethics Application for @{upper(applicationType)} Research</h1>
+                <h1>Create Ethics Application for @{upper(applicationType.name())} Research</h1>
             </div>
         </div>
         <br/>
         <div class="row">
-        @bodyBlock
+            <div class="col-sm-12">
+            @helper.form(action = positiveButton.getCallBack, 'enctype -> "multipart/form-data", 'id -> "application_form") {
+                @helper.CSRF.formField
+                <input type="hidden" value="" id="application_level" name="application_level">
+                <input type="hidden" value="false" id="application_questions_shown" name="application_questions_shown">
+                <input type="hidden" value="@applicationType.name()" id="application_type" name="application_type">
+                <input type="hidden" value="@applicationId" id="application_id" name="application_id">
+                @fragmentApplicationContainer.apply(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])
+                <br>
+                @if(feedback) {
+                    <script src="@routes.Assets.versioned("javascripts/reviewer.js")" type="text/javascript"></script>
+                }
+            }
+            </div>
         </div>
         <div class="row">
-        @ActionButtons.apply{
-            @ActionButton.apply("Cancel")("btnCancel")
-        }{
-            @ActionButton.apply("Save")("btnSave")(controllers.ApplicationSystem.routes.ApplicationHandler.createApplication())(true)
-        }{
-            @ActionButton.apply("Submit")("btnSubmit")(controllers.ApplicationSystem.routes.ApplicationHandler.forceSubmitApplication())(false)()
-        }
-
-
-            <div class="col-sm-3"></div>
-            <div class="col-sm-3">
-            @if(feedback) {
-                <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
-                    <button type="submit" class="nmu-button" style="width: auto;
-                        float: left">Cancel</button>
-                </a>
-            } else {
-                @if(approve) {
-                    <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
-                        <button type="submit" class="nmu-button" style="width: auto;
-                            float: left">Cancel</button>
-                    </a>
-                } else {
-                    <button type="submit" class="nmu-button" style="width: auto;
-                        float: left">@if(showQuestions) {Save Application} else {Update Application}</button>
-                }
+            @ActionButtons.apply{
+                ActionButton.apply(negativeButton)(false)()()
+            } {
+                ActionButton.apply(neutralButton)(true)()()
+            } {
+                ActionButton.apply(positiveButton)(false)()()
             }
-            </div>
-            <div class="col-sm-3">
-            @if(feedback) {
-                <a href="@controllers.ReviewSystem.routes.ReviewHandler.submitReview()">
-                    <button type="submit" class="nmu-button" style="width: auto;
-                        float: right">Submit Feedback</button>
-                </a>
-            } else {
-                @if(approve) {
-                    <a href="@controllers.ReviewSystem.routes.ReviewHandler.doViewApprove()">
-                        <button type="submit" class="nmu-button" style="width: auto;
-                            float: right">Approve Application</button>
-                    </a>
-                } else {
-                    <a href="@controllers.ApplicationSystem.routes.ApplicationHandler.forceSubmitApplication">
-                        <button type="submit" class="nmu-button" style="width: auto;
-                            float: right">Submit Application</button>
-                    </a>
-                }
-            }
-            </div>
-
         </div>
         @if(showQuestions) {
-            @fragmentFilterQuestions.apply(questionList)
+            @fragmentFilterQuestions.apply(EthicsApplication.GetQuestionList(applicationType))
         } else {}
     </div>
 

@@ -12,6 +12,7 @@ import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
 import helpers.CookieTags;
 import models.ApplicationSystem.ApplicationStatus;
+import models.GuiButton;
 import models.UserSystem.Application;
 import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
@@ -68,7 +69,7 @@ public class ReviewHandler extends Controller {
         Element element = ethicsApplication.getPopulatedElement();
         Map<String, Boolean> editableMap = new HashMap<>();
         XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review/Feedback Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, controllers.ReviewSystem.routes.ReviewHandler.submitReview(), false, ethicsApplication.applicationPrimaryKey().shortName(), false, true, false, new HashMap<>()));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review/Feedback Application", ethicsApplication.type(), element, editableMap, false, ethicsApplication.applicationPrimaryKey().shortName(), false, true, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitFeedback, GuiButton.netSaveFeedback));
     }
 
     @AddCSRFToken

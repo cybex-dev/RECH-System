@@ -261,4 +261,8 @@ public class EthicsApplication implements Serializable {
         });
         return EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
     }
+
+    public static List<Question> GetQuestionList(ApplicationType type){
+        return EthicsApplication.lookupApplication(type).getQuestionList();
+    }
 }

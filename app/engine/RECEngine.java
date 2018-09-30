@@ -17,6 +17,7 @@ import net.ddns.cyberstudios.Element;
 import play.mvc.Controller;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -24,10 +25,16 @@ import java.util.*;
 
 public class RECEngine extends Controller {
 
+    static private RECEngine engine;
+
+    public static RECEngine getInstance(){
+        return engine;
+    }
+
     @Inject
     private MessageProvider messageProvider;
 
-    public RECEngine() {
+    private RECEngine() {
     }
 
     public boolean nextStep(EntityEthicsApplicationPK applicationId) {
@@ -61,7 +68,7 @@ public class RECEngine extends Controller {
         return b;
     }
 
-    public static Permission checkAuthorized(EntityPerson person, EntityEthicsApplication entityEthicsApplication) {
+    private static Permission checkAuthorized(EntityPerson person, EntityEthicsApplication entityEthicsApplication) {
         if (person.userType() == UserType.RCD)
             return Permission.MODIFY;
         switch (ApplicationStatus.parse(entityEthicsApplication.getInternalStatus())) {
@@ -844,31 +851,6 @@ public class RECEngine extends Controller {
                 .min((o1, o2) -> o1.getMeetingDate().before(o2.getMeetingDate()) ? -1 : (o1.getMeetingDate().after(o2.getMeetingDate()) ? 1 : 0))
                 .map(entityAgendaitem -> ApplicationStatus.parse(entityAgendaitem.getApplicationStatus()))
                 .orElse(ApplicationStatus.UNKNOWN);
-    }
-
-    /**
-     * Strategy for assigning applications goes as follows:
-     * - Sort all reviewers by latest date
-     * - Add all reviewers to list, with distinct selection criteria
-     * i.e. each reviewer who has reviewable an application will be sorted by last reviewed, most recently reviewed first
-     *
-     * @return
-     */
-    private List<String> getAvailableReviewers() {
-        final List<String> distinctReviewersByDate = new ArrayList<>();
-
-        //TODO fix this
-//        EntityReviewerfeedback.find.all().stream()
-//                .sorted((o1, o2) -> o1.getApplicationAssignedDate().before(o2.getApplicationAssignedDate()) ? -1 : (o1.getApplicationAssignedDate().after(o2.getApplicationAssignedDate()) ? 1 : 0))
-//                .forEach(entityReviewerfeedback -> {
-//                    if (!distinctReviewersByDate.contains(entityReviewerfeedback.getReviewerEmail()))
-//                        distinctReviewersByDate.add(entityReviewerfeedback.getReviewerEmail());
-//                });
-        if (distinctReviewersByDate.size() < 4)
-            return new ArrayList<>();
-
-        int index = distinctReviewersByDate.size() - 1;
-        return distinctReviewersByDate.subList(index - 3, index);
     }
 
     /**

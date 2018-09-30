@@ -1,7 +1,9 @@
-@(text: String)(id: String)(call: Call = controllers.UserSystem.routes.ProfileHandler.overview())(alternateAction: Boolean = false)(submit: Boolean = false)(small: Boolean = false)
+@import play.api.mvc.Call
+
+@(button: GuiButton)(alternateAction: Boolean = false)(submit: Boolean = false)(small: Boolean = false)
 
 <div class="@{if(small){"col-sm-2"}else{"col-sm-3"}}">
-    <a href="@call">
-        <button id="@id" type="@{if(submit){"submit"}else{"button"}}" class="nmu-button @{if(alternateAction){"action-alternate"}else{"action-button"}}" style="width: auto;float: left">@text</button>
+    <a href="@button.getCallBack">
+        <button id="@button.getId" type="@{if(submit){"submit"}else{"button"}}" class="nmu-button @{if(alternateAction){"action-alternate"}else{"action-button"}}" style="width: auto;float: left">@button.getTitle</button>
     </a>
 </div>

@@ -6,7 +6,9 @@ import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class App extends Controller{
 
     private Config config = null;

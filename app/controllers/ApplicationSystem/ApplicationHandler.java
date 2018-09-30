@@ -7,7 +7,6 @@ import dao.ApplicationSystem.EntityComponentVersion;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.NMU.EntityDepartment;
-import dao.ReviewSystem.EntityReviewerComponentFeedback;
 import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
 import helpers.CookieTags;
@@ -17,7 +16,7 @@ import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
 
-import models.UserSystem.UserType;
+import models.GuiButton;
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
@@ -36,7 +35,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
 import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
@@ -98,7 +96,7 @@ public class ApplicationHandler extends Controller {
 
         Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.getLatestComponentFeedback(entityEthicsApplicationPK);
 
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, routes.ApplicationHandler.submitEdit(), false, entityEthicsApplicationPK.shortName(), false, false, false, latestComponentFeedback));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.type(), element, editableMap, false, entityEthicsApplicationPK.shortName(), false, false, latestComponentFeedback, GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
     }
 
     /**
@@ -130,7 +128,7 @@ public class ApplicationHandler extends Controller {
             Map<String, Boolean> editableMap = new HashMap<>();
             XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
             Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.getLatestComponentFeedback(entityEthicsApplicationPK);
-            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.getApplicationType(), element, ApplicationStatus.parse(ethicsApplication.getInternalStatus()), null, editableMap, routes.ApplicationHandler.submitRevision(), false, entityEthicsApplicationPK.shortName(), false, false, true, latestComponentFeedback));
+            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.type(), element, editableMap, false, entityEthicsApplicationPK.shortName(), false, true, latestComponentFeedback, GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
         }
     }
 
@@ -180,7 +178,7 @@ public class ApplicationHandler extends Controller {
         Element rootElement = ethicsApplication.getRootElement();
         Map<String, Boolean> editableMap = new HashMap<>();
         XMLTools.flatten(rootElement).forEach(s -> editableMap.put(s, true));
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", type, rootElement, ApplicationStatus.DRAFT, ethicsApplication.getQuestionList(), editableMap, routes.ApplicationHandler.createApplication(), true, null, false, false, false, new HashMap<>()));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", applicationType, rootElement, editableMap, true, "", false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
     }
 
     @RequireCSRFCheck
@@ -190,7 +188,7 @@ public class ApplicationHandler extends Controller {
         EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(id);
         //update all components
         fill(form, applicationPK);
-        new RECEngine().nextStep(applicationPK);
+        RECEngine.getInstance().nextStep(applicationPK);
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 
@@ -200,14 +198,14 @@ public class ApplicationHandler extends Controller {
         String id = form.get("application_id");
         EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
 
-        new RECEngine().nextStep(entityEthicsApplicationPK);
+        RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
         EntityEthicsApplication application = EntityEthicsApplication.GetApplication(entityEthicsApplicationPK);
         if (application == null) {
             return badRequest();
         }
 
         if (ApplicationStatus.parse(application.getInternalStatus()) != ApplicationStatus.AWAITING_PRP_APPROVAL) {
-            new RECEngine().nextStep(entityEthicsApplicationPK);
+            RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
         }
 
         flash("success", "Application submitted");
@@ -234,7 +232,7 @@ public class ApplicationHandler extends Controller {
                 EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
                 Map<String, Boolean> editableMap = new HashMap<>();
                 XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
-                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), editableMap, routes.ApplicationHandler.submitEdit(), false, "", false, false, false, new HashMap<>()));
+                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type, application_template.getRootElement(), editableMap, false, "", false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
             }
 
             EntityEthicsApplication application = null;
@@ -267,9 +265,8 @@ public class ApplicationHandler extends Controller {
 
                 // Get prp id from Elements
                 String prpContactEmail = formApplication.get("prp_contact_email");
-                if (prpContactEmail == null) {
-                    prpContactEmail = prpContactEmail.toString()
-                            .split("\\[")[1]
+                if (prpContactEmail != null) {
+                    prpContactEmail = prpContactEmail.split("\\[")[1]
                             .replace("]", "");
                     application.setPrpId(prpContactEmail);
 
@@ -295,10 +292,10 @@ public class ApplicationHandler extends Controller {
                 EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
                 Map<String, Boolean> editableMap = new HashMap<>();
                 XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
-                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type.toString(), application_template.getRootElement(), ApplicationStatus.DRAFT, application_template.getQuestionList(), editableMap, routes.ApplicationHandler.submitEdit(), false, application.applicationPrimaryKey().shortName(), false, false, false, new HashMap<>()));
+                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type, application_template.getRootElement(), editableMap, false, application.applicationPrimaryKey().shortName(), false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
             }
 
-            new RECEngine().nextStep(application.applicationPrimaryKey());
+            RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
 
             flash("success", "Your application has been saved");
             return redirect(routes.ApplicationHandler.allApplications());
@@ -307,17 +304,17 @@ public class ApplicationHandler extends Controller {
 
     public boolean fill(DynamicForm formApplication, EntityEthicsApplicationPK applicationId) {
         Map<String, Object> filteredData = new HashMap<>();
-        formApplication.get().getData().entrySet().stream()
+        formApplication.get().getData().entrySet()
                 .forEach(e -> filteredData.put(e.getKey(), e.getValue()));
         request().body().asMultipartFormData().getFiles().stream()
                 .filter(o -> !o.getFilename().isEmpty())
                 // containers FilePart which has file name, and key and actual file
                 .forEach(e -> filteredData.put(e.getKey(), e));
 
-        return fillinApplicationData(applicationId, filteredData);
+        return fillInApplicationData(applicationId, filteredData);
     }
 
-    private boolean fillinApplicationData(EntityEthicsApplicationPK applicationId, Map<String, Object> data) {
+    private boolean fillInApplicationData(EntityEthicsApplicationPK applicationId, Map<String, Object> data) {
         EntityEthicsApplication application = EntityEthicsApplication.GetApplication(applicationId);
 
         Element rootElement = EthicsApplication.lookupApplication(application.type()).getRootElement();
