@@ -24,23 +24,6 @@ public class EntityDepartment extends Model {
         return find.all().stream().filter(entityDepartment -> entityDepartment.departmentName.equals(departmentName)).findFirst().orElse(null);
     }
 
-    public static EntityDepartment FromShortName(String dept_fac) {
-        List<EntityDepartment> collect = find.all().stream()
-                .filter(entityDepartment -> {
-                    String name = entityDepartment.shortName();
-                    return name.equals(dept_fac);
-                }).collect(Collectors.toList());
-        if (collect.size() == 0)
-            return null;
-        else if (collect.size() > 1)
-            try {
-                throw new UnknownDataException("Department-Faculty shortname has duplicates:\n" + collect.stream().map(EntityDepartment::shortName).reduce((s, s2) -> s.concat("-").concat(s2)).toString());
-            } catch (UnknownDataException e) {
-                e.printStackTrace();
-            }
-        return collect.get(0);
-    }
-
     public static class DepartmentContainer {
         public String dept, faculty;
 
@@ -102,24 +85,40 @@ public class EntityDepartment extends Model {
                 .getFacultyName();
     }
 
-    public String shortName() {
-        EntityFaculty faculty = EntityFaculty.getFacultyByName(facultyName);
-        String dept = Arrays.stream(departmentName.split(" "))
-                .map(s -> {
-                    if (s.length() > 3) {
-                        return s.substring(0, 3);
-                    } else {
-                        return "";
+    // Cleanup ()
+    // Check number of words 0, 1, 2, etc
+    // If 1 word, get subscrt 3
+    // if 2 words, get first char, duplicate second char
+    // if 3 + words, get first 3 char
+
+
+    public static String findDepartmentByShortName(String shortname) {
+
+        return find.all().stream()
+                .filter(department -> {
+                    // Get department name, breaking ()
+                    String dept = "";
+                    if (department.departmentName.contains("(")) {
+                        int i = department.departmentName.indexOf("(");
+                        dept = department.departmentName.substring(0, i - 1);
                     }
-                })
-                .reduce((s, s2) -> {
-                    if (s2.isEmpty()) {
-                        return s;
-                    } else {
-                        return s.concat("-").concat(s2);
+
+                    // Check # words
+                    String[] s1 = dept.split(" ");
+
+                    if (s1.length == 1){
+                        dept = s1[0].substring(0, 3);
+                    } else if (s1.length == 2) {
+                        dept = s1[0].substring(0, 1) + s1[1].substring(0, 1) + s1[1].substring(0, 1);
+                    } else if (s1.length > 2) {
+                        dept = s1[0].substring(0, 1) + s1[1].substring(0, 1) + s1[2].substring(0, 1);
                     }
+
+                    return (shortname.equals(dept));
+
                 })
-                .orElse("Any");
-        return dept.concat("_").concat(faculty.shortName());
+                .map(EntityDepartment::getDepartmentName)
+                .findFirst()
+                .orElse("???");
     }
 }

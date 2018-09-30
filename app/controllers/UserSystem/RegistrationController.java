@@ -67,8 +67,8 @@ public class RegistrationController extends Controller {
         String hashpw = BCrypt.hashpw(basicRegistrationForm.getPassword(), BCrypt.gensalt(12));
         person.setUserPasswordHash(hashpw);
         person.setPersonType(UserType.PrimaryInvestigator.getType());
-        person.setUserFirstname("New");
-        person.setUserLastname("User");
+        person.setUserFirstname("");
+        person.setUserLastname("");
         person.insert();
 
         String code = hashpw.replace("/", "").replace(".", "").substring(12);
@@ -144,7 +144,7 @@ public class RegistrationController extends Controller {
 
         EntityPerson person = EntityPerson.getPersonById(email);
 
-        person.setUserTitle(registrationForm.getTitle());
+        person.setUserTitle(registrationForm.getUserTitle());
         person.setUserFirstname(registrationForm.getFirstname());
         person.setUserLastname(registrationForm.getLastname());
         person.setCurrentDegreeLevel(registrationForm.getDegreeLevel());

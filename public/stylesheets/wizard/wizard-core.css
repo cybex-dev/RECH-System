@@ -233,7 +233,8 @@ h3 {
     padding: 10px !important;
     margin: 0 !important;
     line-height: 1em !important;
-    border-left: 2px solid #f9b42a;
+    border-left: 5px solid #f9b42a;
+    border-bottom: 1px solid #ffffff;
 }
 
 .group-title:hover {
@@ -305,9 +306,9 @@ label {
 .group-data {
     background-color: #ffffff;
     color: #061c2c !important;
-    border-left: 2px solid #f9b42a;
+    border-left: 5px solid #f9b42a;
+    padding: 25px 10px;
 }
-
 
 #title{
     width: 70% !important;
@@ -319,4 +320,8 @@ td input[type=text] {
 
 .section-container {
     margin-left: 10px;
+}
+
+.section-content {
+    border: 1px solid
 }

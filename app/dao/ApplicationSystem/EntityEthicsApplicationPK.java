@@ -1,10 +1,13 @@
 package dao.ApplicationSystem;
 
 import dao.NMU.EntityDepartment;
+import dao.NMU.EntityFaculty;
 import models.ApplicationSystem.EthicsApplication;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -84,41 +87,44 @@ public class EntityEthicsApplicationPK implements Serializable {
 
     public static dao.ApplicationSystem.EntityEthicsApplicationPK fromString(String id) {
 
-        String[] split = id.split("_");
-        Integer number = Integer.parseInt(split[0]);
-        Integer year = Integer.parseInt(split[1]);
+        List<String> strings = Arrays.asList(id.split("_"));
+        EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(strings.get(0).substring(0,1));
+        int year = Integer.parseInt("20" + strings.get(0).substring(1));
 
-        EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(split[2]);
+        String faculty = EntityFaculty.getFacultyByShortName(strings.get(1));
+        String department = EntityDepartment.findDepartmentByShortName(strings.get(2));
+        int number = Integer.parseInt(strings.get(3));
 
-        EntityDepartment dept = EntityDepartment.FromShortName(split[3] + "_" + split[4]);
-
-        List<EntityEthicsApplication> all = EntityEthicsApplication.find.all();
-        Optional<EntityEthicsApplicationPK> first = all.stream()
-                .filter(entityEthicsApplication -> {
-                    int applicationYear = entityEthicsApplication.getApplicationYear();
-                    int applicationNumber = entityEthicsApplication.getApplicationNumber();
-                    EthicsApplication.ApplicationType applicationType = EthicsApplication.ApplicationType.parse(entityEthicsApplication.getApplicationType());
-                    String department = entityEthicsApplication.getDepartmentName();
-                    String facultyName = entityEthicsApplication.getFacultyName();
-
-                    return number == applicationNumber &&
-                            year == applicationYear &&
-                            type.equals(applicationType) &&
-                            facultyName.equals((dept == null) ? "Any" : dept.getFacultyName()) &&
-                            department.equals(dept.getDepartmentName());
-                })
-                .map(EntityEthicsApplication::applicationPrimaryKey)
-                .findFirst();
-        return first.orElseThrow(null);
+        EntityEthicsApplicationPK pk = new EntityEthicsApplicationPK();
+        pk.setApplicationNumber(number);
+        pk.setApplicationType(type.name());
+        pk.setApplicationYear(year);
+        pk.setDepartmentName(department);
+        pk.setFacultyName(faculty);
+        return pk;
     }
 
     public String shortName(){
-        EntityDepartment dept = EntityDepartment.findDepartmentByName(departmentName);
-        if (dept == null){
-            return null;
+        StringBuilder builder = new StringBuilder();
+
+        String dept = departmentName;
+        if (departmentName.contains("(")) {
+            int i = departmentName.indexOf("(");
+            dept = departmentName.substring(0, i - 1);
+            dept = Arrays.stream(dept.split(" ")).map(s -> s.substring(0, 1)).reduce(String::concat).orElse("???");
         }
 
-        String s = applicationNumber + "_" + applicationYear + "_" + applicationType + "_" + dept.shortName();
-        return s;
+        DecimalFormat decimalFormat = new DecimalFormat("000");
+        String number = decimalFormat.format(applicationNumber);
+
+        String type = applicationType.substring(0,1);
+        String year = String.valueOf(applicationYear).substring(2, 3);
+        String faculty = facultyName.substring(0, 2);
+
+        builder.append(type).append(year).append("-")
+                .append(faculty).append("-")
+                .append(dept).append("-")
+                .append(number);
+        return builder.toString();
     }
 }

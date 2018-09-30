@@ -1,20 +1,17 @@
 package controllers.ReviewSystem;
 
-import controllers.ApplicationSystem.ApplicationHandler;
-import controllers.UserSystem.ProfileHandler;
 import controllers.UserSystem.Secured;
 import controllers.UserSystem.routes;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.ReviewSystem.EntityReviewerApplications;
 import dao.ReviewSystem.EntityReviewerComponentFeedback;
+import dao.ReviewSystem.EntityReviewerComponentFeedbackPK;
 import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
 import helpers.CookieTags;
-import models.ApplicationSystem.ApplicationStatus;
 import models.GuiButton;
 import models.UserSystem.Application;
-import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
@@ -103,16 +100,23 @@ public class ReviewHandler extends Controller {
      * Submit revised application and component data only if {@link RECEngine} allows it
      * @return
      */
-    public Result submitReview() {
+    public Result saveReview() {
         DynamicForm form = formFactory.form().bindFromRequest();
         if (form.hasErrors()){
             return badRequest();
         }
 
+        EntityEthicsApplicationPK pk = EntityEthicsApplicationPK.fromString(form.get("application_id"));
+        saveReviewData(form, pk);
+
+        flash("success", "Feedback has been saved.");
+        return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
+    }
+
+    private void saveReviewData(DynamicForm form, EntityEthicsApplicationPK pk) {
         Timestamp timestamp = Timestamp.from(Instant.now());
         String reviewer = session(CookieTags.user_id);
 
-        EntityEthicsApplicationPK pk = EntityEthicsApplicationPK.fromString(form.get("application_id"));
         HashMap<String, String> map = new HashMap<>();
         form.get().getData().entrySet().stream()
                 .filter(stringObjectEntry -> stringObjectEntry.getKey().contains("feedback_"))
@@ -122,6 +126,11 @@ public class ReviewHandler extends Controller {
                 });
 
         map.forEach((key, value) -> {
+            EntityReviewerComponentFeedbackPK feedbackPK = new EntityReviewerComponentFeedbackPK();
+            feedbackPK.setApplicationId(pk);
+            feedbackPK.set
+
+
             EntityReviewerComponentFeedback feedback = new EntityReviewerComponentFeedback();
             feedback.setApplicationId(pk);
             feedback.setComponentId(key);
@@ -130,9 +139,6 @@ public class ReviewHandler extends Controller {
             feedback.setComponentFeedback(value);
             feedback.insert();
         });
-
-        flash("success", "Feedback has been submitted");
-        return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 
     public Result assignReviewer(String applicationId){
@@ -178,5 +184,23 @@ public class ReviewHandler extends Controller {
 
         flash("success", "Application assigned");
         return redirect(routes.ProfileHandler.overview());
+    }
+
+    public Result submitReview(){
+        DynamicForm form = formFactory.form().bindFromRequest();
+        if (form.hasErrors()){
+            return badRequest();
+        }
+
+        EntityEthicsApplicationPK pk = EntityEthicsApplicationPK.fromString(form.get("application_id"));
+        saveReviewData(form, pk);
+
+        if (RECEngine.getInstance().nextStep(pk)){
+            flash("success", "Feedback has been submitted.");
+        } else {
+            flash("success", "Feedback has been submitted.");
+            flash("warning", "Could not submit feedback");
+        }
+        return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 }

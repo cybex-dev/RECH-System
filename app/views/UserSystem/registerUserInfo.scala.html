@@ -6,8 +6,8 @@
 
 
 <div class="step">
-    @helper.select(loginForm("title"), helper.options(Seq("Mr","Mrs","Ms","Dr","Prof")), '_label -> "Preferred Title")
-    @helper.inputText(loginForm("firstname"), '_label -> "Firstname", '_class -> "input-text-short")
-    @helper.inputText(loginForm("lastname"), '_label -> "Lastname", '_class -> "input-text-short")
-    @helper.inputText(loginForm("mobile"), '_label -> "Mobile Number (+27)", '_class -> "input-text-short")
+    @helper.select(loginForm("user_title"), helper.options(Seq("Mr","Mrs","Ms","Dr","Prof")), '_label -> "Preferred Title")
+    @helper.inputText(loginForm("user_firstname"), '_label -> "Firstname", '_class -> "input-text-short", 'placeholder -> "Your first name here")
+    @helper.inputText(loginForm("user_lastname"), '_label -> "Lastname", '_class -> "input-text-short", 'placeholder -> "Your last name here")
+    @helper.inputText(loginForm("mobile"), '_label -> "Mobile Number (+27)", '_class -> "input-text-short", 'placeholder -> "e.g. 081 123 4567")
 </div>

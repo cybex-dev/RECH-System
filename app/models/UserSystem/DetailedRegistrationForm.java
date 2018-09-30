@@ -10,7 +10,7 @@ import java.util.List;
 public class DetailedRegistrationForm {
 
     @Constraints.Required
-    private String title;
+    private String userTitle;
 
     @Constraints.Required
     private String firstname;
@@ -33,22 +33,22 @@ public class DetailedRegistrationForm {
     public DetailedRegistrationForm() {
     }
 
-    public DetailedRegistrationForm(String title, String firstname, String lastname, String gender, String mobile, String degreeLevel, String department, String facutly) {
-        this.title = title;
+    public DetailedRegistrationForm(@Constraints.Required String userTitle, @Constraints.Required String firstname, @Constraints.Required String lastname, @Constraints.Required String mobile, @Constraints.Required String degreeLevel, @Constraints.Required String department, @Constraints.Required String faculty) {
+        this.userTitle = userTitle;
         this.firstname = firstname;
         this.lastname = lastname;
         this.mobile = mobile;
         this.degreeLevel = degreeLevel;
         this.department = department;
-        this.faculty = facutly;
+        this.faculty = faculty;
     }
 
-    public String getTitle() {
-        return title;
+    public String getUserTitle() {
+        return userTitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUserTitle(String userTitle) {
+        this.userTitle = userTitle;
     }
 
     public String getFirstname() {
@@ -98,5 +98,4 @@ public class DetailedRegistrationForm {
     public void setFaculty(String faculty) {
         this.faculty = faculty;
     }
-
 }

@@ -5,7 +5,8 @@
 @import play.twirl.api.Html
 @import views.html.Templates.Masterpage
 @import views.html.ApplicationSystem
-@import views.html.Components
+@import views.html.Components.ActionButton
+@import views.html.Components.ActionButtons
 @import dao.ApplicationSystem.EntityEthicsApplicationPK
 @import controllers.APIController
 @import helpers._
@@ -14,6 +15,7 @@
 @import models.ApplicationSystem.EthicsApplication
 @import net.ddns.cyberstudios.Element
 
+@import views.html.Components.reviewable
 @(pageTitle: String)(applicationType: ApplicationType)(root: Element)(editableMap: util.Map[String, Boolean])(showQuestions: Boolean)(applicationId: String)(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])(negativeButton: GuiButton, positiveButton: GuiButton, neutralButton: GuiButton)
 
 @upper(txt: String) = @{
@@ -23,13 +25,16 @@
 @Masterpage.apply(pageTitle) {
 
     <div class="BoxMediumBlue" style="padding: 20px;">
-        <div class="row">
-            <div class="container-heading">
-                <h1>Create Ethics Application for @{upper(applicationType.name())} Research</h1>
-            </div>
+        <div class="container-heading">
+            <h1>Create Ethics Application for @{upper(applicationType.name())} Research</h1>
         </div>
         <br/>
         <div class="row">
+            @if(!feedback && !review) {
+                <h5 style="font-style: italic; margin-left: 20px">Please complete the application form provided below.</h5>
+                <h5 style="font-style: italic; margin-left: 20px"> If you have trouble answering a question, hover over these icons <ic title="This is a hint. It provides context to a quesiton" class="fa fa-question-circle helper-hint"></ic> which provide additional information for answering a question.</h5>
+                <br/>
+            }
             <div class="col-sm-12">
             @helper.form(action = positiveButton.getCallBack, 'enctype -> "multipart/form-data", 'id -> "application_form") {
                 @helper.CSRF.formField
@@ -46,12 +51,12 @@
             </div>
         </div>
         <div class="row">
-            @Components.ActionButtons.apply{
-                ActionButton.apply(negativeButton)(false)()()
+            @ActionButtons.apply{
+                @ActionButton.apply(negativeButton)(false)()()
             } {
-                ActionButton.apply(neutralButton)(true)()()
+                @ActionButton.apply(neutralButton)(true)()()
             } {
-                ActionButton.apply(positiveButton)(false)()()
+                @ActionButton.apply(positiveButton)(false)()()
             }
         </div>
         @if(showQuestions) {

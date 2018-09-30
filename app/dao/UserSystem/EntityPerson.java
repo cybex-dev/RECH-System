@@ -87,6 +87,8 @@ public class EntityPerson extends Model {
     @Basic
     @Column(name = "user_title")
     public String getUserTitle() {
+        if (userTitle == null)
+            return "";
         return userTitle;
     }
 

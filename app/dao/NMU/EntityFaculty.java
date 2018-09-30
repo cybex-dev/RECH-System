@@ -27,6 +27,14 @@ public class EntityFaculty extends Model {
         return find.byId(facultyName);
     }
 
+    public static String getFacultyByShortName(String shortname) {
+        return find.all().stream()
+                .filter(entityFaculty -> entityFaculty.facultyName.substring(0,3).equals(shortname))
+                .map(EntityFaculty::getFacultyName)
+                .findFirst()
+                .orElse("???");
+    }
+
     @Id
     @Column(name = "faculty_name")
     public String getFacultyName() {

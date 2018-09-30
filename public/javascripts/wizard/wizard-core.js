@@ -151,24 +151,8 @@ function assignInputListeners() {
 }
 
 function docReady() {
-
-    // // Sets number of section sections
-    // var sectionList = document.querySelectorAll(".section");
-    // numSections = sectionList.length;
-    // sectionList.forEach(function (e) {
-    //     setHidden(e);
-    // });
-
     // Initializes wizard
     initWizard();
-
-    // // TODO Fix
-    // document.querySelectorAll(".group > h3").forEach(e => {
-    //     e.click();
-    //     e.click();
-    // })
-    // ;
-
     assignInputListeners();
 }
 
@@ -501,6 +485,9 @@ function initWizard() {
         e.parentElement.nextElementSibling.style.display = "none";
     });
 
+    // Add section-heading dashed line
+    document.querySelectorAll(".section-container .section-title")[0].style.borderTop = "1px dashed #FFFFFF";
+
     // Add document popups
     createDocumentPopups();
 
@@ -589,9 +576,8 @@ function initWizard() {
     // setExtensionHooks();
 
     // Adds checkboxes to right side of section indicating if a section is completed or not, etc.
-    // addSectionStatus();
-
-    // addGroupStatus();
+    addSectionStatus();
+    addGroupStatus();
 
     // Completes the application form by getting the db-mapping elements from the form and filling in the application
     // getDataFromServer();
@@ -609,7 +595,7 @@ function initWizard() {
 }
 
 function addSectionStatus() {
-    document.querySelectorAll(".section").forEach(value => {
+    document.querySelectorAll(".section-container .section-title").forEach(value => {
         //get section id and add _check to it
         let id = value.id + "_check";
 
@@ -623,7 +609,7 @@ function addSectionStatus() {
 }
 
 function addGroupStatus() {
-    document.querySelectorAll(".section .group").forEach(value => {
+    document.querySelectorAll(".group-container .group-title").forEach(value => {
         //get section id and add _check to it
         let id = value.id + "_check";
 

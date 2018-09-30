@@ -32,7 +32,7 @@
                 <tbody>
                     @if(allApplications.size() > 0) {
                         @for((item, app) <- allApplications) {
-                            <td>@app.getOfficialID</td>
+                            <td>@app.applicationPrimaryKey.shortName()</td>
                             <td>@app.title</td>
                             <td>@app.getApplicationRevision</td>
                             <td>@app.getPrpId</td>

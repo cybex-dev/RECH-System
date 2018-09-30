@@ -8,6 +8,7 @@ import helpers.CookieTags;
 import models.UserSystem.BasicRegistrationForm;
 import models.UserSystem.UserLoginForm;
 import models.UserSystem.UserRegistrationForm;
+import models.UserSystem.UserType;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -74,8 +75,8 @@ public class LoginController extends Controller{
 
         session().clear();
         session(CookieTags.user_id, loginData.getEmail());
-        session(CookieTags.fullname, person.getUserFirstname() + " " + person.getUserLastname());
         session(CookieTags.user_type, person.getPersonType());
+        session(CookieTags.fullname, (person.userType() == UserType.RCD) ? "RCD User" : person.getUserFirstname() + " " + person.getUserLastname());
 
         return redirect(routes.ProfileHandler.overview());
     }

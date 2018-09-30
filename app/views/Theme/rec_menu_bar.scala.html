@@ -4,12 +4,13 @@
 @()
 
 @getName = @{
+
     val v = session().get(CookieTags.user_id)
-    if (v == null || v.isEmpty) {
+    if(v == null || v.isEmpty) {
         Nil
     } else {
         val name = session().get(CookieTags.fullname)
-        if (name == null || name.isEmpty) {
+        if(name == null || name.isEmpty) {
             "User"
         } else {
             name
@@ -21,26 +22,27 @@
     <div class="col-sm-12 tbsHnopad">
         <div class="col-sm-12 BoxMediumBlue TextWhite tbsVpad">
             @if(getName != Nil) {
-            <div class="portal-icon portal-icon-extend-margin">
-                <a href="@controllers.UserSystem.routes.ProfileHandler.overview()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-reorder drop-bottom-5"></ic><br>
-                    <span>Overview</span></a></div>
-            <div class="portal-icon portal-icon-extend-margin">
-                <ul id="applications-menu" class="sm sm-clean-vertical dropdown-menu-left profile-name-header">
-                    <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()" style="color: #FFFFFF !important;" id="ApplicationMenuBarDropDown">
-                        <ic class="fa fa-3x fa-book drop-bottom-5" ></ic>
-                        <span style="display: block">Applications</span></a>
-                        <ul id="MailDropDown" class="dropdown-menu dropdown-menu-left">
-                            @if(!session().get(CookieTags.user_type.equals(UserType.RCD.getType))){
-                                <li><a href="#" id="menu_application_type">Create Application</a></li>
-                            } else {}
-                            <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">All Applications</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="portal-icon portal-icon-extend-margin">
-                <a disabled="true" href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
-                    <span>Message</span></a></div>
+                <div class="portal-icon portal-icon-extend-margin">
+                    <a href="@controllers.UserSystem.routes.ProfileHandler.overview()" id="IconMenuBarOverview"><ic class="fa fa-3x fa-reorder drop-bottom-5"></ic><br>
+                        <span>Overview</span></a></div>
+                <div class="portal-icon portal-icon-extend-margin">
+                    <ul id="applications-menu" class="sm sm-clean-vertical dropdown-menu-left profile-name-header">
+                        <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()" style="color: #FFFFFF !important;" id="ApplicationMenuBarDropDown">
+                            <ic class="fa fa-3x fa-book drop-bottom-5" ></ic>
+                            <span style="display: block">Applications</span></a>
+                            <ul id="MailDropDown" class="dropdown-menu dropdown-menu-left">
+                                @if(session().get(CookieTags.user_type) != UserType.RCD.getType) {
+                                    <li><a href="#" id="menu_application_type">Create Application</a></li>
+                                } else {}
+                                <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">
+                                    All Applications</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="portal-icon portal-icon-extend-margin">
+                    <a disabled="true" href="@controllers.MessageSystem.routes.MessageController.allMessages()" id="IconMenuBarMessage" target="_blank"><ic class="fa fa-3x fa-envelope-o drop-bottom-5"></ic><br>
+                        <span>Message</span></a></div>
             }
             @if(session().get(CookieTags.user_type) == UserType.RCD.getType) {
                 <div class="portal-icon portal-icon-extend-margin">
@@ -58,46 +60,50 @@
                 <div class="col-sm-10">
                     <div class="row" style="margin-top: 15px;">
                         <div class="col-sm-2 pull-right vertical-separator" style="padding: auto 5px !important;">
-                            <button onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button action-button button-menu">Login</button></a>
+                            <button onclick="window.location.href = '@controllers.UserSystem.routes.LoginController.login()'" id="btnLogin" class="nmu-button action-button button-menu">
+                                Login</button></a>
                         </div>
                         <div class="col-sm-2 pull-right">
-                            <button onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.registerInitial()'" id="btnRegister" class="nmu-button action-alternative button-menu">Register</button></a>
+                            <button onclick="window.location.href = '@controllers.UserSystem.routes.RegistrationController.registerInitial()'" id="btnRegister" class="nmu-button action-alternative button-menu">
+                                Register</button></a>
                         </div>
                     </div>
                 </div>
             } else {
                 <div class="pull-right portal-icon larger-width">
-                <ic class="fa fa-3x fa-user-circle-o drop-bottom-5"></ic>
+                    <ic class="fa fa-3x fa-user-circle-o drop-bottom-5"></ic>
                     <br/>
                     <ul id="profile-menu" class="sm sm-clean-vertical dropdown-menu-right profile-name-header">
                         <li><a href="#" style="color: #FFFFFF !important;" id="IconMenuBarProfile">@getName <span class="caret"></span> </a>
-                        <ul id="MailDropDown" class="dropdown-menu">
-                            <li><a href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
-                            <li><a href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>
-                        </ul>
+                            <ul id="MailDropDown" class="dropdown-menu">
+                                <li><a href="@controllers.UserSystem.routes.ProfileHandler.settings()">Settings</a></li>
+                                <li><a href="@controllers.UserSystem.routes.LoginController.logout()">Logout</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
             }
-            </div>
         </div>
     </div>
-    <ul id="application_dropdown-menu" class="sm darkbackground" style="display: none" onmouseleave="hidePopup('application_dropdown-menu')">
-        <li><a href="#" onclick="openPopup('select_application_type_popup', true);">Create New Application</a></li>
-        <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">View Applications</a></li>
-    </ul>
 </div>
+<ul id="application_dropdown-menu" class="sm darkbackground" style="display: none" onmouseleave="hidePopup('application_dropdown-menu')">
+    <li><a href="#" onclick="openPopup('select_application_type_popup', true);">Create New Application</a></li>
+    <li><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.allApplications()">View Applications</a></li>
+</ul>
+    </div>
 
-    <div id="select_application_type_popup" class="modal">
-        <div class="modal-content animate nmu-theme-darkbackground">
-            <div class="popup-header">
-                <span onclick="hidePopup('select_application_type_popup')" class="close modal-close" title="Close PopUp">&times;</span>
-                <h2>Choose application type</h2>
-            </div>
+<div id="select_application_type_popup" class="modal">
+    <div class="modal-content animate nmu-theme-darkbackground">
+        <div class="popup-header">
+            <span onclick="hidePopup('select_application_type_popup')" class="close modal-close" title="Close PopUp">&times;</span>
+            <h2>Choose application type</h2>
+        </div>
 
-            <div class="lessen-top-margin">
-                <button onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")'" class="nmu-button" type="submit">Human Research</button>
-                <button disabled="true" onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")'" class="nmu-button disabled" type="submit">Animal Research</button>
-            </div>
+        <div class="lessen-top-margin">
+            <button onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")'" class="nmu-button" type="submit">
+                Human Research</button>
+            <button disabled="true" onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")'" class="nmu-button disabled" type="submit">
+                Animal Research</button>
         </div>
     </div>
+</div>

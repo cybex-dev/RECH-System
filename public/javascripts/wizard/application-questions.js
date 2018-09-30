@@ -82,8 +82,6 @@ function _docReady(funcName, baseObj) {
     }
 
     document.getElementById("popup_questionnaire_close").onclick = function(){
-        hidePopup('complete_popup');
-        setHidden(document.getElementById('filter_question_form'));
         risk = 3;
         completeQuestionnaire();
     };

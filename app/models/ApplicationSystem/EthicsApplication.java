@@ -31,10 +31,12 @@ public class EthicsApplication implements Serializable {
         public static ApplicationType parse(String type) {
             switch (type.toLowerCase()) {
 
+                case "a":
                 case "animal": {
                     return Animal;
                 }
 
+                case "h":
                 case "human":
                 default: {
                     return Human;

@@ -14,6 +14,7 @@ import net.ddns.cyberstudios.Element;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -549,5 +550,4 @@ public class EntityEthicsApplication extends Model {
     public Map<String, List<String>> getLatestComponentFeedback(){
         return EntityEthicsApplication.getLatestComponentFeedback(applicationPrimaryKey());
     }
-
 }

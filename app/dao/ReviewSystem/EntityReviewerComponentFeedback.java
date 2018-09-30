@@ -187,4 +187,8 @@ public class EntityReviewerComponentFeedback extends Model {
         this.facultyName = applicationId.getFacultyName();
         this.applicationNumber = applicationId.getApplicationNumber();
     }
+
+    public EntityReviewerComponentFeedback exists(EntityReviewerComponentFeedbackPK pk){
+
+    }
 }

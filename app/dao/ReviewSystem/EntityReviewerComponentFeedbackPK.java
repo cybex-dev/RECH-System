@@ -1,5 +1,7 @@
 package dao.ReviewSystem;
 
+import dao.ApplicationSystem.EntityEthicsApplicationPK;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Id;
@@ -108,5 +110,13 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
     public int hashCode() {
 
         return Objects.hash(reviewerEmail, version, componentId, applicationYear, applicationNumber, applicationType, departmentName, facultyName);
+    }
+
+    public void setApplicationId(EntityEthicsApplicationPK applicationId) {
+        this.applicationYear = applicationId.getApplicationYear();
+        this.applicationType = applicationId.getApplicationType();
+        this.departmentName = applicationId.getDepartmentName();
+        this.facultyName = applicationId.getFacultyName();
+        this.applicationNumber = applicationId.getApplicationNumber();
     }
 }
