@@ -128,19 +128,19 @@ public class ApplicationHandler extends Controller {
             Map<String, Boolean> editableMap = new HashMap<>();
             XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
             Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.getLatestComponentFeedback(entityEthicsApplicationPK);
-            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.type(), element, editableMap, false, entityEthicsApplicationPK.shortName(), false, true, latestComponentFeedback, GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
+            return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.type(), element, editableMap, false, entityEthicsApplicationPK.shortName(), false, true, latestComponentFeedback, GuiButton.negHomeCancel, null, null));
         }
     }
 
-    /**
-     * Submit revised application and component data only if {@link RECEngine} allows it
-     *
-     * @return result
-     */
-    @RequireCSRFCheck
-    public Result submitRevision() {
-        return TODO;
-    }
+//    /**
+//     * Submit revised application and component data only if {@link RECEngine} allows it
+//     *
+//     * @return result
+//     */
+//    @RequireCSRFCheck
+//    public Result submitRevision() {
+//        return TODO;
+//    }
 
     //TODO complete all applications
 
@@ -182,18 +182,19 @@ public class ApplicationHandler extends Controller {
     }
 
     @RequireCSRFCheck
-    public Result submitEdit() {
+    public Result saveEdit() {
         DynamicForm form = formFactory.form().bindFromRequest();
         String id = form.get("application_id");
         EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(id);
         //update all components
-        fill(form, applicationPK);
+        Map<String, Object> cleanData = clean(form, applicationPK);
+
         RECEngine.getInstance().nextStep(applicationPK);
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 
     @RequireCSRFCheck
-    public Result forceSubmitApplication() {
+    public Result submitApplication() {
         DynamicForm form = formFactory.form().bindFromRequest();
         String id = form.get("application_id");
         EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
@@ -219,7 +220,7 @@ public class ApplicationHandler extends Controller {
      */
     @RequireCSRFCheck
     //TODO implement draft save and RECEngine association
-    public CompletionStage<Result> createApplication() {
+    public CompletionStage<Result> saveApplication() {
         return CompletableFuture.supplyAsync(() -> {
             DynamicForm formApplication = formFactory.form().bindFromRequest();
 
@@ -265,7 +266,7 @@ public class ApplicationHandler extends Controller {
 
                 // Get prp id from Elements
                 String prpContactEmail = formApplication.get("prp_contact_email");
-                if (prpContactEmail != null) {
+                if (prpContactEmail != null && !prpContactEmail.isEmpty()) {
                     prpContactEmail = prpContactEmail.split("\\[")[1]
                             .replace("]", "");
                     application.setPrpId(prpContactEmail);
@@ -287,13 +288,14 @@ public class ApplicationHandler extends Controller {
             }
 
 
-            boolean filledApplication = fill(formApplication, application.applicationPrimaryKey());
-            if (!filledApplication) {
-                EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
-                Map<String, Boolean> editableMap = new HashMap<>();
-                XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
-                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type, application_template.getRootElement(), editableMap, false, application.applicationPrimaryKey().shortName(), false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
-            }
+            Map<String, Object> cleanedData = clean(formApplication, application.applicationPrimaryKey());
+            fillInApplicationData(application.applicationPrimaryKey(), cleanedData);
+//            if (!filledApplication) {
+//                EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
+//                Map<String, Boolean> editableMap = new HashMap<>();
+//                XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
+//                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type, application_template.getRootElement(), editableMap, false, application.applicationPrimaryKey().shortName(), false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
+//            }
 
             RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
 
@@ -302,19 +304,17 @@ public class ApplicationHandler extends Controller {
         }, httpExecutionContext.current());
     }
 
-    public boolean fill(DynamicForm formApplication, EntityEthicsApplicationPK applicationId) {
+    private Map<String, Object> clean(DynamicForm formApplication, EntityEthicsApplicationPK applicationId) {
         Map<String, Object> filteredData = new HashMap<>();
-        formApplication.get().getData().entrySet()
-                .forEach(e -> filteredData.put(e.getKey(), e.getValue()));
+        formApplication.get().getData().forEach(filteredData::put);
         request().body().asMultipartFormData().getFiles().stream()
                 .filter(o -> !o.getFilename().isEmpty())
-                // containers FilePart which has file name, and key and actual file
                 .forEach(e -> filteredData.put(e.getKey(), e));
 
-        return fillInApplicationData(applicationId, filteredData);
+        return filteredData;
     }
 
-    private boolean fillInApplicationData(EntityEthicsApplicationPK applicationId, Map<String, Object> data) {
+    private void fillInApplicationData(EntityEthicsApplicationPK applicationId, Map<String, Object> data) {
         EntityEthicsApplication application = EntityEthicsApplication.GetApplication(applicationId);
 
         Element rootElement = EthicsApplication.lookupApplication(application.type()).getRootElement();
@@ -344,13 +344,9 @@ public class ApplicationHandler extends Controller {
                         if (entityComponentVersion != null) {
                             // insert component version value
                             setComponentValue(entityComponentVersion, entry, type);
-//                            data.remove(entry.getKey());
                         }
-
-                        // if == null, means that the the component was submitted and is not meant to be changed, but it is being changed. This change will not be saved.
                     }
                 });
-        return true;
     }
 
     private void setComponentValue(EntityComponentVersion entityComponentVersion, Map.Entry<String, Object> entry, String responseType) {
@@ -524,7 +520,7 @@ public class ApplicationHandler extends Controller {
     public Result javascriptRoutes() {
         return ok(
                 JavaScriptReverseRouter.create("applicationRoutes",
-                        routes.javascript.ApplicationHandler.createApplication()
+                        routes.javascript.ApplicationHandler.newApplication()
                 )
         ).as("text/javascript");
     }

@@ -17,7 +17,7 @@
             @for(application: Application <- applications) {
                 <tr class="nmu-button" data-url=")">
                     <td style="text-decoration: underline;">@application.getTitle</td>
-                    <td></td>
+                    <td>@application.getApprovedDateSafe</td>
                     <td>@application.getDueDateSafe</td>
                     <td>
                     @if(application.getPermission == Permission.NONE) {

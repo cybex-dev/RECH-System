@@ -248,7 +248,7 @@ public class EntityPerson extends Model {
 
     public static String getRTI(String facultyName) {
         return find.all().stream()
-                .filter(entityPerson -> entityPerson.facultyName.equals(facultyName) && entityPerson.userType().equals(UserType.FacultyRTI))
+                .filter(entityPerson -> (entityPerson.facultyName != null) && (entityPerson.facultyName.equals(facultyName) && entityPerson.userType().equals(UserType.FacultyRTI)))
                 .map(dao.UserSystem.EntityPerson::getUserEmail)
                 .findFirst()
                 .orElse(null);
@@ -256,7 +256,7 @@ public class EntityPerson extends Model {
 
     public static String getHod(String departmentName) {
         return find.all().stream()
-                .filter(entityPerson -> (entityPerson.departmentName.equals(departmentName) && entityPerson.userType().equals(UserType.DepartmentHead)))
+                .filter(entityPerson -> (entityPerson.departmentName != null) && (entityPerson.departmentName.equals(departmentName) && entityPerson.userType().equals(UserType.DepartmentHead)))
                 .map(EntityPerson::getUserEmail)
                 .findFirst()
                 .orElse(null);

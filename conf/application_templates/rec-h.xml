@@ -802,6 +802,7 @@
                     of
                     the Research Ethics Committee (Human)
                 </question>
+                <value></value>
             </component>
             <component recorded="false" type="boolean" id="participant_indemnified"
                        hint="Are all participants are of potential risks and health hazards associated">

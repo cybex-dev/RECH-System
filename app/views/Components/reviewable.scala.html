@@ -5,13 +5,17 @@
 
 @if(review)  {
     <h4>Review Feedback</h4>
-    @if(reviewData.size > 0){
-        <p style="font-weight: bold;">No feedback available.</p>
+    @if(reviewData == null) {
+        <p>No feedback</p>
     } else {
-        <ul>
-        @for(r <- reviewData) {
-            <li>@r</li>
+        @if(reviewData.size > 0) {
+            <p style="font-weight: bold;">No feedback available.</p>
+        } else {
+            <ul>
+            @for(r <- reviewData) {
+                <li>@r</li>
+            }
+            </ul>
         }
-        </ul>
     }
 }

@@ -9,29 +9,29 @@
     <div class="row">
         <table class="table">
             <thead>
-                <th class="col-sm-3">Application Title</th>
-                <th class="col-sm-1"></th>
-                <th class="col-sm-2">Status</th>
-                <th class="col-sm-2">Date Submitted</th>
-                <th class="col-sm-2">Date Approved</th>
-                <th class="col-sm-2"></th>
+                <th class="col-sm-6">Application Title</th>
+                <th class="col-sm-3">Status</th>
+                <th class="col-sm-3"></th>
             </thead>
             <tbody>
             @for(application: Application <- applications) {
 
                 <tr class="nmu-button">
-                    <td style="text-decoration: underline;">@application.getTitle</td>
-                    <td></td>
-                    <td>@application.getStatus.name()</td>
-                    <td>@application.getSubmittedDateSafe</td>
-                    <td>@application.getApprovedDateSafe</td>
+                    <td style="font-style: italic;">@application.getTitle</td>
+                    <td>@application.getStatus.description</td>
                     <td>@if(application.getPermission == Permission.NONE) {
                         <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">
                             Not authorized</button></a>
                     } else {
-                        <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
-                            <button class="nmu-button table-button">View Application</button>
-                        </a>
+                        @if(application.getPermission == Permission.VIEW) {
+                            <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
+                                <button class="nmu-button table-button">View Application</button>
+                            </a>
+                        } else {
+                            <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
+                                <button class="nmu-button table-button">Modify Application</button>
+                            </a>
+                        }
                     }
                     </td>
                 </tr>

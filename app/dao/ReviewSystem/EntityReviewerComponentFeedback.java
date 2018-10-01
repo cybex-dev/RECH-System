@@ -188,7 +188,14 @@ public class EntityReviewerComponentFeedback extends Model {
         this.applicationNumber = applicationId.getApplicationNumber();
     }
 
-    public EntityReviewerComponentFeedback exists(EntityReviewerComponentFeedbackPK pk){
-
+    public void setPrimaryKey(EntityReviewerComponentFeedbackPK pk){
+        this.applicationYear = pk.getApplicationYear();
+        this.applicationType = pk.getApplicationType();
+        this.departmentName = pk.getDepartmentName();
+        this.facultyName = pk.getFacultyName();
+        this.applicationNumber = pk.getApplicationNumber();
+        this.version = pk.getVersion();
+        this.componentId = pk.getComponentId();
+        this.reviewerEmail = pk.getReviewerEmail();
     }
 }

@@ -8,8 +8,8 @@ public enum ApplicationStatus implements Serializable {
     NOT_SUBMITTED(0),                   //
     APPROVED(1),                        //
     TEMPORARILY_APPROVED(2),            //
-    TEMPORARILY_APPROVED_EDITS(3),      //
-    REJECTED(4),                        //
+    REJECTED(3),                        //
+    RESUBMISSION(5),                    //
 
     READY_FOR_SUBMISSION(10),           //
     AWAITING_REVIEWER_ALLOCATION(11),   //
@@ -36,6 +36,7 @@ public enum ApplicationStatus implements Serializable {
 
 
     private int status = 98;
+    private String description = "Draft";
 
     ApplicationStatus(int status) {
         this.status = status;
@@ -53,10 +54,10 @@ public enum ApplicationStatus implements Serializable {
                 return ApplicationStatus.TEMPORARILY_APPROVED;
 
             case 3:
-                return ApplicationStatus.TEMPORARILY_APPROVED_EDITS;
-
-            case 4:
                 return ApplicationStatus.REJECTED;
+
+            case 5:
+                return ApplicationStatus.RESUBMISSION;
 
             case 10:
                 return ApplicationStatus.READY_FOR_SUBMISSION;
@@ -112,5 +113,73 @@ public enum ApplicationStatus implements Serializable {
 
     public short getStatus() {
         return (short) status;
+    }
+
+    public String description() {
+        switch (status) {
+            case 0:
+                return "Not Submitted";
+
+            case 1:
+                return "Approved";
+
+            case 2:
+                return "Conditional Approval";
+
+            case 3:
+                return "Rejected";
+
+            case 5:
+                return "Resubmission Required";
+
+            case 10:
+                return "Ready for Submit";
+
+            case 11:
+                return "Awaiting Review Allocation";
+
+            case 20:
+                return "Pending Review";
+
+            case 21:
+                return "Meeting Review";
+
+            case 23:
+                return "Liaison Review";
+
+            case 30:
+                return "Feedback Given";
+
+            case 40:
+                return "PRP Pre-Approval";
+
+            case 41:
+                return "HOD/RTI Pre-Approval";
+
+            case 42:
+                return "HOD Pre-Approval";
+
+            case 43:
+                return "RTI Pre-Approval";
+
+            case 44:
+                return "HOD/RTI Post-Approval";
+
+            case 45:
+                return "HOD Post-Approval";
+
+            case 46:
+                return "RTI Post-Approval";
+
+            case 50:
+                return "Faculty Review";
+
+            case 98:
+                return "Draft";
+
+            case 99:
+            default:
+                return "Unknown";
+        }
     }
 }

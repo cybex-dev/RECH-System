@@ -65,13 +65,14 @@
 
     <div id="complete_popup" class="modal-content animate popup-header hidden">
         <div class="header-panel">
-            <span onclick="hidePopup('complete_popup'); setHidden(document.getElementById('filter_question_form'))" class="close" title="Close PopUp">&times;</span>
-            <h2 style="text-align: center">Complete</h2>
+            <span id="btnCompleteCloseClick" class="close" title="Close PopUp">&times;</span>
+            <h2 id="popup_complete_title" style="text-align: left">Completed</h2>
         </div>
         <div class="question-content nmu-color-very-dark">
-            <h4 style="text-align: center" id="risk_message"></h4>
-            <button class="button nmu-button" id="btn_question_complete_proceed">Ok</button>
+            <h4 style="text-align: left; text-decoration: none  " id="risk_message"></h4>
+            <p style="font-style: italic">Click to continue...</p>
         </div>
+        <button class="nmu-button button" id="btn_question_complete_proceed">Ok</button>
     </div>
 
     <script src="@routes.Assets.versioned("javascripts/wizard/application-questions.js")" type="text/javascript"></script>

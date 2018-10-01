@@ -162,10 +162,12 @@ button-small {
     background-color: #0A283F !important;
     margin-bottom: 20px;
     min-width: 7em !important;
+    border: 1px solid #0A283F !important;
 }
 
 .nmu-button:hover {
     background-color: #f9b42a !important;
+    border: 1px solid #f9b42a !important;
 }
 
 .profile-name-header {
@@ -267,15 +269,13 @@ a:hover {
 
 .action-alternative {
     background-color: #0A283F !important;
-    transform: scale(0.85);
 }
 
 .action-alternative:hover {
     font-style: italic;
     text-decoration: underline;
-    transform: scale(0.85) !important;
     background-color: #0a2a42 !important;
-    border: 1px solid #ffffff;
+    border: 1px solid #ffffff !important;
     cursor: pointer !important;
 }
 
@@ -325,10 +325,19 @@ label {
 
 table {
     margin: 0 auto;
+    width: 95% !important;
 }
 
 table > thead {
     border-bottom: 3px solid #0A283F;
+}
+
+table > tbody .nmu-button {
+    background-color: #061c2c !important;
+}
+
+thead {
+    border-top: 1px solid #ffffff !important;
 }
 
 .item-button {
@@ -407,4 +416,8 @@ ol > li > h3 {
 
 .button-link {
     border: 0 !important;
+}
+
+table > tbody td {
+    padding: 14px !important;
 }

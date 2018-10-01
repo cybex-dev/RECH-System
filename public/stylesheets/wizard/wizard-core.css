@@ -325,3 +325,16 @@ td input[type=text] {
 .section-content {
     border: 1px solid
 }
+
+.form-button {
+
+}
+
+.accept-tAc {
+    background-color: #757575 !important;
+}
+
+.accept-tAc:hover {
+    cursor: not-allowed !important;
+    background-color: #818181 !important;
+}

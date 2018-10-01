@@ -16,7 +16,7 @@
 @import net.ddns.cyberstudios.Element
 
 @import views.html.Components.reviewable
-@(pageTitle: String)(applicationType: ApplicationType)(root: Element)(editableMap: util.Map[String, Boolean])(showQuestions: Boolean)(applicationId: String)(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])(negativeButton: GuiButton, positiveButton: GuiButton, neutralButton: GuiButton)
+@(pageTitle: String)(applicationType: ApplicationType)(root: Element)(editableMap: util.Map[String, Boolean])(showQuestions: Boolean)(applicationId: String)(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])(negativeButton: GuiButton)(positiveButton: GuiButton = null)(neutralButton: GuiButton = null)
 
 @upper(txt: String) = @{
     txt.substring(0, 1).toUpperCase() + txt.substring(1).toLowerCase()
@@ -52,11 +52,17 @@
         </div>
         <div class="row">
             @ActionButtons.apply{
-                @ActionButton.apply(negativeButton)(false)()()
+                @if(negativeButton != null) {
+                    @ActionButton.apply(negativeButton)(false)()()
+                }
             } {
-                @ActionButton.apply(neutralButton)(true)()()
+                @if(neutralButton != null) {
+                    @ActionButton.apply(neutralButton)(true)()()
+                }
             } {
-                @ActionButton.apply(positiveButton)(false)()()
+                @if(positiveButton != null) {
+                    @ActionButton.apply(positiveButton)(false)()()
+                }
             }
         </div>
         @if(showQuestions) {

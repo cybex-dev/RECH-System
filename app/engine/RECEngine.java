@@ -17,7 +17,6 @@ import net.ddns.cyberstudios.Element;
 import play.mvc.Controller;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -28,6 +27,9 @@ public class RECEngine extends Controller {
     static private RECEngine engine;
 
     public static RECEngine getInstance(){
+        if (engine == null) {
+            engine = new RECEngine();
+        }
         return engine;
     }
 
@@ -78,6 +80,7 @@ public class RECEngine extends Controller {
             case UNKNOWN:
             case DRAFT:
             case READY_FOR_SUBMISSION:
+            case RESUBMISSION:
             case NOT_SUBMITTED: {
                 return (person.getUserEmail().equals(entityEthicsApplication.getPiId())) ? Permission.MODIFY : Permission.NONE;
             }
@@ -107,7 +110,6 @@ public class RECEngine extends Controller {
                         ? Permission.VIEW
                         : Permission.NONE;
 
-            case TEMPORARILY_APPROVED_EDITS:
             case PENDING_REVIEW_LIAISON:
                 return (person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
                         person.getUserEmail().equals(entityEthicsApplication.getPrpId()))
@@ -218,6 +220,8 @@ public class RECEngine extends Controller {
 
         switch (currentStatus) {
             // Pre-submission phase
+
+            case RESUBMISSION:
             case DRAFT:
 
                 // Fill into element
@@ -234,12 +238,10 @@ public class RECEngine extends Controller {
 
                 actionable = new Actionable() {
 
-                    ApplicationStatus newStatus = ApplicationStatus.NOT_SUBMITTED;
-
                     @Override
                     public boolean doAction() {
                         if (applicationComplete) {
-                            entityEthicsApplication.setInternalStatus(newStatus.getStatus());
+                            entityEthicsApplication.setInternalStatus(ApplicationStatus.NOT_SUBMITTED.getStatus());
                             entityEthicsApplication.update();
                             return true;
                         }
@@ -249,7 +251,7 @@ public class RECEngine extends Controller {
                     @Override
                     public void doNotify() {
                         if (applicationComplete) {
-                            Notifier.notifyStatus(applicationId, newStatus, applicationTitle, piId);
+                            Notifier.notifyStatus(applicationId, ApplicationStatus.NOT_SUBMITTED, applicationTitle, piId);
                         }
                     }
                 };
@@ -544,7 +546,7 @@ public class RECEngine extends Controller {
                         } else if (latestMeetingStatus == ApplicationStatus.TEMPORARILY_APPROVED) {
                             Notifier.notifyStatus(applicationId, ApplicationStatus.TEMPORARILY_APPROVED, applicationTitle, piId, prpId);
                             Notifier.requireAttention(applicationId, ApplicationStatus.TEMPORARILY_APPROVED, applicationTitle, entityEthicsApplication.getLiaisonId());
-                        } else if (latestMeetingStatus == ApplicationStatus.TEMPORARILY_APPROVED_EDITS) {
+                        } else if (latestMeetingStatus == ApplicationStatus.RESUBMISSION) {
                             Notifier.requireAttention(applicationId, latestMeetingStatus, applicationTitle, piId, prpId);
                         } else {
                             Notifier.systemNotification(applicationId, ApplicationStatus.UNKNOWN, applicationTitle, SystemNotification.UNKNOWN_ASSIGNED, piId, prpId, EntityPerson.getRCD());
@@ -600,7 +602,6 @@ public class RECEngine extends Controller {
                 };
                 return actionable;
 
-            case TEMPORARILY_APPROVED_EDITS:
             case FEEDBACK_GIVEN_LIAISON:
                 // PI/PRP notified of this
                 // Action: Assign Liaison to application
@@ -611,7 +612,7 @@ public class RECEngine extends Controller {
 
 
                 applicationComplete = isComplete(applicationId);
-                newStatus = (applicationComplete) ? ApplicationStatus.PENDING_REVIEW_LIAISON : ApplicationStatus.TEMPORARILY_APPROVED_EDITS;
+                newStatus = (applicationComplete) ? ApplicationStatus.PENDING_REVIEW_LIAISON : ApplicationStatus.TEMPORARILY_APPROVED;
 
                 actionable = new Actionable() {
                     @Override
@@ -631,7 +632,7 @@ public class RECEngine extends Controller {
                             Notifier.notifyStatus(applicationId, newStatus, applicationTitle, piId, prpId);
                             Notifier.requireAttention(applicationId, newStatus, applicationTitle, entityEthicsApplication.getLiaisonId());
                         } else {
-                            Notifier.requireAttention(applicationId, ApplicationStatus.TEMPORARILY_APPROVED_EDITS, applicationTitle, piId, prpId);
+                            Notifier.requireAttention(applicationId, ApplicationStatus.TEMPORARILY_APPROVED, applicationTitle, piId, prpId);
                         }
                     }
                 };
@@ -693,12 +694,12 @@ public class RECEngine extends Controller {
                 newStatus = (hodNoResponse)
                         ? ApplicationStatus.AWAITING_POST_HOD_APPROVAL
                         : (rtiNoResponse)
-                        ? ApplicationStatus.AWAITING_POST_RTI_APPROVAL
-                        : (hodDenied || rtiDenied)
-                        ? ApplicationStatus.TEMPORARILY_APPROVED_EDITS
-                        : (hodPreApproved && rtiPreApproved)
-                        ? ApplicationStatus.APPROVED
-                        : ApplicationStatus.UNKNOWN;
+                            ? ApplicationStatus.AWAITING_POST_RTI_APPROVAL
+                            : (hodDenied || rtiDenied)
+                                ? ApplicationStatus.RESUBMISSION
+                                : (hodPreApproved && rtiPreApproved)
+                                    ? ApplicationStatus.APPROVED
+                                    : ApplicationStatus.UNKNOWN;
 
                 actionable = new Actionable() {
 
@@ -822,13 +823,13 @@ public class RECEngine extends Controller {
         entityEthicsApplication.update();
     }
 
-    /**
-     * Gets a list of all application reviewers given an application primary key
-     *
-     * @param applicationId
-     * @return
-     */
-    //TODO fix
+//    /**
+//     * Gets a list of all application reviewers given an application primary key
+//     *
+//     * @param applicationId
+//     * @return
+//     */
+//    //TODO fix
 //    private List<String> getApplicationReviewers(EntityEthicsApplicationPK applicationId) {
 //        return EntityReviewerfeedback.find.all().stream()
 //                .filter(entityReviewerfeedback -> entityReviewerfeedback.applicationPrimaryKey().equals(applicationId))
@@ -841,8 +842,8 @@ public class RECEngine extends Controller {
     /**
      * Gets the latest meeting status assigned to an application
      *
-     * @param applicationId
-     * @return
+     * @param applicationId application primary key
+     * @return latest meeting status
      */
     private ApplicationStatus getLatestMeetingStatus(EntityEthicsApplicationPK applicationId) {
         return EntityAgendaItem.find.all()
@@ -854,29 +855,12 @@ public class RECEngine extends Controller {
     }
 
     /**
-     * Gets the liaison which has not received a new application for the longest period of all liaisons
-     *
-     * @return
-     */
-    private String getAvailableLiaison() {
-        List<String> liaisons = new ArrayList<>();
-        EntityEthicsApplication.find.all().stream()
-                .sorted((o1, o2) -> o1.getLiaisonAssignedDate().before(o2.getLiaisonAssignedDate()) ? -1 : (o1.getLiaisonAssignedDate().after(o2.getLiaisonAssignedDate()) ? 1 : 0))
-                .forEach(entityEthicsApplication -> {
-                    if (!liaisons.contains(entityEthicsApplication.getLiaisonId())) {
-                        liaisons.add(entityEthicsApplication.getLiaisonId());
-                    }
-                });
-        return liaisons.get(liaisons.size() - 1);
-    }
-
-    /**
      * Traverses through all application elements, checking if all elements contain the required data -> this should match the appropriate XML file
      *
-     * @param pk
+     * @param pk primary key
      * @return TODO not completed
      */
-    public boolean isComplete(EntityEthicsApplicationPK pk) {
+    private boolean isComplete(EntityEthicsApplicationPK pk) {
         EntityEthicsApplication application = EntityEthicsApplication.find.byId(pk);
         if (application == null) {
             return false;

@@ -1,8 +1,14 @@
 @(negativeButton: Html)(neutralButton: Html)(positiveButton: Html)
 
 <div class="action-buttons">
-    @negativeButton
+    <div class="button-negative">
+        @negativeButton
+    </div>
     <div class="col-sm-3"><span></span></div>
-    @neutralButton
-    @positiveButton
+    <div class="button-neutral">
+        @neutralButton
+    </div>
+    <div class="button-positive">
+        @positiveButton
+    </div>
 </div>

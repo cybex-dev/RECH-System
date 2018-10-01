@@ -343,7 +343,7 @@ function initWizard() {
         }
 
         // Create div container
-        let div = createDiv(parent.id + "_container", "", "");
+        let div = createDiv(p.id + "_container", "", "");
         div.classList.add("group-container");
 
         // Add content to div
@@ -376,7 +376,7 @@ function initWizard() {
         input.remove();
 
         //create extension-container div containing header and data
-        let container = createDiv(parent.id + "_container", "", "extension", "extension-container");
+        let container = createDiv(input.id + "_container", "", "extension", "extension-container");
 
         //create extension-header div containing header
         let header = createDiv("", "", "extension-header");
@@ -418,7 +418,7 @@ function initWizard() {
         e.remove();
 
         // Get parent div i.e. div group and clone
-        let sectionData = createDiv(parent.id + "_data", "", "section-content");
+        let sectionData = createDiv(p.id + "_data", "", "section-content");
 
         // Add all group-containers to section-data
         let count = p.children.length;
@@ -427,7 +427,7 @@ function initWizard() {
         }
 
         // Create div container
-        let sectionContainer = createDiv(parent.id + "_container", "", "section-container");
+        let sectionContainer = createDiv(p.id + "_container", "", "section-container");
 
         // Add content to div
         sectionContainer.appendChild(heading);

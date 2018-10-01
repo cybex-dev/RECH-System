@@ -2,6 +2,7 @@ package controllers.ReviewSystem;
 
 import controllers.UserSystem.Secured;
 import controllers.UserSystem.routes;
+import dao.ApplicationSystem.EntityComponentVersion;
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.ReviewSystem.EntityReviewerApplications;
@@ -96,6 +97,49 @@ public class ReviewHandler extends Controller {
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 
+    @RequireCSRFCheck
+    public Result doViewReject(){
+        DynamicForm form = formFactory.form().bindFromRequest();
+        String id = form.get("application_id");
+        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
+
+        RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
+        flash("success", "Application approved");
+        return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
+    }
+
+    public Result saveAssignedReviewers(){
+        DynamicForm form = formFactory.form().bindFromRequest();
+
+        if (form.hasGlobalErrors()){
+            flash("danger", "Check all reviewers have been assigned");
+            return assignReviewer(form.get("application_id"));
+        }
+
+        EntityEthicsApplicationPK application_id = EntityEthicsApplicationPK.fromString(form.get("application_id"));
+        assignReviewersToApplication(form, application_id);
+
+        flash("success", "Assigned reviewers saved");
+        return redirect(routes.ProfileHandler.overview());
+    }
+
+    public void assignReviewersToApplication(DynamicForm form, EntityEthicsApplicationPK application_id){
+        // Get current timestamp
+        Timestamp ts = Timestamp.from(Instant.now());
+
+        // Assign reviewers to applications
+        form.get().getData()
+                .entrySet().stream()
+                .filter(entry -> entry.getKey().matches("^reviewer\\d*$"))
+                .forEach(entry -> {
+                    EntityReviewerApplications reviewerApplications = new EntityReviewerApplications();
+                    reviewerApplications.setApplicationKey(application_id);
+                    reviewerApplications.setReviewerEmail(entry.getValue().toString());
+                    reviewerApplications.setDateAssigned(ts);
+                    reviewerApplications.insert();
+                });
+    }
+
     /**
      * Submit revised application and component data only if {@link RECEngine} allows it
      * @return
@@ -126,18 +170,38 @@ public class ReviewHandler extends Controller {
                 });
 
         map.forEach((key, value) -> {
-            EntityReviewerComponentFeedbackPK feedbackPK = new EntityReviewerComponentFeedbackPK();
-            feedbackPK.setApplicationId(pk);
-            feedbackPK.set
+            EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(pk, key);
 
+            if (entityComponentVersion == null){
+                System.out.println("EntityComponentVersion is null while adding feedback for this component");
 
-            EntityReviewerComponentFeedback feedback = new EntityReviewerComponentFeedback();
-            feedback.setApplicationId(pk);
-            feedback.setComponentId(key);
-            feedback.setReviewerEmail(reviewer);
-            feedback.setFeedbackDate(timestamp);
-            feedback.setComponentFeedback(value);
-            feedback.insert();
+            } else {
+
+                // Create Primary Key
+                EntityReviewerComponentFeedbackPK feedbackPK = new EntityReviewerComponentFeedbackPK();
+                feedbackPK.setComponentVersionId(entityComponentVersion.componentVersionPrimaryKey());
+                feedbackPK.setReviewerEmail(reviewer);
+
+                // Search by primary key
+                EntityReviewerComponentFeedback feedback = EntityReviewerComponentFeedback.find.byId(feedbackPK);
+
+                // Check if this component ahs had feedback set
+                if (feedback == null) {
+                    // Vanilla component
+                    feedback = new EntityReviewerComponentFeedback();
+                    feedback.setPrimaryKey(feedbackPK);
+
+                    feedback.setComponentId(key);
+                    feedback.setReviewerEmail(reviewer);
+                    feedback.setFeedbackDate(timestamp);
+                    feedback.setComponentFeedback(value);
+                    feedback.insert();
+                } else {
+                    // Update feedback
+                    feedback.setComponentFeedback(value);
+                    feedback.update();
+                }
+            }
         });
     }
 
@@ -166,19 +230,8 @@ public class ReviewHandler extends Controller {
         }
 
         EntityEthicsApplicationPK application_id = EntityEthicsApplicationPK.fromString(form.get("application_id"));
-        Timestamp ts = Timestamp.from(Instant.now());
 
-        // Assign reviewers to applications
-        form.get().getData()
-                .entrySet().stream()
-                .filter(entry -> entry.getKey().matches("^reviewer\\d*$"))
-                .forEach(entry -> {
-                    EntityReviewerApplications reviewerApplications = new EntityReviewerApplications();
-                    reviewerApplications.setApplicationKey(application_id);
-                    reviewerApplications.setReviewerEmail(entry.getValue().toString());
-                    reviewerApplications.setDateAssigned(ts);
-                    reviewerApplications.insert();
-                });
+        assignReviewersToApplication(form, application_id);
 
         RECEngine.getInstance().nextStep(application_id);
 

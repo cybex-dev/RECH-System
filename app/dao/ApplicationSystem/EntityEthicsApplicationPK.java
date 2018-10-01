@@ -87,7 +87,7 @@ public class EntityEthicsApplicationPK implements Serializable {
 
     public static dao.ApplicationSystem.EntityEthicsApplicationPK fromString(String id) {
 
-        List<String> strings = Arrays.asList(id.split("_"));
+        List<String> strings = Arrays.asList(id.split("-"));
         EthicsApplication.ApplicationType type = EthicsApplication.ApplicationType.parse(strings.get(0).substring(0,1));
         int year = Integer.parseInt("20" + strings.get(0).substring(1));
 
@@ -111,20 +111,29 @@ public class EntityEthicsApplicationPK implements Serializable {
         if (departmentName.contains("(")) {
             int i = departmentName.indexOf("(");
             dept = departmentName.substring(0, i - 1);
-            dept = Arrays.stream(dept.split(" ")).map(s -> s.substring(0, 1)).reduce(String::concat).orElse("???");
+        }
+
+        String[] s1 = dept.split(" ");
+        dept = "";
+        if (s1.length == 1) {
+            dept = s1[0].substring(0, 3);
+        } else if(s1.length == 2) {
+            dept = s1[0].substring(0, 1) + s1[1].substring(0, 1) + s1[1].substring(0, 1);
+        } else {
+            dept = s1[0].substring(0, 1) + s1[1].substring(0, 1) + s1[2].substring(0, 1);
         }
 
         DecimalFormat decimalFormat = new DecimalFormat("000");
         String number = decimalFormat.format(applicationNumber);
 
         String type = applicationType.substring(0,1);
-        String year = String.valueOf(applicationYear).substring(2, 3);
-        String faculty = facultyName.substring(0, 2);
+        String year = String.valueOf(applicationYear).substring(2, 4);
+        String faculty = facultyName.substring(0, 3);
 
         builder.append(type).append(year).append("-")
                 .append(faculty).append("-")
                 .append(dept).append("-")
                 .append(number);
-        return builder.toString();
+        return builder.toString().toUpperCase();
     }
 }

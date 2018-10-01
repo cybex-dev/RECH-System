@@ -1,5 +1,7 @@
 package dao.ReviewSystem;
 
+import dao.ApplicationSystem.EntityComponentVersion;
+import dao.ApplicationSystem.EntityComponentVersionPK;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 
 import javax.persistence.Column;
@@ -118,5 +120,15 @@ public class EntityReviewerComponentFeedbackPK implements Serializable {
         this.departmentName = applicationId.getDepartmentName();
         this.facultyName = applicationId.getFacultyName();
         this.applicationNumber = applicationId.getApplicationNumber();
+    }
+
+    public void setComponentVersionId(EntityComponentVersionPK componentVersionPK) {
+        this.applicationYear = componentVersionPK.getApplicationYear();
+        this.applicationType = componentVersionPK.getApplicationType();
+        this.departmentName = componentVersionPK.getDepartmentName();
+        this.facultyName = componentVersionPK.getFacultyName();
+        this.applicationNumber = componentVersionPK.getApplicationNumber();
+        this.componentId = componentVersionPK.getComponentId();
+        this.version = componentVersionPK.getVersion();
     }
 }

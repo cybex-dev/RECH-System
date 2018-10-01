@@ -114,7 +114,19 @@ public class MeetingController extends Controller {
 
     }
 
-    public Result completeMeeting(String meetingId){
+    public Result completeMeeting(){
+        // Get all agenda items, get the status and set the application status in entity ethics application
+        // Notifiy all about this
+        return TODO;
+    }
+
+    public Result saveMeeting(){
+        // Get all agenda items, get the status and set the application status in entity ethics application
+        // Notifiy all about this
+        return TODO;
+    }
+
+    public Result saveResolution(){
         // Get all agenda items, get the status and set the application status in entity ethics application
         // Notifiy all about this
         return TODO;

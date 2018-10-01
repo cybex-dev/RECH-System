@@ -205,7 +205,7 @@ public class APIController extends Controller {
     }
 
     public static List<String> getApplicationStatuses(){
-        return Arrays.asList(ApplicationStatus.TEMPORARILY_APPROVED.name(), ApplicationStatus.TEMPORARILY_APPROVED_EDITS.name(), ApplicationStatus.REJECTED.name());
+        return Arrays.asList(ApplicationStatus.TEMPORARILY_APPROVED.description(), ApplicationStatus.APPROVED.description(), ApplicationStatus.REJECTED.description(), ApplicationStatus.RESUBMISSION.description());
     }
 
 }

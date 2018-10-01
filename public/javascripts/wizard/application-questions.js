@@ -83,7 +83,7 @@ function _docReady(funcName, baseObj) {
 
     document.getElementById("popup_questionnaire_close").onclick = function(){
         risk = 3;
-        completeQuestionnaire();
+        completeClose();
     };
 }
 
@@ -162,7 +162,7 @@ function completeQuestionnaire() {
         }
 
         case 1: {
-            document.getElementById("risk_message").textContent = "You need to submit an ethics application for your faculty to review";
+            document.getElementById("risk_message").textContent = "You need to submit an ethics application for your faculty to review.";
             document.getElementById("risk_message").style.color = "orange";
             document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
                 setHidden(document.getElementById("filter_question_form"));
@@ -355,4 +355,20 @@ function previousQuestion() {
     var nodelistQuestion = document.querySelectorAll(".question");
     setHidden(nodelistQuestion[indexQuestions]);
     setVisible(nodelistQuestion[--indexQuestions]);
+}
+
+function completeClose() {
+
+    hideQuestions();
+    document.getElementById("filter_question_form").children[0].style.height = "15%";
+    setHidden(document.getElementsByClassName("question-content")[0]);
+
+    setHidden(document.getElementById("questionnaire_popup"));
+    document.getElementById("risk_message").textContent = "The questionnaire has not been complete. This is required to submit the application.";
+    document.getElementById("btn_question_complete_proceed").onclick = function (ev) {
+        //TODO redirect to home
+        window.location.href = homeRoutes.controllers.HomeController.index().url;
+    };
+    document.getElementById("popup_complete_title").textContent = "Incomplete Questionnaire";
+    setVisible(document.getElementById("complete_popup"));
 }

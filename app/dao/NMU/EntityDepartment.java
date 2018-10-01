@@ -101,6 +101,8 @@ public class EntityDepartment extends Model {
                     if (department.departmentName.contains("(")) {
                         int i = department.departmentName.indexOf("(");
                         dept = department.departmentName.substring(0, i - 1);
+                    } else {
+                        dept = department.departmentName;
                     }
 
                     // Check # words

@@ -36,44 +36,51 @@ GET     /user/jsRoutes                  controllers.UserSystem.ProfileHandler.ja
 GET     /user/applications              controllers.ApplicationSystem.ApplicationHandler.allApplications
 
 # New Application (application type passed as parameter)
-GET     /application/new/:type          controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
-POST    /application/new/create         controllers.ApplicationSystem.ApplicationHandler.createApplication
-POST    /application/new/submit         controllers.ApplicationSystem.ApplicationHandler.forceSubmitApplication
+GET     /application/new/create         controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
+POST    /application/new/save           controllers.ApplicationSystem.ApplicationHandler.saveApplication
 
 GET     /application/edit/:id           controllers.ApplicationSystem.ApplicationHandler.editApplication(id: String)
-POST    /application/edit/submit        controllers.ApplicationSystem.ApplicationHandler.submitEdit
+POST    /application/edit/save          controllers.ApplicationSystem.ApplicationHandler.saveEdit
+POST    /application/edit/submit        controllers.ApplicationSystem.ApplicationHandler.submitApplication
 
 GET     /application/review/:id         controllers.ApplicationSystem.ApplicationHandler.reviewApplication(id: String)
-POST    /application/review/submit      controllers.ApplicationSystem.ApplicationHandler.submitRevision
+#POST    /application/review/submit      controllers.ApplicationSystem.ApplicationHandler.submitRevision
 GET     /application/jsRoutes           controllers.ApplicationSystem.ApplicationHandler.javascriptRoutes
 
 ### ### Review System ###
 
 GET     /rcd/applications/assign/:id    controllers.ReviewSystem.ReviewHandler.assignReviewer(id: String)
+POST    /rcd/applications/assign/save   controllers.ReviewSystem.ReviewHandler.saveAssignedReviewers
 POST    /rcd/applications/assign        controllers.ReviewSystem.ReviewHandler.doAssignReviewers
 
 GET     /review/application/:id         controllers.ReviewSystem.ReviewHandler.reviewApplication(id: String)
+POST    /review/application/save        controllers.ReviewSystem.ReviewHandler.saveReview
 POST    /review/application/submit      controllers.ReviewSystem.ReviewHandler.submitReview
 
 GET     /review/application/approve/:id controllers.ReviewSystem.ReviewHandler.viewApprove(id: String)
 POST    /review/application/doApprove   controllers.ReviewSystem.ReviewHandler.doViewApprove
+POST    /review/application/doReject    controllers.ReviewSystem.ReviewHandler.doViewReject
 
 ### ### Message System ###
 
 GET     /messages                       controllers.MessageSystem.MessageController.allMessages
 # Application ID passed as parameter
 GET     /messages/:appId                controllers.MessageSystem.MessageController.applicationMessages(appId: String)
+POST    /messages/send                  controllers.MessageSystem.MessageController.send
 
 ### ### Meeting System ###
 
 GET     /rcd/meeting/overview           controllers.MeetingSystem.MeetingController.meetingHome
 GET     /rcd/meeting/applications/:id   controllers.MeetingSystem.MeetingController.allApplications(id: String)
+
 GET     /rcd/meeting/setup              controllers.MeetingSystem.MeetingController.setupMeeting
+POST    /rcd/meeting/setup/save         controllers.MeetingSystem.MeetingController.saveMeeting
 POST    /rcd/meeting/setup              controllers.MeetingSystem.MeetingController.doSetupMeeting
+POST    /rcd/meeting/complete           controllers.MeetingSystem.MeetingController.completeMeeting
 
 GET     /rcd/meeting/application/:appId controllers.MeetingSystem.MeetingController.getApplication(appId: String)
+POST    /rcd/meeting/application/save   controllers.MeetingSystem.MeetingController.saveResolution
 POST    /rcd/meeting/application/submit controllers.MeetingSystem.MeetingController.submitResolution
-POST    /rcd/meeting/complete/:id       controllers.MeetingSystem.MeetingController.completeMeeting(id: String)
 
 
 ### ### API Controller ###

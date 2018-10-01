@@ -26,4 +26,12 @@ public class MessageController {
         return TODO;
     }
 
+    /**
+     *  Sends message
+     * @return
+     */
+    public Result send(){
+        return TODO;
+    }
+
 }

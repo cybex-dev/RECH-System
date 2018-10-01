@@ -17,7 +17,7 @@
             @for(application: Application <- applications) {
                 <tr>
                     <td style="text-decoration: underline;">@application.getTitle</td>
-                    <td>@application.getStatus.name()</td>
+                    <td>@application.getStatus.description()</td>
                     <td>@application.getSubmittedDateSafe</td>
                     <td><a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.assignReviewer(application.getApplicationID.shortName())">
                         <button class="nmu-button table-button">Assign Reviewers</button>
