@@ -4,7 +4,7 @@
 @(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label for="@id" style="cursor: pointer !important;">@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>
-<input style="margin-left: 20px" id="@id" name="@id" @{if(value != null) {if(value=="0"){"value=off"}else{"value=on"}} else {}} type="checkbox" @Components.editable.apply(canEdit)>
+<input style="margin-left: 20px" id="@id" name="@id" @{if(value != null) {if(value.toLowerCase=="true"){"value=on"}else{"value=off"}} else {}} @{if(value != null) {if(value.toLowerCase=="true"){"checked"}else{}} else {}} type="checkbox" @Components.editable.apply(canEdit)>
 
     @Components.feedback_container.apply(id, feedback)
     @Components.reviewable.apply(review, reviewData)

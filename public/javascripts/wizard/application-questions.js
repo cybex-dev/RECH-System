@@ -120,20 +120,20 @@ function checkRisk() {
 
     switch (risk) {
         case 0: {
-            document.getElementById("risk_eval").textContent = "None";
+            document.getElementById("risk_eval").textContent = "No application needed so far";
             document.getElementById("risk_eval").style.color = "green";
             break
         }
 
         case 1: {
-            document.getElementById("risk_eval").textContent = "You need to submit an ethics application, which will be sent to the faculty ethics committee";
+            document.getElementById("risk_eval").textContent = "You need to submit an ethics application for faculty review";
             document.getElementById("risk_eval").style.color = "orange";
             break
         }
 
         case 2:
         case 3: {
-            document.getElementById("risk_eval").textContent = "You need to submit an ethics application to the Central Ethics Committee";
+            document.getElementById("risk_eval").textContent = "You need to submit an ethics application for central ethics committee review";
             document.getElementById("risk_eval").style.color = "red";
             break
         }

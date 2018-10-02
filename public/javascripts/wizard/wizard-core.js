@@ -2,6 +2,10 @@
 var numSections = 0;
 var indexSections = -1;
 
+var quillInstances = {};
+var quillTextAreas = {};
+var quillNum = 0;
+
 function hidePopup(id) {
     document.getElementById(id).style.display = 'none';
 }
@@ -483,6 +487,14 @@ function initWizard() {
         };
         e.classList.remove("extension-active");
         e.parentElement.nextElementSibling.style.display = "none";
+
+        if (e.parentElement.nextElementSibling.style.display === "none") {
+            e.parentElement.classList.add("extension-active");
+            e.parentElement.nextElementSibling.style.display = "block"
+        } else {
+            e.parentElement.classList.remove("extension-active");
+            e.parentElement.nextElementSibling.style.display = "none"
+        }
     });
 
     // Add section-heading dashed line
@@ -496,23 +508,44 @@ function initWizard() {
         document.querySelectorAll("textarea").forEach(value => {
             let id = value.id;
             let name = value.getAttribute("name");
+            let placeholder = value.getAttribute("placeholder");
 
             let editorDiv = createDiv(id, name, "");
             editorDiv.style.minHeight = "10em";
+            editorDiv.id = id + "_editor";
 
-            let outerId = id + "_outer";
-            let outer = createDiv(outerId, "", "");
-            outer.style.marginLeft = "5%";
-            outer.style.marginRight = "5%";
-            outer.style.marginTop = "20px";
+            let outerEditorContainerId = id + "_outer";
+            let outerEditorContainer = createDiv(outerEditorContainerId, "", "");
+            outerEditorContainer.style.marginLeft = "5%";
+            outerEditorContainer.style.marginRight = "5%";
+            outerEditorContainer.style.marginTop = "20px";
 
-            outer.appendChild(editorDiv);
-            value.parentElement.insertBefore(outer, value);
-            value.remove();
+            outerEditorContainer.appendChild(editorDiv);
+            value.parentElement.insertBefore(outerEditorContainer, value);
+            value.style.display = "none";
 
-            var quill = new Quill('#' + id, {theme: 'snow'});
+            var quill = new Quill('#' + editorDiv.id, {
+                modules: {
+                    toolbar: [
+                        [{ header: [1, 2, false] }],
+                        ['bold', 'italic', 'underline']
+                    ]
+                },
+                placeholder: placeholder.replace("_", " "),
+                theme: 'snow'  // or 'bubble'
+            });
 
-            outer.firstElementChild.style.maxHeight = "5em";
+            let content = value.value;
+            if (content !== null && content !== "") {
+                let jsonData = JSON.parse(content);
+                quill.setContents(jsonData);
+            }
+
+            quillInstances[quillNum] = quill;
+            quillTextAreas[quillNum] = value.id;
+            quillNum++;
+
+            outerEditorContainer.firstElementChild.style.maxHeight = "5em";
         })
     }
 
@@ -523,8 +556,7 @@ function initWizard() {
         document.querySelectorAll(".group > *").forEach(function (e) {
             if (e.tagName !== "BR") {
                 e.classList.add("collapsible-child")
-            }
-            ;
+            };
         });
 
         // Add collabsible group heading
@@ -604,7 +636,7 @@ function addSectionStatus() {
         check.id = id;
         check.name = id;
         check.classList.add("fa", "fa-ellipsis-h", "section-checkbox");
-        value.firstElementChild.appendChild(check);
+        value.appendChild(check);
     })
 }
 
@@ -618,7 +650,7 @@ function addGroupStatus() {
         check.id = id;
         check.name = id;
         check.classList.add("fa", "fa-ellipsis-h", "section-checkbox");
-        value.firstElementChild.appendChild(check);
+        value.appendChild(check);
     })
 }
 
@@ -640,9 +672,9 @@ function setAdaptiveHook(element) {
     show(element.previousElementSibling.previousElementSibling);
 }
 
-function setExtensionHooks() {
-    document.querySelectorAll(".extension > input[type=checkbox]").forEach(setAdaptiveHook);
-}
+// function setExtensionHooks() {
+//     document.querySelectorAll(".extension > input[type=checkbox]").forEach(setAdaptiveHook);
+// }
 
 function createLists(listDiv) {
     document.querySelectorAll("#listDiv").forEach(function (div) {

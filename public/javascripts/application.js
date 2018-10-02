@@ -50,12 +50,12 @@ function docReady() {
         enablePopulatePRPFields();
         addReadGuidelines();
         //fix input checkboxes not accepting values
-        document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
-            checkbox.onclick = function () {
-                // checkbox.checked = !checkbox.checked;
-                // checkbox.value = checkbox.checked;
-            }
-        })
+        // document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
+        //     checkbox.onclick = function () {
+        //         // checkbox.checked = !checkbox.checked;
+        //         // checkbox.value = checkbox.checked;
+        //     }
+        // })
     }
 }
 
@@ -75,7 +75,13 @@ function fixTables() {
     //Get all table rows, the element and index
     document.querySelectorAll("table > thead > tr").forEach(row => {
         const mockupRow = [];
+        var classLists = {};
+        var fieldCount = 0;
+
+        classLists[0] = "col-sm-1";
         row.querySelectorAll("th").forEach(headerRow => {
+
+            fieldCount++;
             let label;
             headerRow.childNodes.forEach(value => {
                 if (value.tagName === "BR") {
@@ -86,19 +92,37 @@ function fixTables() {
             });
             headerRow.classList.add("col-sm-4");
             let field = headerRow.children[2];
+            if (field.tagName === "INPUT") {
+                let fieldType = field.type.toUpperCase();
+                if (fieldType === "TEXT") {
+                    classLists[fieldCount] = "col-sm-4";
+                    field.style.width = "100%";
+                } else
+                    classLists[fieldCount] = "col-sm-1";
+                    field.style.transform = "scale(2.2)";
+                }
+            } else if (field.tagName === "SELECT") {
+                classLists[fieldCount] = "col-sm-3";
+            }
             headerRow.removeChild(field);
             mockupRow[mockupRow.length++] = field;
         });
+        fieldCount++;
+        classLists[fieldCount] = "col-sm-2";
+        fieldCount++;
+
         let table = row.parentElement.parentElement;
         tableElementsContainer[table.id] = mockupRow;
-
         let th = document.createElement("TH");
         th.innerText = "";
-        th.classList.add("col-sm-1");
         let buttonContainer = th.cloneNode(true);
         row.insertBefore(th, row.firstElementChild);
-        buttonContainer.classList.add("col-sm-2");
         row.appendChild(buttonContainer);
+
+        for (let i = 0; i < row.children.length; i++) {
+            row.children[i].classList = "";
+            row.children[i].classList.add(classLists[i]);
+        }
 
         const tableBody = document.createElement("TBODY");
         const tableFooter = document.createElement("TFOOT");
@@ -191,10 +215,17 @@ function addReadGuidelines() {
             }
         };
 
-        positiveButton.setAttribute("disabled", "");
-        neutralButton.setAttribute("disabled", "");
-        positiveButton.classList.add("accept-tAc");
-        neutralButton.classList.add("accept-tAc");
+        if (!check_guidelines.checked) {
+            positiveButton.classList.add("accept-tAc");
+            neutralButton.classList.add("accept-tAc");
+            positiveButton.setAttribute("disabled", "");
+            neutralButton.setAttribute("disabled", "");
+        } else {
+            positiveButton.classList.remove("accept-tAc");
+            neutralButton.classList.remove("accept-tAc");
+            positiveButton.removeAttribute("disabled");
+            neutralButton.removeAttribute("disabled");
+        }
     }
 
 }

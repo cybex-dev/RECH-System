@@ -111,7 +111,7 @@
                             <value></value>
                         </component>
                     </list>
-                </extension>
+                </extension>e
             </extension>
         </group>
         <group id="grp_study_details" name="Study Details" hint="Information about the study">

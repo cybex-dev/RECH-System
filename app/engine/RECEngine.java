@@ -971,4 +971,18 @@ public class RECEngine extends Controller {
         }
         return false;
     }
+
+    public void tryCompleteStageCheck(EntityEthicsApplicationPK entityEthicsApplicationPK) {
+        boolean complete = isComplete(entityEthicsApplicationPK);
+        if (complete) {
+            EntityEthicsApplication application = EntityEthicsApplication.GetApplication(entityEthicsApplicationPK);
+            if (application == null) {
+                System.out.println("Unable to find application with existing key");
+                return;
+            }
+            // Sets the application to be ready for submitting to PRP, HOD, RTI;
+            application.setInternalStatus(ApplicationStatus.NOT_SUBMITTED.getStatus());
+            application.update();
+        }
+    }
 }
