@@ -4,18 +4,24 @@
 
 
 @if(review)  {
-    <h4>Review Feedback</h4>
-    @if(reviewData == null) {
-        <p>No feedback</p>
-    } else {
-        @if(reviewData.size > 0) {
-            <p style="font-weight: bold;">No feedback available.</p>
-        } else {
-            <ul>
-            @for(r <- reviewData) {
-                <li>@r</li>
+    <div class="review-container">
+    <div class="review-title">
+        <h5>Review Feedback</h5>
+    </div>
+        <div class="review-content">
+            @if(reviewData == null) {
+                <p>No feedback</p>
+            } else {
+                @if(reviewData.size > 0) {
+                    <p style="font-weight: bold;">No feedback available.</p>
+                } else {
+                    <ul>
+                    @for(r <- reviewData) {
+                        <li>@r</li>
+                    }
+                    </ul>
+                }
             }
-            </ul>
-        }
-    }
+        </div>
+    </div>
 }

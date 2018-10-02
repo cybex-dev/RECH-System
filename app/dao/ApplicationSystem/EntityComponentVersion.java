@@ -330,4 +330,26 @@ public class EntityComponentVersion extends Model {
 
         return (liaisonFeedback.size() > 0 || reviewerFeedback.size() > 0);
     }
+
+    @Override
+    public String toString() {
+        String value = "";
+        switch (responseType.toLowerCase()) {
+            case "boolean": {
+                value = String.valueOf(boolValue);
+                break;
+            }
+
+            case "text": {
+                value = textValue;
+                break;
+            }
+
+            case "document": {
+                value = documentName + " - " + documentDescription + "\n" + documentLocationHash;
+                break;
+            }
+        }
+        return componentId + " [" +  version + "] (" + getResponseType() + ") : " + value;
+    }
 }

@@ -94,7 +94,7 @@ public class ApplicationHandler extends Controller {
         Map<String, Boolean> editableMap = new HashMap<>();
         XMLTools.flatten(element).forEach(s -> editableMap.put(s, true));
 
-        Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.getLatestComponentFeedback(entityEthicsApplicationPK);
+        Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.GetLatestComponentFeedback(entityEthicsApplicationPK);
 
         return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.type(), element, editableMap, false, entityEthicsApplicationPK.shortName(), false, false, latestComponentFeedback, GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
     }
@@ -127,7 +127,7 @@ public class ApplicationHandler extends Controller {
             Element element = EthicsApplication.PopulateRootElement(ethicsApplication);
             Map<String, Boolean> editableMap = new HashMap<>();
             XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
-            Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.getLatestComponentFeedback(entityEthicsApplicationPK);
+            Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.GetLatestComponentFeedback(entityEthicsApplicationPK);
             return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review Application", ethicsApplication.type(), element, editableMap, false, entityEthicsApplicationPK.shortName(), false, true, latestComponentFeedback, GuiButton.negHomeCancel, null, null));
         }
     }
@@ -188,6 +188,7 @@ public class ApplicationHandler extends Controller {
         EntityEthicsApplicationPK applicationPK = EntityEthicsApplicationPK.fromString(id);
         //update all components
         Map<String, Object> cleanData = clean(form, applicationPK);
+        // TODO see what is missing here
 
         RECEngine.getInstance().nextStep(applicationPK);
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
@@ -379,7 +380,7 @@ public class ApplicationHandler extends Controller {
             }
 
             case "boolean": {
-                boolean b = Boolean.parseBoolean((String) entry.getValue());
+                boolean b = (entry.getValue().equals("on"));
                 entityComponentVersion.setBoolValue(b);
                 break;
             }

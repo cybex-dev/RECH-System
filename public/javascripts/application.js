@@ -49,6 +49,13 @@ function docReady() {
         fixTables();
         enablePopulatePRPFields();
         addReadGuidelines();
+        //fix input checkboxes not accepting values
+        document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
+            checkbox.onclick = function () {
+                // checkbox.checked = !checkbox.checked;
+                // checkbox.value = checkbox.checked;
+            }
+        })
     }
 }
 

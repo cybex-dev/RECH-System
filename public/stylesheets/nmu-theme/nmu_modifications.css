@@ -421,3 +421,12 @@ ol > li > h3 {
 table > tbody td {
     padding: 14px !important;
 }
+
+.review-container {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.review-container .review-content {
+    margin-left: 40px !important;
+}

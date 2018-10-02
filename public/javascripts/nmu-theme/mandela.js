@@ -225,18 +225,18 @@ $(document).ready(function () {
             $("#LogoBar").addClass('navbar-fixed-top');
 
             if (window.matchMedia('(min-width: 993px)').matches) {
-                $('#LogoBar').css({ 'height': '105px' });
+                $('#LogoBar').css({ 'height': '125px' });
                 $("#main").css({ "padding-top": "166px" });
                 $('.MegaDrop').css({ 'margin-top': '-25px' });
              //   $('.mega-menu').css({ 'top': '105px' });
                 $("#DepartmentEntity").css({ "margin-top": "-13px" });
              } else if (window.matchMedia('(min-width: 768px)').matches) {
-                $('#LogoBar').css({ 'height': '95px' });
+                $('#LogoBar').css({ 'height': '105px' });
                 $("#main").css({ "padding-top": "156px" });
                 $('.MegaDrop').css({ 'margin-top': '-35px' });
                 $("#DepartmentEntity").css({ "margin-top": "-13px" });
             } else {
-                $('#LogoBar').css({ 'height': '76px' });
+                $('#LogoBar').css({ 'height': '84px' });
                 $("#main").css({ "padding-top": "127px" });
                 $('.MegaDrop').css({ 'margin-top': '-17px' });
                 $("#DepartmentEntity").css({ "margin-top": "-9px" });
@@ -252,18 +252,18 @@ $(document).ready(function () {
             $('#LogoBar').removeClass('navbar-fixed-top');
 
             if (window.matchMedia('(min-width: 993px)').matches) {
-                $('#LogoBar').css({ 'height': '165px' });
+                $('#LogoBar').css({ 'height': '195px' });
                 $("#main").css({ "padding-top": "1px" });
                 $('.MegaDrop').css({ 'margin-top': '0px' });
              //   $('.mega-menu').css({ 'top': (parseFloat(165 - scrollTop)) + 'px' });
                 $("#DepartmentEntity").css({ "margin-top": "5px" });
              } else if (window.matchMedia('(min-width: 768px)').matches) {
-                $('#LogoBar').css({ 'height': '155px' });
+                $('#LogoBar').css({ 'height': '175px' });
                 $("#main").css({ "padding-top": "1px" });
                 $('.MegaDrop').css({ 'margin-top': '-6px' });
                 $("#DepartmentEntity").css({ "margin-top": "10px" });
             } else {
-                $('#LogoBar').css({ 'height': '125px' });
+                $('#LogoBar').css({ 'height': '145px' });
                 $("#main").css({ "padding-top": "1px" });
                 $('.MegaDrop').css({ 'margin-top': '1px' });
                 $("#DepartmentEntity").css({ "margin-top": "0px" });

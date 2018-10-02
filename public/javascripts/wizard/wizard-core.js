@@ -262,7 +262,7 @@ function createDocumentPopups() {
 
         // Set onclick event
         document.getElementById("btnPopup_" + copy.id).onclick = function () {
-            openPopup(copy.id, true);
+            openPopup(copy.id, false);
         };
 
         // Set onDownload button click handlers

@@ -12,11 +12,9 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import scala.Dynamic;
 
 import javax.inject.Inject;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -150,8 +148,8 @@ public class MeetingController extends Controller {
         }
 
         HashMap<String, Boolean> stringBooleanHashMap = new HashMap<>();
-        Element populatedElement = application.getPopulatedElement();
-        Map<String, List<String>> latestComponentFeedback = application.getLatestComponentFeedback();
+        Element populatedElement = application.GetPopulatedElement();
+        Map<String, List<String>> latestComponentFeedback = application.GetLatestComponentFeedback();
 
         return ok(views.html.MeetingSystem.meetingApplication.render(application, populatedElement, stringBooleanHashMap, latestComponentFeedback));
     }
@@ -172,8 +170,8 @@ public class MeetingController extends Controller {
         if (form.hasErrors()){
             flash("danger", "Please check all fields are complete");
             HashMap<String, Boolean> stringBooleanHashMap = new HashMap<>();
-            Element populatedElement = application.getPopulatedElement();
-            Map<String, List<String>> latestComponentFeedback = application.getLatestComponentFeedback();
+            Element populatedElement = application.GetPopulatedElement();
+            Map<String, List<String>> latestComponentFeedback = application.GetLatestComponentFeedback();
 
             return badRequest(views.html.MeetingSystem.meetingApplication.render(application, populatedElement, stringBooleanHashMap, latestComponentFeedback));
         }

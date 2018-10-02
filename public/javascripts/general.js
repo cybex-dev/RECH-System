@@ -5,6 +5,7 @@ function addButtonPost() {
             value.onclick = function (event) {
                 if (value.getAttribute("href") !== null) {
                     appForm.action = value.getAttribute("href");
+                    appForm.method = "POST";
                     appForm.submit();
                 }
                 event.preventDefault();

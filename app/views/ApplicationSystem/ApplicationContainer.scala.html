@@ -36,7 +36,7 @@
                 <br/>
             }
             <div class="col-sm-12">
-            @helper.form(action = positiveButton.getCallBack, 'enctype -> "multipart/form-data", 'id -> "application_form") {
+            @helper.form(action = controllers.UserSystem.routes.ProfileHandler.overview(), 'enctype -> "multipart/form-data", 'id -> "application_form") {
                 @helper.CSRF.formField
                 <input type="hidden" value="" id="application_level" name="application_level">
                 <input type="hidden" value="false" id="application_questions_shown" name="application_questions_shown">

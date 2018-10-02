@@ -64,7 +64,7 @@ public class ReviewHandler extends Controller {
             return unauthorized("You are not authorized to reviewable this application");
         }
 
-        Element element = ethicsApplication.getPopulatedElement();
+        Element element = ethicsApplication.GetPopulatedElement();
         Map<String, Boolean> editableMap = new HashMap<>();
         XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
         return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review/Feedback Application", ethicsApplication.type(), element, editableMap, false, ethicsApplication.applicationPrimaryKey().shortName(), false, true, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitFeedback, GuiButton.netSaveFeedback));
@@ -78,10 +78,9 @@ public class ReviewHandler extends Controller {
             return badRequest();
         }
 
-        Element element =  ethicsApplication.getPopulatedElement();
+        Element element =  ethicsApplication.GetPopulatedElement();
         Map<String, Boolean> editableMap = new HashMap<>();
         XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
-        Map<String, List<String>> latestComponentFeedback = EntityEthicsApplication.getLatestComponentFeedback(entityEthicsApplicationPK);
 
         return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Edit Application", ethicsApplication.type(), element, editableMap, false, entityEthicsApplicationPK.shortName(), false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posApproveApplication, GuiButton.netRejectApplication));
     }

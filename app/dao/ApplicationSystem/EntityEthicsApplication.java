@@ -14,7 +14,6 @@ import net.ddns.cyberstudios.Element;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -511,7 +510,7 @@ public class EntityEthicsApplication extends Model {
         return (pi || prp || hod || rti || liaison || reviewers);
     }
 
-    public static Map<String, List<String>> getLatestComponentFeedback(EntityEthicsApplicationPK pk){
+    public static Map<String, List<String>> GetLatestComponentFeedback(EntityEthicsApplicationPK pk){
         HashMap<String, List<String>> reviewData = new HashMap<>();
 
         EntityEthicsApplication.getLatestComponents(pk)
@@ -543,11 +542,11 @@ public class EntityEthicsApplication extends Model {
         return EthicsApplication.PopulateRootElement(application);
     }
 
-    public Element getPopulatedElement(){
+    public Element GetPopulatedElement(){
         return GetPopulatedElement(this);
     }
 
-    public Map<String, List<String>> getLatestComponentFeedback(){
-        return EntityEthicsApplication.getLatestComponentFeedback(applicationPrimaryKey());
+    public Map<String, List<String>> GetLatestComponentFeedback(){
+        return EntityEthicsApplication.GetLatestComponentFeedback(applicationPrimaryKey());
     }
 }

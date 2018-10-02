@@ -230,6 +230,7 @@ public class EthicsApplication implements Serializable {
     }
 
     public static Element PopulateRootElement(EntityEthicsApplication application) {
+        System.out.println("[Populating Root Element]");
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
         Map<String, Object> entryMap = new HashMap<>();
