@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EthicsApplication implements Serializable {
 
@@ -243,6 +244,8 @@ public class EthicsApplication implements Serializable {
                         break;
                     }
 
+                    case "number":
+                    case "long_text":
                     case "text": {
                         entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getTextValue());
                         break;
@@ -267,5 +270,16 @@ public class EthicsApplication implements Serializable {
 
     public static List<Question> GetQuestionList(ApplicationType type){
         return EthicsApplication.lookupApplication(type).getQuestionList();
+    }
+
+    public static List<String> getAllApplications(){
+        if (ethicsApplications.size() == 0){
+            loadApplications();
+            loadQuestionnaires();
+        }
+        return ethicsApplications.stream().map(ethicsApplication -> {
+            String name = ethicsApplication.getType().name();
+            return name.toUpperCase().charAt(0) + name.substring(1);
+        }).collect(Collectors.toList());
     }
 }

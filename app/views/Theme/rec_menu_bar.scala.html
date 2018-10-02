@@ -1,6 +1,8 @@
 @import helpers.CookieTags
 @import models.UserSystem.UserType
 @import controllers.ApplicationSystem.ApplicationHandler
+@import models.ApplicationSystem.EthicsApplication
+
 @()
 
 @getName = @{
@@ -97,13 +99,13 @@
         <div class="popup-header">
             <span onclick="hidePopup('select_application_type_popup')" class="close modal-close" title="Close PopUp">&times;</span>
             <h2>Choose application type</h2>
+            <p style="font-style: italic;">Click on the application type you wish to create an application for</p>
         </div>
-
         <div class="lessen-top-margin">
-            <button onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("human")'" class="nmu-button" type="submit">
-                Human Research</button>
-            <button disabled="true" onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication("animal")'" class="nmu-button disabled" type="submit">
-                Animal Research</button>
+            @for(appType: String <- EthicsApplication.getAllApplications) {
+                <button onclick="window.location.href = '@controllers.ApplicationSystem.routes.ApplicationHandler.newApplication(appType)'" class="nmu-button disabled" type="submit">
+                @appType Research</button>
+            }
         </div>
     </div>
 </div>

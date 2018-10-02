@@ -298,7 +298,7 @@ public class ApplicationHandler extends Controller {
 //                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type, application_template.getRootElement(), editableMap, false, application.applicationPrimaryKey().shortName(), false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
 //            }
 
-            RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
+            RECEngine.getInstance().tryCompleteStageCheck(application.applicationPrimaryKey());
 
             flash("success", "Your application has been saved");
             return redirect(routes.ApplicationHandler.allApplications());

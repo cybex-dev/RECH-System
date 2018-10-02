@@ -9,7 +9,8 @@
 @import dao.ApplicationSystem.EntityEthicsApplicationPK
 @import controllers.APIController
 
-@(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: Map[String, List[String]])
+@import scala.collection.immutable
+@(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])
 
 @application_content = @{
     def createComponent(element: Element): String = {
@@ -167,31 +168,73 @@
         }
     }
 
+    def removeElement(component: String, tag: String): (String, String) = {
+
+    }
+
+    def processList(elem: Element): String = {
+        val componentList = immutable.List[String]()
+        val headingList = immutable.List[String]()
+        val addButton = "<button id=\"btnAdd_" + elem.getId + "\">Add</button>"
+
+        // create table header
+        for (e <- elem.getChildren) {
+
+            //cleanup
+            var component = createComponent(e)
+            component = component.replace("<br>", "")
+            component = component.trim()
+
+            // get label
+            val tuple = removeElement(component, "label")
+            component =  tuple._1
+            val label = tuple._2
+            println("label = " + label)
+
+            //get icon
+            val tuple1 = removeElement(component, "ic")
+            component =  tuple1._1
+            val ic = tuple1._2
+            println("ic = " + label)
+
+            //get element
+            val element = component
+            println("element = " + element)
+        }
+        addButton
+        // create table body
+        // create table footer
+        // create table add button
+    }
+
     def parseElement(element: Element): String = {
         val innerText = for(elem: Element <- element.getChildren) yield {
-            if(!elem.isComponent) {
-                /*this creates a container element which consumes some html type text*/
-                val innerText = parseElement(elem)
-                val isList = elem.getTag.equals("list")
-                val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
-                if(isList) {
-                    val pre = elem.getPreTag("table")
-                    val post = elem.getPostTag("table")
-                    heading + pre + "<thead><tr>" + innerText + "</tr></thead>" + post
-                } else {
+            if (elem.getTag.equals("list")){
+                processList(elem)
+            } else {
+//                if (!elem.isComponent) {
+                    /*this creates a container element which consumes some html type text*/
+                    val innerText = parseElement(elem)
+                    val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
+                    //                    if (isList) {
+                    //                        val pre = elem.getPreTag("table")
+                    //                        val post = elem.getPostTag("table")
+                    //                        heading + pre + "<thead><tr>" + innerText + "</tr></thead>" + post
+                    //                    } else {
                     val pre = elem.getPreTag("div")
                     val post = elem.getPostTag("div")
                     pre + heading + innerText + post
-                }
-            } else {
-                /*this creates a component of type a specific type*/
-                val isListItem = element.getTag.equals("list")
-                val value = createComponent(elem)
-                if(isListItem) {
-                    "<th>" + value + "</th>"
-                } else {
-                    value
-                }
+//                }
+                //                } else {
+                //                    /*this creates a component of type a specific type*/
+                //                    val isListItem = element.getTag.equals("list")
+                //                    val value = createComponent(elem)
+                //                    if (isListItem) {
+                //                        "<th>" + value + "</th>"
+                //                    } else {
+                //                        value
+                //                    }
+                //                }
             }
         }
         innerText.mkString("")
