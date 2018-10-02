@@ -168,6 +168,10 @@
         }
     }
 
+    def removeElement(component: String, tag: String): (String, String) = {
+
+    }
+
     def processList(elem: Element): String = {
         val componentList = immutable.List[String]()
         val headingList = immutable.List[String]()
@@ -175,8 +179,27 @@
 
         // create table header
         for (e <- elem.getChildren) {
-            val component = createComponent(e)
-            println(component)
+
+            //cleanup
+            var component = createComponent(e)
+            component = component.replace("<br>", "")
+            component = component.trim()
+
+            // get label
+            val tuple = removeElement(component, "label")
+            component =  tuple._1
+            val label = tuple._2
+            println("label = " + label)
+
+            //get icon
+            val tuple1 = removeElement(component, "ic")
+            component =  tuple1._1
+            val ic = tuple1._2
+            println("ic = " + label)
+
+            //get element
+            val element = component
+            println("element = " + element)
         }
         addButton
         // create table body
