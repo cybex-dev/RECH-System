@@ -7,7 +7,7 @@
 <h3 class="overview overview-title"><i class="fa fa-angle-right"></i> My Applications</h3>
 @if(applications.size() > 0) {
     <div class="row">
-        <table class="table">
+        <table class="table table-overview">
             <thead>
                 <th class="col-sm-6">Application Title</th>
                 <th class="col-sm-3">Status</th>
@@ -16,7 +16,7 @@
             <tbody>
             @for(application: Application <- applications) {
 
-                <tr class="nmu-button">
+                <tr class="nmu-button overview-td">
                     <td style="font-style: italic;">@application.getTitle</td>
                     <td>@application.getStatus.description</td>
                     <td>@if(application.getPermission == Permission.NONE) {

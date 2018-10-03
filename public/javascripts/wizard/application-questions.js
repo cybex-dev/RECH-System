@@ -285,6 +285,7 @@ function docReady() {
     // });
     let questions_shown = document.getElementById("application_questions_shown").value;
 
+    questions_shown = "true";
     if (questions_shown === "false") {
 
         // Sets number of question sections
@@ -294,10 +295,6 @@ function docReady() {
         // document.querySelectorAll(".question")[0].classList.add("visible");
 
         document.getElementById("btnStartQuestions").onclick = function (ev) {
-
-            //TODO temporary setting only - fix height issue
-            // document.getElementById("filter_question_form").children[0].style.height = "70%";
-            // document.getElementsByClassName("question-content")[0].style.height = "90%";
 
             setVisible(document.getElementById("btnNextQuestion"));
             setVisible(document.getElementById("row-question-content"));
@@ -331,6 +328,7 @@ function docReady() {
     } else {
         setHidden(document.getElementById("complete_popup"));
         setHidden(document.getElementById("questionnaire_popup"));
+        setHidden(document.getElementById("filter_question_form"));
     }
 
 }

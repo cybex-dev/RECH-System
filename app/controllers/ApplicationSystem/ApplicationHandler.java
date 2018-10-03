@@ -189,6 +189,7 @@ public class ApplicationHandler extends Controller {
         //update all components
         Map<String, Object> cleanData = clean(form, applicationPK);
         // TODO see what is missing here
+        fillInApplicationData(applicationPK, cleanData);
 
         RECEngine.getInstance().nextStep(applicationPK);
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());

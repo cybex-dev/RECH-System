@@ -296,8 +296,17 @@ th {
     font-size: 1.1em;
 }
 
+.group-data th {
+    color: #061c2c !important;
+}
+
 tr {
     color: white;
+}
+
+.group-data td {
+    padding-top: 10px !important;
+    color: #061c2c !important;
 }
 
 .application-details{
@@ -419,7 +428,11 @@ ol > li > h3 {
 }
 
 table > tbody td {
-    padding: 14px !important;
+    padding: 0 !important;
+}
+
+.overview-td td{
+    padding: 10px 8px !important;
 }
 
 .review-container {
@@ -430,3 +443,4 @@ table > tbody td {
 .review-container .review-content {
     margin-left: 40px !important;
 }
+

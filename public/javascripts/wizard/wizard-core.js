@@ -321,6 +321,7 @@ function createCollapsibleSectionHeadings() {
 // initialize Wizard
 function initWizard() {
 
+
     document.querySelectorAll(".section > h2").forEach(e => e.classList.add("section-title", "collapsible"));
 
     // Add all groups (which are decendants of section) to inherit collapsible-child allowing section to collapse groups
@@ -362,7 +363,10 @@ function initWizard() {
     });
 
     // Add extension groups for each extension div
-    document.querySelectorAll(".extension").forEach(function (element) {
+    document.querySelectorAll(".extension").forEach(function (el) {
+
+        let element = document.getElementById(el.id);
+        let parent = element.parentNode;
 
         //Get first three children.
         let label = element.firstElementChild;
@@ -404,7 +408,7 @@ function initWizard() {
         container.appendChild(data);
 
         // Add div to parent node extension/section
-        element.parentNode.insertBefore(container, element);
+        parent.insertBefore(container, element);
 
         // Remove group placeholder
         element.remove();
@@ -477,7 +481,8 @@ function initWizard() {
     // Add extension-header input hooks to show and hide extension-data containers
     document.querySelectorAll(".extension-header > input").forEach(function (e) {
         e.onclick = function () {
-            if (e.parentElement.nextElementSibling.style.display === "none") {
+            // if (e.parentElement.nextElementSibling.style.display === "none") {
+            if (e.checked) {
                 e.parentElement.classList.add("extension-active");
                 e.parentElement.nextElementSibling.style.display = "block"
             } else {
@@ -488,7 +493,8 @@ function initWizard() {
         e.classList.remove("extension-active");
         e.parentElement.nextElementSibling.style.display = "none";
 
-        if (e.parentElement.nextElementSibling.style.display === "none") {
+        // if (e.parentElement.nextElementSibling.style.display === "none") {
+        if (e.checked) {
             e.parentElement.classList.add("extension-active");
             e.parentElement.nextElementSibling.style.display = "block"
         } else {

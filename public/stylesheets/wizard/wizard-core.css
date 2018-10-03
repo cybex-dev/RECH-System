@@ -99,6 +99,7 @@ input {
 }
 
 .extension {
+    margin-top: 15px !important;
     margin-left: 5px;
     border-left: 5px solid #061c20 !important;
 }
@@ -303,19 +304,24 @@ label {
     background-color: #fcdc9c !important;
 }
 
+.extension-data {
+    padding: 0 10px !important;
+}
+
 .group-data {
     background-color: #ffffff;
     color: #061c2c !important;
     border-left: 5px solid #f9b42a;
-    padding: 25px 10px;
+    padding: 0 10px !important;
 }
 
 #title{
-    width: 70% !important;
+    width: 80% !important;
 }
 
 td input[type=text] {
-    width: 90%;
+    width: 90% !important;
+    margin: 0 auto !important;
 }
 
 .section-container {
@@ -337,4 +343,24 @@ td input[type=text] {
 .accept-tAc:hover {
     cursor: not-allowed !important;
     background-color: #818181 !important;
+}
+
+.table-row-delete-button {
+    transform: scale(0.80) !important;
+    margin: 0 !important;
+}
+
+.table-row-delete-button:hover{
+    text-decoration: none !important;
+    transform: scale(0.80) !important;
+}
+
+.extension .extension {
+    margin-top: 0 !important;
+    margin-bottom: 5px !important;
+}
+
+.extension {
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
 }

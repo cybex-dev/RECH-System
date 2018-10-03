@@ -214,7 +214,7 @@ public class EthicsApplication implements Serializable {
         values.forEach((key, value) -> {
             Element child = XMLTools.lookup(root, key);
             if (child == null){
-                System.out.println("Value ignored");
+                System.out.println("Key [ " + key + " ] with value [ " + value + " ] ignored");
             } else {
                 child.getChildren().getLast().setValue(value);
             }

@@ -1,4 +1,4 @@
-﻿e<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <application type="human" version="1">
     <section id="sct_general_particulars" name="General Particulars" hint="Basic information about your study">
         <group id="grp_title_of_study" name="Study Details" hint="Title of your study">
@@ -23,39 +23,49 @@
         </group>
         <group id="grp_prp" name="Primary Responsible Person"
                hint="The PRP must be a permanent Nelson Mandela University staff member.">
-            <component name="" id="prp_contact_email" type="text" hint="Email address of PRP (this will automatically populate the details of the PRP." datalist="true">
+            <component name="" id="prp_contact_email" type="text"
+                       hint="Email address of PRP (this will automatically populate the details of the PRP."
+                       datalist="true">
                 <question>Official Email Address</question>
                 <value></value>
             </component>
-            <component name="" id="prp_firstname" type="text" hint="Firstname of PRP" auto-populate-from="prp_contact_email" dataname="firstname">
+            <component name="" id="prp_firstname" type="text" hint="Firstname of PRP"
+                       auto-populate-from="prp_contact_email" dataname="firstname">
                 <question>Firstname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_lastname" type="text" hint="lastname of PRP" auto-populate-from="prp_contact_email" dataname="lastname">
+            <component name="" id="prp_lastname" type="text" hint="lastname of PRP"
+                       auto-populate-from="prp_contact_email" dataname="lastname">
                 <question>Lastname</question>
                 <value></value>
             </component>
-            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found" dataname="campus" db-mapping="campus">
+            <component name="" id="prp_campus" dropdown="true" type="text" hint="Campus where PRP is found"
+                       dataname="campus" db-mapping="campus">
                 <question>Campus</question>
                 <value></value>
             </component>
-            <component name="" id="prp_address" type="text" hint="Address where PRP is found" auto-populate-from="prp_contact_email" dataname="address">
+            <component name="" id="prp_address" type="text" hint="Address where PRP is found"
+                       auto-populate-from="prp_contact_email" dataname="address">
                 <question>Office Address</question>
                 <value></value>
             </component>
-            <component name="" id="prp_contact_telephone" type="text" hint="Office Telephone number of PRP" auto-populate-from="prp_contact_email" dataname="telephone">
+            <component name="" id="prp_contact_telephone" type="text" hint="Office Telephone number of PRP"
+                       auto-populate-from="prp_contact_email" dataname="telephone">
                 <question>Office Telephone</question>
                 <value></value>
             </component>
-            <component name="" id="prp_contact_mobile" type="text" hint="Mobile number of PRP" auto-populate-from="prp_contact_email" dataname="mobile">
+            <component name="" id="prp_contact_mobile" type="text" hint="Mobile number of PRP"
+                       auto-populate-from="prp_contact_email" dataname="mobile">
                 <question>Mobile Number</question>
                 <value></value>
             </component>
-            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculties" b-mapping="faculties" auto-populate-from="prp_contact_email" dataname="faculty">
+            <component name="" id="prp_faculty" dropdown="true" type="text" hint="Faculty of PRP" db-mapping="faculties"
+                       b-mapping="faculties" auto-populate-from="prp_contact_email" dataname="faculty">
                 <question>Faculty</question>
                 <value></value>
             </component>
-                <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP" db-mapping="departments" auto-populate-from="prp_contact_email" dataname="department">
+            <component name="" id="prp_department" dropdown="true" type="text" hint="Department of PRP"
+                       db-mapping="departments" auto-populate-from="prp_contact_email" dataname="department">
                 <question>Department</question>
                 <value></value>
             </component>
@@ -69,49 +79,51 @@
                 <question>Lastname</question>
                 <value></value>
             </component>
-            <extension>
-                <component name="" id="cow_affiliations" hint="The description of the affliators as a group e.g. Interns, Master Students, etc" dropdown="true" type="text" text-enabled="true">
-                    <data>
-                        <item>Internship Individuals</item>
-                        <item>Masters Students</item>
-                        <item>Doctorate Students</item>
-                        <item>Other</item>
-                    </data>
-                    <question>Affiliation group of coworkers</question>
+            <component name="" id="cow_affiliations"
+                       hint="The description of the affliators as a group e.g. Interns, Master Students, etc"
+                       dropdown="true" type="text" text-enabled="true">
+                <data>
+                    <item>Internship Individuals</item>
+                    <item>Masters Students</item>
+                    <item>Doctorate Students</item>
+                    <item>Other</item>
+                </data>
+                <question>Affiliation group of coworkers</question>
+                <value></value>
+            </component>
+            <component name="" id="cow_number" hint="The number of affliators involved" type="number">
+                <question>Number of coworkers</question>
+                <value></value>
+            </component>
+            <extension orientation="vertical" id="ext_has_known_coworkers">
+                <component name="" id="has_known_coworkers" hint="Do you know the coworkers and the names"
+                           type="boolean">
+                    <question>Are coworkers known to you?</question>
                     <value></value>
                 </component>
-                <component name="" id="cow_number" hint="The number of affliators involved" type="number">
-                    <question>Number of coworkers</question>
-                    <value></value>
-                </component>
-                <extension orientation="vertical">
-                    <component name="" id="has_known_coworkers" hint="Do you know the coworkers and the names" type="boolean">
-                        <question>Are coworkers known to you?</question>
+                <list id="list_coworkers" name="All co-workers" hint="Co workers on research study">
+                    <component name="" id="cw_firstname" type="text" hint="Coworker's firstname">
+                        <question>Firstname</question>
                         <value></value>
                     </component>
-                    <list id="list_coworkers" name="All co-workers" hint="Co workers on research study">
-                        <component name="" id="cw_firstname" type="text" hint="Coworker's firstname">
-                            <question>Firstname</question>
-                            <value></value>
-                        </component>
-                        <component name="" id="cw_lastname" type="text" hint="Coworker's lastname">
-                            <question>Lastname</question>
-                            <value></value>
-                        </component>
-                        <component name="" id="cw_affiliation" type="text" dropdown="true" text-enabled="true" hint="Coworker's affiliation">
-                            <data>
-                                <item>Co-investigator</item>
-                                <item>Assistant Researcher</item>
-                                <item>Supervisor</item>
-                                <item>Co-supervisor</item>
-                                <item>Promoter</item>
-                                <item>Co-promoter</item>
-                            </data>
-                            <question>Affiliation</question>
-                            <value></value>
-                        </component>
-                    </list>
-                </extension>e
+                    <component name="" id="cw_lastname" type="text" hint="Coworker's lastname">
+                        <question>Lastname</question>
+                        <value></value>
+                    </component>
+                    <component name="" id="cw_affiliation" type="text" dropdown="true" text-enabled="true"
+                               hint="Coworker's affiliation">
+                        <data>
+                            <item>Co-investigator</item>
+                            <item>Assistant Researcher</item>
+                            <item>Supervisor</item>
+                            <item>Co-supervisor</item>
+                            <item>Promoter</item>
+                            <item>Co-promoter</item>
+                        </data>
+                        <question>Affiliation</question>
+                        <value></value>
+                    </component>
+                </list>
             </extension>
         </group>
         <group id="grp_study_details" name="Study Details" hint="Information about the study">
@@ -127,7 +139,8 @@
                 <value></value>
             </component>
             <component id="purpose" type="text" dropdown="true"
-                       hint="Your current degree for which you are performing the study (if applicable)" autofill_id="pi_degree">
+                       hint="Your current degree for which you are performing the study (if applicable)"
+                       autofill_id="pi_degree">
                 <data>
                     <item>Not for degree purpose</item>
                     <item>Doctoral</item>
@@ -140,7 +153,7 @@
                 <question>Purpose</question>
                 <value></value>
             </component>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_funding">
                 <component id="has_funding" type="boolean" hint="Is your research study funded?">
                     <question>Is this research funded</question>
                     <value></value>
@@ -159,11 +172,12 @@
                     <value></value>
                 </component>
 
-                <component id="funding_desc" type="text" hint="Give details of funding if combined or other was selected">
+                <component id="funding_desc" type="text"
+                           hint="Give details of funding if combined or other was selected">
                     <question>Funding details (if Combined Funding or Other)</question>
                     <value></value>
                 </component>
-                <extension orientation="vertical">
+                <extension orientation="vertical" id="ext_restrictions">
                     <component id="has_restrictions" type="boolean"
                                hint="Are there publication restrictions associated with study results">
                         <question>Publication Restrictions</question>
@@ -174,7 +188,8 @@
                         <question>Describe Restrictions</question>
                         <value></value>
                     </component>
-                    <popup id="grp_doc_restrictions" type="document" popup="true" name="Restrictions Document" hint="" desc="Restrictions"
+                    <popup id="grp_doc_restrictions" type="document" popup="true" name="Restrictions Document" hint=""
+                           desc="Restrictions"
                            required="true">
                         <component id="doc_restrictions_title" type="text"
                                    hint="Document which provides details of restrictions">
@@ -214,7 +229,8 @@
             </component>
         </group>
         <group id="grp_methodology" name="Methodology" hint="Information about your research methodology">
-            <component id="methodology_text" type="long_text" hint="A brief description of your methodology (max 300 words)"
+            <component id="methodology_text" type="long_text"
+                       hint="A brief description of your methodology (max 300 words)"
                        max-words="300">
                 <question>Methodology</question>
                 <value></value>
@@ -250,7 +266,7 @@
     <section id="sct_risks_benefits" name="Risks and Benefits of this Study"
              hint="Highlights the need for the study and benefits obtained from results.">
         <group id="grp_risks_benefits" name="Risks and Benefits">
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_risks">
                 <component id="has_risk" name="" type="boolean"
                            hint="Risk refers to harm, embarresment or offence, even in the slightest form or temporary to the participant, third parties or to a community.">
                     <question>Any risk involved</question>
@@ -282,7 +298,7 @@
                     </component>
                 </list>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_benefits">
                 <component id="has_benefits" name="" type="boolean"
                            hint="Are there any benefits for the participants participating in the study e.g. Improved mental or financial state">
                     <question>Any benefits</question>
@@ -293,7 +309,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_equipent">
                 <component id="has_equipment" name="" type="boolean"
                            hint="Does the study require any equipment in order to be conducted">
                     <question>Uses equipment</question>
@@ -305,7 +321,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_collections">
                 <component id="has_collections" name="" type="boolean"
                            hint="Will any article of property or culture be collected and studied, needed to complete study">
                     <question>Will be collecting items</question>
@@ -322,7 +338,7 @@
     </section>
     <section id="sct_target_participant_group" name="Target Participant Group" hint="">
         <group id="grp_target_participant_group" name="Target Participant Group">
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_characteristics">
                 <component id="requires_characteristics" name="" type="boolean"
                            hint="Does the target group require a specific (set of) characteristic(s) e.g. age, cultural derivation, background, or disability">
                     <question>Requires particular characteristic</question>
@@ -334,7 +350,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_nmu_persons">
                 <component id="uses_nmu_persons" name="" type="boolean"
                            hint="Does the study include individuals from Nelson Mandela University">
                     <question>Includes NMU Staff/Students</question>
@@ -346,7 +362,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_scholars">
                 <component id="uses_scholars" name="" type="boolean" hint="Does the study include students at school">
                     <question>Includes school students</question>
                     <value></value>
@@ -357,7 +373,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_instututional_pop">
                 <component id="uses_institutional_pop" name="" type="boolean"
                            hint="Does the study include participants from institutions">
                     <question>Includes institutional persons</question>
@@ -369,7 +385,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_records">
                 <component id="uses_records" name="" type="boolean"
                            hint="Does the study make use of records for information">
                     <question>Consult records for information</question>
@@ -381,19 +397,19 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_record_access">
                 <component id="individuals_records_access" name="" type="boolean"
                            hint="Will the participants be aware of their records being accessed">
                     <question>Individual Information Record Access</question>
                     <value></value>
                 </component>
-                <component id="individualts_records_access_desc" name="" type="text"
+                <component id="individuals_records_access_desc" name="" type="text"
                            hint="Describe how the records will be obtained to extract information.">
-                    <question></question>
+                    <question>Describe how any collected records will be obtained</question>
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_part_minors">
                 <component id="are_participants_minors" name="" type="boolean"
                            hint="Are all participants in the study 18 years and older">
                     <question>Are any participants minors</question>
@@ -404,40 +420,40 @@
                     <question>Describe the necessity of minors in study.</question>
                     <value></value>
                 </component>
-            </extension>e
+            </extension>
+            e
         </group>
     </section>
     <section id="sct_participant_consent" name="Consent of Particpants" hint="">
         <group id="grp_participant_consent" name="Consent of Participants">
-            <extension orientation="vertical">
-                <component id="written_consent" name="" type="boolean" hint="Is participant consent given in writing of any kind, document or otherwise">
-                    <question>Is participant consent given in writing</question>
+            <extension orientation="vertical" id="ext_participant_consent">
+                <component id="requires_participant_consent" name="" type="boolean"
+                           hint="Is participant consent given in writing of any kind, document or otherwise">
+                    <question>Participant consent is not necessary in any form</question>
                     <value></value>
                 </component>
-                <extension orientation="vertical">
-                    <component id="written_consent_desc" name="" type="text" hint="Motivate why no consent will be necessary.">
+                <component id="written_consent_desc" name="" type="text"
+                           hint="Motivate why no consent will be necessary.">
                     <question>Motivatation</question>
                     <value></value>
                 </component>
-                    <popup id="grp_doc_consent" type="document" popup="true" name="Written Consent Document"
-                           hint="Provide the consent document which participants will recieve">
-                        <component id="doc_consent_title" name="" required="false" type="text">
-                            <question>Consent Form Title</question>
-                            <value></value>
-                        </component>
-                        <component id="doc_consent_desc" type="text" required="true">
-                            <question>Consent Form Description</question>
-                            <value></value>
-                        </component>
-                        <component id="doc_consent_document" type="document" required="true" desc="Participant Consent">
-                            <question>Consent Form File</question>
-                            <value></value>
-                        </component>
-                    </popup>
-
-                </extension>
+                <popup id="grp_doc_consent" type="document" popup="true" name="Written Consent Document"
+                       hint="Provide the consent document which participants will recieve">
+                    <component id="doc_consent_title" name="" required="false" type="text">
+                        <question>Consent Form Title</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_consent_desc" type="text" required="true">
+                        <question>Consent Form Description</question>
+                        <value></value>
+                    </component>
+                    <component id="doc_consent_document" type="document" required="true" desc="Participant Consent">
+                        <question>Consent Form File</question>
+                        <value></value>
+                    </component>
+                </popup>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_legal_restrictions">
                 <component id="participant_legal_restrictions" name="" type="boolean"
                            hint="Are there any legal restrictions why prevent the participant from giving effective informed consent to participate in the study">
                     <question>Legal restrictions on participant preventing informed consent</question>
@@ -449,10 +465,10 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_operate_institution">
                 <component id="operate_in_institution" name="" type="boolean"
                            hint="Do any participants operate in an institutional environment - this may affect voluntary consent">
-                    <question>Legal restrictions on participant preventing informed consent</question>
+                    <question>Do paricipants operate in institutional environment</question>
                     <value></value>e
                 </component>
                 <component id="legal_consent_obtained_desc" name="" type="text"
@@ -461,7 +477,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_renumeration">
                 <component id="participant_renumeration" name="" type="boolean"
                            hint="Will participants receive renumeration for perticipating in study">
                     <question>Participant Renumeration</question>
@@ -473,7 +489,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_gatekeeper">
                 <component id="has_gatekeeper" name="" type="boolean"
                            hint="An individual who initially gives permission for the study to be conducted">
                     <question>Has gatekeeper</question>
@@ -485,7 +501,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_institution_consent">
                 <component id="require_institutional_consent" name="" type="boolean"
                            hint="Does the study require consent given from a government department e.g. Department of Health">
                     <question>Requires intitutional consent</question>
@@ -499,18 +515,19 @@
                 <popup id="grp_doc_permission" type="document" popup="true" name="Permissions Document"
                        hint="Provide the document given by the Dept. of Education or other giving permission for this research (if available)">
                     <component id="doc_permission_title" type="text" required="false"
-                               hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
-                        <question>Document File</question>
+                               hint="Title of permission document">
+                        <question>Permission Document Title</question>
                         <value></value>
                     </component>
                     <component id="doc_permission_desc" type="text" required="false"
-                               hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
-                        <question>Document File</question>
+                               hint="Description of permission document">
+                        <question>Permission Document Description</question>
                         <value></value>
                     </component>
-                    <component id="doc_permission_document" type="document" required="false" desc="Additional Permissions"
+                    <component id="doc_permission_document" type="document" required="false"
+                               desc="Additional Permissions"
                                hint="A readable document in format .doc .docx .pdf or any other commonly used document format">
-                        <question>Document File</question>
+                        <question>Permission Document File</question>
                         <value></value>
                     </component>
                 </popup>
@@ -532,7 +549,7 @@
                 <question>Role</question>
                 <value></value>
             </component>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_complete_info">
                 <component id="complete_information" name="" type="boolean"
                            hint="Will all information be given to participant which is complete and accurate">
                     <question>Will any information provided to the participants be incomplete/inaccurate</question>
@@ -545,7 +562,8 @@
                 </component>
             </extension>
         </group>
-        <group id="grp_written_oral_information_documents" name="Written and Oral Information Documents" hint="Information provided to the participants of your study, written or oral information">
+        <group id="grp_written_oral_information_documents" name="Written and Oral Information Documents"
+               hint="Information provided to the participants of your study, written or oral information">
             <popup id="grp_doc_prior_consent_written" type="document" popup="true" name="Written Consent Document"
                    hint="A detailed document containing written consent received from participants">
                 <component id="doc_prior_consent_written_title" name="" type="text"
@@ -586,7 +604,7 @@
     </section>
     <section id="sct_priv_anon_conf" name="Privacy, Anonymity and Confidentiality of Data" hint="">
         <group id="grp_priv_anon_conf" name="Privacy, Anonymity and Confidentiality of Data">
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_indentify_part">
                 <component id="identify_participants" name="" type="boolean"
                            hint="Will you be refering to a participant by name in your research ">
                     <question>Identify Participants</question>
@@ -598,7 +616,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_anon_provisions">
                 <component id="privacy_anon_provisions" name="" type="boolean"
                            hint="Have you made any provisions to ensure that participants participating in the study cannot be identified, preserving confidentiality and respect to data.">
                     <question>Provisions for privacy and anonymity</question>
@@ -610,7 +628,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_mech_methods">
                 <component id="uses_mechanical_methods" name="" type="boolean"
                            hint="Do you use any mechanical methods for observation e.g. one-way mirrors, video recordings, audio recordings">
                     <question>Mechanical Methods</question>
@@ -627,46 +645,42 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_data_stored">
                 <component id="data_stored" name="" type="boolean"
                            hint="Will the collected data be stored in any form after the study has been completed">
                     <question>Collected data stored</question>
                     <value></value>
                 </component>
-                <list id="list_collected_data_holders" name="All Dataholders"
-                      hint="Describe who will be storing the collected data with additional details"
-                      affiliation_group="">
-                    <component name="" id="dh_first_name" type="text" hint="Data holder firstname">
-                        <question>Firstname</question>
-                        <value></value>
-                    </component>
-                    <component name="" id="dh_lastname" type="text" hint="Data holder's lastname">
-                        <question>Lastname</question>
-                        <value></value>
-                    </component>
-                    <component name="" id="dh_copies" dropdown="true" auto-populate="[1-9]|10" text-enabled="true"
-                               type="number" hint="Number of copies of data held">
-                        <question>Number of copies</question>
-                        <value></value>
-                    </component>
-                    <component name="" id="dh_duration" type="date"
-                               hint="Date up until when stored data will be destroyed by data holder as the data is no longer needed">
-                        <question>Date when data is destroyed</question>
-                        <value></value>
-                    </component>
-                    <component name="" id="dh_desc" type="text"
-                               hint="Reasons for data holder holding data, why is it still necessary to keep the data even after the study is completed">
-                        <question>Reason for holding data</question>
-                        <value></value>
-                    </component>
-                    <component name="" id="dh_participant_anon" type="text" na_field="true"
-                               hint="How will participant anonymity be protected">
-                        <question>Lastname</question>
-                        <value></value>
-                    </component>
-                </list>
+                <component name="" id="dh_first_name" type="text" hint="Data holder firstname">
+                    <question>Dataholder Firstname</question>
+                    <value></value>
+                </component>
+                <component name="" id="dh_lastname" type="text" hint="Data holder's lastname">
+                    <question>Dataholder Lastname</question>
+                    <value></value>
+                </component>
+                <component name="" id="dh_copies"
+                           type="number" hint="Number of copies of data held">
+                    <question>Number of copies of data held</question>
+                    <value></value>
+                </component>
+                <component name="" id="dh_duration" type="date"
+                           hint="Date up until when stored data will be destroyed by data holder as the data is no longer needed">
+                    <question>Date when data is destroyed</question>
+                    <value></value>
+                </component>
+                <component name="" id="dh_desc" type="text"
+                           hint="Reasons for data holder holding data, why is it still necessary to keep the data even after the study is completed">
+                    <question>Reason for holding data</question>
+                    <value></value>
+                </component>
+                <component name="" id="dh_participant_anon" type="text" na_field="true"
+                           hint="How will participant anonymity be protected">
+                    <question>Participant anonymity protection description</question>
+                    <value></value>
+                </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_reuse_data">
                 <component id="reusing_stored_data" name="" type="boolean"
                            hint="Will stored data be made available for reuse">
                     <question>Reusing stored data</question>
@@ -678,7 +692,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_private_property">
                 <component id="private_property" name="" type="boolean"
                            hint="Will the study be conducted on private property such as shopping centres or homes">
                     <question>Private Property</question>
@@ -690,7 +704,7 @@
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_secrecy">
                 <component id="has_contractual_secrecy" name="" type="boolean"
                            hint="Does the data collected have associated confidentiality or contractual secrecy attached in any form.">
                     <question>Confidential or contractual secrecy</question>
@@ -706,7 +720,7 @@
     </section>
     <section id="sct_feedback" name="Feedback" hint="">
         <group id="grp_feedback" name="Feedback">
-            <extension orientation="vertical">
+            <extension orientation="vertical"  id="ext_feedback_given">
                 <component id="is_feedback_given" name="" type="boolean"
                            hint="Will feedback be given to the participants involved in the study">
                     <question>Will feedback be given</question>
@@ -717,6 +731,7 @@
                     <data>
                         <item>Written</item>
                         <item>Oral</item>
+                        <item>Both</item>
                     </data>
                     <question>Method of conveying feedback</question>
                     <value></value>
@@ -727,6 +742,10 @@
                         <item>Before</item>
                         <item>During</item>
                         <item>After</item>
+                        <item>Before and During</item>
+                        <item>During and After</item>
+                        <item>Before and After</item>
+                        <item>Before, during and after</item>
                     </data>
                     <question>When feedback is given</question>
                     <value></value>
@@ -736,23 +755,24 @@
                     <data>
                         <item>Individual Setting</item>
                         <item>Group Setting</item>
+                        <item>Group and Individual Setting</item>
                     </data>
                     <question>How feedback is given</question>
                     <value></value>
                 </component>
                 <component id="feedback_details" name="" hint="Additional information when giving feedback" type="text">
-                    <question>Additional details</question>
+                    <question>Additional details for giving feedback</question>
                     <value></value>
                 </component>
             </extension>
-            <extension orientation="vertical">
+            <extension orientation="vertical" id="ext_school_inst">
                 <component id="is_school_institution" name="" type="boolean"
                            hint="Is the study conducted within a school or any form of institution">
                     <question>School/Institution</question>
                     <value></value>
                 </component>
-                <extension orientation="vertical">
-                    <component id="feedback_school_institution" name="" type="text"
+                <extension orientation="vertical" id="ext_feedback_school_inst">
+                    <component id="feedback_school_institution" name="" type="boolean"
                                hint="Will feedback be given to school authorities, teachers or institution leaders">
                         <question>Feedback given to institution leaders</question>
                         <value></value>
@@ -773,12 +793,12 @@
             <component id="belmont_helsinki_decl_excluded" name="" type="boolean"
                        hint="Are you excluding the Belmont Report or Declaration of Helsinki(2000) in your references"
                        link="http://rcd.mandela.ac.za/rcd/media/Store/documents/Research%20Ethics/Research%20Ethics%20Committee%20Human/The-Belmont-Report.pdf">
-                <question>Not including Declation of Helsinki/Belmont Report</question>
+                <question>Will NOT be including Declation of Helsinki and/or Belmont Report</question>
                 <value></value>
             </component>
             <component id="belmont_helsinki_decl_excluded_desc" name="" type="text"
                        hint="Motivate why this report / declaration is not included">
-                <question>Motivate</question>
+                <question>Motivate why the report does not include the declarations</question>
                 <value></value>
             </component>
             <component id="additional_notes" name="" type="text"
@@ -790,7 +810,8 @@
     </section>
     <section id="sct_declaration" name="Declaration" hint="">
         <group id="grp_declaration" name="Declaration">
-            <component recorded="false" type="boolean" id="read_ethics_guidelines" hint="Declaration of understanding of the terms and conditions"
+            <component recorded="false" type="boolean" id="read_ethics_guidelines"
+                       hint="Declaration of understanding of the terms and conditions"
                        link="http://www.sahealthinfo.org/ethics/">
                 <question>I have read, understood and will comply with the Guidelines for Ethical Conduct in Research
                     and
@@ -811,10 +832,10 @@
                 </question>
                 <value></value>
             </component>
-            <extension orientation="vertical">
+            <extension orientation="vertical"  id="ext_conflict_interest">
                 <component id="conflicting_interests" name="" type="boolean"
                            hint="?">
-                    <question>Feedback given to institution leaders</question>
+                    <question>I am aware of possible conflicts of interest to be considered by the University</question>
                     <value></value>
                 </component>
                 <component id="conflicting_interests_desc" name="" type="text"

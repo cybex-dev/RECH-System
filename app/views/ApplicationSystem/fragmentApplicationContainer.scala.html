@@ -10,14 +10,14 @@
 @import controllers.APIController
 @import scala.collection.mutable
 
-@(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])
+@(root: Element)(editableMap: util.Map[String, Boolean])(showFeedback: Boolean)(showReviewContainer: Boolean)(reviewDataMap: util.Map[String, util.List[String]])
 
 @application_content = @{
-    def createComponent(element: Element): String = {
+    def createComponent(element: Element, newId: String): String = {
         val elementType = element.getType.toLowerCase
         var q = ""
         val hint = element.getHint
-        val id = element.getId
+        val id = newId
         var a = ""
         if(element.getChildren.size()==3){
             q = element.getChildren.get(1).getValue.toString
@@ -25,12 +25,19 @@
             q = element.getChildren.getFirst.getValue.toString
         }
         val reviewFeedback = reviewDataMap.get(id)
-        val editable = editableMap.get(id)
+        var editable = false
+        if(id.matches("^\\w+[_]\\d+$")){
+            val newId = id.substring(0, id.lastIndexOf("_"))
+            editable = editableMap.get(newId)
+        } else {
+            editable = editableMap.get(id)
+        }
+
         elementType match {
             case "boolean" =>
                 /*creates checkbox*/
                 var autofill = ""
-                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
+                if(element.getAttributes.get("autofill_id") != null  && !showFeedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
@@ -38,19 +45,19 @@
                     autofill
                 } else a
                 if(element.getAttributes().get("radiogroup") == null) {
-                    inputCheckbox.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                    inputCheckbox.apply(id, q, value, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                 } else {
                     if(element.getAttributes().get("radiogroup").equals("true")) {
                         var childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
-                        inputRadiobuttonGroup.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                        inputRadiobuttonGroup.apply(id, q, value, childItems, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                     } else {
-                        inputCheckbox.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                        inputCheckbox.apply(id, q, value, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                     }
                 }
 
             case "number" =>
                 var autofill = ""
-                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
+                if(element.getAttributes.get("autofill_id") != null  && !showFeedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
@@ -59,30 +66,30 @@
                 } else a
 
                 if(element.getAttributes().get("dropdown") == null) {
-                    inputText.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                    inputText.apply(id, q, value, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                 } else {
                     if(element.getAttributes().get("dropdown").equals("true")) {
                         if(element.getAttributes.get("db-mapping") == null) {
                             val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
-                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                         } else {
                             val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
-                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                         }
                     } else {
-                        inputText.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                        inputText.apply(id, q, value, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                     }
                 }
             /*creates text field with number specific*/
 
             case "long_text" =>
                 /*creates a multiline text field*/
-                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words"), editable, feedback, review, reviewFeedback).toString()
+                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words"), editable, showFeedback, showReviewContainer, reviewFeedback).toString()
 
             case "text" =>
                 /*creates text field*/
                 var autofill = ""
-                if(element.getAttributes.get("autofill_id") != null && !feedback) {
+                if(element.getAttributes.get("autofill_id") != null && !showFeedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
@@ -111,30 +118,30 @@
 
                 if(isDataList) {
                     val data: List[String] = APIController.getDataDirect(id)
-                    inputDatalist.apply(id, q, value, data, hint, editable, feedback, review, reviewFeedback).toString
+                    inputDatalist.apply(id, q, value, data, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString
                 } else {
                     if (isDropdown) {
                         if (!dbMapping){
                             val childItems = element.getChildren().get(0).getChildren().map(f => f.getValue.toString).toList
-                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                         } else {
                             val childItems = APIController.getDataDirect(element.getAttributes.get("db-mapping"))
-                            inputDropdown.apply(id, q, value, childItems, hint, editable, feedback, review, reviewFeedback).toString()
+                            inputDropdown.apply(id, q, value, childItems, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                         }
                     } else {
-                        inputText.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                        inputText.apply(id, q, value, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                     }
                 }
 
             case "date" =>
                 /*creates text field*/
                 var autofill = ""
-                if(element.getAttributes.get("autofill_id") != null  && !feedback) {
+                if(element.getAttributes.get("autofill_id") != null  && !showFeedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
                 a = element.getChildren.getLast.getValue.toString
                 var value = if(a.isEmpty){ autofill } else a
-                inputDate.apply(id, q, value, hint, editable, feedback, review, reviewFeedback).toString()
+                inputDate.apply(id, q, value, hint, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
 
             case "document" =>
                 /*creates text field*/
@@ -145,10 +152,10 @@
                 val desc = element.getAttributes.get("desc")
                 val v = element.getChildren.getLast.getValue.toString
                 if(v.isEmpty) {
-                    inputFile.apply(id, q, "", "", hint, desc, req, editable, feedback, review, reviewFeedback).toString()
+                    inputFile.apply(id, q, "", "", hint, desc, req, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                 } else {
                     val shortName = v.split("~\\d+~").lift(1).get
-                    inputFile.apply(id, q, v, shortName, hint, desc, req, editable, feedback, review, reviewFeedback).toString()
+                    inputFile.apply(id, q, v, shortName, hint, desc, req, editable, showFeedback, showReviewContainer, reviewFeedback).toString()
                 }
 
             case "list" =>
@@ -178,19 +185,19 @@
         // Find location of tag  - 1
         //   <tag...</tag>
         //   ^        location - 1
-        val startLocation = component.indexOf(tag) - 1
+        val startLocation = component.indexOf("<" + tag)
 
         // Start search location = startLocation + 2
         //  <tag>...</tag>
         //  ^    ^ search start past closing start tag angle bracket
-        val endLocation = component.indexOf(tag, startLocation + tag.length + 2) + tag.length + 1
+        val endLocation = component.indexOf("</" + tag + ">", startLocation + tag.length + 2) + tag.length + 3
 
         // Find location of tag  - 1
         //   <tag...</tag>
         //          ^    finds end location + tag length + 1. Ends on closing angle bracket
 
         //copy substring (+1 for exclusive end)
-        val element = component.substring(startLocation, endLocation+1)
+        val element = component.substring(startLocation, endLocation)
 
         // get substring excluding current tag
         val comp = component.substring(endLocation)
@@ -199,7 +206,6 @@
 
     def processList(elem: Element): String = {
         var componentList = mutable.MutableList[mutable.MutableList[String]]()
-        val addButton = "<button id=\"btnAdd_" + elem.getId + "\">Add</button>"
 
         // Create all components
         for (element: Element <- elem.getChildren) {
@@ -207,10 +213,13 @@
             // Create list to store each child's components which are generated from the array list
             var childList = mutable.MutableList[String]()
             val elementId = element.getId
-            println("Processing List element [" + elementId + "]")
+            //println("Processing List element [" + elementId + "]")
 
+            //println("Checking of [" + elementId + "] has a value of an object type arraylist")
             // Check if the child element's value is an array list, if so, then create all components from it
             if(element.getChildren.getLast.getValue.isInstanceOf[util.ArrayList[String]]) {
+                //println("value IS an arraylist")
+
                 // Get the list of child element values and iterate over them
                 val list = element.getChildren.getLast.getValue.asInstanceOf[util.ArrayList[String]]
 
@@ -225,10 +234,10 @@
                     element.getAttributes.put("id", newId)
                     // Set these values into the element and pass it to the component constructor
                     // Retrieve the created component, remove the label and IC and add it to the childList
-                    println("Creating TR item: [" + newId + "] -> " + value)
+                    //println("Creating TR item: [" + newId + "] -> " + value)
 
                     //cleanup
-                    var component = createComponent(element)
+                    var component = createComponent(element, newId)
                     component = component.replace("<br>", "")
                     component = component.trim()
 
@@ -243,14 +252,43 @@
 
                     //get element
                     val e = component
-                    println("element = " + e)
+                    //println("element = " + e)
 
                     // Increment counter
                     index += 1
 
                     // Add new component
-                    childList += component
+                    childList += "<td>" + component + "</td>"
                 }
+            } else {
+                //println("value: not an arraylist, creating single element")
+
+                val newId = elementId.concat("_1")
+                element.getAttributes.put("id", newId)
+                // Set these values into the element and pass it to the component constructor
+                // Retrieve the created component, remove the label and IC and add it to the childList
+                //println("Creating TR item: [" + newId + "] -> EMPTY")
+
+                //cleanup
+                var component = createComponent(element, newId)
+                component = component.replace("<br>", "")
+                component = component.trim()
+
+                // remove label
+                val tuple = removeElement(component, "label")
+                component =  tuple
+
+                //remove icon
+                val tuple1 = removeElement(component, "ic")
+                component =  tuple1
+                component = component.trim
+
+                //get element
+                val e = component
+                //println("element = " + e)
+
+                // Add new component
+                childList += "<td>" + component + "</td>"
             }
 
             componentList += childList
@@ -258,26 +296,37 @@
 
         // create table header
         var tHeadTrContent = ""
-        for(e: Element <- elem.getChildren) yield {
+        for(e: Element <- elem.getChildren.toList) yield {
             var content = ""
 
             //Determine column class type
             var className = ""
-            if (e.getType.toLowerCase().equals("boolean")){
-                className = "col-sm-1"
-            } else {
-                className = "col-sm-3"
-            }
 
             if(e.getChildren.getFirst.getTag.toLowerCase.equals("question")){
                 // If simple question, get first child value
                 content = e.getChildren.getFirst.getValue.toString
 
                 //this is a simple input, make thead tr larger than vs dropdown (below)
-                className = "col-sm-4"
+
+                if (e.getType.toLowerCase().equals("boolean")){
+                    className = "col-sm-1"
+                } else {
+                    if (e.getType.toLowerCase().equals("number")) {
+                        className = "col-sm-2"
+                    } else {
+                        if (e.getType.toLowerCase().equals("text")) {
+                            className = "col-sm-4"
+                        } else {
+                            className = "col-sm-3"
+                        }
+                    }
+                }
+
             } else {
                 // If question has data element, get second child value
                 content = e.getChildren.get(1).getValue.toString
+
+                className = "col-sm-3"
             }
 
             val thStart = "<th class=\"" + className + "\">"
@@ -295,16 +344,49 @@
         // create table body
         // For each arraylist value, get element and set value
         var tBody = ""
-        for(componentItem <- componentList) yield {
-            var trRow = ""
-            for(elementItem <- componentList) {
-                trRow += elementItem
+
+        // parsing the data, get the first component list and get the number of items in that list
+        // This is for the multiple values that can be stored in the components value i.e. the arraylist
+        val numRows = componentList.get(0).size
+
+        // For each of these rows, get componentlist.forEach child.getList and get i'th item
+        for(i <- 0 until numRows ) {
+
+            var trRow : String = ""
+
+            // For each child in componentList
+            for(comp <- componentList) {
+                val someItem = comp.get(i)
+                val itemValue = someItem.get
+                trRow += itemValue
             }
-            tBody += trRow
+
+            // Check if this is a review, it is is NOT, then add delete button for each row
+            if(!showReviewContainer){
+                val delButton = "<td><button type=\"button\" class=\"fa fa-trash action-alternative table-row-delete-button\" id=\"btnDelRow" + elem.getId + "_" + String.valueOf(i+1) + "\"></button></td>"
+                trRow = trRow.concat(delButton)
+            }
+
+            tBody += "<tr>" + trRow + "</tr>"
         }
 
+        tBody = "<tbody>" + tBody + "</tbody>"
+
+        //println("Final tbody: " + tBody)
+
         // Create table
-        "<h2>" + elem.getAttributes.get("name") + "</h2><table id=\"" + elem.getId + "\" name=\"" + elem.getId + "\" class=\"table\">".concat(tHead).concat(tBody).concat("</table>")
+        val heading = getHeading("list", elem.getAttributes().get("name"))
+        var table =  "<table id=\"" + elem.getId + "\" name=\"" + elem.getId + "\" class=\"table\">".concat(tHead).concat(tBody)
+
+        // Check if this is a review page or edit page. If it is NOT a review page, then add 'add' button to table footer
+        if(!showReviewContainer){
+            val tfoot = "<tfoot><tr><td colspan=\"" + String.valueOf(componentList.size) + "\"><button type=\"button\" class=\"nmu-button action-button action-alternative table-add-button\" id=\"btnAdd_" + elem.getId + "\">Add</button></td></tr></tfoot>"
+            table = table.concat(tfoot)
+        }
+
+        table = table.concat("</table>")
+        //println("============================\nFinal table: \n" + table + "\n")
+        table
     }
 
     def parseElement(element: Element): String = {
@@ -312,29 +394,17 @@
             if (elem.getTag.equals("list")){
                 processList(elem)
             } else {
-//                if (!elem.isComponent) {
+                if (!elem.isComponent) {
                     /*this creates a container element which consumes some html type text*/
                     val innerText = parseElement(elem)
                     val heading: String = getHeading(elem.getTag, elem.getAttributes.get("name"))
-                    //                    if (isList) {
-                    //                        val pre = elem.getPreTag("table")
-                    //                        val post = elem.getPostTag("table")
-                    //                        heading + pre + "<thead><tr>" + innerText + "</tr></thead>" + post
-                    //                    } else {
                     val pre = elem.getPreTag("div")
                     val post = elem.getPostTag("div")
                     pre + heading + innerText + post
-//                }
-                //                } else {
-                //                    /*this creates a component of type a specific type*/
-                //                    val isListItem = element.getTag.equals("list")
-                //                    val value = createComponent(elem)
-                //                    if (isListItem) {
-                //                        "<th>" + value + "</th>"
-                //                    } else {
-                //                        value
-                //                    }
-                //                }
+                } else {
+                    /*this creates a component of type a specific type*/
+                    createComponent(elem, elem.getId)
+                }
             }
         }
         innerText.mkString("")
@@ -343,4 +413,4 @@
     Html(parseElement(root))
 }
 
-    @application_content
+@application_content
