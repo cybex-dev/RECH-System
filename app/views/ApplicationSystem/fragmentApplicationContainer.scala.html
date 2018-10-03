@@ -8,8 +8,8 @@
 @import views.html.Components._
 @import dao.ApplicationSystem.EntityEthicsApplicationPK
 @import controllers.APIController
+@import scala.collection.mutable
 
-@import scala.collection.immutable
 @(root: Element)(editableMap: util.Map[String, Boolean])(feedback: Boolean)(review: Boolean)(reviewDataMap: util.Map[String, util.List[String]])
 
 @application_content = @{
@@ -168,43 +168,143 @@
         }
     }
 
-    def removeElement(component: String, tag: String): (String, String) = {
+    /**
+        * Tag requires start and end tag like <tag>...</tag> to work. These tags must be directly after one another with no new tags inbetween
+      * @param component
+      * @param tag
+      * @return
+      */
+    def removeElement(component: String, tag: String): String = {
+        // Find location of tag  - 1
+        //   <tag...</tag>
+        //   ^        location - 1
+        val startLocation = component.indexOf(tag) - 1
 
+        // Start search location = startLocation + 2
+        //  <tag>...</tag>
+        //  ^    ^ search start past closing start tag angle bracket
+        val endLocation = component.indexOf(tag, startLocation + tag.length + 2) + tag.length + 1
+
+        // Find location of tag  - 1
+        //   <tag...</tag>
+        //          ^    finds end location + tag length + 1. Ends on closing angle bracket
+
+        //copy substring (+1 for exclusive end)
+        val element = component.substring(startLocation, endLocation+1)
+
+        // get substring excluding current tag
+        val comp = component.substring(endLocation)
+        comp
     }
 
     def processList(elem: Element): String = {
-        val componentList = immutable.List[String]()
-        val headingList = immutable.List[String]()
+        var componentList = mutable.MutableList[mutable.MutableList[String]]()
         val addButton = "<button id=\"btnAdd_" + elem.getId + "\">Add</button>"
 
-        // create table header
-        for (e <- elem.getChildren) {
+        // Create all components
+        for (element: Element <- elem.getChildren) {
 
-            //cleanup
-            var component = createComponent(e)
-            component = component.replace("<br>", "")
-            component = component.trim()
+            // Create list to store each child's components which are generated from the array list
+            var childList = mutable.MutableList[String]()
+            val elementId = element.getId
+            println("Processing List element [" + elementId + "]")
 
-            // get label
-            val tuple = removeElement(component, "label")
-            component =  tuple._1
-            val label = tuple._2
-            println("label = " + label)
+            // Check if the child element's value is an array list, if so, then create all components from it
+            if(element.getChildren.getLast.getValue.isInstanceOf[util.ArrayList[String]]) {
+                // Get the list of child element values and iterate over them
+                val list = element.getChildren.getLast.getValue.asInstanceOf[util.ArrayList[String]]
 
-            //get icon
-            val tuple1 = removeElement(component, "ic")
-            component =  tuple1._1
-            val ic = tuple1._2
-            println("ic = " + label)
+                // Using createComponent, we create each component and remove the associated labels and hints
+                var index = 0
+                for(value <- list) {
+                    // Set the value by using setValue
+                    element.getChildren.getLast.setValue(value)
 
-            //get element
-            val element = component
-            println("element = " + element)
+                    // Set ID by using getAttributes(id) and set ID = $id + "_" + $index
+                    val newId = elementId.concat("_").concat(String.valueOf(index))
+                    element.getAttributes.put("id", newId)
+                    // Set these values into the element and pass it to the component constructor
+                    // Retrieve the created component, remove the label and IC and add it to the childList
+                    println("Creating TR item: [" + newId + "] -> " + value)
+
+                    //cleanup
+                    var component = createComponent(element)
+                    component = component.replace("<br>", "")
+                    component = component.trim()
+
+                    // remove label
+                    val tuple = removeElement(component, "label")
+                    component =  tuple
+
+                    //remove icon
+                    val tuple1 = removeElement(component, "ic")
+                    component =  tuple1
+                    component = component.trim
+
+                    //get element
+                    val e = component
+                    println("element = " + e)
+
+                    // Increment counter
+                    index += 1
+
+                    // Add new component
+                    childList += component
+                }
+            }
+
+            componentList += childList
         }
-        addButton
+
+        // create table header
+        var tHeadTrContent = ""
+        for(e: Element <- elem.getChildren) yield {
+            var content = ""
+
+            //Determine column class type
+            var className = ""
+            if (e.getType.toLowerCase().equals("boolean")){
+                className = "col-sm-1"
+            } else {
+                className = "col-sm-3"
+            }
+
+            if(e.getChildren.getFirst.getTag.toLowerCase.equals("question")){
+                // If simple question, get first child value
+                content = e.getChildren.getFirst.getValue.toString
+
+                //this is a simple input, make thead tr larger than vs dropdown (below)
+                className = "col-sm-4"
+            } else {
+                // If question has data element, get second child value
+                content = e.getChildren.get(1).getValue.toString
+            }
+
+            val thStart = "<th class=\"" + className + "\">"
+            val thEnd = "</th>"
+
+            // Create TR element
+            tHeadTrContent += thStart.concat(content).concat(thEnd)
+        }
+        // Add last column for remove button
+        tHeadTrContent += "<th class=\"col-sm-1\"></th>"
+
+        // Create tHead
+        val tHead = "<thead><tr>".concat(tHeadTrContent).concat("</tr></thead>")
+
         // create table body
-        // create table footer
-        // create table add button
+        // For each arraylist value, get element and set value
+        var tBody = ""
+        for(componentItem <- componentList) yield {
+            var trRow = ""
+            for(elementItem <- componentList) {
+                trRow += elementItem
+            }
+            tBody += trRow
+        }
+
+        // Create table
+        "<h2>" + elem.getAttributes.get("name") + "</h2><table id=\"" + elem.getId + "\" name=\"" + elem.getId + "\" class=\"table\">".concat(tHead).concat(tBody).concat("</table>")
     }
 
     def parseElement(element: Element): String = {
