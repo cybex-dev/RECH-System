@@ -213,6 +213,34 @@ function show(element) {
     }
 }
 
+function downloadFile(data){
+    handleDownload(data, applicationRoutes.controllers.ApplicationSystem.ApplicationHandler.downloadDocument(), "Unable to download document. Please contact the Research and Ethics Committee if this issue persists.")
+}
+
+//Source: https://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
+function handleDownload(params, url, errorMessage, success) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: params,
+        success: function(response, status, request) {
+            var disp = request.getResponseHeader('Content-Disposition');
+            if (disp && disp.search('attachment') !== -1) {
+                var form = $('<form method="POST" action="' + url + '">');
+                $.each(params, function(k, v) {
+                    form.append($('<input type="hidden" name="' + k +
+                        '" value="' + v + '">'));
+                });
+                $('body').append(form);
+                form.submit();
+            }
+        },
+        error: function (error) {
+            alert(error + "\n" + errorMessage);
+        }
+    });
+}
+
 /**
  * Function to take <div class="popup"...> and create Model dialogs from them
  */
@@ -235,6 +263,7 @@ function createDocumentPopups() {
         let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", "Add " + name, null, "nmu-button", "action-button", "action-alternative");
         btn.style.marginLeft = "20px";
 
+        // Create text element to sow file name which has been uploaded or has been selected
         let textNode = createElement("label", "", "", copy.id + "_filename");
         textNode.style.marginLeft = "50px";
         textNode.style.fontWeight = "bold";
@@ -259,10 +288,14 @@ function createDocumentPopups() {
         // Create popup window
         createPopup(copy.id, name, copy, divContainer);
         let inputFile = parent.querySelectorAll("input[type=file]")[0];
-        inputFile.onchange = function () {
+        inputFile.addEventListener("change", function () {
             let last = inputFile.value.lastIndexOf("\\");
             document.getElementById(textNode.id).innerHTML = "<b>File: </b>" + inputFile.value.substr(last+1);
-        };
+        });
+
+        // Set existing file name
+        let last = inputFile.value.lastIndexOf("\\");
+        textNode.innerHTML = "<b>Existing File: </b>" + inputFile.value.substr(last+1);
 
         // Set onclick event
         document.getElementById("btnPopup_" + copy.id).onclick = function () {
@@ -274,12 +307,9 @@ function createDocumentPopups() {
             button.onclick = function () {
                 let data = {
                     "application_id": $('#application_id').val(),
-                    "new_password": $('#new_password').val(),
-                    "confirm_password": $('#confirm_password').val()
+                    "component_id": $('#new_password').val()
                 };
-                sendRequest(btnPassword, data, userRoutes.controllers.UserSystem.ProfileHandler.getDocument(), "Unable to update password, your old password is still active. Please contact the Research and Ethics Committee if this issue persists.", function (data) {
-                    alert("Password updated");
-                })
+                downloadFile(data);
             }
         })
     });

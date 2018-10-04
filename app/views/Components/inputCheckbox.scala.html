@@ -3,8 +3,22 @@
 
 @(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
+@getChecked = @{
+    var value = ""
+    if(value != null && !value.isEmpty && !value.equals("null")) {
+        if(value.toLowerCase=="true"){
+            value = "checked='checked' value='1'"
+        } else {
+            value = "value='0'"
+        }
+    } else {
+        value = "value='0'"
+    }
+    value
+}
+
 <label for="@id" style="cursor: pointer !important;">@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>
-<input style="margin-left: 20px" id="@id" name="@id" type="checkbox" @{if(value != null) {if(value.toLowerCase=="true"){"checked=true"}else{"checked=false"}} else {}} @Components.editable.apply(canEdit)>
+<input style="margin-left: 20px" id="@id" name="@id" type="checkbox" @getChecked @Components.editable.apply(canEdit)>
 
     @Components.feedback_container.apply(id, feedback)
     @Components.reviewable.apply(review, reviewData)

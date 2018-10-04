@@ -116,7 +116,7 @@ public class EntityDepartment extends Model {
                         dept = s1[0].substring(0, 1) + s1[1].substring(0, 1) + s1[2].substring(0, 1);
                     }
 
-                    return (shortname.equals(dept));
+                    return (shortname.toLowerCase().equals(dept.toLowerCase()));
 
                 })
                 .map(EntityDepartment::getDepartmentName)

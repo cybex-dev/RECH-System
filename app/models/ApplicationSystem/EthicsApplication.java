@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -210,13 +211,56 @@ public class EthicsApplication implements Serializable {
         return application;
     }
 
+    @SuppressWarnings("unchecked")
+    /**
+     * Receives an element root and a map of values. These values are added back into the root element's appropriate location determinved by the XMLTools lookup function
+     *
+     * Supresses the cast of Object -> ArrayList[Object]
+     */
     public static Element addValuesToRootElement(Element root, Map<String, Object> values){
         values.forEach((key, value) -> {
-            Element child = XMLTools.lookup(root, key);
+            boolean keyPartOfList = (key.matches("^\\w+[_]\\d+$"));
+            String cleanedKey = (keyPartOfList) ? key.substring(0, key.lastIndexOf("_")) : key;
+
+            Element child = XMLTools.lookup(root, cleanedKey);
             if (child == null){
-                System.out.println("Key [ " + key + " ] with value [ " + value + " ] ignored");
+                System.out.println("Key [ " + cleanedKey + " ] with value [ " + value + " ] ignored");
             } else {
-                child.getChildren().getLast().setValue(value);
+                // Get child.value element
+                Element valueElement = child.getChildren().getLast();
+
+                // Check if ID suggests it is part of a list
+                boolean isList = child.getParent().getTag().equals("list");
+
+                // Check if key being part of a list matches parent being a list element
+                if (keyPartOfList && isList){
+
+                    System.out.println("Handling Arraylist Content with Key [" + key + "] \t\t\t\t cleaned key (component id) = [" + cleanedKey + "]");
+                    // Check if a list exists, if not then create it
+                    if (!(valueElement.getValue() instanceof ArrayList)){
+                        valueElement.setValue(new ArrayList<>());
+                        System.out.println("Cleaned Key [" + cleanedKey + "] : NEW ARRAYLIST (" + valueElement.getValue().toString() + ")");
+                    }
+
+//                    System.out.println("Determining arraylist instance: " + valueElement.getValue().getClass().getName());
+
+                    // Add list value
+                    if (valueElement.getValue() instanceof ArrayList){
+                        ArrayList<Object> list = (ArrayList<Object>) valueElement.getValue();
+                        System.out.println("Current size: " + list.size() + "(" + valueElement.getValue().toString() + ")");
+                        list.add(value);
+                    } else {
+                        System.out.println("\nAddValuesToRoot - ERROR:\nID: " + child.getId() + "\nValue: " + value + "\n\nArraylist value not instance of ArrayList");
+                    }
+                } else {
+                    if (keyPartOfList || isList){
+                        // Display unhandled issue. This SHOULD never happen.
+                        System.out.println("\nAddValuesToRoot - ERROR:\nID: " + child.getId() + "\nValue: " + value + "\nParent Type is List: " + isList + "\nKey from List: " + keyPartOfList + "\nArraylist value not instance of ArrayList");
+                    } else{
+                        // Add the value normally
+                        valueElement.setValue(value);
+                    }
+                }
             }
         });
         return root;
@@ -230,20 +274,38 @@ public class EthicsApplication implements Serializable {
         this.questionList = questionList;
     }
 
+    /**
+     * Takes in an ethics application entity, gets the latest components from the database and constructs an element with its children from these values.
+     * @param application
+     * @return
+     */
     public static Element PopulateRootElement(EntityEthicsApplication application) {
         System.out.println("[Populating Root Element]");
+
+        // Get application type
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
+
+        // Get all latest components of an application
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
+
+        // Create map to store these in. This map should be identical to the map of data sent in the POST request when creating / editing an application form
         Map<String, Object> entryMap = new HashMap<>();
+
+        // Add each entity component version to the map of data, with its associated value
         latestComponents.forEach(entityComponentVersion -> {
+
+            // Safety check
             if (entityComponentVersion != null) {
                 System.out.println(entityComponentVersion.getComponentId() + " -> " + entityComponentVersion.getResponseType());
+
+                // Get value dependant on the component type, and add to map
                 switch (entityComponentVersion.getResponseType()) {
                     case "boolean": {
                         entryMap.put(entityComponentVersion.getComponentId(), entityComponentVersion.getBoolValue());
                         break;
                     }
 
+                    case "date":
                     case "number":
                     case "long_text":
                     case "text": {
@@ -265,7 +327,115 @@ public class EthicsApplication implements Serializable {
             }
 
         });
-        return EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
+        Element element = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
+
+        System.out.println("\t=== Starting Data Integrity Test ===\t");
+        latestComponents.forEach(entityComponentVersion -> {
+            if (entityComponentVersion != null) {
+                System.out.println(entityComponentVersion.getComponentId() + " -> " + entityComponentVersion.getResponseType());
+
+                // Get value dependant on the component type, and add to map
+                switch (entityComponentVersion.getResponseType()) {
+                    case "boolean": {
+                        String componentKey = entityComponentVersion.getComponentId();
+                        Boolean componentValue = entityComponentVersion.getBoolValue();
+
+                        Element lookup = XMLTools.lookup(element, componentKey.matches("^\\w+[_]\\d+$") ? componentKey.substring(0, componentKey.lastIndexOf("_")) : componentKey);
+
+                        Boolean elementValue = null;
+                        Object o = lookup.getChildren().getLast().getValue();
+                        if (o instanceof ArrayList) {
+                            break;
+//                            String i = componentKey.substring(componentKey.lastIndexOf("_") + 1);
+//                            int index = Integer.parseInt(i);
+//                            elementValue = (Boolean) ((ArrayList) o).get(index);
+//                            System.out.println("Arraylist: Using index " + index + " with value: " + elementValue);
+                        } else {
+                            elementValue = (Boolean) o;
+                        }
+
+                        if (elementValue.equals(componentValue)){
+                            System.out.println("Comparing Boolean [" + componentKey + "] : Match!");
+                        } else {
+                            System.out.println("Comparing Boolean [" + componentKey + "] : " + componentValue + " \t\t!=\t\t " + elementValue);
+                        }
+                        break;
+                    }
+
+                    case "text": {
+                        String originalKey = entityComponentVersion.getComponentId();
+
+                        String componentValue = entityComponentVersion.getTextValue();
+
+                        Element lookup = XMLTools.lookup(element, originalKey.matches("^\\w+[_]\\d+$") ? originalKey.substring(0, originalKey.lastIndexOf("_")) : originalKey);
+
+                        String elementValue = "";
+                        Object o = lookup.getChildren().getLast().getValue();
+                        if (o instanceof ArrayList) {
+                            break;
+//                            String i = originalKey.substring(originalKey.lastIndexOf("_") + 1);
+//                            int index = Integer.parseInt(i);
+//                            elementValue = (String) ((ArrayList) o).get(index);
+//                            System.out.println("Arraylist: Using index " + index + " with value: " + elementValue);
+                        } else {
+                            elementValue = (String) o;
+                        }
+
+                        if (elementValue.equals(componentValue)){
+                            System.out.println("Comparing String [" + originalKey + "] : Match!");
+                        } else {
+                            System.out.println("Comparing String [" + originalKey + "] : " + componentValue + " \t\t!=\t\t " + elementValue);
+                        }
+
+                        break;
+                    }
+
+                    case "document": {
+
+                        String componentKey = entityComponentVersion.getComponentId()  + "_title";
+                        String componentValue = entityComponentVersion.getDocumentName();
+
+                        Element lookup = XMLTools.lookup(element, componentKey);
+                        String elementValue = (String) lookup.getChildren().getLast().getValue();
+
+                        if (elementValue.equals(componentValue)){
+                            System.out.println("Comparing Document Title [" + componentKey + "] : Match!");
+                        } else {
+                            System.out.println("Comparing Document Title [" + componentKey + "] : " + componentValue + " \t\t!=\t\t " + elementValue);
+                        }
+
+                        componentKey = entityComponentVersion.getComponentId()  + "_desc";
+                        componentValue = entityComponentVersion.getDocumentDescription();
+
+                        lookup = XMLTools.lookup(element, componentKey);
+                        elementValue = (String) lookup.getChildren().getLast().getValue();
+
+                        if (elementValue.equals(componentValue)){
+                            System.out.println("Comparing Document Description [" + componentKey + "] : Match!");
+                        } else {
+                            System.out.println("Comparing Document Description [" + componentKey + "] : " + componentValue + " \t\t!=\t\t " + elementValue);
+                        }
+
+                        componentKey = entityComponentVersion.getComponentId()  + "_document";
+                        componentValue = entityComponentVersion.getDocumentLocationHash();
+
+                        lookup = XMLTools.lookup(element, componentKey);
+                        elementValue = (String) lookup.getChildren().getLast().getValue();
+
+                        if (elementValue.equals(componentValue)){
+                            System.out.println("Comparing Document Location [" + componentKey + "] : Match!");
+                        } else {
+//                            System.out.println("Comparing Document Location [" + componentKey + "] : " + componentValue + " \t\t!=\t\t " + elementValue);
+                        }
+
+
+                        break;
+                    }
+                }
+            }
+        });
+
+        return element;
     }
 
     public static List<Question> GetQuestionList(ApplicationType type){

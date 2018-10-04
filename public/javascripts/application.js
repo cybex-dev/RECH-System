@@ -51,9 +51,14 @@ function enablePopulatePRPFields() {
  */
 function addCheckboxOnChangeState() {
     document.querySelectorAll("input[type=checkbox]").forEach(function (checkbox) {
-        $("#"+checkbox.id).change(function () {
-            checkbox.value = checkbox.checked ? "on" : "off";
+        $("#" + checkbox.id).on('change', function() {
+            if ($(this).is(':checked')) {
+                $(this).attr('value', 'true');
+            } else {
+                $(this).attr('value', 'false');
+            }
         });
+        checkbox.value = checkbox.checked;
     })
 
 }
@@ -115,10 +120,11 @@ function getTableModels() {
 function setOnDeleteButtonsForExistingLists() {
     document.querySelectorAll("table > tbody > tr > td > button").forEach(function (value) {
         value.addEventListener("click", function () {
-            let tableId = $('#' + value.closest('table')).id;
+            let child = $('#' + value.id);
+            let tableId = child.closest('table').id;
 
             // Delete TR element
-            $('#' + value.id).closest('tr').remove();
+            child.closest('tr').remove();
 
             // Refresh table indicies
             refreshTableRowIndicies(tableId);

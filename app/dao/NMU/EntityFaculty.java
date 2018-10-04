@@ -29,7 +29,7 @@ public class EntityFaculty extends Model {
 
     public static String getFacultyByShortName(String shortname) {
         return find.all().stream()
-                .filter(entityFaculty -> entityFaculty.facultyName.substring(0,3).toUpperCase().equals(shortname))
+                .filter(entityFaculty -> entityFaculty.facultyName.substring(0,3).toLowerCase().equals(shortname.toLowerCase()))
                 .map(EntityFaculty::getFacultyName)
                 .findFirst()
                 .orElse("???");

@@ -217,17 +217,21 @@
 
             //println("Checking of [" + elementId + "] has a value of an object type arraylist")
             // Check if the child element's value is an array list, if so, then create all components from it
-            if(element.getChildren.getLast.getValue.isInstanceOf[util.ArrayList[String]]) {
+            if(element.getChildren.getLast.getValue.isInstanceOf[util.ArrayList[Object]]) {
                 //println("value IS an arraylist")
 
                 // Get the list of child element values and iterate over them
-                val list = element.getChildren.getLast.getValue.asInstanceOf[util.ArrayList[String]]
+                var list = element.getChildren.getLast.getValue.asInstanceOf[util.ArrayList[Object]]
 
                 // Using createComponent, we create each component and remove the associated labels and hints
                 var index = 0
                 for(value <- list) {
                     // Set the value by using setValue
-                    element.getChildren.getLast.setValue(value)
+                    if(value.isInstanceOf[Boolean]) {
+                        element.getChildren.getLast.setValue(value.asInstanceOf[Boolean])
+                    } else {
+                        element.getChildren.getLast.setValue(value.asInstanceOf[String])
+                    }
 
                     // Set ID by using getAttributes(id) and set ID = $id + "_" + $index
                     val newId = elementId.concat("_").concat(String.valueOf(index))
