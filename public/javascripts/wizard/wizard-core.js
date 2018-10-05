@@ -249,7 +249,17 @@ function createDocumentPopups() {
         // Hack fix for forEach loop not retaining the content of the element. e.parentNode == null at times.
         let element = document.getElementById(e.id);
 
-        // Create copy of element content
+        // Get download block and remove it
+        let downBlock = null;
+        let downloadBlock = element.querySelector("div.download");
+        if (downloadBlock !== null) {
+            downloadBlock.remove();
+
+            // Add download block after current parent
+            let downBlock = downloadBlock.cloneNode(true);
+        }
+
+         // Create copy of element content
         let copy = element.cloneNode(true);
 
         // Get element parent, where the popup will be placed
@@ -262,7 +272,7 @@ function createDocumentPopups() {
         let inputFile = parent.querySelectorAll("input[type=file]")[0];
 
         // Create button to open popup window
-        let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", (inputFile.value === "") ? "Add " : "Modify " + name, null, "nmu-button", "action-button", "action-alternative");
+        let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", ((inputFile.value === "") ? "Add " : "Modify ") + name, null, "nmu-button", "action-button", "action-alternative");
 
         btn.style.marginLeft = "20px";
         // Create text element to sow file name which has been uploaded or has been selected
@@ -283,19 +293,25 @@ function createDocumentPopups() {
         divContainer.appendChild(document.createElement("BR"));
 
         // Insert Show Popup button before current element
-        parent.insertBefore(divContainer, element);
+        if (downBlock !== null) {
+            parent.insertBefore(downBlock, element);
+            parent.insertBefore(divContainer, downBlock);
+        }  else {
+            parent.insertBefore(divContainer, element);
+        }
 
         // Remove the element, i.e. all content from the form
         element.remove();
         // Create popup window
         createPopup(copy.id, name, copy, divContainer);
-        inputFile.addEventListener("change", function () {
-            let last = inputFile.value.lastIndexOf("\\");
-            document.getElementById(textNode.id).innerHTML = "<b>File: </b>" + inputFile.value.substr(last+1);
+        document.getElementById(inputFile.id).addEventListener("change", function (event) {
+            let inputFile = document.getElementById(event.target.id);
+            let last = inputFile.value.substring(inputFile.value.lastIndexOf("\\")+1);
+            document.getElementById(textNode.id).innerHTML = "<b>File: </b>" + last;
         });
 
         // Set existing file name
-        let last = inputFile.value.lastIndexOf("\\");
+        let last = inputFile.value.substring(inputFile.value.lastIndexOf("\\")+1);
         textNode.innerHTML = "<b>Existing File: </b>" + inputFile.value.substr(last+1);
 
         // Set onclick event
@@ -305,10 +321,10 @@ function createDocumentPopups() {
 
         // Set onDownload button click handlers
         document.querySelectorAll("button .downloadfile").forEach(function (button) {
-            button.onclick = function () {
+            document.getElementById(button.id).onclick = function () {
                 let data = {
                     "application_id": $('#application_id').val(),
-                    "component_id": $('#new_password').val()
+                    "component_id": button.getAttribute("component")
                 };
                 downloadFile(data);
             }

@@ -12,19 +12,29 @@ function addButtonPost() {
         let appForm = document.getElementById("application_form");
         if (appForm !== null) {
             value.onclick = function (event) {
-                if (value.getAttribute("href") !== null) {
-                    appForm.action = value.getAttribute("href");
-                    appForm.method = "POST";
 
-                    formSubmitHandler();
+                if (value.getAttribute("method") === "GET") {
+                    window.location.href = value.getAttribute("href");
+                } else {
+                    if (value.getAttribute("href") !== null) {
+                        appForm.action = value.getAttribute("href");
+                        appForm.method = value.getAttribute("method");
+                        appForm.enctype = value.getAttribute("enctype");
 
-                    appForm.submit();
+                        formSubmitHandler();
+
+                        appForm.submit();
+                    }
                 }
             };
 
             if (value.parentNode.tagName === "A") {
                 value.setAttribute("href", value.parentNode.getAttribute("href"));
+                value.setAttribute("method", value.parentNode.getAttribute("method"));
+                value.setAttribute("enctype", value.parentNode.getAttribute("enctype"));
                 value.parentElement.removeAttribute("href");
+                value.parentElement.removeAttribute("method");
+                value.parentElement.removeAttribute("enctype");
             }
         }
     })

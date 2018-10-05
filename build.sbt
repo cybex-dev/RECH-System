@@ -1,4 +1,4 @@
-// Application Name
+// Application Name480:1
 name := """RECH-System"""
 
 // Application Version
@@ -7,6 +7,9 @@ version := "1.0"
 // Ebean
 // Version : 11.15.x
 // Plugin Version : 4.1.3
+
+// Enable breakpoints
+fork in Test := false
 
 // Additional Settings
 PlayKeys.playDefaultPort := 9000

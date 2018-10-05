@@ -3,7 +3,7 @@
 @(button: GuiButton)(alternateAction: Boolean = false)(submit: Boolean = false)(small: Boolean = false)
 
 <div class="@{if(small){"col-sm-2"}else{"col-sm-3"}}">
-    <a href="@button.getCallBack">
+    <a href="@button.getCallBack" method="@button.getMethod" enctype="@button.getEnctype">
         <button id="@button.getId" type="@{if(submit){"submit"}else{"button"}}" class="form-button nmu-button @{if(alternateAction){"action-button pull-right action-alternative"}else{"action-button"}}" style="width: auto;float: left">@button.getTitle</button>
     </a>
 </div>

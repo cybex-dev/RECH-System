@@ -447,3 +447,9 @@ table > tbody td {
 .sortable th {
     text-decoration: underline !important;
 }
+
+.download {
+    background-color: #00000026 !important;
+    display: inline-block;
+    width: 100% !important;
+}

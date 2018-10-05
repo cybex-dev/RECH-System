@@ -53,9 +53,9 @@ function addCheckboxOnChangeState() {
     document.querySelectorAll("input[type=checkbox]").forEach(function (checkbox) {
         $("#" + checkbox.id).on('change', function() {
             if ($(this).is(':checked')) {
-                $(this).attr('value', 'true');
+                $(this).attr('value', 'on');
             } else {
-                $(this).attr('value', 'false');
+                $(this).attr('value', 'off');
             }
         });
         checkbox.value = checkbox.checked;
@@ -367,4 +367,86 @@ function addReadGuidelines() {
         }
     }
 
+}
+
+function handleExtensions() {
+    // document.querySelectorAll("extension input").forEach(function (element) {
+    //     if ()
+    // }
+    //
+    // document.querySelectorAll("extension select").forEach(function (element) {
+    //
+    // }
+}
+
+function checkComplete() {
+    document.querySelectorAll(".section").forEach(section => {
+        if (checkGroupsComplete(section.id)){
+            console.log("Section " + section.id + " Completed!")
+        }  else {
+            console.log("Section " + section.id + " Incomplete")
+        }
+    });
+}
+
+function checkGroupsComplete(sectionId) {
+    let complete = true;
+    document.querySelectorAll("#" + sectionId + " .group").forEach(group => {
+        let extComplete = checkExtensionsComplete(group.id);
+        let inputsComplete = checkInputsComplete(group.id);
+        let selectsComplete = checkSelectsComplete(group.id);
+        if (extComplete && inputsComplete && selectsComplete){
+            console.log("Group " + group.id + " Completed!");
+            complete = true;
+        }  else {
+            console.log("Group " + group.id + " Incomplete");
+            complete = false;
+        }
+    });
+    return true;
+}
+
+function checkExtensionsComplete(groupId) {
+    let complete = true;
+    document.querySelectorAll("#" + groupId + " .extension .extension-header input[type=checkbox]").forEach(extensionCheckbox => {
+        if (extensionCheckbox.checked) {
+            let extComplete = checkExtensionsComplete(extensionCheckbox.id);
+            let inputsComplete = checkInputsComplete(extensionCheckbox.id);
+            let selectsComplete = checkSelectsComplete(extensionCheckbox.id);
+            if (extComplete && inputsComplete && selectsComplete){
+                console.log("Group " + group.id + " Completed!")
+                complete = true;
+            }  else {
+                console.log("Group " + group.id + " Incomplete")
+                complete = false;
+            }
+        }
+    });
+    return complete;
+}
+
+function checkInputsComplete(parentId) {
+    let complete = true;
+    document.querySelectorAll("#" + parentId + " input").forEach(value => {
+        if (value.value === ""){
+            complete = false;
+        }
+    });
+    return complete;
+}
+
+function checkSelectsComplete(parentId) {
+    let complete = true;
+    document.querySelectorAll("#" + parentId + " select").forEach(value => {
+        if (value.value === ""){
+            complete = false;
+        }
+    });
+    return complete;
+}
+
+function addCompletionCheck() {
+    document.querySelectorAll("required").forEach(value => {
+        value.addEventListener("change", checkComplete());
+    })
 }

@@ -115,10 +115,11 @@ public class EntityComponent extends Model {
 
 
     public static List<dao.ApplicationSystem.EntityComponent> GetAllApplicationCompontents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId) {
-        return find.all()
+        List<EntityComponent> collect = find.all()
                 .stream()
                 .filter(entityComponent -> entityComponent.isComponent(applicationId))
                 .collect(Collectors.toList());
+        return collect;
     }
 
     public boolean isComponent(dao.ApplicationSystem.EntityEthicsApplicationPK id){

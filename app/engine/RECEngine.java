@@ -21,12 +21,13 @@ import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class RECEngine extends Controller {
 
     static private RECEngine engine;
 
-    public static RECEngine getInstance(){
+    public static RECEngine getInstance() {
         if (engine == null) {
             engine = new RECEngine();
         }
@@ -89,7 +90,7 @@ public class RECEngine extends Controller {
             case FACULTY_REVIEW:
                 return person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
                         person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
-                                person.getUserEmail().equals(entityEthicsApplication.getRtiId()) ? Permission.VIEW : Permission.NONE;
+                        person.getUserEmail().equals(entityEthicsApplication.getRtiId()) ? Permission.VIEW : Permission.NONE;
 
             case AWAITING_REVIEWER_ALLOCATION:
                 return (person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
@@ -100,8 +101,8 @@ public class RECEngine extends Controller {
                         person.getUserEmail().equals(entityEthicsApplication.getPrpId()))
                         ? Permission.VIEW
                         : EntityReviewerApplications.getApplicationReviewers(entityEthicsApplication.applicationPrimaryKey()).stream().anyMatch(s -> s.equals(person.getUserEmail()))
-                            ? Permission.MODIFY
-                            : Permission.NONE;
+                        ? Permission.MODIFY
+                        : Permission.NONE;
 
             case PENDING_REVIEW_MEETING:
                 return (person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
@@ -298,7 +299,7 @@ public class RECEngine extends Controller {
 
                     @Override
                     public boolean doAction() {
-                        if (approved){
+                        if (approved) {
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                             entityEthicsApplication.update();
                             return true;
@@ -493,7 +494,7 @@ public class RECEngine extends Controller {
 
                     @Override
                     public void doNotify() {
-                        if (size > 0 ) {
+                        if (size > 0) {
                             Notifier.requireAttention(applicationId, ApplicationStatus.PENDING_REVIEW_MEETING, applicationTitle, piId, prpId);
                         }
                     }
@@ -674,12 +675,12 @@ public class RECEngine extends Controller {
                 newStatus = (hodNoResponse)
                         ? ApplicationStatus.AWAITING_POST_HOD_APPROVAL
                         : (rtiNoResponse)
-                            ? ApplicationStatus.AWAITING_POST_RTI_APPROVAL
-                            : (hodDenied || rtiDenied)
-                                ? ApplicationStatus.RESUBMISSION
-                                : (hodPreApproved && rtiPreApproved)
-                                    ? ApplicationStatus.APPROVED
-                                    : ApplicationStatus.UNKNOWN;
+                        ? ApplicationStatus.AWAITING_POST_RTI_APPROVAL
+                        : (hodDenied || rtiDenied)
+                        ? ApplicationStatus.RESUBMISSION
+                        : (hodPreApproved && rtiPreApproved)
+                        ? ApplicationStatus.APPROVED
+                        : ApplicationStatus.UNKNOWN;
 
                 actionable = new Actionable() {
 
@@ -876,11 +877,66 @@ public class RECEngine extends Controller {
         }
 
         // Generate root Element with values attached
-        Element rootWithValues = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), m);
+//        Element rootWithValues = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), m);
+
+//        Set<String> incompleteItems = getIncompleteItems(rootWithValues);
+//        return (incompleteItems.size() == 0);
+
         return true;
-//        return XMLTools.checkComplete(rootWithValues);
-        // grp_risks_benefits > extension > no children
     }
+
+//    private Set<String> getIncompleteItems(Element root) {
+//        Set<String> incompleteItems = new HashSet<>();
+//
+//        // Handle tags
+//        // List tag - all element values are arraylists, must match in count, and be atleast 1 in size
+//        if (root.getTag().equals("list")) {
+//
+//            // Create container of all children's arralists
+//            List<List<Object>> container = new ArrayList<>();
+//            for (Element e : root.getChildren()) {
+//                if (e instanceof ArrayList) {
+//                    List<Object> o = new ArrayList<>((Collection<?>) e);
+//                    container.add(o);
+//                } else {
+//                    incompleteItems.add(e.getId());
+//                }
+//            }
+//
+//            // Test size
+//            for (int i = 1; i < container.size(); i++) {
+//                if (container.get(i).size() != container.get(0).size()) {
+//                    incompleteItems.add(root.getChildren().get(i).getId());
+//                }
+//            }
+//
+//            // Test if string, then check all values are filled in
+//            for (int i = 0; i < container.size(); i++) {
+//                List<Object> objects = container.get(i);
+//                if (objects instanceof ArrayList<String>) {
+//                    List<String> strings = objects;
+//                    if (strings.stream().filter(String::isEmpty).collect(Collectors.toList()).size() > 0) {
+//                        incompleteItems.add(root.getChildren().get(i).getId());
+//                    }
+//                }
+//            }
+//        } else if(root.getTag().equals("extension")) {
+//            if (root.getChildren().getLast().getValue()){
+//                List<String> items = getIncompleteItems(root);
+//                incompleteItems.addAll(items);
+//            }
+//
+//        } else if (root.isComponent()) {
+//            if (root.getValue() == null) {
+//                incompleteItems.add(root.getId());
+//            }
+//
+//        for (Element child : root.getChildren()) {
+//            Set<String> items = getIncompleteItems(child);
+//            incompleteItems.addAll(items);
+//        }
+//        return incompleteItems;
+//    }
 
     private boolean checkComplete(Element rootWithValues, boolean isRequired) {
         boolean childrenPresent = true;

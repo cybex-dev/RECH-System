@@ -99,12 +99,12 @@ public class ProfileHandler extends Controller {
         List<EntityEthicsApplication> entity_liaiseApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.Liaison);
         List<EntityEthicsApplication> entity_facultyApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.FacultyRTI);
 
-        List<Application> collect = entity_newApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
-        List<Application> collect1 = entity_ownApplications.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
-        List<Application> collect2 = entity_approveApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
-        List<Application> collect3 = entity_reviewApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
-        List<Application> collect4 = entity_liaiseApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
-        List<Application> collect5 = entity_facultyApps.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
+        List<Application> collect = entity_newApps.stream().map(app -> Application.create(app, person)).filter(Application::hasRecentActivity).collect(Collectors.toList());
+        List<Application> collect1 = entity_ownApplications.stream().map(app -> Application.create(app, person)).filter(Application::hasRecentActivity).collect(Collectors.toList());
+        List<Application> collect2 = entity_approveApps.stream().map(app -> Application.create(app, person)).filter(Application::hasRecentActivity).collect(Collectors.toList());
+        List<Application> collect3 = entity_reviewApps.stream().map(app -> Application.create(app, person)).filter(Application::hasRecentActivity).collect(Collectors.toList());
+        List<Application> collect4 = entity_liaiseApps.stream().map(app -> Application.create(app, person)).filter(Application::hasRecentActivity).collect(Collectors.toList());
+        List<Application> collect5 = entity_facultyApps.stream().map(app -> Application.create(app, person)).filter(Application::hasRecentActivity).collect(Collectors.toList());
 
         return ok(views.html.UserSystem.Dashboard.render(collect, collect1, collect2, collect3, collect4, collect5));
     }

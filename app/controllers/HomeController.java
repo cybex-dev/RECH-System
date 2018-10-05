@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.ApplicationSystem.routes;
+import models.ApplicationSystem.EthicsApplication;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.mvc.Controller;

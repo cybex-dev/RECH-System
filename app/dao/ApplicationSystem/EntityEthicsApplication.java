@@ -467,11 +467,18 @@ public class EntityEthicsApplication extends Model {
      * @return
      */
     public static List<EntityComponentVersion> getLatestComponents(dao.ApplicationSystem.EntityEthicsApplicationPK applicationId){
-        return EntityComponent
-                .GetAllApplicationCompontents(applicationId)
+        List<EntityComponent> entityComponents = EntityComponent.GetAllApplicationCompontents(applicationId);
+        List<EntityComponentVersion> collect = entityComponents
                 .stream()
-                .map(entityComponent -> EntityComponentVersion.GetLatestComponent(applicationId, entityComponent.getComponentId()))
+                .map(entityComponent -> {
+                    EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(applicationId, entityComponent.getComponentId());
+                    if (entityComponentVersion == null) {
+                        System.out.println("getLatestComponents: Null Latest Component");
+                    }
+                    return entityComponentVersion;
+                })
                 .collect(Collectors.toList());
+        return collect;
     }
 
     public static Timestamp GetLastEditDate(EntityEthicsApplicationPK pk){

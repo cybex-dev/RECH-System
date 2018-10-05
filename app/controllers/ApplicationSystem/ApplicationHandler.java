@@ -278,6 +278,11 @@ public class ApplicationHandler extends Controller {
                 int applicationNumber = EntityEthicsApplication.GetNextApplicationNumber(app_department, application_type, year);
                 application.setApplicationNumber(applicationNumber);
 
+                // Get pi id from session
+                String pi_id = session(CookieTags.user_id);
+                // Set hod, rti, prp & pi ids
+                application.setPiId(pi_id);
+
                 application.insert();
             } else {
                 application = EntityEthicsApplication.GetApplication(EntityEthicsApplicationPK.fromString(formApplication.get("application_id").toString()));
@@ -299,9 +304,19 @@ public class ApplicationHandler extends Controller {
         }, httpExecutionContext.current());
     }
 
+    /**
+     * Filter data, clean data and add documents to map
+     * @param formApplication
+     * @param applicationId
+     * @return
+     */
     private Map<String, Object> clean(DynamicForm formApplication, EntityEthicsApplicationPK applicationId) {
         Map<String, Object> filteredData = new HashMap<>();
-        formApplication.get().getData().forEach(filteredData::put);
+        formApplication.get().getData()
+                .entrySet()
+                .stream()
+                .filter(entry -> (!entry.getKey().equals("prp_contact_email")))
+                .forEach(e -> filteredData.put(e.getKey(), e.getValue()));
         request().body().asMultipartFormData().getFiles().stream()
                 .filter(o -> !o.getFilename().isEmpty())
                 .forEach(e -> filteredData.put(e.getKey(), e));
@@ -319,11 +334,6 @@ public class ApplicationHandler extends Controller {
                         application.getInternalStatus() != ApplicationStatus.NOT_SUBMITTED.getStatus()) {
             application.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
         }
-
-        // Get pi id from session
-        String pi_id = session(CookieTags.user_id);
-        // Set hod, rti, prp & pi ids
-        application.setPiId(pi_id);
 
         // Get prp id from Elements
         String prpContactEmail = (String) data.get("prp_contact_email");
@@ -345,6 +355,18 @@ public class ApplicationHandler extends Controller {
         // Update application
         application.update();
 
+        // Delete all latest components from database. We can do this only if they were not submitted.
+        List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(applicationId);
+        latestComponents.forEach(entityComponentVersion -> {
+            if (entityComponentVersion != null){
+                if (!entityComponentVersion.getIsSubmitted()){
+                    entityComponentVersion.delete();
+                }
+            } else{
+                System.out.println("Not removing EntityComponentVersion - it is null");
+            }
+        });
+
         // Get form data and add to root element
         data.entrySet().stream()
                 .filter(stringObjectEntry -> !stringObjectEntry.getValue().toString().isEmpty())
@@ -360,12 +382,13 @@ public class ApplicationHandler extends Controller {
 
                         String type = componentElement.getType();
                         System.out.println("Type: " + type);
+
                         EntityComponentVersion entityComponentVersion = getUpdatableComponentVersion(component, type);
                         // be able to compile a document with description, etc. possibly update each document but split string id  base on "_title _desc and _document" and update documnt component 3 times
 
                         if (entityComponentVersion != null) {
                             // insert component version value
-                            if (componentElement.getParent().getType().equals("list"))
+                            if (componentElement.getParent().getType().equals("document"))
                                 type = "document";
                             setComponentValue(entityComponentVersion, entry, type);
                         }
@@ -390,45 +413,43 @@ public class ApplicationHandler extends Controller {
 
             case "long_text":
             case "text": {
-                if (entry.getKey().contains("doc_")) {
-                    if (entry.getKey().contains("_title")) {
-                        entityComponentVersion.setDocumentName((String) entry.getValue());
-                    } else {
-                        entityComponentVersion.setDocumentDescription((String) entry.getValue());
-                    }
-                } else {
                     entityComponentVersion.setTextValue((String) entry.getValue());
-                }
                 break;
             }
 
             case "boolean": {
-                boolean b = (entry.getValue().equals("true"));
+                boolean b = (entry.getValue().equals("on"));
                 entityComponentVersion.setBoolValue(b);
                 break;
             }
 
             case "document": {
-                // Check saving directory exists
-                String docDirectory = App.getInstance().getDocumentDirectory();
-                try {
-                    File dir = new File(docDirectory);
-                    if (!dir.exists()) {
-                        dir.mkdirs();
+                if (entry.getKey().contains("_title")) {
+                    entityComponentVersion.setDocumentName((String) entry.getValue());
+                } else if (entry.getKey().contains("_desc")) {
+                    entityComponentVersion.setDocumentDescription((String) entry.getValue());
+                } else {
+                    // Check saving directory exists
+                    String docDirectory = App.getInstance().getDocumentDirectory();
+                    try {
+                        File dir = new File(docDirectory);
+                        if (!dir.exists()) {
+                            dir.mkdirs();
+                        }
+                    } catch (Exception x) {
+                        x.printStackTrace();
                     }
-                } catch (Exception x) {
-                    x.printStackTrace();
-                }
 
-                // Save file
-                try {
-                    FilePart filePart = (FilePart) entry.getValue();
-                    File file = (File) filePart.getFile();
-                    File newFile = new File(docDirectory.concat(entityComponentVersion.applicationPrimaryKey().shortName()).concat("~" + entityComponentVersion.getVersion() + "~").concat(filePart.getFilename()));
-                    file.renameTo(newFile);
-                    entityComponentVersion.setDocumentLocationHash(newFile.getPath());
-                } catch (Exception x) {
-                    x.printStackTrace();
+                    // Save file
+                    try {
+                        FilePart filePart = (FilePart) entry.getValue();
+                        File file = (File) filePart.getFile();
+                        File newFile = new File(docDirectory.concat(entityComponentVersion.applicationPrimaryKey().shortName()).concat("~" + entityComponentVersion.getVersion() + "~").concat(filePart.getFilename()));
+                        file.renameTo(newFile);
+                        entityComponentVersion.setDocumentLocationHash(newFile.getPath());
+                    } catch (Exception x) {
+                        x.printStackTrace();
+                    }
                 }
                 break;
             }

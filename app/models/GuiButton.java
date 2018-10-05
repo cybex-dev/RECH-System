@@ -5,8 +5,8 @@ import play.api.mvc.Call;
 
 public class GuiButton {
 
-    public static GuiButton negHome = new GuiButton("Home", "btnHome", routes.ProfileHandler.overview());
-    public static GuiButton negHomeCancel = new GuiButton("Back to Overview", "btnCancel", routes.ProfileHandler.overview());
+    public static GuiButton negHome = new GuiButton("Home", "btnHome", routes.ProfileHandler.overview(), "GET", "application/x-www-form-urlencoded");
+    public static GuiButton negHomeCancel = new GuiButton("Back to Overview", "btnCancel", routes.ProfileHandler.overview(), "GET", "application/x-www-form-urlencoded");
 
     public static GuiButton netSaveApplication = new GuiButton("Save Application","btnSaveApplication",  controllers.ApplicationSystem.routes.ApplicationHandler.saveApplication());
     public static GuiButton posSubmitApplication = new GuiButton("Submit Application", "btnSubmitApplication", controllers.ApplicationSystem.routes.ApplicationHandler.submitApplication());
@@ -29,9 +29,19 @@ public class GuiButton {
     private Call callBack;
     private String title;
     private String id;
+    private String method = "POST";
+    private String enctype = "multipart/form-data";
 
     public GuiButton(String title, String id, Call callBack) {
         this.callBack = callBack;
+        this.title = title;
+        this.id = id;
+    }
+
+    public GuiButton(String title, String id, Call callBack, String method, String enctype) {
+        this.enctype = enctype;
+        this.callBack = callBack;
+        this.method = method;
         this.title = title;
         this.id = id;
     }
@@ -46,5 +56,13 @@ public class GuiButton {
 
     public String getId() {
         return id;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getEnctype() {
+        return enctype;
     }
 }

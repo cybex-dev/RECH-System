@@ -4,7 +4,7 @@
 @(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 <label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint" ></ic><br>
-<select id="@id" value="@{if(value != null) {value} else {}}" name="@id" @Components.editable.apply(canEdit) style="width: auto !important;">
+<select class="required" id="@id" value="@{if(value != null) {value} else {}}" name="@id" @Components.editable.apply(canEdit) style="width: auto !important;">
     @for(option <- options) {
         @if(value != null && value.equals(option)) {
             <option id="@option.toString.replace(" ", "")" name="@option.toString.replace(" ", "")" selected="selected">@option</option>

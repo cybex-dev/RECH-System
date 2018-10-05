@@ -183,4 +183,28 @@ public class Application {
     public void setPermission(Permission permission) {
         this.permission = permission;
     }
+
+    /**
+     * Recent activity defined by a month prior to the most recent change to the application
+     * @return
+     */
+    public boolean hasRecentActivity(){
+        //Reduce current time by a month
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(Timestamp.from(Instant.now()));
+        cal.add(Calendar.MONTH, -1);
+        Timestamp monthBackData = Timestamp.from(cal.getTime().toInstant());
+
+        boolean recentDateSubmitted = (date_submitted != null && date_submitted.after(monthBackData));
+        boolean recentDateApproved = (date_submitted != null && date_submitted.after(monthBackData));
+        boolean recentDateDueDate = (date_submitted != null && date_submitted.after(monthBackData));
+        boolean recentAssigned = (date_submitted != null && date_submitted.after(monthBackData));
+        Timestamp timestamp = EntityEthicsApplication.GetLastEditDate(applicationID);
+        boolean recentEdit = true;
+        if (timestamp != null) {
+            recentEdit = timestamp.after(monthBackData);
+        }
+
+        return recentDateSubmitted || recentDateApproved || recentDateDueDate || recentAssigned || recentEdit;
+    }
 }
