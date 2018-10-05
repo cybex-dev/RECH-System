@@ -3,9 +3,11 @@
 @import dao.ApplicationSystem.EntityEthicsApplication
 @import views.html.Templates.Masterpage
 @import models.ApplicationSystem.ApplicationStatus
+@import engine.Permission
+@import models.UserSystem.Application
 
 @import java.sql.Timestamp
-@(pageTitle: String)(applicationList: util.List[EntityEthicsApplication])
+@(pageTitle: String)(applicationList: util.List[Application])
 
 @getDate(time: Timestamp, neg: String) = @{
     if(time==null){
@@ -16,35 +18,61 @@
 }
 
 @Masterpage.apply(pageTitle) {
-    <h2>All applications</h2>
+    <div class="container-heading">
+        <h3 class="overview">My Applications</h3>
+        <div class="row">
+            <div class="col-sm-7">
+                <p style="font-style: italic">All applications associated with this account.</p>
+            </div>
+            <div class="col-sm-5">
+                <input name="" type="text" maxlength="1000" id="application_searchbox" placeholder="Search applications..." style="width: 80% !important;">
+                <ic class="fa fa-lg fa-search TextWhite"></ic>
+            </div>
+        </div>
+
+    </div>
 
     @if(applicationList.size() > 0) {
         <div class="row">
-            <table class="table">
+            <table id="tbl_all_applications" class="table table-overview sortable">
                 <thead>
-                    <th>Application Title</th>
-                    <th>Status</th>
-                    <th>Last Edit Date</th>
-                    <th>Date Submitted</th>
-                    <th></th>
+                    <th style="border-bottom: 0 !important;">Application Title</th>
+                    <th style="border-bottom: 0 !important;">Status</th>
+                    <th style="border-bottom: 0 !important;">Last Edit Date</th>
+                    <th style="border-bottom: 0 !important;">Date Submitted</th>
+                    <th style="border-bottom: 0 !important; text-align: center">Action</th>
                 </thead>
                 <tbody>
-                @for(application: EntityEthicsApplication <- applicationList) {
-                    <tr class="nmu-button" data-url="">
-                        <td>@application.title()</td>
-                        <td>@ApplicationStatus.parse(application.getInternalStatus)</td>
-                        <td>@getDate(EntityEthicsApplication.GetLastEditDate(application.applicationPrimaryKey()), "Not yet edited")</td>
-                        <td>@getDate(application.getDateSubmitted, "Not submitted")</td>
-                        <td><a href="@controllers.ApplicationSystem.routes.ApplicationHandler.editApplication(application.applicationPrimaryKey.shortName())">
-                            <button class="nmu-button table-button">Modify Application</button>
-                        </a></td>
+                @for(application: Application <- applicationList) {
+                    <tr class="nmu-button overview-td">
+                        <td>@application.getTitle</td>
+                        <td>@application.getStatus.description()</td>
+                        <td>@getDate(EntityEthicsApplication.GetLastEditDate(application.getApplicationID), "Not yet edited")</td>
+                        <td>@application.getSubmittedDateSafe</td>
+                        <td>@if(application.getPermission == Permission.NONE) {
+                            <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">
+                                Not authorized</button></a>
+                        } else {
+                            @if(application.getPermission == Permission.VIEW) {
+                                <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
+                                    <button class="nmu-button table-button">View Application</button>
+                                </a>
+                            } else {
+                                <a style="float: right;" href="@controllers.ApplicationSystem.routes.ApplicationHandler.reviewApplication(application.getApplicationID.shortName())">
+                                    <button class="nmu-button table-button">Modify Application</button>
+                                </a>
+                            }
+                        }
+                        </td>
                     </tr>
                 }
                 </tbody>
             </table>
         </div>
     } else {
-        <p>No applications associated with this account</p>
+        <div class="row">
+            <p>No applications associated with this account</p>
+        </div>
     }
 
 }

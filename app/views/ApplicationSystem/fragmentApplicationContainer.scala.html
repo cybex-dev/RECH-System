@@ -84,7 +84,7 @@
 
             case "long_text" =>
                 /*creates a multiline text field*/
-                inputTextArea.apply(id, q, a, hint, element.getAttributes.get("max-words"), editable, showFeedback, showReviewContainer, reviewFeedback).toString()
+                inputTextArea.apply(id, q, element.getChildren().getLast().getValue().toString, hint, element.getAttributes.get("max-words"), editable, showFeedback, showReviewContainer, reviewFeedback).toString()
 
             case "text" =>
                 /*creates text field*/
@@ -224,7 +224,7 @@
                 var list = element.getChildren.getLast.getValue.asInstanceOf[util.ArrayList[Object]]
 
                 // Using createComponent, we create each component and remove the associated labels and hints
-                var index = 0
+                var index = 1
                 for(value <- list) {
                     // Set the value by using setValue
                     if(value.isInstanceOf[Boolean]) {
@@ -263,6 +263,7 @@
 
                     // Add new component
                     childList += "<td>" + component + "</td>"
+                    println("Table Row created from list:\n\t<td>" + component + "</td>")
                 }
             } else {
                 //println("value: not an arraylist, creating single element")
@@ -293,6 +294,7 @@
 
                 // Add new component
                 childList += "<td>" + component + "</td>"
+                println("Table Row created as single:\n\t<td>" + component + "</td>")
             }
 
             componentList += childList
@@ -389,7 +391,7 @@
         }
 
         table = table.concat("</table>")
-        //println("============================\nFinal table: \n" + table + "\n")
+        println("============================\nFinal table: \n" + table + "\n")
         table
     }
 

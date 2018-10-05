@@ -284,13 +284,17 @@ public class EthicsApplication implements Serializable {
 
         // Get application type
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
+        System.out.println("Found application type");
 
+        System.out.println("Finding latest components...");
         // Get all latest components of an application
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(application.applicationPrimaryKey());
+        System.out.println("Done");
 
         // Create map to store these in. This map should be identical to the map of data sent in the POST request when creating / editing an application form
         Map<String, Object> entryMap = new HashMap<>();
 
+        System.out.println("Processing components");
         // Add each entity component version to the map of data, with its associated value
         latestComponents.forEach(entityComponentVersion -> {
 
@@ -327,6 +331,8 @@ public class EthicsApplication implements Serializable {
             }
 
         });
+
+        System.out.println("Building root element");
         Element element = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), entryMap);
 
         System.out.println("\t=== Starting Data Integrity Test ===\t");

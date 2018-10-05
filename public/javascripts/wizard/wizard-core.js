@@ -259,24 +259,27 @@ function createDocumentPopups() {
 
         let divContainer = createElement("div", "", "", "", 'row');
 
-        // Create button to open popup window
-        let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", "Add " + name, null, "nmu-button", "action-button", "action-alternative");
-        btn.style.marginLeft = "20px";
+        let inputFile = parent.querySelectorAll("input[type=file]")[0];
 
+        // Create button to open popup window
+        let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", (inputFile.value === "") ? "Add " : "Modify " + name, null, "nmu-button", "action-button", "action-alternative");
+
+        btn.style.marginLeft = "20px";
         // Create text element to sow file name which has been uploaded or has been selected
         let textNode = createElement("label", "", "", copy.id + "_filename");
         textNode.style.marginLeft = "50px";
         textNode.style.fontWeight = "bold";
-        textNode.style.display = "block";
 
+        textNode.style.display = "block";
         // Insert Heading
         let heading = createElement("h4", name, "", "");
-        heading.style.marginLeft = "50px";
 
+        heading.style.marginLeft = "50px";
         // Add heading to container
         divContainer.appendChild(heading);
         divContainer.appendChild(btn);
         divContainer.appendChild(textNode);
+
         divContainer.appendChild(document.createElement("BR"));
 
         // Insert Show Popup button before current element
@@ -284,10 +287,8 @@ function createDocumentPopups() {
 
         // Remove the element, i.e. all content from the form
         element.remove();
-
         // Create popup window
         createPopup(copy.id, name, copy, divContainer);
-        let inputFile = parent.querySelectorAll("input[type=file]")[0];
         inputFile.addEventListener("change", function () {
             let last = inputFile.value.lastIndexOf("\\");
             document.getElementById(textNode.id).innerHTML = "<b>File: </b>" + inputFile.value.substr(last+1);

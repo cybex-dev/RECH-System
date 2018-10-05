@@ -20,6 +20,8 @@ import models.ApplicationSystem.EthicsApplication;
 import models.ApplicationSystem.EthicsApplication.ApplicationType;
 
 import models.GuiButton;
+import models.UserSystem.Application;
+import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
 import play.data.DynamicForm;
@@ -39,6 +41,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 import play.mvc.Security;
 import play.routing.JavaScriptReverseRouter;
@@ -157,8 +160,9 @@ public class ApplicationHandler extends Controller {
     public Result allApplications() {
         try {
             EntityPerson person = EntityPerson.getPersonById(session().get(CookieTags.user_id));
-            List<EntityEthicsApplication> applicationsByPerson = EntityEthicsApplication.findSubmittedApplicationsByPerson(person.getUserEmail());
-            return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", applicationsByPerson));
+            List<EntityEthicsApplication> entity_ownApplications = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryInvestigator);
+            List<Application> ownApps = entity_ownApplications.stream().map(app -> Application.create(app, person)).collect(Collectors.toList());
+            return ok(views.html.ApplicationSystem.AllApplications.render(" :: Applications", ownApps));
         } catch (Exception x) {
             x.printStackTrace();
             return badRequest(views.html.ApplicationSystem.AllApplications.render(" :: Applications", new ArrayList<>()));
@@ -210,6 +214,23 @@ public class ApplicationHandler extends Controller {
         if (application == null) {
             return badRequest();
         }
+        Map<String, Object> cleanData = clean(form, entityEthicsApplicationPK);
+        fillInApplicationData(application.applicationPrimaryKey(), cleanData);
+
+        if (application.getHodId().isEmpty()){
+            flash("warning", "Unable to submit, no HOD is available in the system");
+            return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
+        }
+
+        if (application.getRtiId().isEmpty()){
+            flash("warning", "Unable to submit, no Faculty RTI representative is available in the system");
+            return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
+        }
+
+        if (application.getPrpId().isEmpty()){
+            flash("warning", "Unable to submit, no Primary Responsible Person has been selected.");
+            return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
+        }
 
         if (ApplicationStatus.parse(application.getInternalStatus()) != ApplicationStatus.AWAITING_PRP_APPROVAL) {
             RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
@@ -257,29 +278,6 @@ public class ApplicationHandler extends Controller {
                 int applicationNumber = EntityEthicsApplication.GetNextApplicationNumber(app_department, application_type, year);
                 application.setApplicationNumber(applicationNumber);
 
-                // Get pi id from session
-                String pi_id = session(CookieTags.user_id);
-                // Set hod, rti, prp & pi ids
-                application.setPiId(pi_id);
-
-                // Get prp id from Elements
-                String prpContactEmail = formApplication.get("prp_contact_email");
-                if (prpContactEmail != null && !prpContactEmail.isEmpty()) {
-                    prpContactEmail = prpContactEmail.split("\\[")[1]
-                            .replace("]", "");
-                    application.setPrpId(prpContactEmail);
-
-                }
-
-                String hodId = EntityPerson.getHod(application.getDepartmentName());
-                if (hodId != null) {
-                    application.setHodId(hodId);
-                }
-                String facultyRTI = EntityPerson.getRTI(application.getFacultyName());
-                if (facultyRTI != null) {
-                    application.setRtiId(facultyRTI);
-                }
-
                 application.insert();
             } else {
                 application = EntityEthicsApplication.GetApplication(EntityEthicsApplicationPK.fromString(formApplication.get("application_id").toString()));
@@ -320,6 +318,28 @@ public class ApplicationHandler extends Controller {
                 application.getInternalStatus() != ApplicationStatus.DRAFT.getStatus() &&
                         application.getInternalStatus() != ApplicationStatus.NOT_SUBMITTED.getStatus()) {
             application.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
+        }
+
+        // Get pi id from session
+        String pi_id = session(CookieTags.user_id);
+        // Set hod, rti, prp & pi ids
+        application.setPiId(pi_id);
+
+        // Get prp id from Elements
+        String prpContactEmail = (String) data.get("prp_contact_email");
+        if (prpContactEmail != null && !prpContactEmail.isEmpty()) {
+            prpContactEmail = prpContactEmail.split("\\[")[1]
+                    .replace("]", "");
+            application.setPrpId(prpContactEmail);
+        }
+
+        String hodId = EntityPerson.getHod(application.getDepartmentName());
+        if (hodId != null) {
+            application.setHodId(hodId);
+        }
+        String facultyRTI = EntityPerson.getRTI(application.getFacultyName());
+        if (facultyRTI != null) {
+            application.setRtiId(facultyRTI);
         }
 
         // Update application

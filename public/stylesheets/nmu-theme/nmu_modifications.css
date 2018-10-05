@@ -444,3 +444,6 @@ table > tbody td {
     margin-left: 40px !important;
 }
 
+.sortable th {
+    text-decoration: underline !important;
+}

@@ -4,17 +4,17 @@
 @(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 @getChecked = @{
-    var value = ""
+    var v = ""
     if(value != null && !value.isEmpty && !value.equals("null")) {
         if(value.toLowerCase=="true"){
-            value = "checked='checked' value='1'"
+            v = "checked='checked' value='1'"
         } else {
-            value = "value='0'"
+            v = "value='0'"
         }
     } else {
-        value = "value='0'"
+        v = "value='0'"
     }
-    value
+    v
 }
 
 <label for="@id" style="cursor: pointer !important;">@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>

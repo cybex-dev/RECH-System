@@ -267,7 +267,6 @@ public class RECEngine extends Controller {
                     @Override
                     public boolean doAction() {
                         if (applicationComplete) {
-                            checkoutLatestApplication(applicationId);
                             entityEthicsApplication.setPiApprovedDate(Timestamp.from(Instant.now()));
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                             entityEthicsApplication.update();
@@ -332,13 +331,24 @@ public class RECEngine extends Controller {
                 boolean hodAccepted = entityEthicsApplication.getHodApplicationReviewApproved();
                 boolean rtiAccepted = entityEthicsApplication.getRtiApplicationReviewApproved();
 
+                boolean isFacultyLevel = entityEthicsApplication.getApplicationLevel() == 0;
+                newStatus = (isFacultyLevel) ? ApplicationStatus.FACULTY_REVIEW : ApplicationStatus.AWAITING_REVIEWER_ALLOCATION;
+
                 actionable = new Actionable() {
 
                     @Override
                     public boolean doAction() {
 
                         if (hodAccepted && rtiAccepted) {
-                            entityEthicsApplication.setInternalStatus(ApplicationStatus.READY_FOR_SUBMISSION.getStatus());
+
+                            // Automatically submit application to faculty/committee
+                            System.out.println("Checking out latest application components and setting submitted state");
+                            checkoutLatestApplication(applicationId);
+                            entityEthicsApplication.setApplicationRevision(entityEthicsApplication.getApplicationRevision() + 1);
+                            entityEthicsApplication.setInternalStatus(newStatus.getStatus());
+                            entityEthicsApplication.update();
+                            return true;
+
                         } else {
                             if (hodAccepted) {
                                 entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_PRE_RTI_APPROVAL.getStatus());
@@ -360,13 +370,18 @@ public class RECEngine extends Controller {
                     public void doNotify() {
 
                         if (hodAccepted && rtiAccepted) {
-                            Notifier.requireAttention(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, piId, prpId);
+                            if (isFacultyLevel) {
+                                Notifier.facultyReview(applicationId, applicationTitle, EntityPerson.getRCD(), entityEthicsApplication.getRtiId());
+                                Notifier.notifyStatus(applicationId, newStatus, applicationTitle, entityEthicsApplication.getHodId(), prpId);
+                            } else {
+                                Notifier.requireAttention(applicationId, newStatus, applicationTitle, EntityPerson.getRCD());
+                            }
                         } else {
                             if (hodAccepted) {
-                                Notifier.requireAttention(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, entityEthicsApplication.getHodId());
+                                Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_PRE_RTI_APPROVAL, applicationTitle, entityEthicsApplication.getHodId());
                             } else {
                                 if (rtiAccepted) {
-                                    Notifier.requireAttention(applicationId, ApplicationStatus.READY_FOR_SUBMISSION, applicationTitle, entityEthicsApplication.getHodId());
+                                    Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_PRE_HOD_APPROVAL, applicationTitle, entityEthicsApplication.getHodId());
                                 } else {
                                     Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, entityEthicsApplication.getHodId(), entityEthicsApplication.getRtiId());
                                 }
@@ -425,41 +440,6 @@ public class RECEngine extends Controller {
                     }
                 };
                 return actionable;
-
-            // Submission Phase
-            case READY_FOR_SUBMISSION:
-                // PI is notified of this
-                // Assume: Application has PI, PRP approval and is applicationComplete
-                // Action: PI submits application
-
-                // Determine application destination
-                // STEP -> FACULTY_REVIEW (Question -> Faculty)
-                // STEP -> AWAITING_REVIEWER_ALLOCATION (Question -> Committee) //RCD needs to allocated reviewers
-                boolean isFacultyLevel = entityEthicsApplication.getApplicationLevel() == 0;
-                newStatus = (isFacultyLevel) ? ApplicationStatus.FACULTY_REVIEW : ApplicationStatus.AWAITING_REVIEWER_ALLOCATION;
-                entityEthicsApplication.setApplicationRevision(entityEthicsApplication.getApplicationRevision() + 1);
-
-                actionable = new Actionable() {
-                    @Override
-                    public boolean doAction() {
-                        entityEthicsApplication.setInternalStatus(newStatus.getStatus());
-                        entityEthicsApplication.update();
-                        return true;
-                    }
-
-                    @Override
-                    public void doNotify() {
-                        if (isFacultyLevel) {
-                            Notifier.facultyReview(applicationId, applicationTitle, EntityPerson.getRCD(), entityEthicsApplication.getRtiId());
-                            Notifier.notifyStatus(applicationId, newStatus, applicationTitle, entityEthicsApplication.getHodId(), prpId);
-                        } else {
-                            Notifier.requireAttention(applicationId, newStatus, applicationTitle, EntityPerson.getRCD());
-                        }
-                    }
-                };
-
-                return actionable;
-
 
             case AWAITING_REVIEWER_ALLOCATION:
                 List<String> applicationReviewers = EntityReviewerApplications.getApplicationReviewers(entityEthicsApplication.applicationPrimaryKey());
