@@ -105,4 +105,9 @@ public class HomeController extends Controller {
                         )
         ).as("text/javascript");
     }
+
+    public Result invalid(String url) {
+        flash("danger", "Sorry, the page does not exist");
+        return notFound(views.html.General.Invalid.render(" :: Not Found", url));
+    }
 }

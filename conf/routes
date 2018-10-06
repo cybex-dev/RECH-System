@@ -119,4 +119,5 @@ POST    /secure                         controllers.HomeController.postNMUSearch
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
 
-
+GET     /:any                           controllers.HomeController.invalid(any: String)
+POST    /:any                           controllers.HomeController.invalid(any: String)

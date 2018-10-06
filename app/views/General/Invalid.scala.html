@@ -1,0 +1,14 @@
+@import views.html.Templates.Masterpage
+
+@(title: String, url: String)
+
+@Masterpage.apply(title){
+    <h2>Sorry</h2>
+    <br/>
+    <h4>The page you requested does not exist</h4>
+    <p>URL : @url</p>
+    <br/>
+    <a href="@routes.HomeController.about()">
+        <button class="nmu-button action-button">Back to safety</button>
+    </a>
+}

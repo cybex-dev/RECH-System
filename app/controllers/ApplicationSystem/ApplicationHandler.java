@@ -205,35 +205,44 @@ public class ApplicationHandler extends Controller {
 
     @RequireCSRFCheck
     public Result submitApplication() {
-        DynamicForm form = formFactory.form().bindFromRequest();
-        String id = form.get("application_id");
-        EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
+        DynamicForm formApplication = formFactory.form().bindFromRequest();
 
-        RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
-        EntityEthicsApplication application = EntityEthicsApplication.GetApplication(entityEthicsApplicationPK);
-        if (application == null) {
-            return badRequest();
+        // Get application type as raw field
+        String type = formApplication.get("application_type");
+        ApplicationType applicationType = ApplicationType.parse(type);
+
+        // Handle form errors
+        if (formApplication.hasErrors()) {
+            EthicsApplication application_template = EthicsApplication.lookupApplication(applicationType);
+            Map<String, Boolean> editableMap = new HashMap<>();
+            XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
+            return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", applicationType, application_template.getRootElement(), editableMap, false, "", false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
         }
-        Map<String, Object> cleanData = clean(form, entityEthicsApplicationPK);
+
+        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
+        EntityEthicsApplication application = saveApplicationDataReceived(formApplication, ethicsApplication);
+
+        RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
+        Map<String, Object> cleanData = clean(formApplication, application.applicationPrimaryKey());
         fillInApplicationData(application.applicationPrimaryKey(), cleanData);
 
-        if (application.getHodId().isEmpty()){
+        if (application.getHodId() == null || application.getHodId().isEmpty()){
             flash("warning", "Unable to submit, no HOD is available in the system");
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
 
-        if (application.getRtiId().isEmpty()){
+        if (application.getRtiId() == null || application.getRtiId().isEmpty()){
             flash("warning", "Unable to submit, no Faculty RTI representative is available in the system");
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
 
-        if (application.getPrpId().isEmpty()){
+        if (application.getPrpId() == null || application.getPrpId().isEmpty()){
             flash("warning", "Unable to submit, no Primary Responsible Person has been selected.");
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
 
         if (ApplicationStatus.parse(application.getInternalStatus()) != ApplicationStatus.AWAITING_PRP_APPROVAL) {
-            RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
+            RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
         }
 
         flash("success", "Application submitted");
@@ -253,43 +262,18 @@ public class ApplicationHandler extends Controller {
 
             // Get application type as raw field
             String type = formApplication.get("application_type");
-            ApplicationType application_type = ApplicationType.parse(type);
+            ApplicationType applicationType = ApplicationType.parse(type);
 
             // Handle form errors
             if (formApplication.hasErrors()) {
-                EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
+                EthicsApplication application_template = EthicsApplication.lookupApplication(applicationType);
                 Map<String, Boolean> editableMap = new HashMap<>();
                 XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
-                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type, application_template.getRootElement(), editableMap, false, "", false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
+                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", applicationType, application_template.getRootElement(), editableMap, false, "", false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
             }
 
-            EntityEthicsApplication application = null;
-
-            // Create basic Ethics Application
-            if (formApplication.get("application_id") == null ||
-                    formApplication.get("application_id").toString().isEmpty()) {
-                int year = Calendar.getInstance().get(Calendar.YEAR);
-                application = new EntityEthicsApplication();
-                application.setApplicationType(application_type.name().toLowerCase());
-                application.setApplicationYear(year);
-                application.setFacultyName(formApplication.get("app_faculty"));
-                application.setDepartmentName(formApplication.get("app_department"));
-                EntityDepartment app_department = EntityDepartment.findDepartmentByName(formApplication.get("app_department"));
-                int applicationNumber = EntityEthicsApplication.GetNextApplicationNumber(app_department, application_type, year);
-                application.setApplicationNumber(applicationNumber);
-
-                // Get pi id from session
-                String pi_id = session(CookieTags.user_id);
-                // Set hod, rti, prp & pi ids
-                application.setPiId(pi_id);
-
-                application.insert();
-            } else {
-                application = EntityEthicsApplication.GetApplication(EntityEthicsApplicationPK.fromString(formApplication.get("application_id").toString()));
-            }
-
-            Map<String, Object> cleanedData = clean(formApplication, application.applicationPrimaryKey());
-            fillInApplicationData(application.applicationPrimaryKey(), cleanedData);
+            EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
+            EntityEthicsApplication application = saveApplicationDataReceived(formApplication, ethicsApplication);
 //            if (!filledApplication) {
 //                EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
 //                Map<String, Boolean> editableMap = new HashMap<>();
@@ -302,6 +286,39 @@ public class ApplicationHandler extends Controller {
             flash("success", "Your application has been saved");
             return redirect(routes.ApplicationHandler.allApplications());
         }, httpExecutionContext.current());
+    }
+
+    private EntityEthicsApplication saveApplicationDataReceived(DynamicForm formApplication, EthicsApplication ethicsApplication) {
+
+        EntityEthicsApplication application = null;
+
+        // Create basic Ethics Application
+        if (formApplication.get("application_id") == null ||
+                formApplication.get("application_id").toString().isEmpty()) {
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            application = new EntityEthicsApplication();
+            application.setApplicationType(ethicsApplication.getType().name().toLowerCase());
+            application.setApplicationYear(year);
+            application.setFacultyName(formApplication.get("app_faculty"));
+            application.setDepartmentName(formApplication.get("app_department"));
+            EntityDepartment app_department = EntityDepartment.findDepartmentByName(formApplication.get("app_department"));
+            int applicationNumber = EntityEthicsApplication.GetNextApplicationNumber(app_department, ethicsApplication.getType(), year);
+            application.setApplicationNumber(applicationNumber);
+
+            // Get pi id from session
+            String pi_id = session(CookieTags.user_id);
+            // Set hod, rti, prp & pi ids
+            application.setPiId(pi_id);
+
+            application.insert();
+        } else {
+            application = EntityEthicsApplication.GetApplication(EntityEthicsApplicationPK.fromString(formApplication.get("application_id").toString()));
+        }
+
+        Map<String, Object> cleanedData = clean(formApplication, application.applicationPrimaryKey());
+        fillInApplicationData(application.applicationPrimaryKey(), cleanedData);
+
+        return application;
     }
 
     /**
@@ -382,14 +399,16 @@ public class ApplicationHandler extends Controller {
 
                         String type = componentElement.getType();
                         System.out.println("Type: " + type);
+                        if (componentElement.getParent().getType().equals("document")) {
+                            type = "document";
+                            System.out.println("Document detected. changing EntityComponentVersion to document");
+                        }
 
                         EntityComponentVersion entityComponentVersion = getUpdatableComponentVersion(component, type);
                         // be able to compile a document with description, etc. possibly update each document but split string id  base on "_title _desc and _document" and update documnt component 3 times
 
                         if (entityComponentVersion != null) {
                             // insert component version value
-                            if (componentElement.getParent().getType().equals("document"))
-                                type = "document";
                             setComponentValue(entityComponentVersion, entry, type);
                         }
                     }
@@ -418,7 +437,23 @@ public class ApplicationHandler extends Controller {
             }
 
             case "boolean": {
-                boolean b = (entry.getValue().equals("on"));
+                boolean b = false;
+                if (entry.getValue().toString().equals("1") ||
+                        entry.getValue().toString().toLowerCase().equals("on") ||
+                        entry.getValue().toString().toLowerCase().equals("true")){
+                    b = true;
+                    System.out.println("Converting " + entry.getValue() + " -> " + b);
+                } else if (entry.getValue().toString().equals("0") ||
+                        entry.getValue().toString().toLowerCase().equals("off") ||
+                        entry.getValue().toString().toLowerCase().equals("false")) {
+                    b = false;
+                    System.out.println("Converting " + entry.getValue() + " -> " + b);
+                } else {
+                    System.out.println("Unrecognized boolean value, defaulting to false");
+                    b = false;
+                    System.out.println("Converting " + entry.getValue() + " -> " + b);
+                }
+                System.out.println("SET Component Value: (Boolean) [" + entry.getKey() + "]\t\tRAW [" + entry.getValue() + "] \t\tPARSED [" + String.valueOf(b) + "]");
                 entityComponentVersion.setBoolValue(b);
                 break;
             }
@@ -460,6 +495,7 @@ public class ApplicationHandler extends Controller {
         }
         entityComponentVersion.setDateLastEdited(Timestamp.from(Instant.now()));
         entityComponentVersion.save();
+        System.out.println("DB_IN : " + entityComponentVersion.toString());
 
     }
 

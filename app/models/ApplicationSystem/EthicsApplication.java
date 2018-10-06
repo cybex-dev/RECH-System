@@ -225,6 +225,7 @@ public class EthicsApplication implements Serializable {
      */
     public static Element addValuesToRootElement(Element root, Map<String, Object> values){
         values.forEach((key, value) -> {
+            System.out.println();
             boolean keyPartOfList = (key.matches("^\\w+[_]\\d+$"));
             String cleanedKey = (keyPartOfList) ? key.substring(0, key.lastIndexOf("_")) : key;
 
@@ -232,29 +233,50 @@ public class EthicsApplication implements Serializable {
             if (child == null){
                 System.out.println("Key [ " + cleanedKey + " ] with value [ " + value + " ] ignored");
             } else {
+                System.out.println("Key [ " + cleanedKey + " ] Found! Value [ " + value + " ], processing...");
                 // Get child.value element
                 Element valueElement = child.getChildren().getLast();
 
                 // Check if ID suggests it is part of a list
                 boolean isList = child.getParent().getTag().equals("list");
 
+                System.out.println("List detected, need to add to list");
+
                 // Check if key being part of a list matches parent being a list element
                 if (keyPartOfList && isList){
+                    System.out.println("Will be added to list");
+
+                    System.out.println("Determining index: \t\t\tRAW " + key.substring(key.lastIndexOf("_") + 1));
+                    String i = key.substring(key.lastIndexOf("_") + 1);
+                    int index = Integer.parseInt(i) - 1;
+                    System.out.println("Determining index: \t\t\tComputed (in array) " + index);
 
                     // Check if a list exists, if not then create it
                     if (!(valueElement.getValue() instanceof ArrayList)){
                         valueElement.setValue(new ArrayList<>());
+                        System.out.println("No list found, creating...");
                     }
 
                     // Add list value
                     if (valueElement.getValue() instanceof ArrayList){
                         ArrayList<Object> list = (ArrayList<Object>) valueElement.getValue();
-                        list.add(value);
+                        if (list.size() <= index){
+                            List<Object> objects = Arrays.asList(Arrays.copyOf(list.toArray(), index+1));
+                            valueElement.setValue(new ArrayList<Object>(objects));
+                            list = (ArrayList<Object>) valueElement.getValue();
+                        }
+                        Object[] objects = list.toArray();
+                        objects[index] = value;
+                        valueElement.setValue(new ArrayList<>(Arrays.asList(objects)));
+                        System.out.println("Added to List [ " + cleanedKey + " ] , Item KEY: [" + key + "] Value [ " + value + " ] INDEX [ " + index + " ] Done");
                     }
                 } else {
                     if (!keyPartOfList && !isList){
                         // Add the value normally
                         valueElement.setValue(value);
+                        System.out.println("Adding single item to [ " + cleanedKey + " ] Value [ " + value + " ] Done");
+                    } else {
+                        System.out.println("Ignored value, not added to root element");
                     }
                 }
             }
@@ -327,6 +349,8 @@ public class EthicsApplication implements Serializable {
                         break;
                     }
                 }
+
+                System.out.println("Processed: " + entityComponentVersion.toString());
             }
 
         });

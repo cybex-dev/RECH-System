@@ -51,6 +51,19 @@ function formSubmitHandler(){
             value.value = json;
         }
     }
+
+    // SOURCE: https://stackoverflow.com/a/36678288/4628115
+    document.querySelectorAll("#application_form input[type=checkbox]").forEach(value => {
+        if (value.toString().toLowerCase() !== "on" ||
+            value.toString().toLowerCase() !== "true" ||
+            value !== "1") {
+            console.log("Found unchecked checkbox, changing to hidden type")
+            let input = document.getElementById(value.id);
+            console.log("Current type = " + input.type);
+            input.setAttribute("type", "hidden");
+            console.log("New type = " + input.type);
+        }
+    })
 }
 
 addButtonPost();

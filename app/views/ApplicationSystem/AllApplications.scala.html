@@ -19,7 +19,18 @@
 
 @Masterpage.apply(pageTitle) {
     <div class="container-heading">
-        <h3 class="overview">My Applications</h3>
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="overview">My Applications</h3>
+            </div>
+            <div class="col-sm-4">
+                <div class="pull-right">
+                    <a style="float: right;" href="@controllers.UserSystem.routes.ProfileHandler.overview()">
+                        <a href="#" onclick="openPopup('select_application_type_popup', true);"><button class="nmu-button action-button"><ic class="fa fa-plus"> Create New Application</ic></button></a>
+                    </a>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-7">
                 <p style="font-style: italic">All applications associated with this account.</p>

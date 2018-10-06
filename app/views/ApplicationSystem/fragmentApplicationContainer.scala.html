@@ -39,7 +39,12 @@
                 if(element.getAttributes.get("autofill_id") != null && !showFeedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
-                a = element.getChildren.getLast.getValue.toString
+
+                if (element.getChildren.getLast.getValue == null) {
+                    a = "false"
+                } else {
+                    a = element.getChildren.getLast.getValue.toString
+                }
                 var value = if(a.isEmpty) {
                     autofill
                 } else a
@@ -59,7 +64,13 @@
                 if(element.getAttributes.get("autofill_id") != null && !showFeedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
-                a = element.getChildren.getLast.getValue.toString
+
+                if (element.getChildren.getLast.getValue == null) {
+                    a = "0"
+                } else {
+                    a = element.getChildren.getLast.getValue.toString
+                }
+
                 var value = if(a.isEmpty) {
                     autofill
                 } else a
@@ -91,7 +102,13 @@
                 if(element.getAttributes.get("autofill_id") != null && !showFeedback) {
                     autofill = APIController.getDataDirect(element.getAttributes.get("autofill_id")).get(0)
                 }
-                a = element.getChildren.getLast.getValue.toString
+
+                if (element.getChildren.getLast.getValue == null) {
+                    a = ""
+                } else {
+                    a = element.getChildren.getLast.getValue.toString
+                }
+
                 var value = if(a.isEmpty) {
                     autofill
                 } else a

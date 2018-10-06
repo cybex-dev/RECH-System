@@ -245,18 +245,19 @@ function handleDownload(params, url, errorMessage, success) {
  * Function to take <div class="popup"...> and create Model dialogs from them
  */
 function createDocumentPopups() {
-    document.querySelectorAll(".popup").forEach(function (e) {
+    document.querySelectorAll(".popup-box").forEach(function (e) {
         // Hack fix for forEach loop not retaining the content of the element. e.parentNode == null at times.
         let element = document.getElementById(e.id);
 
         // Get download block and remove it
-        let downBlock = null;
-        let downloadBlock = element.querySelector("div.download");
+        let downloadBlock = element.querySelector("div .download");
         if (downloadBlock !== null) {
-            downloadBlock.remove();
 
             // Add download block after current parent
             let downBlock = downloadBlock.cloneNode(true);
+            element.appendChild(downBlock, element);
+            downloadBlock.remove();
+
         }
 
          // Create copy of element content
@@ -293,12 +294,7 @@ function createDocumentPopups() {
         divContainer.appendChild(document.createElement("BR"));
 
         // Insert Show Popup button before current element
-        if (downBlock !== null) {
-            parent.insertBefore(downBlock, element);
-            parent.insertBefore(divContainer, downBlock);
-        }  else {
-            parent.insertBefore(divContainer, element);
-        }
+        parent.insertBefore(divContainer, element);
 
         // Remove the element, i.e. all content from the form
         element.remove();
@@ -551,7 +547,8 @@ function initWizard() {
     });
 
     // Add section-heading dashed line
-    document.querySelectorAll(".section-container .section-title")[0].style.borderTop = "1px dashed #FFFFFF";
+    if (document.querySelectorAll(".section-container .section-title")[0] !== null)
+        document.querySelectorAll(".section-container .section-title")[0].style.borderTop = "1px dashed #FFFFFF";
 
     // Add document popups
     createDocumentPopups();

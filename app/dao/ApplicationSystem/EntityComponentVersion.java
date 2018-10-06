@@ -336,7 +336,7 @@ public class EntityComponentVersion extends Model {
         String value = "";
         switch (responseType.toLowerCase()) {
             case "boolean": {
-                value = String.valueOf(boolValue);
+                value = boolValue ? "true" : "false";
                 break;
             }
 
