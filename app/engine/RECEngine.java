@@ -842,39 +842,39 @@ public class RECEngine extends Controller {
      * @return TODO not completed
      */
     private boolean isComplete(EntityEthicsApplicationPK pk) {
-        EntityEthicsApplication application = EntityEthicsApplication.find.byId(pk);
-        if (application == null) {
-            return false;
-        }
-
-        // Get EthicsApplication object
-        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
-
-        // Get latest components of an application
-        List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(pk);
-
-        // Get all latest values into a map with <String; Object> definition
-        Map<String, Object> m = new HashMap<>();
-        for (EntityComponentVersion latestComponent : latestComponents) {
-            switch (latestComponent.getResponseType().toLowerCase()) {
-                case "boolean": {
-                    m.put(latestComponent.getComponentId(), latestComponent.getBoolValue());
-                    break;
-                }
-
-                case "text": {
-                    m.put(latestComponent.getComponentId(), latestComponent.getTextValue());
-                    break;
-                }
-
-                case "document": {
-                    m.put(latestComponent.getComponentId() + "_title", latestComponent.getDocumentName());
-                    m.put(latestComponent.getComponentId() + "_desc", latestComponent.getDocumentDescription());
-                    m.put(latestComponent.getComponentId() + "_document", latestComponent.getDocumentLocationHash());
-                    break;
-                }
-            }
-        }
+//        EntityEthicsApplication application = EntityEthicsApplication.find.byId(pk);
+//        if (application == null) {
+//            return false;
+//        }
+//
+//        // Get EthicsApplication object
+//        EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(application.type());
+//
+//        // Get latest components of an application
+//        List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(pk);
+//
+//        // Get all latest values into a map with <String; Object> definition
+//        Map<String, Object> m = new HashMap<>();
+//        for (EntityComponentVersion latestComponent : latestComponents) {
+//            switch (latestComponent.getResponseType().toLowerCase()) {
+//                case "boolean": {
+//                    m.put(latestComponent.getComponentId(), latestComponent.getBoolValue());
+//                    break;
+//                }
+//
+//                case "text": {
+//                    m.put(latestComponent.getComponentId(), latestComponent.getTextValue());
+//                    break;
+//                }
+//
+//                case "document": {
+//                    m.put(latestComponent.getComponentId() + "_title", latestComponent.getDocumentName());
+//                    m.put(latestComponent.getComponentId() + "_desc", latestComponent.getDocumentDescription());
+//                    m.put(latestComponent.getComponentId() + "_document", latestComponent.getDocumentLocationHash());
+//                    break;
+//                }
+//            }
+//        }
 
         // Generate root Element with values attached
 //        Element rootWithValues = EthicsApplication.addValuesToRootElement(ethicsApplication.getRootElement(), m);

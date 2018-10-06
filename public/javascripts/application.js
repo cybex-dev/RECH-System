@@ -54,13 +54,15 @@ function addCheckboxOnChangeState() {
         $("#" + checkbox.id).on('change', function() {
             if ($(this).is(':checked')) {
                 $(this).attr('value', 'on');
+                console.log(checkbox.id + " -> ON")
             } else {
                 $(this).attr('value', 'off');
+                console.log(checkbox.id + " -> off")
             }
         });
-        checkbox.value = checkbox.checked;
+        checkbox.value = (checkbox.checked) ? "on" : "off";
+        console.log("Start: " + checkbox.id + " -> " + checkbox.value);
     })
-
 }
 
 function docReady() {
@@ -276,6 +278,9 @@ function addNewRow(tableId) {
 
     // Add new row to table
     tbody.appendChild(tr);
+
+    // Fire event listeners which the form depends on
+    addCheckboxOnChangeState();
 }
 
 
