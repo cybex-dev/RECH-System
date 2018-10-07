@@ -252,7 +252,7 @@ function handleDownload(params, url, errorMessage, success) {
  * Function to take <div class="popup"...> and create Model dialogs from them
  */
 function createDocumentPopups() {
-    if (document.querySelectorAll(".review").length === 0) {
+    if (document.querySelectorAll(".review-container").length === 0) {
         document.querySelectorAll(".popup").forEach(function (e) {
             // Hack fix for forEach loop not retaining the content of the element. e.parentNode == null at times.
             let element = document.getElementById(e.id);
@@ -582,7 +582,8 @@ function initWizard() {
             value.parentElement.insertBefore(outerEditorContainer, value);
             value.style.display = "none";
 
-            let isEnabled = value.getAttribute("name").includes("feedback_") && !isReviewingFeedback;
+            let isGiveFeedbackTime = value.getAttribute("name").includes("feedback_");
+
             var quill = null;
             if (isReviewingFeedback) {
                 quill = new Quill('#' + editorDiv.id, {
@@ -591,19 +592,33 @@ function initWizard() {
                     placeholder: "",
                     theme: 'bubble'  // or 'bubble'
                 });
+                quill.enable(false);
             } else {
-                quill = new Quill('#' + editorDiv.id, {
-                    modules: {
-                        toolbar: [
-                            [{ header: [1, 2, false] }],
-                            ['bold', 'italic', 'underline']
-                        ]
-                    },
-                    placeholder: (!isReviewingFeedback) ? placeholder.replace("_", " ") : "",
-                    theme: 'snow'  // or 'bubble'
-                });
+                if (isGiveFeedbackTime) {
+                    quill = new Quill('#' + editorDiv.id, {
+                        modules: {
+                            toolbar: [
+                                [{ header: [1, 2, false] }],
+                                ['bold', 'italic', 'underline']
+                            ]
+                        },
+                        placeholder: "",
+                        theme: 'snow'  // or 'bubble'
+                    });
+                } else {
+                    quill = new Quill('#' + editorDiv.id, {
+                        modules: {
+                            toolbar: [
+                                [{ header: [1, 2, false] }],
+                                ['bold', 'italic', 'underline']
+                            ]
+                        },
+                        placeholder: placeholder.replace("_", " "),
+                        theme: 'snow'  // or 'bubble'
+                    });
+                }
+                quill.enable(true);
             }
-            quill.enable(isEnabled);
 
 
             let content = value.value;
