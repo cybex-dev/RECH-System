@@ -51,17 +51,14 @@ function enablePopulatePRPFields() {
  */
 function addCheckboxOnChangeState() {
     document.querySelectorAll("input[type=checkbox]").forEach(function (checkbox) {
-        $("#" + checkbox.id).on('change', function() {
+        $("#" + checkbox.id).on('change', function () {
             if ($(this).is(':checked')) {
                 $(this).attr('value', '1');
-                console.log(checkbox.id + " -> ON")
             } else {
                 $(this).attr('value', '0');
-                console.log(checkbox.id + " -> off")
             }
         });
         checkbox.value = (checkbox.checked) ? "1" : "0";
-        console.log("Start: " + checkbox.id + " -> " + checkbox.value);
     })
 }
 
@@ -455,33 +452,4 @@ function addCompletionCheck() {
         value.addEventListener("change", checkComplete());
     })
 }
-
-// SOURCE: https://stackoverflow.com/a/36678288/4628115
-
-// Add an event listener on #form's submit action...
-$("#application_form").submit(
-    function() {
-
-        // For each unchecked checkbox on the form...
-        $(this).find($("input:checkbox:not(:checked)")).each(
-
-            // Create a hidden field with the same name as the checkbox and a value of 0
-            // You could just as easily use "off", "false", or whatever you want to get
-            // when the checkbox is empty.
-            function(index) {
-                var input = $('<input />');
-                input.attr('type', 'hidden');
-                input.attr('name', $(this).attr("name")); // Same name as the checkbox
-                input.attr('value', "0"); // or 'off', 'false', 'no', whatever
-
-                // append it to the form the checkbox is in just as it's being submitted
-                var form = $(this)[0].form;
-                $(form).append(input);
-
-            }   // end function inside each()
-        );      // end each() argument list
-
-        return true;    // Don't abort the form submit
-
-    }   // end function inside submit()
-);
+;

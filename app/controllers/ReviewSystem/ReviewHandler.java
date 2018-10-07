@@ -67,7 +67,7 @@ public class ReviewHandler extends Controller {
         Element element = ethicsApplication.GetPopulatedElement();
         Map<String, Boolean> editableMap = new HashMap<>();
         XMLTools.flatten(element).forEach(s -> editableMap.put(s, false));
-        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review/Feedback Application", ethicsApplication.type(), element, editableMap, false, ethicsApplication.applicationPrimaryKey().shortName(), false, true, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitFeedback, GuiButton.netSaveFeedback));
+        return ok(views.html.ApplicationSystem.ApplicationContainer.render(" :: Review/Feedback Application", ethicsApplication.type(), element, editableMap, false, ethicsApplication.applicationPrimaryKey().shortName(), true, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitFeedback, GuiButton.netSaveFeedback));
     }
 
     @AddCSRFToken
@@ -90,6 +90,30 @@ public class ReviewHandler extends Controller {
         DynamicForm form = formFactory.form().bindFromRequest();
         String id = form.get("application_id");
         EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
+        EntityEthicsApplication application = EntityEthicsApplication.GetApplication(entityEthicsApplicationPK);
+
+        if (application == null){
+            flash("danger", "Unable to set the application status");
+            return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
+        }
+
+        String email = session().get(CookieTags.user_id);
+        if (application.getHodId().equals(email)){
+            if (application.getHodApplicationReviewApproved() == null){
+                application.setHodApplicationReviewApproved(true);
+            } else {
+                application.setHodFinalApplicationApproval(true);
+            }
+        } else {
+            if (application.getRtiId().equals(email)){
+                if (application.getRtiApplicationReviewApproved() == null){
+                    application.setRtiApplicationReviewApproved(true);
+                } else {
+                    application.setRtiFinalApplicationApproval(true);
+                }
+            }
+        }
+        application.update();
 
         RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
         flash("success", "Application approved");
@@ -102,8 +126,8 @@ public class ReviewHandler extends Controller {
         String id = form.get("application_id");
         EntityEthicsApplicationPK entityEthicsApplicationPK = EntityEthicsApplicationPK.fromString(id);
 
-        RECEngine.getInstance().nextStep(entityEthicsApplicationPK);
-        flash("success", "Application approved");
+        RECEngine.getInstance().rejected(entityEthicsApplicationPK);
+        flash("danger", "Application rejected");
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }
 
@@ -169,6 +193,11 @@ public class ReviewHandler extends Controller {
                 });
 
         map.forEach((key, value) -> {
+
+            if (key.startsWith("doc_") && (key.contains("_title") || key.contains("_desc") || key.contains("_document"))){
+                key = key.substring(key.lastIndexOf("_"));
+            }
+
             EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(pk, key);
 
             if (entityComponentVersion == null){
@@ -234,7 +263,7 @@ public class ReviewHandler extends Controller {
 
         RECEngine.getInstance().nextStep(application_id);
 
-        flash("success", "Application assigned");
+        flash("success", "Application's assigned assigned");
         return redirect(routes.ProfileHandler.overview());
     }
 
@@ -251,7 +280,7 @@ public class ReviewHandler extends Controller {
             flash("success", "Feedback has been submitted.");
         } else {
             flash("success", "Feedback has been submitted.");
-            flash("warning", "Could not submit feedback");
+            flash("info", "There are other reivewers that need to give feedback still");
         }
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }

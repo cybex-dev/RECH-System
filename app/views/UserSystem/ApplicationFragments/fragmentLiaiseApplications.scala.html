@@ -9,16 +9,15 @@
     <div class="row">
         <table class="table table-overview">
             <thead>
-                <th class="col-sm-3">Application Title</th>
-                <th>Notifications</th>
-                <th>Status</th>
-                <th>Date Submitted</th>
-                <th>Date Approved</th>
-                <th class="col-sm-2"></th>
+                <th class="col-sm-4">Application Title</th>
+                <th class="col-sm-2">Status</th>
+                <th class="col-sm-2">Date Submitted</th>
+                <th class="col-sm-2">Date Approved</th>
+                <th class="col-sm-3"></th>
             </thead>
             <tbody>
             @for(application: Application <- applications) {
-                <tr>
+                <tr class="nmu-button overview-td">
                     <td style="text-decoration: underline;">@application.getTitle</td>
                     <td></td>
                     <td>@application.getStatus.description()</td>

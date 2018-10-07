@@ -1,7 +1,7 @@
 @import views.html.Components
 @import java.util
 
-@(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
+@(id: String, label: String, value: String, hint: String, url: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
 @getChecked = @{
     var v = ""
@@ -17,9 +17,20 @@
     v
 }
 
-<label for="@id" style="cursor: pointer !important;">@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>
-<input class="required" style="margin-left: 20px" id="@id" name="@id" type="checkbox" @getChecked @Components.editable.apply(canEdit)>
+@getLink(link: String) = @{
+    if(link == null || link.isEmpty){
+        ""
+    } else {
+        Components.link.apply(url)
+    }
+}
 
-    @Components.feedback_container.apply(id, feedback)
-    @Components.reviewable.apply(review, reviewData)
+<label for="@id" style="cursor: pointer !important;">@label @getLink(url)</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle"></ic>
+<input class="required" style="margin-left: 20px" id="@id" name="@id" type="checkbox" @getChecked @Components.editable.apply(canEdit)>
+    @if(feedback) {
+        @Components.feedback_container.apply(id, feedback, "")
+    }
+    @if(review) {
+        @Components.reviewable.apply(id, review, reviewData)
+    }
 <br>

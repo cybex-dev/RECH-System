@@ -94,7 +94,13 @@ public class ProfileHandler extends Controller {
 
         List<EntityEthicsApplication> entity_newApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.RCD);
         List<EntityEthicsApplication> entity_ownApplications = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryInvestigator);
+
         List<EntityEthicsApplication> entity_approveApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.PrimaryResponsiblePerson);
+        List<EntityEthicsApplication> entity_approveAppsHod = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.DepartmentHead);
+        List<EntityEthicsApplication> entity_approveAppsRTI = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.FacultyRTI);
+        entity_approveApps.addAll(entity_approveAppsHod);
+        entity_approveApps.addAll(entity_approveAppsRTI);
+
         List<EntityEthicsApplication> entity_reviewApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.Reviewer);
         List<EntityEthicsApplication> entity_liaiseApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.Liaison);
         List<EntityEthicsApplication> entity_facultyApps = EntityEthicsApplication.findApplicationsByPerson(person.getUserEmail(), UserType.FacultyRTI);

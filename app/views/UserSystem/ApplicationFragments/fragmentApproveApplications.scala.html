@@ -11,14 +11,13 @@
             <thead>
                 <th class="col-sm-5">Application Title</th>
                 <th class="col-sm-3">Approval Due Date</th>
-                <th class="col-sm-2"></th>
+                <th class="col-sm-3"></th>
             </thead>
             <tbody>
             @for(application: Application <- applications) {
-                <tr class="nmu-button" data-url=")">
+                <tr class="nmu-button overview-td">
                     <td style="text-decoration: underline;">@application.getTitle</td>
                     <td>@application.getApprovedDateSafe</td>
-                    <td>@application.getDueDateSafe</td>
                     <td>
                     @if(application.getPermission == Permission.NONE) {
                         <a style="float: right;" href="" cursor="not-allowed"><button class="nmu-button table-button">

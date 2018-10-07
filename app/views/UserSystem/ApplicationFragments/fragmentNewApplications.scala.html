@@ -8,15 +8,17 @@
     <div class="row">
         <table class="table table-overview">
             <thead>
-                <th class="col-sm-3">Application Title</th>
-                <th>Status</th>
-                <th>Date Submitted</th>
-                <th class="col-sm-2"></th>
+                <th class="col-sm-4">Application Title</th>
+                <th class="col-sm-2">#</th>
+                <th class="col-sm-2">Status</th>
+                <th class="col-sm-2">Date Submitted</th>
+                <th class="col-sm-3"></th>
             </thead>
             <tbody>
             @for(application: Application <- applications) {
-                <tr>
+                <tr class="nmu-button overview-td">
                     <td style="text-decoration: underline;">@application.getTitle</td>
+                    <td style="font-style: italic;">@application.getApplicationID.shortName</td>
                     <td>@application.getStatus.description()</td>
                     <td>@application.getSubmittedDateSafe</td>
                     <td><a style="float: right;" href="@controllers.ReviewSystem.routes.ReviewHandler.assignReviewer(application.getApplicationID.shortName())">

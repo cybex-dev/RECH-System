@@ -35,8 +35,9 @@ public class EntityPerson extends Model {
 
     public static List<EntityPerson> findAllReviewers() {
         return find.all().stream()
-                .filter(entityPerson -> entityPerson.userType().equals(UserType.Reviewer) ||
-                        entityPerson.userType().equals(UserType.Liaison))
+                .filter(entityPerson -> !entityPerson.userType().equals(UserType.PrimaryInvestigator) ||
+                        !entityPerson.userType().equals(UserType.PrimaryResponsiblePerson) ||
+                                !entityPerson.userType().equals(UserType.RCD))
                 .collect(Collectors.toList());
     }
 

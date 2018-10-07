@@ -1,9 +1,9 @@
 @import java.util
 @import views.html.Components
 
-@(id: String, label: String, value: String, options: java.util.List[String], hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
+@(id: String, label: String, value: String, options: java.util.List[String], hint: String, url: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
-<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint" ></ic><br>
+<label>@label@Components.link.apply(url)</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint" ></ic><br>
 <select class="required" id="@id" value="@{if(value != null) {value} else {}}" name="@id" @Components.editable.apply(canEdit) style="width: auto !important;">
     @for(option <- options) {
         @if(value != null && value.equals(option)) {
@@ -14,7 +14,7 @@
     }
 </select>
 
-    @Components.feedback_container.apply(id, feedback)
-    @Components.reviewable.apply(review, reviewData)
+    @Components.feedback_container.apply(id, feedback, "")
+    @Components.reviewable.apply(id, review, reviewData)
 <br/>
 <br/>

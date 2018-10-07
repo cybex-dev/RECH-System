@@ -11,8 +11,8 @@
     @helper.form(action = controllers.MeetingSystem.routes.MeetingController.setupMeeting()) {
         @helper.CSRF.formField
         <div class="row">
-            @inputDate.apply("meeting_date", "Date of Meeting", "", "Date when the meeting will occur", true, true, true, null: util.List[String])
-            @inputTextArea.apply("announcements", "Meeting Announcements", "", "Announcements or notifications made for the meeting", "", true, false, false, null: List[String])
+            @inputDate.apply("meeting_date", "Date of Meeting", "", "Date when the meeting will occur", "", true, true, true, null: util.List[String])
+            @inputTextArea.apply("announcements", "Meeting Announcements", "", "Announcements or notifications made for the meeting", "", "", true, false, false, null: List[String])
         </div>
         <h3>Available Applications for REC meeting</h3>
         <br/>

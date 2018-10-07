@@ -311,8 +311,11 @@ tr {
 
 .application-details{
     padding: 10px !important;
-    background-color: #FFFFFF !important;
-    color: #061c2c !important;
+    color: #ffffff !important;
+}
+
+.application-details h2 {
+    text-decoration: underline;
 }
 
 table label {
@@ -451,5 +454,6 @@ table > tbody td {
 .download {
     background-color: #00000026 !important;
     display: inline-block;
-    width: 100% !important;
+    width: 95% !important;
+    margin: 20px;
 }

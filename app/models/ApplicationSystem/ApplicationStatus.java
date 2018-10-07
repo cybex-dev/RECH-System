@@ -11,7 +11,6 @@ public enum ApplicationStatus implements Serializable {
     REJECTED(3),                        //
     RESUBMISSION(5),                    //
 
-    READY_FOR_SUBMISSION(10),           //
     AWAITING_REVIEWER_ALLOCATION(11),   //
 
     PENDING_REVIEW_REVIEWER(20),        //
@@ -58,9 +57,6 @@ public enum ApplicationStatus implements Serializable {
 
             case 5:
                 return ApplicationStatus.RESUBMISSION;
-
-            case 10:
-                return ApplicationStatus.READY_FOR_SUBMISSION;
 
             case 11:
                 return ApplicationStatus.AWAITING_REVIEWER_ALLOCATION;
@@ -131,9 +127,6 @@ public enum ApplicationStatus implements Serializable {
 
             case 5:
                 return "Resubmission Required";
-
-            case 10:
-                return "Ready for Submit";
 
             case 11:
                 return "Awaiting Review Allocation";

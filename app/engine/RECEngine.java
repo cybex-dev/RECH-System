@@ -80,7 +80,6 @@ public class RECEngine extends Controller {
             case APPROVED:
             case UNKNOWN:
             case DRAFT:
-            case READY_FOR_SUBMISSION:
             case RESUBMISSION:
             case NOT_SUBMITTED: {
                 return (person.getUserEmail().equals(entityEthicsApplication.getPiId())) ? Permission.MODIFY : Permission.NONE;
@@ -300,6 +299,7 @@ public class RECEngine extends Controller {
                     @Override
                     public boolean doAction() {
                         if (approved) {
+                            entityEthicsApplication.setPrpApprovedDate(Timestamp.from(Instant.now()));
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                             entityEthicsApplication.update();
                             return true;
@@ -323,16 +323,15 @@ public class RECEngine extends Controller {
                 // HOD/RTI notified
                 // Action : HOD/RTI pre-approves application before submission to committee / faculty
                 //
-                // STEP -> READY_FOR_SUBMISSION (Both approved)
                 // STEP -> AWAITING_PRE_HOD_APPROVAL (RTI approved)
                 // STEP -> AWAITING_PRE_RTI_APPROVAL (HOD approved)
                 // PI/PRP notified
 
                 // Get RTI & HOD ids
-                boolean hodAccepted = entityEthicsApplication.getHodApplicationReviewApproved();
-                boolean rtiAccepted = entityEthicsApplication.getRtiApplicationReviewApproved();
+                boolean hodAccepted = (entityEthicsApplication.getHodApplicationReviewApproved() == null) ? false : entityEthicsApplication.getHodApplicationReviewApproved();
+                boolean rtiAccepted = (entityEthicsApplication.getRtiApplicationReviewApproved() == null) ? false : entityEthicsApplication.getRtiApplicationReviewApproved();
 
-                boolean isFacultyLevel = entityEthicsApplication.getApplicationLevel() == 0;
+                boolean isFacultyLevel = (entityEthicsApplication.getApplicationLevel() != null) && (entityEthicsApplication.getApplicationLevel() == 0);
                 newStatus = (isFacultyLevel) ? ApplicationStatus.FACULTY_REVIEW : ApplicationStatus.AWAITING_REVIEWER_ALLOCATION;
 
                 actionable = new Actionable() {
@@ -345,6 +344,16 @@ public class RECEngine extends Controller {
                             // Automatically submit application to faculty/committee
                             System.out.println("Checking out latest application components and setting submitted state");
                             checkoutLatestApplication(applicationId);
+                            if (entityEthicsApplication.getHodPreApprovedDate() == null){
+                                entityEthicsApplication.setHodApplicationReviewApproved(true);
+                                entityEthicsApplication.setHodPreApprovedDate(Timestamp.from(Instant.now()));
+                            }
+
+                            if (entityEthicsApplication.getRtiPreApprovedDate() == null){
+                                entityEthicsApplication.setRtiApplicationReviewApproved(true);
+                                entityEthicsApplication.setRtiPreApprovedDate(Timestamp.from(Instant.now()));
+                            }
+
                             entityEthicsApplication.setApplicationRevision(entityEthicsApplication.getApplicationRevision() + 1);
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                             entityEthicsApplication.update();
@@ -353,9 +362,13 @@ public class RECEngine extends Controller {
                         } else {
                             if (hodAccepted) {
                                 entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_PRE_RTI_APPROVAL.getStatus());
+                                entityEthicsApplication.setHodApplicationReviewApproved(true);
+                                entityEthicsApplication.setHodPreApprovedDate(Timestamp.from(Instant.now()));
                             } else {
                                 if (rtiAccepted) {
                                     entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_PRE_HOD_APPROVAL.getStatus());
+                                    entityEthicsApplication.setRtiApplicationReviewApproved(true);
+                                    entityEthicsApplication.setRtiPreApprovedDate(Timestamp.from(Instant.now()));
                                 } else {
                                     return false;
                                 }
@@ -396,13 +409,12 @@ public class RECEngine extends Controller {
             case AWAITING_PRE_HOD_APPROVAL:
                 // PI/PRP notified of this
                 // STEP -> AWAITING_PRE_HOD_APPROVAL (RTI approved)
-                // STEP -> READY_FOR_SUBMISSION (Both approved)
                 hodNoResponse = entityEthicsApplication.getHodApplicationReviewApproved() == null;
                 rtiNoResponse = entityEthicsApplication.getRtiApplicationReviewApproved() == null;
-                hodPreApproved = (entityEthicsApplication.getHodApplicationReviewApproved());
-                hodDenied = (!entityEthicsApplication.getHodApplicationReviewApproved());
-                rtiPreApproved = (entityEthicsApplication.getHodApplicationReviewApproved());
-                rtiDenied = (!entityEthicsApplication.getRtiApplicationReviewApproved());
+                hodPreApproved = (entityEthicsApplication.getHodApplicationReviewApproved() == null) ? false : (entityEthicsApplication.getHodApplicationReviewApproved());
+                hodDenied = (!hodPreApproved);
+                rtiPreApproved = (entityEthicsApplication.getHodApplicationReviewApproved() == null) ? false : (entityEthicsApplication.getHodApplicationReviewApproved());
+                rtiDenied = (!rtiPreApproved);
 
                 actionable = new Actionable() {
 
@@ -413,11 +425,22 @@ public class RECEngine extends Controller {
                             : (hodDenied || rtiDenied)
                             ? ApplicationStatus.DRAFT
                             : (hodPreApproved && rtiPreApproved)
-                            ? ApplicationStatus.READY_FOR_SUBMISSION
+                            ? ApplicationStatus.AWAITING_REVIEWER_ALLOCATION
                             : ApplicationStatus.UNKNOWN;
 
                     @Override
                     public boolean doAction() {
+                        if (hodPreApproved){
+                            entityEthicsApplication.setHodApplicationReviewApproved(true);
+                            if (entityEthicsApplication.getHodPreApprovedDate() == null)
+                                entityEthicsApplication.setHodPreApprovedDate(Timestamp.from(Instant.now()));
+                        }
+                        if (rtiPreApproved){
+                            entityEthicsApplication.setRtiApplicationReviewApproved(true);
+                            if (entityEthicsApplication.getRtiPreApprovedDate() == null)
+                                entityEthicsApplication.setRtiPreApprovedDate(Timestamp.from(Instant.now()));
+                        }
+
                         entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         entityEthicsApplication.update();
                         return true;
@@ -686,6 +709,18 @@ public class RECEngine extends Controller {
 
                     @Override
                     public boolean doAction() {
+
+                        if (hodPreApproved){
+                            entityEthicsApplication.setHodFinalApplicationApproval(true);
+                            if (entityEthicsApplication.getHodPostApprovedDate() == null)
+                                entityEthicsApplication.setHodPostApprovedDate(Timestamp.from(Instant.now()));
+                        }
+                        if (rtiPreApproved){
+                            entityEthicsApplication.setRtiFinalApplicationApproval(true);
+                            if (entityEthicsApplication.getRtiPostApprovedDate() == null)
+                                entityEthicsApplication.setRtiPostApprovedDate(Timestamp.from(Instant.now()));
+                        }
+
                         entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         entityEthicsApplication.update();
                         return true;
@@ -720,20 +755,76 @@ public class RECEngine extends Controller {
                 // STEP -> AWAITING_RTI_APPROVAL (HOD approved)
                 // PI/PRP notified
 
+                boolean hodPostAccepted = (entityEthicsApplication.getHodFinalApplicationApproval() == null) ? false : entityEthicsApplication.getHodFinalApplicationApproval();
+                boolean rtiPostAccepted = (entityEthicsApplication.getRtiFinalApplicationApproval() == null) ? false : entityEthicsApplication.getRtiFinalApplicationApproval();
+
+
                 actionable = new Actionable() {
 
                     @Override
                     public boolean doAction() {
-                        // No action to perform
+
+                        if (hodPostAccepted && rtiPostAccepted) {
+
+                            // Automatically submit application to faculty/committee
+                            System.out.println("Checking out latest application components and setting submitted state");
+                            checkoutLatestApplication(applicationId);
+                            if (entityEthicsApplication.getHodPostApprovedDate() == null){
+                                entityEthicsApplication.setHodFinalApplicationApproval(true);
+                                entityEthicsApplication.setHodPostApprovedDate(Timestamp.from(Instant.now()));
+                            }
+
+                            if (entityEthicsApplication.getRtiPostApprovedDate() == null){
+                                entityEthicsApplication.setRtiFinalApplicationApproval(true);
+                                entityEthicsApplication.setRtiPostApprovedDate(Timestamp.from(Instant.now()));
+                            }
+
+                            entityEthicsApplication.setInternalStatus(ApplicationStatus.APPROVED.getStatus());
+                            entityEthicsApplication.update();
+                            return true;
+
+                        } else {
+                            if (hodPostAccepted) {
+                                entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_POST_RTI_APPROVAL.getStatus());
+                                entityEthicsApplication.setHodApplicationReviewApproved(true);
+                                entityEthicsApplication.setHodPreApprovedDate(Timestamp.from(Instant.now()));
+                            } else {
+                                if (rtiPostAccepted) {
+                                    entityEthicsApplication.setInternalStatus(ApplicationStatus.AWAITING_POST_HOD_APPROVAL.getStatus());
+                                    entityEthicsApplication.setRtiApplicationReviewApproved(true);
+                                    entityEthicsApplication.setRtiPreApprovedDate(Timestamp.from(Instant.now()));
+                                } else {
+                                    return false;
+                                }
+                            }
+                        }
+
+                        entityEthicsApplication.update();
+
                         return true;
                     }
 
                     @Override
                     public void doNotify() {
-                        Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL, applicationTitle, entityEthicsApplication.getHodId(), entityEthicsApplication.getRtiId());
+
+                        if (hodPostAccepted && rtiPostAccepted) {
+                            Notifier.requireAttention(applicationId, ApplicationStatus.APPROVED, applicationTitle, EntityPerson.getRCD());
+                        } else {
+                            if (hodPostAccepted) {
+                                Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_POST_RTI_APPROVAL, applicationTitle, entityEthicsApplication.getHodId());
+                            } else {
+                                if (rtiPostAccepted) {
+                                    Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_POST_HOD_APPROVAL, applicationTitle, entityEthicsApplication.getHodId());
+                                } else {
+                                    Notifier.requireAttention(applicationId, ApplicationStatus.AWAITING_POST_HOD_RTI_APPROVAL, applicationTitle, entityEthicsApplication.getHodId(), entityEthicsApplication.getRtiId());
+                                }
+                            }
+                        }
                     }
+
                 };
                 return actionable;
+
 
 
             // Approved
@@ -1020,5 +1111,155 @@ public class RECEngine extends Controller {
             application.setInternalStatus(ApplicationStatus.NOT_SUBMITTED.getStatus());
             application.update();
         }
+    }
+
+    public void rejected(EntityEthicsApplicationPK entityEthicsApplicationPK) {
+        EntityEthicsApplication application = EntityEthicsApplication.GetApplication(entityEthicsApplicationPK);
+        if (application == null)
+            return;
+        ApplicationStatus applicationStatus = ApplicationStatus.parse(application.getInternalStatus());
+
+        Actionable actionable = new Actionable() {
+            @Override
+            public boolean doAction() {
+                return false;
+            }
+
+            @Override
+            public void doNotify() {
+
+            }
+        };
+
+        String pi = application.getPiId();
+        String prp = application.getPiId();
+        String rcd = EntityPerson.getRCD();
+        String title = application.title();
+
+        switch (applicationStatus) {
+            case AWAITING_PRP_APPROVAL: {
+                actionable = new Actionable() {
+
+                    @Override
+                    public boolean doAction() {
+                        application.setInternalStatus(ApplicationStatus.NOT_SUBMITTED.getStatus());
+                        return true;
+                    }
+
+                    @Override
+                    public void doNotify() {
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, title, pi);
+                    }
+                };
+                break;
+            }
+
+            case AWAITING_POST_HOD_APPROVAL: {
+                actionable = new Actionable() {
+                    @Override
+                    public boolean doAction() {
+                        application.setInternalStatus(ApplicationStatus.PENDING_REVIEW_MEETING.getStatus());
+                        return true;
+                    }
+
+                    @Override
+                    public void doNotify() {
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, rcd);
+                    }
+                };
+                break;
+            }
+
+            case AWAITING_POST_HOD_RTI_APPROVAL: {
+                actionable = new Actionable() {
+                    @Override
+                    public boolean doAction() {
+                        application.setInternalStatus(ApplicationStatus.PENDING_REVIEW_MEETING.getStatus());
+                        return true;
+                    }
+
+                    @Override
+                    public void doNotify() {
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, rcd);
+                    }
+                };
+                break;
+            }
+
+            case AWAITING_POST_RTI_APPROVAL: {
+                actionable = new Actionable() {
+                    @Override
+                    public boolean doAction() {
+                        application.setInternalStatus(ApplicationStatus.PENDING_REVIEW_MEETING.getStatus());
+                        return true;
+                    }
+
+                    @Override
+                    public void doNotify() {
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, rcd);
+                    }
+                };
+                break;
+            }
+
+
+            case AWAITING_PRE_HOD_APPROVAL: {
+                actionable = new Actionable() {
+                    @Override
+                    public boolean doAction() {
+                        application.setInternalStatus(ApplicationStatus.NOT_SUBMITTED.getStatus());
+                        return true;
+                    }
+
+                    @Override
+                    public void doNotify() {
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, title, pi);
+                    }
+                };
+                break;
+            }
+
+            case AWAITING_PRE_RTI_APPROVAL: {
+                actionable = new Actionable() {
+                    @Override
+                    public boolean doAction() {
+                        application.setInternalStatus(ApplicationStatus.NOT_SUBMITTED.getStatus());
+                        return true;
+                    }
+
+                    @Override
+                    public void doNotify() {
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, title, pi);
+                    }
+                };
+                break;
+            }
+
+            case AWAITING_PRE_HOD_RTI_APPROVAL: {
+                actionable = new Actionable() {
+                    @Override
+                    public boolean doAction() {
+                        application.setInternalStatus(ApplicationStatus.NOT_SUBMITTED.getStatus());
+                        return true;
+                    }
+
+                    @Override
+                    public void doNotify() {
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, title, pi);
+                    }
+                };
+                break;
+            }
+
+            default: {
+                System.out.println("Unhandled rejected feature");
+            }
+
+        }
+        actionable.doAction();
+        application.update();
+        actionable.doNotify();
+
+
     }
 }

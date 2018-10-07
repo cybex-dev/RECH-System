@@ -9,26 +9,20 @@ function docReady() {
     getReviewers();
     document.getElementById("btnAddReviewer").onclick = function () {
         numReviewers++;
-        if (numReviewers >= 4) {
-            document.getElementById("btnAddReviewer").style.display = "none";
-        }
         let tableRow = createTableRow("table_reviewers");
 
-        let tdIndex = createTableDataElement(tableRow, "nmu-color-dark");
-        let tdEmail = createTableDataElement(tableRow, "nmu-color-dark");
-        let tdReviewer = createTableDataElement(tableRow, "nmu-color-dark");
-        let tdFaculty = createTableDataElement(tableRow, "nmu-color-dark");
+        let tdIndex = createTableDataElement(tableRow);
+        let tdEmail = createTableDataElement(tableRow);
+        let tdReviewer = createTableDataElement(tableRow);
+        let tdFaculty = createTableDataElement(tableRow);
         let tdRemove = createTableDataElement(tableRow);
 
         let currentIndex = size("table_reviewers");
         let delButton = createButton("btnReviewer" + currentIndex, "", "button", "", function () {
             removeTableRow("table_reviewers", document.getElementById("btnReviewer" + currentIndex).closest('tr').rowIndex);
             numReviewers--;
-            if (numReviewers < 4){
-                document.getElementById("btnAddReviewer").style.display = "inline-block";
-            }
+            document.getElementById("btnAddReviewer").style.display = "inline-block";
         }, "fa", "fa-trash", "nmu-button", "item-button");
-        delButton.style.paddingRight = "30px";
         tdRemove.appendChild(delButton);
         tdIndex.innerText = currentIndex;
         tdIndex.style.textAlign = "center";
@@ -44,7 +38,7 @@ function getReviewers() {
         url: apiRoutes.controllers.APIController.findAllReviewers(id).url
     }).done(function(data) {
         list = data;
-    });l
+    });
 }
 
 function updateRowIndexes(tableId) {
@@ -76,9 +70,9 @@ function createElement(type, value, name, id, ...classList) {
         } else {
             element.className = classList[0];
         }
-    element.name = name.trim()  || "";
-    element.id = id.trim()  || "";
-    element.innerText = value  || "";
+    element.name = name;
+    element.id = id;
+    element.innerText = value;
     return element;
 }
 

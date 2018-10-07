@@ -144,7 +144,7 @@ public class RegistrationController extends Controller {
 
         EntityPerson person = EntityPerson.getPersonById(email);
 
-        person.setUserTitle(registrationForm.getUserTitle());
+        person.setUserTitle(registrationForm.getUsertitle());
         person.setUserFirstname(registrationForm.getFirstname());
         person.setUserLastname(registrationForm.getLastname());
         person.setCurrentDegreeLevel(registrationForm.getDegreeLevel());

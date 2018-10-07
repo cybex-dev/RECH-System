@@ -124,10 +124,10 @@ public class EntityComponent extends Model {
 
     public boolean isComponent(dao.ApplicationSystem.EntityEthicsApplicationPK id){
         return this.applicationNumber == id.getApplicationNumber() &&
-                this.applicationType.equals(id.getApplicationType()) &&
+                this.applicationType.toLowerCase().equals(id.getApplicationType().toLowerCase()) &&
                 this.applicationYear == id.getApplicationYear() &&
-                this.facultyName.equals(id.getFacultyName()) &&
-                this.departmentName.equals(id.getDepartmentName());
+                this.facultyName.toLowerCase().equals(id.getFacultyName().toLowerCase()) &&
+                this.departmentName.toLowerCase().equals(id.getDepartmentName().toLowerCase());
     }
 
     public void setApplicationId(EntityEthicsApplicationPK applicationId) {

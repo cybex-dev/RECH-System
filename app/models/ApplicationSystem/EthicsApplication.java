@@ -341,10 +341,14 @@ public class EthicsApplication implements Serializable {
                     case "document": {
                         entryMap.put(entityComponentVersion.getComponentId() + "_title", entityComponentVersion.getDocumentName());
                         entryMap.put(entityComponentVersion.getComponentId() + "_desc", entityComponentVersion.getDocumentDescription());
-                        File file = new File(entityComponentVersion.getDocumentLocationHash());
-                        if (file.exists()) {
-                            String s = file.getName();
-                            entryMap.put(entityComponentVersion.getComponentId() + "_document", s);
+                        try{
+                            File file = new File(entityComponentVersion.getDocumentLocationHash());
+                            if (file.exists()) {
+                                String s = file.getName();
+                                entryMap.put(entityComponentVersion.getComponentId() + "_document", s);
+                            }
+                        } catch (NullPointerException e) {
+                            System.out.println("File not found for [" + application.applicationPrimaryKey().shortName() + "] - component [" + entityComponentVersion.getComponentId() + "]");
                         }
                         break;
                     }

@@ -1,11 +1,13 @@
 @import views.html.Components
 @import java.util
 
-@(id: String, label: String, value: String, hint: String, maxwords: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
+@(id: String, label: String, value: String, hint: String, maxwords: String, url: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
+@if(review){
+    canEdit = false
+}
+<label>@label@Components.link.apply(url)</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
+<textarea class="required @if(review){review}else{}" style="margin-left: 40px; width: 80%; height: 3em; margin-bottom: 10px;" id="@id" name="@id" placeholder="Enter @id ..." type="text" maxlength="@maxwords" @Components.editable.apply(canEdit)>@{if(value != null) {value} else {}}</textarea>
 
-<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
-<textarea class="required" style="margin-left: 40px; width: 80%; height: 3em; margin-bottom: 10px;" id="@id" name="@id" placeholder="Enter @id ..." type="text" maxlength="@maxwords" @Components.editable.apply(canEdit)>@{if(value != null) {value} else {}}</textarea>
-
-    @Components.feedback_container.apply(id, feedback)
-    @Components.reviewable.apply(review, reviewData)
+    @Components.feedback_container.apply(id, feedback, "")
+    @Components.reviewable.apply(id, review, reviewData)
 <br>

@@ -1,27 +1,26 @@
 @import java.util
+@import views.html.Components
 
-@(review: Boolean, reviewData: util.List[String])
+@(id: String, review: Boolean, reviewData: util.List[String])
 
+@container = @{
+    var feedback = ""
+    for(r <- reviewData) {
+        feedback = feedback.concat(r)
+    }
+    Components.feedback_container.apply(id, true, feedback)
+}
 
-@if(review)  {
-    <div class="review-container">
-    <div class="review-title">
-        <h5>Review Feedback</h5>
-    </div>
-        <div class="review-content">
-            @if(reviewData == null) {
-                <p>No feedback</p>
-            } else {
-                @if(reviewData.size > 0) {
-                    <p style="font-weight: bold;">No feedback available.</p>
-                } else {
-                    <ul>
-                    @for(r <- reviewData) {
-                        <li>@r</li>
-                    }
-                    </ul>
-                }
-            }
+@if(reviewData != null) {
+    @if(reviewData.size > 0) {
+        <div class="review-container">
+            <div class="review-title">
+                <h5>Review Feedback</h5>
+            </div>
+            <div class="review-content">
+                @container
+            </div>
         </div>
-    </div>
+
+    }
 }

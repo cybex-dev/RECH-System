@@ -1,11 +1,11 @@
 @import views.html.Components
 @import java.util
 
-@(id: String, label: String, value: String, hint: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
+@(id: String, label: String, value: String, hint: String, url: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
-<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint input-text-short"></ic><br>
+<label>@label@Components.link.apply(url)</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint input-text-short"></ic><br>
 <input class="required" style="margin-left: 40px; width: 50%" id="@id" name="@id" value="@{if(value != null) {value} else {}}" type="email" @Components.editable.apply(canEdit) placeholder="Enter @label">
 
-@Components.feedback_container.apply(id, feedback)feedback_container
-@Components.reviewable.apply(review, reviewData)
+@Components.feedback_container.apply(id, feedback, "")
+@Components.reviewable.apply(id, review, reviewData)
 <br>

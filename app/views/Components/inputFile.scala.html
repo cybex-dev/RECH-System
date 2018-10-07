@@ -3,19 +3,24 @@
 
 @import java.io.File
 
-@(id: String, label: String, fileName: String, nameId: String, hint: String, shortDesc: String, required: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
+@(id: String, label: String, fileName: String, nameId: String, hint: String, shortDesc: String, required: String, url: String, canEdit: Boolean, feedback: Boolean, review: Boolean, reviewData: util.List[String])
 
-<label>@label</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
+<label>@label@Components.link.apply(url)</label><ic title="@hint" style="margin-left: 20px" class="fa fa-question-circle helper-hint"></ic><br>
 <input class="required" id="@id" value="@{if(fileName != null) {fileName} else {}}" name="@id" type="file" style="margin-left: 40px;" desc="@shortDesc" file_required="@required" @Components.editable.apply(canEdit)>
 @if(!fileName.isEmpty) {
     <br/>
-    <div class="download" style="display: inline-block">
-        <p><span style="font-weight: bold; margin-left: 20px">Existing Document: </span>@fileName</p>
-        <button component="@id" data="@nameId" class="nmu-button action-button downloadfile" type="button" style="transform: scale(0.7)"><ic class="fa fa-download"></ic>Download</button>
+    <div class="row download">
+        <div class="col-sm-8">
+            <p><span style="font-weight: bold; margin-top: 5px">Existing Document: </span></p>
+            <p>@nameId</p>
+        </div>
+        <div class="col-sm-4 pull-right">
+            <button id="btnDownload_@id" component="@id" data="@nameId" class="nmu-button action-button downloadfile pull-right" type="button" style="transform: scale(0.7)"><ic class="fa fa-download"> Download</ic></button>
+        </div>
     </div>
 }
 
-@Components.feedback_container.apply(id, feedback)
-@Components.reviewable.apply(review, reviewData)
+@Components.feedback_container.apply(id, feedback, "")
+@Components.reviewable.apply(id, review, reviewData)
 
 <br>

@@ -24,6 +24,7 @@ import models.UserSystem.Application;
 import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
 import net.ddns.cyberstudios.XMLTools;
+import play.api.mvc.Call;
 import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
@@ -223,8 +224,6 @@ public class ApplicationHandler extends Controller {
         EntityEthicsApplication application = saveApplicationDataReceived(formApplication, ethicsApplication);
 
         RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
-        Map<String, Object> cleanData = clean(formApplication, application.applicationPrimaryKey());
-        fillInApplicationData(application.applicationPrimaryKey(), cleanData);
 
         if (application.getHodId() == null || application.getHodId().isEmpty()){
             flash("warning", "Unable to submit, no HOD is available in the system");
@@ -241,7 +240,10 @@ public class ApplicationHandler extends Controller {
             return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
         }
 
-        if (ApplicationStatus.parse(application.getInternalStatus()) != ApplicationStatus.AWAITING_PRP_APPROVAL) {
+        if (ApplicationStatus.parse(application.getInternalStatus()) == ApplicationStatus.DRAFT) {
+            RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
+        }
+        if (ApplicationStatus.parse(application.getInternalStatus()) == ApplicationStatus.NOT_SUBMITTED) {
             RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
         }
 
@@ -274,12 +276,6 @@ public class ApplicationHandler extends Controller {
 
             EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
             EntityEthicsApplication application = saveApplicationDataReceived(formApplication, ethicsApplication);
-//            if (!filledApplication) {
-//                EthicsApplication application_template = EthicsApplication.lookupApplication(application_type);
-//                Map<String, Boolean> editableMap = new HashMap<>();
-//                XMLTools.flatten(application_template.getRootElement()).forEach(s -> editableMap.put(s, true));
-//                return badRequest(views.html.ApplicationSystem.ApplicationContainer.render(" :: New Application", application_type, application_template.getRootElement(), editableMap, false, application.applicationPrimaryKey().shortName(), false, false, new HashMap<>(), GuiButton.negHomeCancel, GuiButton.posSubmitApplication, GuiButton.netSaveApplication));
-//            }
 
             RECEngine.getInstance().tryCompleteStageCheck(application.applicationPrimaryKey());
 
@@ -301,6 +297,10 @@ public class ApplicationHandler extends Controller {
             application.setApplicationYear(year);
             application.setFacultyName(formApplication.get("app_faculty"));
             application.setDepartmentName(formApplication.get("app_department"));
+            String level = formApplication.get("application_level");
+            if (level == null || level.isEmpty())
+                level = "3";
+            application.setApplicationLevel(Short.parseShort(level));
             EntityDepartment app_department = EntityDepartment.findDepartmentByName(formApplication.get("app_department"));
             int applicationNumber = EntityEthicsApplication.GetNextApplicationNumber(app_department, ethicsApplication.getType(), year);
             application.setApplicationNumber(applicationNumber);
@@ -332,7 +332,6 @@ public class ApplicationHandler extends Controller {
         formApplication.get().getData()
                 .entrySet()
                 .stream()
-                .filter(entry -> (!entry.getKey().equals("prp_contact_email")))
                 .forEach(e -> filteredData.put(e.getKey(), e.getValue()));
         request().body().asMultipartFormData().getFiles().stream()
                 .filter(o -> !o.getFilename().isEmpty())
@@ -593,7 +592,7 @@ public class ApplicationHandler extends Controller {
     }
 
     @RequireCSRFCheck
-    public Result downloadDocument(){
+    public Result download(){
         JsonNode json = request().body().asJson();
         String userId = session().get("user_id");
         if (userId == null || userId.isEmpty()) {
@@ -630,6 +629,13 @@ public class ApplicationHandler extends Controller {
             return unauthorized("You are not authorized to view / download this file.");
         }
 
+        if (!componentId.contains("_document")){
+            flash("danger", "Invalid component format");
+            return unauthorized("Could not find associated entry in database.");
+        }
+
+        componentId = componentId.replace("_document", "");
+
         EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(application.applicationPrimaryKey(), componentId);
         if (entityComponentVersion == null) {
             flash("danger", "Entry not found in database.");
@@ -642,8 +648,42 @@ public class ApplicationHandler extends Controller {
             return unauthorized("Could not find associated file in database.");
         }
 
-        String docDirectory = App.getInstance().getDocumentDirectory();
-        File newFile = new File(docDirectory.concat(documentLocationHash));
+        File newFile = new File(documentLocationHash);
+        if (!newFile.exists()) {
+            flash("danger", "File does not exist.");
+            return unauthorized("File does not exist.");
+        }
+
+        String filename = documentLocationHash.substring(documentLocationHash.lastIndexOf("~") + 1);
+
+        response().setContentType("application/x-download");
+        response().setHeader("Content-disposition","attachment; filename=" + filename);
+        Call call = routes.ApplicationHandler.downloadDocument(applicationId, componentId);
+        return ok(call.url());
+    }
+
+    public Result downloadDocument(String appId, String componentId) {
+        EntityEthicsApplication application = EntityEthicsApplication.GetApplication(EntityEthicsApplicationPK.fromString(appId));
+        if (application == null) {
+            flash("danger", "Could not find ethics application on the system.");
+            return notFound("Could not find the associated application on the system.");
+        }
+
+        componentId = componentId.replace("_document", "");
+
+        EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(application.applicationPrimaryKey(), componentId);
+        if (entityComponentVersion == null) {
+            flash("danger", "Entry not found in database.");
+            return unauthorized("Could not find associated entry in database.");
+        }
+
+        String documentLocationHash = entityComponentVersion.getDocumentLocationHash();
+        if (documentLocationHash == null) {
+            flash("danger", "File not found in database.");
+            return unauthorized("Could not find associated file in database.");
+        }
+
+        File newFile = new File(documentLocationHash);
         if (!newFile.exists()) {
             flash("danger", "File does not exist.");
             return unauthorized("File does not exist.");
@@ -691,6 +731,7 @@ public class ApplicationHandler extends Controller {
                 JavaScriptReverseRouter.create("applicationRoutes",
                         routes.javascript.ApplicationHandler.newApplication(),
                         routes.javascript.ApplicationHandler.duplicateApplication(),
+                        routes.javascript.ApplicationHandler.download(),
                         routes.javascript.ApplicationHandler.downloadDocument(),
                         routes.javascript.ApplicationHandler.printApplication()
                 )

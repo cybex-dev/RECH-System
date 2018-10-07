@@ -14,7 +14,7 @@ public class Notifier {
      * @param new_status
      */
     public static void notifyStatus(EntityEthicsApplicationPK applicationId, ApplicationStatus new_status, String applicationTitle, String...user_emails) {
-
+        System.out.print("Hi\n\nApplication Title: " + applicationTitle + ".Application ID: " + applicationId.shortName() + ". New Status: " + new_status.description());
     }
 
     /**
@@ -23,7 +23,7 @@ public class Notifier {
      * @param applicationTitle
      */
     public static void requireAttention(EntityEthicsApplicationPK applicationId, ApplicationStatus new_status, String applicationTitle, String...user_emails) {
-
+        System.out.print("Hi\n\nYour attention is required for your application title: " + applicationTitle + ".\n\nNew Status: " + new_status.description());
     }
 
     /**
@@ -32,7 +32,7 @@ public class Notifier {
      * ALso notifies the new user
      */
     public static void enrolledUser(UserType newUserType, String user_email) {
-
+        System.out.print("Hi\n\nNew user enrolled into the system. \n\nEmail: " + user_email + ".\nUser Permission: " + newUserType.getType());
     }
 
     /**
@@ -41,7 +41,7 @@ public class Notifier {
      * @param applicationTitle
      */
     public static void facultyReview(EntityEthicsApplicationPK applicationId, String applicationTitle, String rcd_email, String rti_email) {
-
+        System.out.print("Hi\n\nNew application added to the faculty review. Your attention is required for this application title: " + applicationTitle + ",");
     }
 
     /**
@@ -64,7 +64,7 @@ public class Notifier {
      * @param emails
      */
     public static void systemNotification(EntityEthicsApplicationPK applicationId, ApplicationStatus status, String title, SystemNotification notification, String...emails) {
-
+        System.out.print("Hi\n\nNew system notification!\n\nNOTIFICATION: " + notification.name() + ".\n\nApplication Title: " + title + ".\n\nApplication ID: " + applicationId.shortName() + ".\n\nNew Status: " + status.description());
     }
 
     /**
@@ -72,7 +72,7 @@ public class Notifier {
      * @param personById
      */
     public static void changedPassword(EntityPerson personById) {
-
+        System.out.print("Hi\n\nUser has changed their password. User Email: " + personById.getUserEmail() + ".\n\nUser: " + personById.getFullName());
     }
 
     /**
@@ -81,10 +81,12 @@ public class Notifier {
      */
     public static void newUser(EntityPerson person) {
         // Send welcome email
+        System.out.print("Welcome to the RECH committee.\n\nPlease complete your profile at your earliest convenience.");
         Mailer.SendWelcome(person.getUserFirstname(), person.getUserEmail());
     }
 
     public static void sendVerification(EntityPerson person, String token) {
+        System.out.print("Hi.\n\nEmail Verification sent to: " + person.getUserEmail());
         Mailer.SendVerificationEmail(person, token);
     }
 }

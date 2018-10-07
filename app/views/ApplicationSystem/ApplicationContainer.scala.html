@@ -24,11 +24,26 @@
 
 @Masterpage.apply(pageTitle) {
 
+    <div class="row">
+        <a style="transform: scale(0.7); margin-bottom: 10px;" href="@controllers.UserSystem.routes.ProfileHandler.overview()">
+            <button class="nmu-button action-button"><ic class="fa fa-home"> Go back</ic></button>
+        </a>
+    </div>
     <div class="BoxMediumBlue" style="padding: 20px;">
-        <div class="container-heading">
-            <h1>Create Ethics Application for @{upper(applicationType.name())} Research</h1>
-        </div>
+
+        @if(applicationId.isEmpty) {
+            <div class="container-heading">
+                <h1>Create Ethics Application for @{
+                    upper(applicationType.name())
+                } Research</h1>
+            </div>
+        } else {
+            <div class="container-heading">
+                <h1>Ethics Application for @{upper(applicationType.name())} Research <span style="font-style: italic; font-size: 0.8em"># @applicationId</span></h1>
+            </div>
+        }
         <br/>
+
         <div class="row">
             @if(!feedback && !review) {
                 <h5 style="font-style: italic; margin-left: 20px">Please complete the application form provided below.</h5>

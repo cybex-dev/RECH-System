@@ -9,15 +9,14 @@
         <div class="row">
             <table class="table table-overview">
                 <thead>
-                    <th class="col-sm-3">Application Title</th>
-                    <th class="col-sm-3">Date Assigned</th>
-                    <th class="col-sm-3">Due Date</th>
-                    <th class="col-sm-2"></th>
+                    <th class="col-sm-5">Application Title</th>
+                    <th class="col-sm-2">Date Assigned</th>
+                    <th class="col-sm-2">Due Date</th>
+                    <th class="col-sm-4"></th>
                 </thead>
                 <tbody>
                 @for(application: Application <- applications) {
-                    <tr class="nmu-button">
-                <tr class="nmu-button">
+                <tr class="nmu-button overview-td">
                     <td style="text-decoration: underline;">@application.getTitle</td>
                     <td>@application.getAssignedDateSafe</td>
                     <td>@application.getDueDateSafe</td>

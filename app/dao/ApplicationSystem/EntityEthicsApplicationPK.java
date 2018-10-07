@@ -74,9 +74,9 @@ public class EntityEthicsApplicationPK implements Serializable {
         EntityEthicsApplicationPK that = (EntityEthicsApplicationPK) o;
         return applicationYear == that.applicationYear &&
                 applicationNumber == that.applicationNumber &&
-                Objects.equals(applicationType, that.applicationType) &&
-                Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(facultyName, that.facultyName);
+                Objects.equals(applicationType.toLowerCase(), that.applicationType.toLowerCase()) &&
+                Objects.equals(departmentName.toLowerCase(), that.departmentName.toLowerCase()) &&
+                Objects.equals(facultyName.toLowerCase(), that.facultyName.toLowerCase());
     }
 
     @Override

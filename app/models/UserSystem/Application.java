@@ -31,6 +31,7 @@ public class Application {
     private ApplicationStatus status;
     private Permission permission;
     private int[] notifications;
+    private String pi, prp;
 
     public Application(){}
 
@@ -57,6 +58,9 @@ public class Application {
         application.setApplicationID(app.applicationPrimaryKey());
         application.setStatus(status);
         application.setTitle(app.title());
+
+        application.setPi((app.getPiId() == null) ? "" : app.getPiId());
+        application.setPrp((app.getPrpId() == null) ? "" : app.getPrpId());
 
         application.setDate_submitted(app.getDateSubmitted());
         application.setDate_approved(app.getDateApproved());
@@ -161,7 +165,7 @@ public class Application {
     }
 
     public String getAssignedDateSafe(){
-        return (date_assigned == null) ? "-" : due_date.toString().split(" ")[0];
+        return (date_assigned == null) ? "-" : date_assigned.toString().split(" ")[0];
     }
 
     public String getDueDateSafe(){
@@ -206,5 +210,21 @@ public class Application {
         }
 
         return recentDateSubmitted || recentDateApproved || recentDateDueDate || recentAssigned || recentEdit;
+    }
+
+    public String getPi() {
+        return pi;
+    }
+
+    public String getPrp() {
+        return prp;
+    }
+
+    public void setPi(String pi) {
+        this.pi = pi;
+    }
+
+    public void setPrp(String prp) {
+        this.prp = prp;
     }
 }

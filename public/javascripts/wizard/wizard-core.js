@@ -214,25 +214,32 @@ function show(element) {
 }
 
 function downloadFile(data){
-    handleDownload(data, applicationRoutes.controllers.ApplicationSystem.ApplicationHandler.downloadDocument(), "Unable to download document. Please contact the Research and Ethics Committee if this issue persists.")
+    handleDownload(data, applicationRoutes.controllers.ApplicationSystem.ApplicationHandler.download(), "Unable to download document. Please contact the Research and Ethics Committee if this issue persists.")
 }
 
 //Source: https://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
 function handleDownload(params, url, errorMessage, success) {
+    let token = document.getElementsByName("csrfToken")[0].value;
     $.ajax({
         type: "POST",
-        url: url,
-        data: params,
+        url: url.url,
+        cache: false,
+        contentType: 'application/json',
+        headers: {
+            'Csrf-Token': token
+        },
+        data: JSON.stringify(params),
         success: function(response, status, request) {
             var disp = request.getResponseHeader('Content-Disposition');
             if (disp && disp.search('attachment') !== -1) {
-                var form = $('<form method="POST" action="' + url + '">');
-                $.each(params, function(k, v) {
-                    form.append($('<input type="hidden" name="' + k +
-                        '" value="' + v + '">'));
-                });
-                $('body').append(form);
-                form.submit();
+                window.open(response, "_blank", "", false)
+                // var form = $('<form method="POST" action="' + url + '">');
+                // $.each(params, function(k, v) {
+                //     form.append($('<input type="hidden" name="' + k +
+                //         '" value="' + v + '">'));
+                // });
+                // $('body').append(form);
+                // form.submit();
             }
         },
         error: function (error) {
@@ -245,87 +252,87 @@ function handleDownload(params, url, errorMessage, success) {
  * Function to take <div class="popup"...> and create Model dialogs from them
  */
 function createDocumentPopups() {
-    document.querySelectorAll(".popup-box").forEach(function (e) {
-        // Hack fix for forEach loop not retaining the content of the element. e.parentNode == null at times.
-        let element = document.getElementById(e.id);
+    if (document.querySelectorAll(".review").length === 0) {
+        document.querySelectorAll(".popup").forEach(function (e) {
+            // Hack fix for forEach loop not retaining the content of the element. e.parentNode == null at times.
+            let element = document.getElementById(e.id);
 
-        // Get download block and remove it
-        let downloadBlock = element.querySelector("div .download");
-        if (downloadBlock !== null) {
+            // Create copy of element content
+            let copy = element.cloneNode(true);
 
-            // Add download block after current parent
-            let downBlock = downloadBlock.cloneNode(true);
-            element.appendChild(downBlock, element);
-            downloadBlock.remove();
+            // Get element parent, where the popup will be placed
+            let parent = element.parentElement;
 
-        }
+            let name = copy.getAttribute("name");
 
-         // Create copy of element content
-        let copy = element.cloneNode(true);
+            let divContainer = createElement("div", "", "", "", 'row');
 
-        // Get element parent, where the popup will be placed
-        let parent = element.parentElement;
+            let inputFile = parent.querySelectorAll("input[type=file]")[0];
 
-        let name = copy.getAttribute("name");
+            // Create button to open popup window
+            let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", ((inputFile.value === "") ? "Add " : "Modify ") + name, null, "nmu-button", "action-button", "action-alternative");
 
-        let divContainer = createElement("div", "", "", "", 'row');
+            btn.style.marginLeft = "20px";
+            // Create text element to sow file name which has been uploaded or has been selected
+            let textNode = createElement("label", "", "", copy.id + "_filename");
+            textNode.style.marginLeft = "50px";
+            textNode.style.fontWeight = "bold";
 
-        let inputFile = parent.querySelectorAll("input[type=file]")[0];
+            textNode.style.display = "block";
+            // Insert Heading
+            let heading = createElement("h4", name, "", "");
 
-        // Create button to open popup window
-        let btn = createButton("btnPopup_" + copy.id, "Add " + name, "button", ((inputFile.value === "") ? "Add " : "Modify ") + name, null, "nmu-button", "action-button", "action-alternative");
+            heading.style.marginLeft = "50px";
+            // Add heading to container
+            divContainer.appendChild(heading);
+            divContainer.appendChild(btn);
+            divContainer.appendChild(textNode);
 
-        btn.style.marginLeft = "20px";
-        // Create text element to sow file name which has been uploaded or has been selected
-        let textNode = createElement("label", "", "", copy.id + "_filename");
-        textNode.style.marginLeft = "50px";
-        textNode.style.fontWeight = "bold";
+            // Get download block and remove it
+            let downloadBlock = element.querySelector("div .download");
+            if (downloadBlock !== null) {
 
-        textNode.style.display = "block";
-        // Insert Heading
-        let heading = createElement("h4", name, "", "");
+                // Insert Show Popup button before current element
+                let downBlock = downloadBlock.cloneNode(true);
+                divContainer.appendChild(downBlock);
 
-        heading.style.marginLeft = "50px";
-        // Add heading to container
-        divContainer.appendChild(heading);
-        divContainer.appendChild(btn);
-        divContainer.appendChild(textNode);
-
-        divContainer.appendChild(document.createElement("BR"));
-
-        // Insert Show Popup button before current element
-        parent.insertBefore(divContainer, element);
-
-        // Remove the element, i.e. all content from the form
-        element.remove();
-        // Create popup window
-        createPopup(copy.id, name, copy, divContainer);
-        document.getElementById(inputFile.id).addEventListener("change", function (event) {
-            let inputFile = document.getElementById(event.target.id);
-            let last = inputFile.value.substring(inputFile.value.lastIndexOf("\\")+1);
-            document.getElementById(textNode.id).innerHTML = "<b>File: </b>" + last;
-        });
-
-        // Set existing file name
-        let last = inputFile.value.substring(inputFile.value.lastIndexOf("\\")+1);
-        textNode.innerHTML = "<b>Existing File: </b>" + inputFile.value.substr(last+1);
-
-        // Set onclick event
-        document.getElementById("btnPopup_" + copy.id).onclick = function () {
-            openPopup(copy.id, false);
-        };
-
-        // Set onDownload button click handlers
-        document.querySelectorAll("button .downloadfile").forEach(function (button) {
-            document.getElementById(button.id).onclick = function () {
-                let data = {
-                    "application_id": $('#application_id').val(),
-                    "component_id": button.getAttribute("component")
-                };
-                downloadFile(data);
+                // Add download block after current parent
+                downloadBlock.remove();
             }
-        })
-    });
+
+            parent.insertBefore(divContainer, element);
+
+            // Remove the element, i.e. all content from the form
+            element.remove();
+            // Create popup window
+            createPopup(copy.id, name, copy, divContainer);
+            document.getElementById(inputFile.id).addEventListener("change", function (event) {
+                let inputFile = document.getElementById(event.target.id);
+                let last = inputFile.value.substring(inputFile.value.lastIndexOf("\\") + 1);
+                document.getElementById(textNode.id).innerHTML = "<b>File: </b>" + last;
+            });
+
+            // Set existing file name
+            let last = inputFile.value.substring(inputFile.value.lastIndexOf("\\") + 1);
+            textNode.innerHTML = "<b>Existing File: </b>" + inputFile.value.substr(last + 1);
+
+            // Set onclick event
+            document.getElementById("btnPopup_" + copy.id).onclick = function () {
+                openPopup(copy.id, false);
+            };
+        });
+    }
+
+    // Set onDownload button click handlers
+    document.querySelectorAll("button.downloadfile").forEach(function (button) {
+        document.getElementById(button.id).onclick = function () {
+            let data = {
+                "application_id": $('#application_id').val(),
+                "component_id": button.getAttribute("component")
+            };
+            downloadFile(data);
+        }
+    })
 }
 
 function createCollapsibleGroupHeadings() {
@@ -555,6 +562,7 @@ function initWizard() {
 
     //Create 2 div containers. Outer container is the new 'textarea' container and inner is the editor itself
     function createTextAreaEditors() {
+        let isReviewingFeedback = document.querySelectorAll(".review-container").length !== 0;
         document.querySelectorAll("textarea").forEach(value => {
             let id = value.id;
             let name = value.getAttribute("name");
@@ -574,16 +582,29 @@ function initWizard() {
             value.parentElement.insertBefore(outerEditorContainer, value);
             value.style.display = "none";
 
-            var quill = new Quill('#' + editorDiv.id, {
-                modules: {
-                    toolbar: [
-                        [{ header: [1, 2, false] }],
-                        ['bold', 'italic', 'underline']
-                    ]
-                },
-                placeholder: placeholder.replace("_", " "),
-                theme: 'snow'  // or 'bubble'
-            });
+            let isEnabled = value.getAttribute("name").includes("feedback_") && !isReviewingFeedback;
+            var quill = null;
+            if (isReviewingFeedback) {
+                quill = new Quill('#' + editorDiv.id, {
+                    modules: {
+                    },
+                    placeholder: "",
+                    theme: 'bubble'  // or 'bubble'
+                });
+            } else {
+                quill = new Quill('#' + editorDiv.id, {
+                    modules: {
+                        toolbar: [
+                            [{ header: [1, 2, false] }],
+                            ['bold', 'italic', 'underline']
+                        ]
+                    },
+                    placeholder: (!isReviewingFeedback) ? placeholder.replace("_", " ") : "",
+                    theme: 'snow'  // or 'bubble'
+                });
+            }
+            quill.enable(isEnabled);
+
 
             let content = value.value;
             if (content !== null && content !== "") {

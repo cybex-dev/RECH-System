@@ -407,14 +407,12 @@ public class EntityEthicsApplication extends Model {
         return find.all()
                 .stream()
                 .filter(ethicsApplicationEntity -> {
+
+                    Short internalStatus = ethicsApplicationEntity.getInternalStatus();
                     switch (userType) {
                         case PrimaryInvestigator: return ethicsApplicationEntity.getPiId().equals(personEmail);
                         case PrimaryResponsiblePerson: {
-                            Short internalStatus = ethicsApplicationEntity.getInternalStatus();
-                            return (
-                                    (internalStatus!= ApplicationStatus.DRAFT.getStatus() ||
-                                        internalStatus!= ApplicationStatus.NOT_SUBMITTED.getStatus())
-                                    &&
+                            return (internalStatus == ApplicationStatus.AWAITING_PRP_APPROVAL.getStatus() &&
                                     (ethicsApplicationEntity.getPrpId() != null &&
                                         ethicsApplicationEntity.getPrpId().equals(personEmail))
                             );
@@ -422,11 +420,34 @@ public class EntityEthicsApplication extends Model {
                         case Liaison: return ethicsApplicationEntity.getLiaisonId() != null &&
                                 ethicsApplicationEntity.getLiaisonId().equals(personEmail);
                         case Reviewer: return EntityReviewerApplications.getApplicationReviewers(ethicsApplicationEntity.applicationPrimaryKey()).stream()
-                                .anyMatch(s -> s.equals(personEmail));
-                        case FacultyRTI: return ethicsApplicationEntity.getRtiId() != null &&
-                                ethicsApplicationEntity.getRtiId().equals(personEmail);
-                        case DepartmentHead: return ethicsApplicationEntity.getRtiId() != null &&
-                                ethicsApplicationEntity.getHodId().equals(personEmail);
+                                .anyMatch(s -> s.equals(personEmail)) && internalStatus == ApplicationStatus.PENDING_REVIEW_REVIEWER.getStatus();
+                        case FacultyRTI: {
+                            return
+                                    ethicsApplicationEntity.getRtiId() != null &&
+                                            ethicsApplicationEntity.getRtiId().equals(personEmail) &&
+                                            ( internalStatus == ApplicationStatus.AWAITING_POST_RTI_APPROVAL.getStatus() ||
+                                                    internalStatus == ApplicationStatus.AWAITING_PRE_RTI_APPROVAL.getStatus() ||
+                                                    internalStatus == ApplicationStatus.AWAITING_POST_HOD_RTI_APPROVAL.getStatus() ||
+                                                    internalStatus == ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL.getStatus() ||
+                                                    internalStatus == ApplicationStatus.PENDING_REVIEW_MEETING.getStatus() ||
+                                                    internalStatus == ApplicationStatus.APPROVED.getStatus() ||
+                                                    internalStatus == ApplicationStatus.TEMPORARILY_APPROVED.getStatus()
+                                            );
+                        }
+
+                        case DepartmentHead: {
+                            return
+                                    ethicsApplicationEntity.getHodId() != null &&
+                                            ethicsApplicationEntity.getHodId().equals(personEmail) &&
+                                            ( internalStatus == ApplicationStatus.AWAITING_POST_HOD_APPROVAL.getStatus() ||
+                                                    internalStatus == ApplicationStatus.AWAITING_PRE_HOD_APPROVAL.getStatus() ||
+                                                    internalStatus == ApplicationStatus.AWAITING_POST_HOD_RTI_APPROVAL.getStatus() ||
+                                                    internalStatus == ApplicationStatus.AWAITING_PRE_HOD_RTI_APPROVAL.getStatus() ||
+                                                    internalStatus == ApplicationStatus.PENDING_REVIEW_MEETING.getStatus() ||
+                                                    internalStatus == ApplicationStatus.APPROVED.getStatus() ||
+                                                    internalStatus == ApplicationStatus.TEMPORARILY_APPROVED.getStatus()
+                                            );
+                        }
                         case RCD: return ApplicationStatus.parse(ethicsApplicationEntity.getInternalStatus()) == ApplicationStatus.AWAITING_REVIEWER_ALLOCATION;
                         }
                     return false;
@@ -521,20 +542,14 @@ public class EntityEthicsApplication extends Model {
         HashMap<String, List<String>> reviewData = new HashMap<>();
 
         EntityEthicsApplication.getLatestComponents(pk)
+                .stream()
+                .filter(Objects::nonNull)
                 .forEach(component -> {
                     List<String> reviewerFeedback = EntityReviewerComponentFeedback
                             .GetFeedbackByComponent(component.componentVersionPrimaryKey())
                             .stream()
                             .map(EntityReviewerComponentFeedback::getComponentFeedback)
                             .collect(Collectors.toList());
-
-                    List<String> liaisonFeedback = EntityLiaisonComponentFeedback
-                            .GetFeedbackByComponent(component.componentVersionPrimaryKey())
-                            .stream()
-                            .map(EntityLiaisonComponentFeedback::getFeedback)
-                            .collect(Collectors.toList());
-
-                    reviewerFeedback.addAll(liaisonFeedback);
 
                     if (reviewerFeedback.size() == 0){
                         reviewData.put(component.getComponentId(), new ArrayList<>());

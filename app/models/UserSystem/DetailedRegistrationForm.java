@@ -1,16 +1,11 @@
 package models.UserSystem;
 
-import dao.UserSystem.EntityPerson;
 import play.data.validation.Constraints;
-import play.data.validation.ValidationError;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DetailedRegistrationForm {
 
     @Constraints.Required
-    private String userTitle;
+    private String usertitle;
 
     @Constraints.Required
     private String firstname;
@@ -34,7 +29,7 @@ public class DetailedRegistrationForm {
     }
 
     public DetailedRegistrationForm(@Constraints.Required String userTitle, @Constraints.Required String firstname, @Constraints.Required String lastname, @Constraints.Required String mobile, @Constraints.Required String degreeLevel, @Constraints.Required String department, @Constraints.Required String faculty) {
-        this.userTitle = userTitle;
+        this.usertitle = userTitle;
         this.firstname = firstname;
         this.lastname = lastname;
         this.mobile = mobile;
@@ -43,12 +38,12 @@ public class DetailedRegistrationForm {
         this.faculty = faculty;
     }
 
-    public String getUserTitle() {
-        return userTitle;
+    public String getUsertitle() {
+        return usertitle;
     }
 
-    public void setUserTitle(String userTitle) {
-        this.userTitle = userTitle;
+    public void setUsertitle(String usertitle) {
+        this.usertitle = usertitle;
     }
 
     public String getFirstname() {

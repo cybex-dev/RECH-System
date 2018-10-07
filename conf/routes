@@ -39,7 +39,8 @@ GET     /user/applications              controllers.ApplicationSystem.Applicatio
 GET     /application/new/create         controllers.ApplicationSystem.ApplicationHandler.newApplication(type: String)
 POST    /application/new/save           controllers.ApplicationSystem.ApplicationHandler.saveApplication
 
-POST    /api/application/download       controllers.ApplicationSystem.ApplicationHandler.downloadDocument
+POST    /api/application/download       controllers.ApplicationSystem.ApplicationHandler.download
+GET     /api/application/download/:app/:comp       controllers.ApplicationSystem.ApplicationHandler.downloadDocument(app: String, comp: String)
 POST    /api/application/duplicate/id   controllers.ApplicationSystem.ApplicationHandler.duplicateApplication(id: String)
 POST    /api/application/print          controllers.ApplicationSystem.ApplicationHandler.printApplication
 

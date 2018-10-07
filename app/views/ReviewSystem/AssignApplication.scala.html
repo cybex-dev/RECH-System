@@ -4,66 +4,94 @@
 
 @(application: Application)
 
-@Masterpage.apply(":: Assign Reviewers"){
-    @helper.form(action = controllers.ReviewSystem.routes.ReviewHandler.doAssignReviewers()){
+@Masterpage.apply(":: Assign Reviewers") {
+    <div class="BoxMediumBlue" style="padding: 20px;">
+    @helper.form(action = controllers.ReviewSystem.routes.ReviewHandler.doAssignReviewers()) {
         @helper.CSRF.formField
         <input type="hidden" id="application_id" value="@application.getApplicationID().shortName()">
-        <h2>Assign Reviewers to Application</h2>
+        <div class="row">
+            <div class="container-heading">
+                <h2>Assign Reviewers to Application</h2>
+            </div>
+        </div>
         <br>
-        <div class="application-details">
+        <div class="row" style="padding-left: 10px !important;">
+            <div class="application-details" style="padding: 20px !important;">
 
-            @*TODO Add view application button here*@
-            <h2 style="margin: 0 auto;">Application Details</h2>
-            <br>
-            <div class="row">
-                <div class="col-sm-4"><b>Application Title:</b></div>
-                <div class="col-sm-7">@application.getTitle</div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-sm-4"><b>Type</b></div>
-                <div class="col-sm-7">@application.getApplicationID.getApplicationType</div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4"><b>Faculty</b></div>
-                <div class="col-sm-7">@application.getApplicationID.getFacultyName</div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4"><b>Department</b></div>
-                <div class="col-sm-7">@application.getApplicationID.getDepartmentName</div>
-            </div>
-            <br>
-            <h2>Assign Reviewers</h2>
-            <br/>
+                @*TODO Add view application button here*@
+                <h2 style="margin: 0 auto;">Application Details</h2>
+                <br>
+                <div class="row">
+                    <div class="col-sm-4"><b>Application Title:</b></div>
+                    <div class="col-sm-7">@application.getTitle</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"><b>Application ID:</b></div>
+                    <div class="col-sm-7">@application.getApplicationID.shortName()</div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-4"><b>Type:</b></div>
+                    <div class="col-sm-7">@application.getApplicationID.getApplicationType</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"><b>Faculty:</b></div>
+                    <div class="col-sm-7">@application.getApplicationID.getFacultyName</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"><b>Department:</b></div>
+                    <div class="col-sm-7">@application.getApplicationID.getDepartmentName</div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-sm-4"><b>Principle Investigator:</b></div>
+                    <div class="col-sm-7">@application.getPi</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"><b>Primary Responsible Person:</b></div>
+                    <div class="col-sm-7">@application.getPrp</div>
+                </div>
+                <br>
+                <h2>Assign Reviewers</h2>
+                <br/>
 
-            <table id="table_reviewers">
-                <thead>
-                    <tr>
-                        <th class="col-sm-1">#</th>
-                        <th class="col-sm-4">Email</th>
-                        <th class="col-sm-3">Reviewer</th>
-                        <th class="col-sm-3">Department (Faculty)</th>
-                        <th class="col-sm-1"></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2">
-                            <button class="nmu-button action-button" id="btnAddReviewer" type="button">Add Reviewer</button>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                <table id="table_reviewers">
+                    <thead style="border-bottom: 1px solid #ffffff; border-top: 2px solid #ffffff;">
+                        <tr>
+                            <th class="col-sm-1">#</th>
+                            <th class="col-sm-4">Email</th>
+                            <th class="col-sm-3">Reviewer</th>
+                            <th class="col-sm-3">Department (Faculty)</th>
+                            <th class="col-sm-1"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr style="border-top: 1px solid #ffffff">
+                            <td colspan="5">
+                                <button class="nmu-button action-button" id="btnAddReviewer" type="button">
+                                    Add Reviewer</button>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
         <input hidden="hidden" name="application_id" id="application_id" value="@application.getApplicationID.shortName()">
-        <div class="col-sm-6">
-            <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
-                <button type="button" class="nmu-button" style="min-width: 30%; width: auto; float: left">Cancel</button>
-            </a>
-        </div>
-        <div class="col-sm-6">
-            <button type="submit" class="nmu-button" style="min-width: 30%; width: auto; float: right">Assign Reviewers</button>
+        <div class="row">
+            <div class="col-sm-6">
+                <a href="@controllers.UserSystem.routes.ProfileHandler.overview()">
+                    <button type="button" class="nmu-button action-alternative" style="min-width: 30%;
+                        width: auto;
+                        float: left">Cancel</button>
+                </a>
+            </div>
+            <div class="col-sm-6">
+                <button type="submit" class="nmu-button action-button" style="min-width: 30%;
+                    width: auto;
+                    float: right">Assign Reviewers</button>
+            </div>
         </div>
     }
+    </div>
 }

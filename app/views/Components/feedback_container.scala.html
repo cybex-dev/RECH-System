@@ -1,8 +1,9 @@
 @import views.html.Components
 @import java.util
 
-@(id: String, feedback: Boolean)
+@(id: String, feedback: Boolean, contents: String)
 
 @if(feedback){
-    @Components.inputTextArea.apply("feedback_" + id, "Feedback", "", "", "", true, false, false, null: util.List[String])
+    <br/>
+    @Components.inputTextArea.apply("feedback_" + id, "Feedback", contents, "", "", "", true, false, false, null: util.List[String])
 }
