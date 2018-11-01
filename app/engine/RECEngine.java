@@ -882,12 +882,21 @@ public class RECEngine extends Controller {
                     //Get latest component
                     EntityComponentVersion latestComponent = EntityComponentVersion.GetLatestComponent(applicationId, entityComponent.getComponentId());
 
-                    // Set submitted state
-                    latestComponent.setIsSubmitted(true);
-                    latestComponent.setDateSubmitted(ts);
+                    if (latestComponent != null) {
 
-                    // Save changes
-                    latestComponent.update();
+                        // Set submitted state
+                        latestComponent.setIsSubmitted(true);
+                        latestComponent.setDateSubmitted(ts);
+
+                        // Save changes
+                        latestComponent.update();
+                    } else {
+                        try {
+                            System.out.println("Invalid latest component " + latestComponent.toString());
+                        } catch (NullPointerException e) {
+                            System.out.println("NullPointer when displaying invalid latest component");
+                        }
+                    }
                 });
 
         // Update Ethics application entity

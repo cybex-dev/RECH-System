@@ -194,40 +194,43 @@ public class ReviewHandler extends Controller {
 
         map.forEach((key, value) -> {
 
-            if (key.startsWith("doc_") && (key.contains("_title") || key.contains("_desc") || key.contains("_document"))){
-                key = key.substring(key.lastIndexOf("_"));
-            }
+            if (!value.equals("{\"ops\":[{\"insert\":\"\\n\"}]}")) {
 
-            EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(pk, key);
+                if (key.startsWith("doc_") && (key.contains("_title") || key.contains("_desc") || key.contains("_document"))) {
+                    key = key.substring(key.lastIndexOf("_"));
+                }
 
-            if (entityComponentVersion == null){
-                System.out.println("EntityComponentVersion is null while adding feedback for this component");
+                EntityComponentVersion entityComponentVersion = EntityComponentVersion.GetLatestComponent(pk, key);
 
-            } else {
+                if (entityComponentVersion == null) {
+                    System.out.println("EntityComponentVersion is null while adding feedback for this component");
 
-                // Create Primary Key
-                EntityReviewerComponentFeedbackPK feedbackPK = new EntityReviewerComponentFeedbackPK();
-                feedbackPK.setComponentVersionId(entityComponentVersion.componentVersionPrimaryKey());
-                feedbackPK.setReviewerEmail(reviewer);
-
-                // Search by primary key
-                EntityReviewerComponentFeedback feedback = EntityReviewerComponentFeedback.find.byId(feedbackPK);
-
-                // Check if this component ahs had feedback set
-                if (feedback == null) {
-                    // Vanilla component
-                    feedback = new EntityReviewerComponentFeedback();
-                    feedback.setPrimaryKey(feedbackPK);
-
-                    feedback.setComponentId(key);
-                    feedback.setReviewerEmail(reviewer);
-                    feedback.setFeedbackDate(timestamp);
-                    feedback.setComponentFeedback(value);
-                    feedback.insert();
                 } else {
-                    // Update feedback
-                    feedback.setComponentFeedback(value);
-                    feedback.update();
+
+                    // Create Primary Key
+                    EntityReviewerComponentFeedbackPK feedbackPK = new EntityReviewerComponentFeedbackPK();
+                    feedbackPK.setComponentVersionId(entityComponentVersion.componentVersionPrimaryKey());
+                    feedbackPK.setReviewerEmail(reviewer);
+
+                    // Search by primary key
+                    EntityReviewerComponentFeedback feedback = EntityReviewerComponentFeedback.find.byId(feedbackPK);
+
+                    // Check if this component ahs had feedback set
+                    if (feedback == null) {
+                        // Vanilla component
+                        feedback = new EntityReviewerComponentFeedback();
+                        feedback.setPrimaryKey(feedbackPK);
+
+                        feedback.setComponentId(key);
+                        feedback.setReviewerEmail(reviewer);
+                        feedback.setFeedbackDate(timestamp);
+                        feedback.setComponentFeedback(value);
+                        feedback.insert();
+                    } else {
+                        // Update feedback
+                        feedback.setComponentFeedback(value);
+                        feedback.update();
+                    }
                 }
             }
         });
