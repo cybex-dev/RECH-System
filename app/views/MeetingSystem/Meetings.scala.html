@@ -2,8 +2,29 @@
 @import dao.Meeting.EntityMeeting
 @import java.util
 
-@(allMeetings: util.List[EntityMeeting])
+@(completeMeetings: util.List[EntityMeeting])(incompleteMeetings: util.List[EntityMeeting])
 
 @Masterpage.apply(" :: All Meetings"){
-    <br/>
+    <div class="BoxMediumBlue" style="padding: 20px;">
+        <div class="container-heading">
+            <h1>Account Overview</h1>
+            <p style="font-style: italic">All Meetings held by the committee.</p>
+        </div>
+        <div class="">
+            @if(allMeetings.size() == 0) {
+                <p>No meetings setup</p>
+                <br/>
+                <div class="pull-right">
+                    <a href="@controllers.MeetingSystem.routes.MeetingController.setupMeeting()">
+                        <button class="nmu-button action-button"><ic class="fa fa-plus"> Setup new meeting</ic>
+                        </button>
+                    </a>
+                </div>
+            } else {
+                @for(e <- allMeetings){
+
+                }
+            }
+        </div>
+    </div>
 }
