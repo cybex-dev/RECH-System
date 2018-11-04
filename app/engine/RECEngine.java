@@ -354,7 +354,7 @@ public class RECEngine extends Controller {
                                 entityEthicsApplication.setRtiPreApprovedDate(Timestamp.from(Instant.now()));
                             }
 
-                            entityEthicsApplication.setApplicationRevision(entityEthicsApplication.getApplicationRevision() + 1);
+                            entityEthicsApplication.setApplicationRevision((entityEthicsApplication.getApplicationRevision() == null) ? 1 : entityEthicsApplication.getApplicationRevision() + 1);
                             entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                             entityEthicsApplication.update();
                             return true;
