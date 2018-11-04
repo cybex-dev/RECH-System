@@ -137,11 +137,16 @@ public class APIController extends Controller {
         if (application != null){
             String pi = EntityPerson.getPersonById(application.getPiId()).getUserEmail();
             String prp = EntityPerson.getPersonById(application.getPiId()).getUserEmail();
+            String hod = EntityPerson.getPersonById(application.getHodId()).getUserEmail();
+            String rti = EntityPerson.getPersonById(application.getRtiId()).getUserEmail();
 
             EntityPerson.findAllReviewers()
                     .stream()
                     .filter(entityPerson -> !entityPerson.getUserEmail().equals(pi) &&
-                            !entityPerson.getUserEmail().equals(prp))
+                            !entityPerson.getUserEmail().equals(prp) &&
+                            !entityPerson.getUserEmail().equals(rti) &&
+                            !entityPerson.getUserEmail().equals(hod))
+                    .filter(entityPerson -> entityPerson.userType() != UserType.RCD && entityPerson.userType() != UserType.PrimaryInvestigator)
                     .forEach(p -> {
                         Map<String, String> map = new HashMap<>();
                         map.put("title", p.getUserTitle());

@@ -73,7 +73,7 @@ public class RegistrationController extends Controller {
 
         String code = hashpw.replace("/", "").replace(".", "").substring(12);
 
-        Notifier.sendVerification(person, code);
+        Notifier.sendVerification(person.getUserEmail(), code);
         flash("info", "An verification email has been sent to " + basicRegistrationForm.getEmail() + ". Please check your mail and verify your email address.");
         return redirect(routes.LoginController.login());
     }

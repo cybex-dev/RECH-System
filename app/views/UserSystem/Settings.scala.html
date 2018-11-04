@@ -19,7 +19,7 @@
                 <h1>Profile Settings</h1>
             </div>
             <br/>
-
+            <p style="margin-left: 20px">You are a @entityPerson.userType().getDescription</p>
             <div class="row">
                 @TabList.apply("tablist_settings")(false){
                     @if(entityPerson.userType() != UserType.RCD) {
@@ -36,6 +36,7 @@
                 }{
                     @if(entityPerson.userType() != UserType.RCD) {
                         @TabContent.apply("Personal Information")("tabheading_basic_info")(false){
+
                             @inputDropdown.apply("title", "Title", entityPerson.getUserTitle, APIController.getTitles, "Your preferred title", "", true, false, false, null: util.List[String])
                             @inputText.apply("firstname", "First name", entityPerson.getUserFirstname, "Your firstname", "", true, false, false, null: util.List[String])
                             @inputText.apply("lastname", "Last name", entityPerson.getUserLastname, "Your lastname", "", true, false, false, null: util.List[String])

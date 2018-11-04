@@ -300,6 +300,8 @@ public class ProfileHandler extends Controller {
         String newPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
         person.setUserPasswordHash(newPassword);
 
+        Notifier.changedPassword(person);
+
         flash("succcess", "New password updated, please login in.");
         return redirect(routes.LoginController.login());
     }
@@ -351,6 +353,10 @@ public class ProfileHandler extends Controller {
 
         UserType userType = UserType.parse(type);
 
+        boolean showFillAcademicInfoMessage = false;
+        if (userType == UserType.PrimaryInvestigator)
+            showFillAcademicInfoMessage = true;
+
         Map.Entry<UserType, String> enrol_code = enrolmentMap.entrySet().stream()
                 .filter(entry -> entry.getKey().equals(userType) && entry.getValue().equals(code))
                 .findFirst()
@@ -367,6 +373,7 @@ public class ProfileHandler extends Controller {
             return badRequest();
         }
 
+        UserType newUserType = UserType.parse(enrol_code.getKey().toString());
         personById.setPersonType(enrol_code.getKey().toString());
         personById.update();
         session().remove(CookieTags.user_type);
@@ -375,6 +382,8 @@ public class ProfileHandler extends Controller {
         Notifier.enrolledUser(enrol_code.getKey(), personById.getUserEmail());
 
         flash("success", "You are now a " + enrol_code.getKey().getDescription());
+        if (showFillAcademicInfoMessage)
+            flash("info", "Please complete your Academic Information section");
         result.put("success", "You are now a " + enrol_code.getKey().getDescription());
         return ok();
     }

@@ -835,7 +835,7 @@
             <extension orientation="vertical"  id="ext_conflict_interest">
                 <component id="conflicting_interests" name="" type="boolean"
                            hint="?">
-                    <question>I am aware of possible conflicts of interest to be considered by the University</question>
+                    <question>I am/not aware of possible conflicts of interest to be considered by the University</question>
                     <value></value>
                 </component>
                 <component id="conflicting_interests_desc" name="" type="text"

@@ -1173,7 +1173,7 @@ public class RECEngine extends Controller {
 
                     @Override
                     public void doNotify() {
-                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, rcd);
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, title, rcd);
                     }
                 };
                 break;
@@ -1189,7 +1189,7 @@ public class RECEngine extends Controller {
 
                     @Override
                     public void doNotify() {
-                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, rcd);
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, title, rcd);
                     }
                 };
                 break;
@@ -1205,7 +1205,7 @@ public class RECEngine extends Controller {
 
                     @Override
                     public void doNotify() {
-                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, rcd);
+                        Notifier.requireAttention(entityEthicsApplicationPK, ApplicationStatus.NOT_SUBMITTED, title, rcd);
                     }
                 };
                 break;

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <keys>
+    <key id="PRP">AverageJoe</key>
     <key id="Reviewer">JustJoe</key>
     <key id="Liaison">TeamLeader</key>
     <key id="HOD">Supervisor</key>

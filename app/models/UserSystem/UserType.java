@@ -7,7 +7,7 @@ public enum UserType {
     Reviewer(3, "Reviewer", "Reviewer"),
     FacultyRTI(5, "RTI", "Faculty RTI"),
     DepartmentHead(6, "HOD", "Head of Department"),
-    RCD(10, "RCD", "Research Capacity Development");
+    RCD(10, "RCD", "Research Capacity Development / Administrator");
 
     private int privilege = 1;
     private String type = "PI";

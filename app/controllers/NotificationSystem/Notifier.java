@@ -6,15 +6,17 @@ import engine.SystemNotification;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
 import models.UserSystem.UserType;
-import play.libs.mailer.Email;
 
 public class Notifier {
     /**
      * Used to notify a PRP / PI about an application status change
      * @param new_status
      */
-    public static void notifyStatus(EntityEthicsApplicationPK applicationId, ApplicationStatus new_status, String applicationTitle, String...user_emails) {
+    public static void notifyStatus(EntityEthicsApplicationPK applicationId, ApplicationStatus new_status, String applicationTitle, String... person) {
         System.out.print("Hi\n\nApplication Title: " + applicationTitle + ".Application ID: " + applicationId.shortName() + ". New Status: " + new_status.description());
+        for (String s : person) {
+            Mailer.StatusUpdate(s, applicationId.shortName(), applicationTitle, new_status.description());
+        }
     }
 
     /**
@@ -22,8 +24,11 @@ public class Notifier {
      * @param new_status
      * @param applicationTitle
      */
-    public static void requireAttention(EntityEthicsApplicationPK applicationId, ApplicationStatus new_status, String applicationTitle, String...user_emails) {
+    public static void requireAttention(EntityEthicsApplicationPK applicationId, ApplicationStatus new_status, String applicationTitle, String... person) {
         System.out.print("Hi\n\nYour attention is required for your application title: " + applicationTitle + ".\n\nNew Status: " + new_status.description());
+        for (String s : person) {
+            Mailer.AttentionRequired(s, applicationId.shortName(), applicationTitle, new_status.description());
+        }
     }
 
     /**
@@ -61,10 +66,12 @@ public class Notifier {
      * @param status
      * @param title
      * @param notification
-     * @param emails
      */
-    public static void systemNotification(EntityEthicsApplicationPK applicationId, ApplicationStatus status, String title, SystemNotification notification, String...emails) {
+    public static void systemNotification(EntityEthicsApplicationPK applicationId, ApplicationStatus status, String title, SystemNotification notification, String... person) {
         System.out.print("Hi\n\nNew system notification!\n\nNOTIFICATION: " + notification.name() + ".\n\nApplication Title: " + title + ".\n\nApplication ID: " + applicationId.shortName() + ".\n\nNew Status: " + status.description());
+        for (String s : person) {
+            Mailer.PasswordChange(s);
+        }
     }
 
     /**
@@ -85,8 +92,8 @@ public class Notifier {
         Mailer.SendWelcome(person.getUserFirstname(), person.getUserEmail());
     }
 
-    public static void sendVerification(EntityPerson person, String token) {
-        System.out.print("Hi.\n\nEmail Verification sent to: " + person.getUserEmail());
+    public static void sendVerification(String person, String token) {
+        System.out.print("Hi.\n\nEmail Verification sent to: " + person);
         Mailer.SendVerificationEmail(person, token);
     }
 }

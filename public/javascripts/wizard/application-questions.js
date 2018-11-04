@@ -285,7 +285,6 @@ function docReady() {
     // });
     let questions_shown = document.getElementById("application_questions_shown").value;
 
-    questions_shown = "true";
     if (questions_shown === "false") {
 
         // Sets number of question sections

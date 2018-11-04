@@ -69,7 +69,7 @@ public class LoginController extends Controller{
         if (!person.getIsVerified()) {
             flash("warning", "Please verify your account before logging in. New verification email sent to " + person.getUserEmail());
             String code = person.getUserPasswordHash().replace("/", "").replace(".", "").substring(12);
-            Notifier.sendVerification(person, code);
+            Notifier.sendVerification(person.getUserEmail(), code);
             return unauthorized(Login.render(loginFormForm));
         }
 
