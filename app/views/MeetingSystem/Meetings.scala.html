@@ -1,5 +1,11 @@
 @import views.html.Templates.Masterpage
 @import dao.Meeting.EntityMeeting
+@import views.html.Components.table
+@import views.html.Components.tableHead
+@import views.html.Components.tableBody
+@import views.html.Components.tableHeadCell
+@import views.html.Components.tableDataCell
+@import views.html.Components.tableRow
 @import java.util
 
 @(completeMeetings: util.List[EntityMeeting])(incompleteMeetings: util.List[EntityMeeting])
@@ -11,7 +17,7 @@
             <p style="font-style: italic">All Meetings held by the committee.</p>
         </div>
         <div class="">
-            @if(allMeetings.size() == 0) {
+            @if(incompleteMeetings.size() == 0) {
                 <p>No meetings setup</p>
                 <br/>
                 <div class="pull-right">
@@ -21,8 +27,23 @@
                     </a>
                 </div>
             } else {
-                @for(e <- allMeetings){
+                @for(currentMeeting <- incompleteMeetings){
 
+                }
+            }
+        </div>
+        <div class="">
+            @if(completeMeetings.size == 0) {
+                <p>No previous meetings</p>
+            } else {
+                @for(previousMeeting <- completeMeetings){
+                    @table.apply{
+                        @*Head*@
+                    } {
+                        @*Body*@
+                    } {
+                        @*Footer*@
+                    }
                 }
             }
         </div>

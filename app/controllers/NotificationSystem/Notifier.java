@@ -5,7 +5,9 @@ import dao.UserSystem.EntityPerson;
 import engine.SystemNotification;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
-import models.UserSystem.UserType;
+
+import java.time.Instant;
+import java.util.Date;
 
 public class Notifier {
     /**
@@ -53,10 +55,10 @@ public class Notifier {
      * Uses the Messenger to send new messages between a PI, PRP, Liaison and Reviewer
      * @param applicationId
      * @param applicationTitle
-     * @param sendername
+     * @param sender
      * @param receiver
      */
-    public static void newMessage(EntityEthicsApplicationPK applicationId, String applicationTitle, String sendername, String receiver) {
+    public static void newMessage(EntityEthicsApplicationPK applicationId, String applicationTitle, EntityPerson sender, EntityPerson receiver) {
 
     }
 
@@ -80,6 +82,7 @@ public class Notifier {
      */
     public static void changedPassword(EntityPerson personById) {
         System.out.print("Hi\n\nUser has changed their password. User Email: " + personById.getUserEmail() + ".\n\nUser: " + personById.getFullName());
+        Mailer.SendPasswordChange(personById.getFullName(), personById.getUserEmail(), Date.from(Instant.now()).toString());
     }
 
     /**

@@ -1,0 +1,9 @@
+@(items: Html*)
+
+@createRow(item: Html) = {
+    <tr>
+        @item
+    </tr>
+}
+
+@items.foreach(createRow)
