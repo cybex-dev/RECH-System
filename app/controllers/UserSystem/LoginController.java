@@ -88,7 +88,7 @@ public class LoginController extends Controller{
     @Security.Authenticated(Secured.class)
     public Result logout(){
         session().clear();
-        return ok(views.html.General.About.render());
+        return redirect(controllers.routes.HomeController.about());
     }
 
     /**

@@ -2,53 +2,58 @@
 @import views.html.Templates.Masterpage
 @import dao.Meeting.EntityAgendaItem
 @import dao.Meeting.EntityMeeting
+@import dao.UserSystem.EntityPerson
+@import dao.ApplicationSystem.EntityEthicsApplication
 @import java.util
 
 @(meeting: EntityMeeting, allApplications: util.Map[EntityAgendaItem, EntityEthicsApplication])
 
     @Masterpage(" :: All Meeting Applications") {
-        <h2>All Applications</h2>
-        <br/>
-        <p><span style="font-weight: bold">Meeting Date: </span>@meeting.getMeetingDate</p>
-        <br/>
-        <p style="font-weight: bold;">Meeting Announcements</p>
-        <ul>
-            @meeting.getAnnouncements
-        </ul>
-        <p style="font-style: italic;">Applications are ready for REC meeting scrutiny</p>
-        <br/>
+        <div class="BoxMediumBlue" style="padding: 20px;">
+            <div class="container-heading">
+                <h2>All Applications</h2>
+            </div>
+            <br/>
+            <p style="margin-bottom: 10px;"><span style="font-weight: bold">Meeting Date: </span>@meeting.getMeetingDate.toString.split(" ")(0)</p>
+            <p style="font-weight: bold;">Meeting Announcements</p>
+            <div class="text" style="margin-bottom: 10px; margin-left: 10px">
+                @meeting.getAnnouncements
+            </div>
+            <p style="font-style: italic;">Applications are ready for REC meeting scrutiny</p>
             <div class="application-details"></div>
             <table>
-                <thead>
+                <thead class="table table-overview">
                     <tr>
-                        <th>Application ID</th>
-                        <th>Application Title</th>
-                        <th># Revision</th>
-                        <th>PRP</th>
-                        <th>PI</th>
+                        <th class="col-sm-2">Application #</th>
+                        <th class="col-sm-4">Application Title</th>
+                        <th class="col-sm-1">#</th>
+                        <th class="col-sm-2">PI</th>
+                        <th class="col-sm-2">PRP</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if(allApplications.size() > 0) {
-                        @for((item, app) <- allApplications) {
+                @if(allApplications.size() > 0) {
+                    @for((item, app: EntityEthicsApplication) <- allApplications) {
+                        <tr class="nmu-button overview-td">
                             <td>@app.applicationPrimaryKey.shortName()</td>
                             <td>@app.title</td>
                             <td>@app.getApplicationRevision</td>
-                            <td>@app.getPrpId</td>
-                            <td>@app.getPiId</td>
-                            <td><button class="nmu-button action-button" href="@controllers.MeetingSystem.routes.MeetingController.getApplication(app.applicationPrimaryKey().shortName())">
-                    Review Application
-                            </button>
+                            <td>@EntityPerson.getPersonById(app.getPiId).getFullName</td>
+                            <td>@EntityPerson.getPersonById(app.getPrpId).getFullName</td>
+                            <td><a href="@controllers.MeetingSystem.routes.MeetingController.getApplication(meeting.getMeetingDate.toString.split(" ")(0), app.applicationPrimaryKey().shortName())">
+                                <button class="nmu-button action-button">Review Application
+                            </button></a>
                             </td>
-                        }
-                    } else {
-                        <td colspan="5">
-                            <p>No applications assigned to meeting</p>
-                        </td>
+                        </tr>
                     }
-            </tbody>
-        </table>
+                } else {
+                    <td colspan="5">
+                        <p>No applications assigned to meeting</p>
+                    </td>
+                }
+                </tbody>
+            </table>
         </div>
     }
 

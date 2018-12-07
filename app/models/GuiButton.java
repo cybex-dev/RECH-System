@@ -14,11 +14,11 @@ public class GuiButton {
     public static GuiButton netSaveFeedback = new GuiButton("Save Feedback","btnSaveFeedback",  controllers.ReviewSystem.routes.ReviewHandler.saveReview());
     public static GuiButton posSubmitFeedback = new GuiButton("Submit Feedback", "btnSubmitFeedback", controllers.ReviewSystem.routes.ReviewHandler.submitReview());
 
-    public static GuiButton netSaveSetupMeeting = new GuiButton("Save Meeting", "btnSaveMeeting", controllers.MeetingSystem.routes.MeetingController.saveMeeting());
-    public static GuiButton posScheduleMeeting = new GuiButton("Schedule Meeting", "btnScheduleMeeting", controllers.MeetingSystem.routes.MeetingController.doSetupMeeting());
+    //public static GuiButton netSaveSetupMeeting = new GuiButton("Save Meeting", "btnSaveMeeting", controllers.MeetingSystem.routes.MeetingController.saveMeeting());
+//    public static GuiButton posScheduleMeeting = new GuiButton("Schedule Meeting", "btnScheduleMeeting", controllers.MeetingSystem.routes.MeetingController.doSetupMeeting());
 
-    public static GuiButton netSaveResolution = new GuiButton("Save Resolution", "btnSaveResolution", controllers.MeetingSystem.routes.MeetingController.saveResolution());
-    public static GuiButton posSubmitResolution = new GuiButton("Submit Resolution", "btnSubmitResolution", controllers.MeetingSystem.routes.MeetingController.submitResolution());
+//    public static GuiButton netSaveResolution = new GuiButton("Save Resolution", "btnSaveResolution", controllers.MeetingSystem.routes.MeetingController.saveResolution());
+    //public static GuiButton posSubmitResolution = new GuiButton("Submit Resolution", "btnSubmitResolution", controllers.MeetingSystem.routes.MeetingController.submitResolution());
 
     public static GuiButton posConcudeMeeting = new GuiButton("Conclude Meeting", "btnConcludeMeeting", controllers.MeetingSystem.routes.MeetingController.completeMeeting());
 

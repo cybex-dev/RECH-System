@@ -12,40 +12,78 @@
 
 @Masterpage.apply(" :: All Meetings"){
     <div class="BoxMediumBlue" style="padding: 20px;">
-        <div class="container-heading">
-            <h1>Account Overview</h1>
-            <p style="font-style: italic">All Meetings held by the committee.</p>
-        </div>
-        <div class="">
-            @if(incompleteMeetings.size() == 0) {
-                <p>No meetings setup</p>
-                <br/>
+        <div class="row container-heading">
+            <div class="col-sm-8">
+                <h1>Account Overview</h1>
+                <p style="font-style: italic">All Meetings held by the committee.</p>
+            </div>
+            <div class="col-sm-4">
                 <div class="pull-right">
                     <a href="@controllers.MeetingSystem.routes.MeetingController.setupMeeting()">
                         <button class="nmu-button action-button"><ic class="fa fa-plus"> Setup new meeting</ic>
                         </button>
                     </a>
                 </div>
-            } else {
-                @for(currentMeeting <- incompleteMeetings){
-
-                }
-            }
+            </div>
         </div>
+        <div class="">
+            @if(incompleteMeetings.size() == 0) {
+                <p>No meetings setup</p>
+                <br/>
+            } else {
+                    <h3 class="overview overview-title"><i class="fa fa-angle-right"></i> Scheduled Meetings</h3>
+                    <div class="row">
+                        <table class="table table-overview">
+                            <thead>
+                                <th class="col-sm-5">Meeting Date</th>
+                                <th class="col-sm-3">Number of Applications</th>
+                                <th class="col-sm-3"></th>
+                            </thead>
+                            <tbody>
+                                @for(currentMeeting: EntityMeeting <- incompleteMeetings) {
+                                    <tr class="nmu-button overview-td">
+                                        <td>@currentMeeting.getMeetingDate.toString.split(" ")(0)</td>
+                                        <td>@currentMeeting.getNumberOfApplications</td>
+                                        <td><a style="float: right;" href="@controllers.MeetingSystem.routes.MeetingController.allApplications(currentMeeting.getMeetingDate.toString.split(" ")(0))">
+                                            <button class="nmu-button table-button">View Details</button>
+                                        </a>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                        </table>
+                    </div>
+            }
         <div class="">
             @if(completeMeetings.size == 0) {
                 <p>No previous meetings</p>
             } else {
                 @for(previousMeeting <- completeMeetings){
-                    @table.apply{
-                        @*Head*@
-                    } {
-                        @*Body*@
-                    } {
-                        @*Footer*@
-                    }
+                    <h3 class="overview overview-title"><i class="fa fa-angle-right"></i> Completed Meetings</h3>
+                    <div class="row">
+                        <table class="table table-overview">
+                            <thead>
+                                <th class="col-sm-5">Meeting Date</th>
+                                <th class="col-sm-3">Number of Applications</th>
+                                <th class="col-sm-3"></th>
+                            </thead>
+                            <tbody>
+                            @for(currentMeeting: EntityMeeting <- incompleteMeetings) {
+                                <tr class="nmu-button overview-td">
+                                    <td>@currentMeeting.getMeetingDate.toString</td>
+                                    <td>@currentMeeting.getNumberOfApplications</td>
+                                    <td><a style="float: right;" href="@controllers.MeetingSystem.routes.MeetingController.allApplications(currentMeeting.getMeetingDate.toString.split(" ")(0))">
+                                        <button class="nmu-button table-button">View Details</button>
+                                    </a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
                 }
             }
         </div>
+    </div>
     </div>
 }

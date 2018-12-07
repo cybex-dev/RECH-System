@@ -7,30 +7,32 @@
 @import controllers.APIController
 
 @import java.util
-@(entityEthicsApplication: EntityEthicsApplication)(root: Element)(editableMap: Map[String, Boolean])(feedbackMap: Map[String, List[String]])
+@(meetingId: String)(entityEthicsApplication: EntityEthicsApplication)(root: Element)(editableMap: Map[String, Boolean])(feedbackMap: Map[String, List[String]])
 
 @Masterpage(" :: Application Meeting Review") {
-    <br>
-    <h2>Review of Ethics Application:</h2>
-    <h3 style="text-align: center">@entityEthicsApplication.title()</h3>
-    <br>
-    <h3>Application Details</h3>
-    <div class="nmu-content-background">
-        <div class="row">
-            <div class="application-details">
-            @fragmentApplicationContainer.apply(root)(editableMap)(false)(true)(feedbackMap)
-            </div>
-        </div>
-        @helper.form(action = controllers.MeetingSystem.routes.MeetingController.submitResolution()){
+    <div class="BoxMediumBlue" style="padding: 20px;">
+        <h2>Review of Ethics Application:</h2> <h4 style="margin-left: 10px; font-style: italic; color: white">@entityEthicsApplication.title()</h4>
+        @helper.form(action = controllers.MeetingSystem.routes.MeetingController.saveResolution(meetingId, entityEthicsApplication.applicationPrimaryKey().shortName())) {
             @helper.CSRF.formField
             <input type="hidden" value="@entityEthicsApplication.applicationPrimaryKey().shortName()" id="application_id" name="application_id">
+            <input type="hidden" value="@meetingId" id="meeting_id" name="meeting_id">
+            <br/>
             <div class="row">
                 <div class="feedback">
-                    @inputTextArea.apply("resolution", "Committee Feedback", "", "The feedback which is given by the ethics committee for the specific application", "100000", "", true, false, false, null: util.List[String]);
+                    @inputTextArea.apply("resolution", "Committee Feedback", "", "The feedback which is given by the ethics committee for the specific application", "100000", "", true, false, false, null: util.List[String])
                     <br/>
                     @inputDatalist.apply("status", "Application Status", "", APIController.getApplicationStatuses, "The application status determined by the committee, if approved, needs editing or is rejected", "", true, false, false, null: util.List[String])
                 </div>
             </div>
+
+        <h3>Application Details</h3>
+        <div class="" style="border-top: 1px white dashed">
+            <div class="row">
+                <div class="col-sm-12">
+                    @fragmentApplicationContainer.apply(root)(editableMap)(false)(true)(feedbackMap)
+                </div>
+            </div>
+        </div>
             <div class="row">
                 <div class="col-sm-6">
                     <button style="margin: 0 auto;" type="button" href="@controllers.MeetingSystem.routes.MeetingController.meetingHome()" class="nmu-button action-button action-alternative">

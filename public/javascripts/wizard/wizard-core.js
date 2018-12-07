@@ -585,39 +585,53 @@ function initWizard() {
             let isGiveFeedbackTime = value.getAttribute("name").includes("feedback_");
 
             var quill = null;
-            if (isReviewingFeedback) {
+            if(id == "resolution"){
                 quill = new Quill('#' + editorDiv.id, {
                     modules: {
+                        toolbar: [
+                            [{ header: [1, 2, false] }],
+                            ['bold', 'italic', 'underline']
+                        ]
                     },
-                    placeholder: "",
-                    theme: 'bubble'  // or 'bubble'
+                    placeholder: placeholder.replace("_", " "),
+                    theme: 'snow'  // or 'bubble'
                 });
-                quill.enable(false);
+
+                outerEditorContainer.style.backgroundColor = "white";
+                outerEditorContainer.style.color = "black";
             } else {
-                if (isGiveFeedbackTime) {
+                if (isReviewingFeedback) {
                     quill = new Quill('#' + editorDiv.id, {
-                        modules: {
-                            toolbar: [
-                                [{ header: [1, 2, false] }],
-                                ['bold', 'italic', 'underline']
-                            ]
-                        },
+                        modules: {},
                         placeholder: "",
-                        theme: 'snow'  // or 'bubble'
+                        theme: 'bubble'  // or 'bubble'
                     });
                 } else {
-                    quill = new Quill('#' + editorDiv.id, {
-                        modules: {
-                            toolbar: [
-                                [{ header: [1, 2, false] }],
-                                ['bold', 'italic', 'underline']
-                            ]
-                        },
-                        placeholder: placeholder.replace("_", " "),
-                        theme: 'snow'  // or 'bubble'
-                    });
+                    if (isGiveFeedbackTime) {
+                        quill = new Quill('#' + editorDiv.id, {
+                            modules: {
+                                toolbar: [
+                                    [{header: [1, 2, false]}],
+                                    ['bold', 'italic', 'underline']
+                                ]
+                            },
+                            placeholder: "",
+                            theme: 'snow'  // or 'bubble'
+                        });
+                    } else {
+                        quill = new Quill('#' + editorDiv.id, {
+                            modules: {
+                                toolbar: [
+                                    [{header: [1, 2, false]}],
+                                    ['bold', 'italic', 'underline']
+                                ]
+                            },
+                            placeholder: placeholder.replace("_", " "),
+                            theme: 'snow'  // or 'bubble'
+                        });
+                    }
+                    quill.enable(true);
                 }
-                quill.enable(true);
             }
 
 

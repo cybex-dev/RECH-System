@@ -6,7 +6,9 @@ import io.ebean.Model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "agendaitem", schema = "rech_system")
@@ -20,9 +22,13 @@ public class EntityAgendaItem extends Model {
     private String departmentName;
     private String facultyName;
     private Timestamp meetingDate;
-
+    private Boolean isReviewed;
 
     public static Finder<EntityAgendaItemPK, EntityAgendaItem> find = new Finder<>(EntityAgendaItem.class);
+
+    public static List<EntityAgendaItem> getAllMeetingItems(Timestamp meetingDate) {
+        return find.all().stream().filter(entityAgendaItem -> entityAgendaItem.meetingDate.equals(meetingDate)).collect(Collectors.toList());
+    }
 
     @Basic
     @Column(name = "resolution")
@@ -32,6 +38,16 @@ public class EntityAgendaItem extends Model {
 
     public void setResolution(String resolution) {
         this.resolution = resolution;
+    }
+
+    @Basic
+    @Column(name = "is_reviewed")
+    public Boolean getIsReviewed() {
+        return isReviewed;
+    }
+
+    public void setIsReviewed(Boolean isReviewed) {
+        this.isReviewed = isReviewed;
     }
 
     @Basic
@@ -116,13 +132,14 @@ public class EntityAgendaItem extends Model {
                 Objects.equals(applicationType, that.applicationType) &&
                 Objects.equals(departmentName, that.departmentName) &&
                 Objects.equals(facultyName, that.facultyName) &&
-                Objects.equals(meetingDate, that.meetingDate);
+                Objects.equals(meetingDate, that.meetingDate) &&
+                Objects.equals(isReviewed, that.isReviewed);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(resolution, applicationStatus, applicationYear, applicationNumber, applicationType, departmentName, facultyName, meetingDate);
+        return Objects.hash(resolution, applicationStatus, applicationYear, applicationNumber, applicationType, departmentName, facultyName, meetingDate, isReviewed);
     }
 
     public EntityEthicsApplicationPK applicationPrimaryKey() {

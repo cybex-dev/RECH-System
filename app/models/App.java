@@ -37,6 +37,10 @@ public class App extends Controller{
         return config.getString("documentLocation");
     }
 
+    public String getTempDirectory() {
+        return config.getString("tempLocation");
+    }
+
     public String getBaseUrl() {
         return config.getString("baseUrl");
     }

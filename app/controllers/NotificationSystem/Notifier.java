@@ -5,6 +5,7 @@ import dao.UserSystem.EntityPerson;
 import engine.SystemNotification;
 import helpers.Mailer;
 import models.ApplicationSystem.ApplicationStatus;
+import models.UserSystem.UserType;
 
 import java.time.Instant;
 import java.util.Date;

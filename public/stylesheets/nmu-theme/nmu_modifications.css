@@ -457,3 +457,11 @@ table > tbody td {
     width: 95% !important;
     margin: 20px;
 }
+
+.meeting-announcement {
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 30px;
+    margin-bottom: 10px;
+    background-color: #061c2c !important;
+}

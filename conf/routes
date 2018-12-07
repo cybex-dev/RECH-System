@@ -76,16 +76,15 @@ POST    /messages/send                  controllers.MessageSystem.MessageControl
 ### ### Meeting System ###
 
 GET     /rcd/meeting/overview           controllers.MeetingSystem.MeetingController.meetingHome
-GET     /rcd/meeting/applications/:id   controllers.MeetingSystem.MeetingController.allApplications(id: String)
 
 GET     /rcd/meeting/setup              controllers.MeetingSystem.MeetingController.setupMeeting
-POST    /rcd/meeting/setup/save         controllers.MeetingSystem.MeetingController.saveMeeting
 POST    /rcd/meeting/setup              controllers.MeetingSystem.MeetingController.doSetupMeeting
 POST    /rcd/meeting/complete           controllers.MeetingSystem.MeetingController.completeMeeting
 
-GET     /rcd/meeting/application/:appId controllers.MeetingSystem.MeetingController.getApplication(appId: String)
-POST    /rcd/meeting/application/save   controllers.MeetingSystem.MeetingController.saveResolution
-POST    /rcd/meeting/application/submit controllers.MeetingSystem.MeetingController.submitResolution
+GET     /rcd/meeting/:id                controllers.MeetingSystem.MeetingController.allApplications(id: String)
+
+GET     /rcd/meeting/:meeting/:appId    controllers.MeetingSystem.MeetingController.getApplication(meeting: String, appId: String)
+POST    /rcd/meeting/:meeting/:appId/save           controllers.MeetingSystem.MeetingController.saveResolution(meeting: String, appId: String)
 
 
 ### ### API Controller ###

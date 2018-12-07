@@ -4,7 +4,7 @@
 @import views.html.Components.TabHeading
 @import controllers.APIController
 
-@()
+@(nextMeetingDate: String)
 
     @Masterpage.apply(" :: About the Committee") {
         <div class="BoxMediumBlue" style="padding: 20px;">
@@ -17,7 +17,7 @@
                     <div class="BoxDarkRed TextWhite tbsVpad ">
                         <div class="row">
                             <h2 style="font-style: italic">Next ethics committee meeting <span style="font-style: normal" id="next_meeting_date">
-                                is not set</span></h2>
+                                @nextMeetingDate</span></h2>
                         </div>
                     </div>
                 </div>

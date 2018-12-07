@@ -131,6 +131,10 @@ public class EntityEthicsApplication extends Model {
     @Basic
     @Column(name = "application_revision")
     public Integer getApplicationRevision() {
+        if (applicationRevision == null){
+            applicationRevision = 0;
+            save();
+        }
         return applicationRevision;
     }
 

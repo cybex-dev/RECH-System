@@ -1,6 +1,7 @@
 package controllers;
 
 import controllers.ApplicationSystem.routes;
+import dao.Meeting.EntityMeeting;
 import models.ApplicationSystem.EthicsApplication;
 import play.data.DynamicForm;
 import play.data.FormFactory;
@@ -81,7 +82,14 @@ public class HomeController extends Controller {
      * @return
      */
     public Result about(){
-        return ok(views.html.General.About.render());
+        EntityMeeting meeting = EntityMeeting.getNextMeeting();
+        String nextMeetingDate = "";
+        if (meeting == null){
+            nextMeetingDate = "is not set";
+        } else {
+            nextMeetingDate = meeting.getMeetingDate().toString().split(" ")[0];
+        }
+        return ok(views.html.General.About.render(nextMeetingDate));
     }
 
     /**
