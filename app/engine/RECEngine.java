@@ -581,19 +581,18 @@ public class RECEngine extends Controller {
                 return actionable;
 
 
+            // STEP -> (Optional Liaison reviewable / feedback)
+            // STEP -> AWAITING_HOD_RTI_APPROVAL (liaison approved - application is satisfactory)
+
             case TEMPORARILY_APPROVED:
                 // PI/PRP notified of this
                 // Action: Assign Liaison to application
                 // Liaison is notified
 
-                // STEP -> (Optional Liaison reviewable / feedback)
-                // STEP -> AWAITING_HOD_RTI_APPROVAL (liaison approved - application is satisfactory)
-
-                newStatus = ApplicationStatus.AWAITING_POST_HOD_RTI_APPROVAL;
-
                 actionable = new Actionable() {
                     @Override
                     public boolean doAction() {
+                        // TODO assign liaison to application
                         entityEthicsApplication.setInternalStatus(newStatus.getStatus());
                         entityEthicsApplication.update();
                         return true;
@@ -601,6 +600,7 @@ public class RECEngine extends Controller {
 
                     @Override
                     public void doNotify() {
+                        // TODO notify assigned liaison
                         Notifier.notifyStatus(applicationId, newStatus, applicationTitle, piId, prpId);
                     }
                 };
@@ -834,11 +834,14 @@ public class RECEngine extends Controller {
                     @Override
                     public boolean doAction() {
                         // No action to perform
+
+                        //TODO set fields to approved
                         return true;
                     }
 
                     @Override
                     public void doNotify() {
+                        //TODO send notifications
                         // No notification to send
                     }
                 };

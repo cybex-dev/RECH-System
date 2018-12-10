@@ -6,6 +6,7 @@ import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.Meeting.EntityAgendaItem;
 import dao.Meeting.EntityMeeting;
+import engine.RECEngine;
 import models.ApplicationSystem.ApplicationStatus;
 import net.ddns.cyberstudios.Element;
 import play.data.DynamicForm;
@@ -141,8 +142,8 @@ public class MeetingController extends Controller {
                 application.setInternalStatus(entityAgendaItem.getApplicationStatus());
                 application.save();
 
-                // Notify applicant
-                Notifier.notifyStatus(application.applicationPrimaryKey(), ApplicationStatus.parse(application.getInternalStatus()), application.title(), application.getPrpId(), application.getPiId());
+                // Proceed to next step
+                RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
             } else {
                 errorApps.add(entityAgendaItem.applicationPrimaryKey().shortName());
             }
