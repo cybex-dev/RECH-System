@@ -7,6 +7,7 @@ function docReady() {
     if (document.getElementById("btnAddReviewer") == null)
         return;
     getReviewers();
+    handleLiaisonSelect();
     document.getElementById("btnAddReviewer").onclick = function () {
         numReviewers++;
         let tableRow = createTableRow("table_reviewers");
@@ -135,4 +136,17 @@ function mapToJson(map) {
 }
 function jsonToMap(jsonStr) {
     return new Map(JSON.parse(jsonStr));
+}
+
+function handleLiaisonSelect() {
+    if (document.getElementById("liaison")!==null){
+        document.getElementById("status").onclick = function () {
+            if (document.getElementById("status").innerText === "Conditional Approval"){
+                document.getElementById("liaison").style.display = "block";
+            } else {
+                document.getElementById("liaison").style.display = "none";
+            }
+        }
+    }
+    document.getElementById("liaison").style.display = "none";
 }

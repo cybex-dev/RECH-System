@@ -266,7 +266,7 @@ public class ReviewHandler extends Controller {
 
         RECEngine.getInstance().nextStep(application_id);
 
-        flash("success", "Application's assigned assigned");
+        flash("success", "Applications assigned");
         return redirect(routes.ProfileHandler.overview());
     }
 

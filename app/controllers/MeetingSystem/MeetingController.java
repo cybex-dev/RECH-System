@@ -6,6 +6,7 @@ import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
 import dao.Meeting.EntityAgendaItem;
 import dao.Meeting.EntityMeeting;
+import dao.UserSystem.EntityPerson;
 import engine.RECEngine;
 import models.ApplicationSystem.ApplicationStatus;
 import net.ddns.cyberstudios.Element;
@@ -164,7 +165,7 @@ public class MeetingController extends Controller {
         DynamicForm form = formFactory.form().bindFromRequest();
         String resolution = form.get("resolution");
         String tStatus = form.get("status");
-        Short status = -1;
+        short status = -1;
         switch (tStatus) {
             case "Approved": status = ApplicationStatus.APPROVED.getStatus(); break;
             case "Rejected": status = ApplicationStatus.REJECTED.getStatus(); break;
@@ -177,6 +178,17 @@ public class MeetingController extends Controller {
         if (application == null) {
             flash("error", "Unable to find application with ID #" + applicationId);
             return allApplications(meetingId);
+        }
+
+        String liaisonId = form.get("liaison").replace("[", "").replace("]", "").split(" ")[1];
+        if (EntityPerson.getPersonById(liaisonId) == null){
+            flash("error", "Unable to find liaison");
+            return notFound();
+        }
+
+        if (status == ApplicationStatus.TEMPORARILY_APPROVED.getStatus()){
+            application.setLiaisonId(liaisonId);
+            application.setLiaisonAssignedDate(Timestamp.from(Instant.now()));
         }
 
         EntityAgendaItem entityAgendaItem = EntityMeeting.getAllApplications(meetingId).stream().filter(e -> e.applicationPrimaryKey().equals(entityEthicsApplicationPK)).findFirst().orElse(null);

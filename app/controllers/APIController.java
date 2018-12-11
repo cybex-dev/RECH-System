@@ -213,4 +213,12 @@ public class APIController extends Controller {
         return Arrays.asList(ApplicationStatus.TEMPORARILY_APPROVED.description(), ApplicationStatus.APPROVED.description(), ApplicationStatus.REJECTED.description(), ApplicationStatus.RESUBMISSION.description());
     }
 
+    public static List<String> getAllLiaisons(){
+        return EntityPerson.find.all()
+                .stream()
+                .filter(person -> person.userType() == UserType.Liaison)
+                .map(person -> person.getFullName().concat(" [").concat(person.getUserEmail()).concat("]"))
+                .collect(Collectors.toList());
+    }
+
 }
