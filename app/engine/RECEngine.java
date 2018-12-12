@@ -76,16 +76,16 @@ public class RECEngine extends Controller {
             return Permission.MODIFY;
         switch (ApplicationStatus.parse(entityEthicsApplication.getInternalStatus())) {
             case FEEDBACK_GIVEN_LIAISON:
-            case REJECTED:
-            case APPROVED:
             case UNKNOWN:
             case DRAFT:
             case RESUBMISSION:
+            case TEMPORARILY_APPROVED:
             case NOT_SUBMITTED: {
                 return (person.getUserEmail().equals(entityEthicsApplication.getPiId())) ? Permission.MODIFY : Permission.NONE;
             }
 
-            case TEMPORARILY_APPROVED:
+            case REJECTED:
+            case APPROVED:
             case FACULTY_REVIEW:
                 return person.getUserEmail().equals(entityEthicsApplication.getPiId()) ||
                         person.getUserEmail().equals(entityEthicsApplication.getPrpId()) ||
@@ -252,6 +252,8 @@ public class RECEngine extends Controller {
                     public void doNotify() {
                         if (applicationComplete) {
                             Notifier.notifyStatus(applicationId, ApplicationStatus.NOT_SUBMITTED, applicationTitle, piId);
+                        } else if (currentStatus == ApplicationStatus.RESUBMISSION){
+                            Notifier.notifyStatus(applicationId, ApplicationStatus.RESUBMISSION, applicationTitle, piId, prpId);
                         }
                     }
                 };
@@ -568,14 +570,14 @@ public class RECEngine extends Controller {
 
                     @Override
                     public boolean doAction() {
-                        entityEthicsApplication.setInternalStatus(ApplicationStatus.DRAFT.getStatus());
+                        entityEthicsApplication.setInternalStatus(ApplicationStatus.REJECTED.getStatus());
                         entityEthicsApplication.update();
                         return true;
                     }
 
                     @Override
                     public void doNotify() {
-                        Notifier.notifyStatus(applicationId, ApplicationStatus.DRAFT, applicationTitle, piId, prpId);
+                        Notifier.notifyStatus(applicationId, ApplicationStatus.REJECTED, applicationTitle, piId, prpId);
                     }
                 };
                 return actionable;
@@ -593,15 +595,13 @@ public class RECEngine extends Controller {
                     @Override
                     public boolean doAction() {
                         // TODO assign liaison to application
-                        entityEthicsApplication.setInternalStatus(newStatus.getStatus());
-                        entityEthicsApplication.update();
-                        return true;
+                        return false;
                     }
 
                     @Override
                     public void doNotify() {
                         // TODO notify assigned liaison
-                        Notifier.notifyStatus(applicationId, newStatus, applicationTitle, piId, prpId);
+                        Notifier.notifyStatus(applicationId, ApplicationStatus.TEMPORARILY_APPROVED, applicationTitle, piId, prpId);
                     }
                 };
                 return actionable;
@@ -834,15 +834,14 @@ public class RECEngine extends Controller {
                     @Override
                     public boolean doAction() {
                         // No action to perform
-
-                        //TODO set fields to approved
+                        entityEthicsApplication.setDateApproved(Timestamp.from(Instant.now()));
+                        entityEthicsApplication.save();
                         return true;
                     }
 
                     @Override
                     public void doNotify() {
-                        //TODO send notifications
-                        // No notification to send
+                        Notifier.notifyStatus(applicationId, ApplicationStatus.APPROVED, applicationTitle, piId, prpId);
                     }
                 };
                 return actionable;

@@ -5,8 +5,32 @@
 @import dao.UserSystem.EntityPerson
 @import dao.ApplicationSystem.EntityEthicsApplication
 @import java.util
+@import views.html.Components.ActionButton
+@import views.html.Components.ActionButtons
+@import models.ApplicationSystem.ApplicationStatus
 
 @(meeting: EntityMeeting, allApplications: util.Map[EntityAgendaItem, EntityEthicsApplication])
+
+@getStatusStyle(item: String) = @{
+    item.toLowerCase() match {
+        case "approved" => "green"
+        case "conditional approval" => "orange"
+        case "resubmission" => "yellow"
+        case "rejected" => "red"
+        case _ => "white"
+    }
+}
+
+@getStatus(item: EntityAgendaItem) = @{
+    var status = ""
+    if(item.getApplicationStatus == null){
+        status = "n/a"
+    }else{
+        status = ApplicationStatus.parse(item.getApplicationStatus).description()
+    }
+    val color = getStatusStyle(status)
+    Html("<span style=\"color: " + color + ";\">" + status + "</span>")
+}
 
     @Masterpage(" :: All Meeting Applications") {
         <div class="BoxMediumBlue" style="padding: 20px;">
@@ -17,7 +41,9 @@
             <p style="margin-bottom: 10px;"><span style="font-weight: bold">Meeting Date: </span>@meeting.getMeetingDate.toString.split(" ")(0)</p>
             <p style="font-weight: bold;">Meeting Announcements</p>
             <div class="text" style="margin-bottom: 10px; margin-left: 10px">
-                @meeting.getAnnouncements
+                <textarea id="announcements" name="announcements" placeholder="">
+                    @meeting.getAnnouncements
+                </textarea>
             </div>
             <p style="font-style: italic;">Applications are ready for REC meeting scrutiny</p>
             <div class="application-details"></div>
@@ -29,20 +55,22 @@
                         <th class="col-sm-1">#</th>
                         <th class="col-sm-2">PI</th>
                         <th class="col-sm-2">PRP</th>
+                        <th class="col-sm-1">Approval</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 @if(allApplications.size() > 0) {
-                    @for((item, app: EntityEthicsApplication) <- allApplications) {
+                    @for((item: EntityAgendaItem, app: EntityEthicsApplication) <- allApplications) {
                         <tr class="nmu-button overview-td">
                             <td>@app.applicationPrimaryKey.shortName()</td>
                             <td>@app.title</td>
                             <td>@app.getApplicationRevision</td>
                             <td>@EntityPerson.getPersonById(app.getPiId).getFullName</td>
                             <td>@EntityPerson.getPersonById(app.getPrpId).getFullName</td>
+                            <td>@getStatus(item)</td>
                             <td><a href="@controllers.MeetingSystem.routes.MeetingController.getApplication(meeting.getMeetingDate.toString.split(" ")(0), app.applicationPrimaryKey().shortName())">
-                                <button class="nmu-button action-button">Review Application
+                                <button class="nmu-button action-button">@if(meeting.getIsComplete){View Details}else{Review Application}
                             </button></a>
                             </td>
                         </tr>
@@ -54,6 +82,23 @@
                 }
                 </tbody>
             </table>
+            <br/>
+            <div class="row">
+                @ActionButtons.apply(ActionButton.apply(GuiButton.negHome)(true)(false)(false)){
+                    <div class="col-sm-3"></div>
+                }{
+                    <div class="col-sm-3">
+                    @if(!meeting.getIsComplete){
+                        @helper.form(controllers.MeetingSystem.routes.MeetingController.completeMeeting(), 'method -> "POST") {
+                            @helper.CSRF.formField
+                            <input type="hidden" name="meeting_id" value="@meeting.getMeetingDate.toString.split(" ")(0)">
+                            <button type="submit" style="margin: 0 auto;" href="" class="nmu-button action-button">
+                                Conclude Meeting</button>
+                        }
+                    }
+                    </div>
+                }
+            </div>
         </div>
     }
 

@@ -4,10 +4,11 @@ let numReviewers = 0;
 _docReady(docReady());
 
 function docReady() {
-    if (document.getElementById("btnAddReviewer") == null)
-        return;
-    getReviewers();
     handleLiaisonSelect();
+    if (document.getElementById("btnAddReviewer") == null) {
+        return;
+    }
+    getReviewers();
     document.getElementById("btnAddReviewer").onclick = function () {
         numReviewers++;
         let tableRow = createTableRow("table_reviewers");
@@ -140,13 +141,13 @@ function jsonToMap(jsonStr) {
 
 function handleLiaisonSelect() {
     if (document.getElementById("liaison")!==null){
-        document.getElementById("status").onclick = function () {
-            if (document.getElementById("status").innerText === "Conditional Approval"){
-                document.getElementById("liaison").style.display = "block";
+        document.getElementById("status").onchange = function () {
+            if (document.getElementById("status").value === "Conditional Approval"){
+                document.getElementById("liaison").parentElement.style.display = "block";
             } else {
-                document.getElementById("liaison").style.display = "none";
+                document.getElementById("liaison").parentElement.style.display = "none";
             }
-        }
+        };
+        document.getElementById("liaison").parentElement.style.display = "none";
     }
-    document.getElementById("liaison").style.display = "none";
 }

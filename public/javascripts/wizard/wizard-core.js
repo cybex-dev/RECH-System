@@ -554,7 +554,7 @@ function initWizard() {
     });
 
     // Add section-heading dashed line
-    if (document.querySelectorAll(".section-container .section-title")[0] !== null)
+    if (document.querySelectorAll(".section-container .section-title")[0] != null)
         document.querySelectorAll(".section-container .section-title")[0].style.borderTop = "1px dashed #FFFFFF";
 
     // Add document popups
@@ -585,7 +585,7 @@ function initWizard() {
             let isGiveFeedbackTime = value.getAttribute("name").includes("feedback_");
 
             var quill = null;
-            if(id == "resolution"){
+            if(id === "resolution" ){
                 quill = new Quill('#' + editorDiv.id, {
                     modules: {
                         toolbar: [
@@ -596,6 +596,18 @@ function initWizard() {
                     placeholder: placeholder.replace("_", " "),
                     theme: 'snow'  // or 'bubble'
                 });
+
+                outerEditorContainer.style.backgroundColor = "white";
+                outerEditorContainer.style.color = "black";
+            } else if(id === "announcements" ){
+                quill = new Quill('#' + editorDiv.id, {
+                    modules: {
+                        toolbar: [
+                        ]
+                    },
+                    theme: 'snow'  // or 'bubble'
+                });
+                quill.enable(false);
 
                 outerEditorContainer.style.backgroundColor = "white";
                 outerEditorContainer.style.color = "black";

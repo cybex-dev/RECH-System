@@ -247,6 +247,9 @@ public class ApplicationHandler extends Controller {
             RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
         }
 
+        application.setDateSubmitted(Timestamp.from(Instant.now()));
+        application.save();
+
         flash("success", "Application submitted");
         return redirect(controllers.UserSystem.routes.ProfileHandler.overview());
     }

@@ -76,7 +76,7 @@ public class MeetingController extends Controller {
         }
 
         String meeting_date = dynamicForm.get("meeting_date");
-        if (meeting_date == null) {
+        if (meeting_date.isEmpty()) {
             flash("danger", "Please select a meeting date");
             List<EntityEthicsApplication> allApplicationsByStatus = EntityEthicsApplication.getAllApplicationsByStatus(ApplicationStatus.PENDING_REVIEW_MEETING);
             return ok(views.html.MeetingSystem.SetupMeeting.apply(allApplicationsByStatus));
@@ -123,19 +123,22 @@ public class MeetingController extends Controller {
         // Get all agenda items, get the status and set the application status in entity ethics application
         // Notifiy all about this
         DynamicForm form = formFactory.form().bindFromRequest();
-        Timestamp meetingId = Timestamp.valueOf(form.get("meeting_id"));
+        String meeting_id = form.get("meeting_id") + " 23:59:59.0";
+        Timestamp meetingId = Timestamp.valueOf(meeting_id);
         EntityMeeting entityMeeting = EntityMeeting.find.byId(meetingId);
         if (entityMeeting == null){
             flash("error", "Unable to find meeting identified by " + meetingId.toString());
             return meetingHome();
         }
-        if (!entityMeeting.getIsComplete()) {
+
+        List<EntityAgendaItem> meetingCompleteItems = entityMeeting.getMeetingCompleteItems();
+        if (meetingCompleteItems.stream().filter(entityAgendaItem -> !entityAgendaItem.getIsReviewed()).collect(Collectors.toList()).size() != 0) {
             flash("warning", "Unable to set meeting status to complete. There are agenda items not reviewed. Please review these to proceed.");
-            return meetingHome();
+            return allApplications(meeting_id);
         }
 
         List<String> errorApps = new ArrayList<>();
-        entityMeeting.getMeetingCompleteItems().forEach(entityAgendaItem -> {
+        meetingCompleteItems.forEach(entityAgendaItem -> {
             // Get Ethics Application
             EntityEthicsApplication application = EntityEthicsApplication.GetApplication(entityAgendaItem.applicationPrimaryKey());
             if (application != null){
@@ -180,13 +183,12 @@ public class MeetingController extends Controller {
             return allApplications(meetingId);
         }
 
-        String liaisonId = form.get("liaison").replace("[", "").replace("]", "").split(" ")[1];
-        if (EntityPerson.getPersonById(liaisonId) == null){
-            flash("error", "Unable to find liaison");
-            return notFound();
-        }
-
         if (status == ApplicationStatus.TEMPORARILY_APPROVED.getStatus()){
+            String liaisonId = form.get("liaison").split("\\[")[1].replace("]","");
+            if (EntityPerson.getPersonById(liaisonId) == null){
+                flash("error", "Unable to find liaison");
+                return notFound();
+            }
             application.setLiaisonId(liaisonId);
             application.setLiaisonAssignedDate(Timestamp.from(Instant.now()));
         }
@@ -202,7 +204,7 @@ public class MeetingController extends Controller {
         entityAgendaItem.setIsReviewed(true);
         entityAgendaItem.save();
         flash("success", "Application resolution saved!");
-        return allApplications(meetingId);
+        return redirect(routes.MeetingController.allApplications(meetingId));
     }
 
     /**
@@ -217,16 +219,24 @@ public class MeetingController extends Controller {
             return meetingHome();
         }
 
-        if (ApplicationStatus.parse(application.getInternalStatus()) != ApplicationStatus.PENDING_REVIEW_MEETING){
-            flash("warning", "An error occurred, the application is not ready for scrutiny yet");
-            return meetingHome();
-        }
+//        if (ApplicationStatus.parse(application.getInternalStatus()) != ApplicationStatus.PENDING_REVIEW_MEETING){
+//            flash("warning", "An error occurred, the application is not ready for scrutiny yet");
+//            return meetingHome();
+//        }
+
+        EntityAgendaItem entityAgendaItem = EntityAgendaItem.find.all()
+                .stream()
+                .filter(item -> item.getMeetingDate().equals(Timestamp.valueOf(meeting_id + " 23:59:59.0")) && item.applicationPrimaryKey().equals(application.applicationPrimaryKey()))
+                .findFirst().orElse(null);
+        boolean itemReviewed = false;
+        if (entityAgendaItem != null)
+            itemReviewed = entityAgendaItem.getIsReviewed();
 
         HashMap<String, Boolean> stringBooleanHashMap = new HashMap<>();
         Element populatedElement = application.GetPopulatedElement();
         Map<String, List<String>> latestComponentFeedback = application.GetLatestComponentFeedback();
 
-        return ok(views.html.MeetingSystem.meetingApplication.render(meeting_id, application, populatedElement, stringBooleanHashMap, latestComponentFeedback));
+        return ok(views.html.MeetingSystem.meetingApplication.render(meeting_id, entityAgendaItem, itemReviewed, application, populatedElement, stringBooleanHashMap, latestComponentFeedback));
     }
 
     /*

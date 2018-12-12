@@ -8,7 +8,19 @@
 @import controllers.APIController
 
 @import java.util
-@(meetingId: String)(entityEthicsApplication: EntityEthicsApplication)(root: Element)(editableMap: util.Map[String, Boolean])(feedbackMap: util.Map[String, util.List[String]])
+@import dao.Meeting.EntityAgendaItem
+@import models.ApplicationSystem.ApplicationStatus
+@import dao.UserSystem.EntityPerson
+@(meetingId: String)(agendaItem: EntityAgendaItem)(reviewed: Boolean)(entityEthicsApplication: EntityEthicsApplication)(root: Element)(editableMap: util.Map[String, Boolean])(feedbackMap: util.Map[String, util.List[String]])
+
+@getLiaisonName = @{
+    if(entityEthicsApplication.getLiaisonId != null){
+        val person = EntityPerson.find.byId(entityEthicsApplication.getLiaisonId)
+        person.getFullName.concat(" [").concat(person.getUserEmail).concat("]")
+    }else{
+        ""
+    }
+}
 
 @Masterpage(" :: Application Meeting Review") {
     <div class="BoxMediumBlue" style="padding: 20px;">
@@ -20,11 +32,13 @@
             <br/>
             <div class="row">
                 <div class="feedback">
-                    @inputTextArea.apply("resolution", "Committee Feedback", "", "The feedback which is given by the ethics committee for the specific application", "100000", "", true, false, false, null: util.List[String])
+                    @inputTextArea.apply("resolution", "Committee Feedback", if(reviewed){agendaItem.getResolution}else{""} , "The feedback which is given by the ethics committee for the specific application", "100000", "", !reviewed, false, false, null: util.List[String])
                     <br/>
-                    @inputDatalist.apply("status", "Application Status", "", APIController.getApplicationStatuses, "The application status determined by the committee, if approved, needs editing or is rejected", "", true, false, false, null: util.List[String])
+                    @inputDatalist.apply("status", "Application Status", if(reviewed){ApplicationStatus.parse(agendaItem.getApplicationStatus).description()}else{""}, APIController.getApplicationStatuses, "The application status determined by the committee, if approved, needs editing or is rejected", "", !reviewed, false, false, null: util.List[String])
                     <br/>
-                    @inputDropdown.apply("liaison", "Select Application Liaison", "", APIController.getAllLiaisons, "Select a liaison to be assiged to the application", "", true, false, false, null);
+                    <div>
+                    @inputDropdown.apply("liaison", "Select Application Liaison", if(reviewed){getLiaisonName}else{""}, APIController.getAllLiaisons, "Select a liaison to be assigned to the application", "", !reviewed, false, false, null)
+                    </div>
                 </div>
             </div>
 
@@ -38,11 +52,15 @@
         </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <button style="margin: 0 auto;" type="button" href="@controllers.MeetingSystem.routes.MeetingController.meetingHome()" class="nmu-button action-button action-alternative">
-                        Cancel</button>
+                    <a href="@controllers.MeetingSystem.routes.MeetingController.allApplications(meetingId)">
+                        <button style="margin: 0 auto; float: left" type="button" class="nmu-button action-button action-alternative">
+                            Cancel</button>
+                    </a>
                 </div>
-                <div class="col-sm-6">
-                    <button style="margin: 0 auto;" href="" class="nmu-button action-button">Send Feedback</button>
+                <div cass="col-sm-6">
+                    @if(!reviewed) {
+                        <button style="margin: 0 auto; float: right" href="" class="nmu-button action-button">Send Feedback</button>
+                    }
                 </div>
             </div>
         }

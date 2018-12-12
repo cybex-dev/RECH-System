@@ -4,7 +4,20 @@ function general() {
         value.onclick = function () {
             value.parentNode.style.display = "none";
         }
-    })
+    });
+
+    if (typeof quillNum !== "undefined"){
+        if (quillNum > 0) {
+            for (let i = 0; i < quillNum; i++) {
+                let quill = quillInstances[i];
+                let value = document.getElementById(quillTextAreas[i]);
+                quill.on('text-change', function (delta, oldDelta, source) {
+                    let contents = quill.getContents();
+                    value.value = JSON.stringify(contents);
+                })
+            }
+        }
+    }
 }
 
 function addButtonPost() {
@@ -41,16 +54,7 @@ function addButtonPost() {
 }
 
 function formSubmitHandler() {
-    if (quillNum > 0) {
-        for (let i = 0; i < quillNum; i++) {
-            let quill = quillInstances[i];
-            let value = document.getElementById(quillTextAreas[i]);
 
-            let contents = quill.getContents();
-            let json = JSON.stringify(contents);
-            value.value = json;
-        }
-    }
 
     document.querySelectorAll("#application_form input[type=checkbox]").forEach(value => {
         if (value.toString().toLowerCase() !== "on" ||

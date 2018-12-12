@@ -43,6 +43,10 @@ public class EntityAgendaItem extends Model {
     @Basic
     @Column(name = "is_reviewed")
     public Boolean getIsReviewed() {
+        if (isReviewed == null){
+            isReviewed = false;
+            save();
+        }
         return isReviewed;
     }
 

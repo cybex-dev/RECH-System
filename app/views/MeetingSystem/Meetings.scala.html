@@ -68,9 +68,9 @@
                                 <th class="col-sm-3"></th>
                             </thead>
                             <tbody>
-                            @for(currentMeeting: EntityMeeting <- incompleteMeetings) {
+                            @for(currentMeeting: EntityMeeting <- completeMeetings) {
                                 <tr class="nmu-button overview-td">
-                                    <td>@currentMeeting.getMeetingDate.toString</td>
+                                    <td>@currentMeeting.getMeetingDate.toString.split(" ")(0)</td>
                                     <td>@currentMeeting.getNumberOfApplications</td>
                                     <td><a style="float: right;" href="@controllers.MeetingSystem.routes.MeetingController.allApplications(currentMeeting.getMeetingDate.toString.split(" ")(0))">
                                         <button class="nmu-button table-button">View Details</button>

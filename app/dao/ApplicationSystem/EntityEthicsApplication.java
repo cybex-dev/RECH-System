@@ -1,5 +1,6 @@
 package dao.ApplicationSystem;
 
+import com.google.gson.Gson;
 import dao.NMU.EntityDepartment;
 import dao.ReviewSystem.EntityLiaisonComponentFeedback;
 import dao.ReviewSystem.EntityReviewerApplications;
@@ -11,6 +12,11 @@ import models.ApplicationSystem.ApplicationStatus;
 import models.ApplicationSystem.EthicsApplication;
 import models.UserSystem.UserType;
 import net.ddns.cyberstudios.Element;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import scala.scalajs.js.JSON;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -558,7 +564,30 @@ public class EntityEthicsApplication extends Model {
                     if (reviewerFeedback.size() == 0){
                         reviewData.put(component.getComponentId(), new ArrayList<>());
                     } else {
-                        reviewData.put(component.getComponentId(), reviewerFeedback);
+                        String feedbackContent = reviewerFeedback.stream().reduce((s1, s2) -> {
+                            String concat = "";
+                            try {
+                                JSONParser parser = new JSONParser();
+                                JSONObject parse = (JSONObject) parser.parse(s1);
+                                JSONArray ops = (JSONArray) parse.get("ops");
+                                concat = ops.toString().concat(",");
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            try {
+                                JSONParser parser2 = new JSONParser();
+                                JSONObject parse2 = (JSONObject) parser2.parse(s2);
+                                JSONArray ops2 = (JSONArray) parse2.get("ops");
+                                concat += ops2.toString();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            return concat;
+                        }).map(s -> "{\"ops\":[" + s + "]}").orElse("{\"ops\":[]}");
+
+                        reviewData.put(component.getComponentId(), Collections.singletonList(feedbackContent));
                     }
                 });
         return reviewData;

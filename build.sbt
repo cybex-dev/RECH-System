@@ -50,5 +50,8 @@ libraryDependencies += "org.webjars" % "popper.js" % "1.14.1"
 // Creating PDF's
 libraryDependencies += "com.itextpdf" % "itextpdf" % "5.5.13"
 
+// JSON libraries
+libraryDependencies += "org.json" % "json" % "20180813"
+
 // Make verbose tests
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))

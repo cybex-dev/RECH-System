@@ -2,6 +2,7 @@ package models.UserSystem;
 
 import dao.ApplicationSystem.EntityEthicsApplication;
 import dao.ApplicationSystem.EntityEthicsApplicationPK;
+import dao.Meeting.EntityAgendaItem;
 import dao.ReviewSystem.EntityReviewerApplications;
 import dao.UserSystem.EntityPerson;
 import engine.Permission;
@@ -199,6 +200,16 @@ public class Application {
         cal.add(Calendar.MONTH, -1);
         Timestamp monthBackData = Timestamp.from(cal.getTime().toInstant());
 
+        EntityAgendaItem meetingStatus = EntityAgendaItem.find.all().stream().filter(entityAgendaItem -> entityAgendaItem.applicationPrimaryKey().equals(applicationID)).min((o1, o2) -> {
+            if (o1.getMeetingDate().before(o2.getMeetingDate())) {
+                return 1;
+            } else if (o1.getMeetingDate().after(o2.getMeetingDate())) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }).orElse(null);
+        boolean recentStatusChange = (meetingStatus != null) && (meetingStatus.getMeetingDate().after(monthBackData));
         boolean recentDateSubmitted = (date_submitted != null && date_submitted.after(monthBackData));
         boolean recentDateApproved = (date_submitted != null && date_submitted.after(monthBackData));
         boolean recentDateDueDate = (date_submitted != null && date_submitted.after(monthBackData));
@@ -209,7 +220,7 @@ public class Application {
             recentEdit = timestamp.after(monthBackData);
         }
 
-        return recentDateSubmitted || recentDateApproved || recentDateDueDate || recentAssigned || recentEdit;
+        return recentDateSubmitted || recentDateApproved || recentDateDueDate || recentAssigned || recentEdit || recentStatusChange;
     }
 
     public String getPi() {
