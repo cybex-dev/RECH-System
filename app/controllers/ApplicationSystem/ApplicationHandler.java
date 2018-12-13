@@ -222,6 +222,7 @@ public class ApplicationHandler extends Controller {
 
         EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
         EntityEthicsApplication application = saveApplicationDataReceived(formApplication, ethicsApplication);
+        application.update();
 
         RECEngine.getInstance().nextStep(application.applicationPrimaryKey());
 
@@ -280,6 +281,8 @@ public class ApplicationHandler extends Controller {
             EthicsApplication ethicsApplication = EthicsApplication.lookupApplication(applicationType);
             EntityEthicsApplication application = saveApplicationDataReceived(formApplication, ethicsApplication);
 
+            application.update();
+
             RECEngine.getInstance().tryCompleteStageCheck(application.applicationPrimaryKey());
 
             flash("success", "Your application has been saved");
@@ -320,6 +323,8 @@ public class ApplicationHandler extends Controller {
 
         Map<String, Object> cleanedData = clean(formApplication, application.applicationPrimaryKey());
         fillInApplicationData(application.applicationPrimaryKey(), cleanedData);
+
+        application.refresh();
 
         return application;
     }
@@ -372,7 +377,7 @@ public class ApplicationHandler extends Controller {
         }
 
         // Update application
-        application.update();
+        application.save();
 
         // Delete all latest components from database. We can do this only if they were not submitted.
         List<EntityComponentVersion> latestComponents = EntityEthicsApplication.getLatestComponents(applicationId);
